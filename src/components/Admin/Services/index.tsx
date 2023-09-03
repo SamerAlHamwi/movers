@@ -229,7 +229,7 @@ export const Services: React.FC = () => {
               onClick={() => {
                 navigate(`${record.id}/subService`, { state: record.name });
               }}
-              disabled={record?.tools.length > 0}
+              disabled={record?.tools?.length > 0}
             >
               <div
                 style={{
@@ -245,34 +245,34 @@ export const Services: React.FC = () => {
         );
       },
     },
-    {
-      title: <Header>{t('services.tools')}</Header>,
-      dataIndex: 'tools',
-      render: (index: number, record: services) => {
-        return (
-          <Space>
-            <Button
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                navigate(`${record.id}/tools`);
-              }}
-              disabled={record?.subServices.length > 0}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
-                }}
-              >
-                {t('services.tools')}
-              </div>
-            </Button>
-          </Space>
-        );
-      },
-    },
+    // {
+    //   title: <Header>{t('services.tools')}</Header>,
+    //   dataIndex: 'tools',
+    //   render: (index: number, record: services) => {
+    //     return (
+    //       <Space>
+    //         <Button
+    //           style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+    //           severity="info"
+    //           onClick={() => {
+    //             navigate(`${record.id}/tools`);
+    //           }}
+    //           disabled={record?.subServices.length > 0}
+    //         >
+    //           <div
+    //             style={{
+    //               fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+    //               fontWeight: FONT_WEIGHT.regular,
+    //               width: 'auto',
+    //             }}
+    //           >
+    //             {t('services.tools')}
+    //           </div>
+    //         </Button>
+    //       </Space>
+    //     );
+    //   },
+    // },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',

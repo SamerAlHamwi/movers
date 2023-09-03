@@ -15,5 +15,5 @@ export default {
   partner: '/api/services/app/Partner',
   Mediator: '/api/services/app/Mediator',
   roles: '/api/services/app/Role',
-  requests: '/api/services/app/RequestForQuotations',
+  requests: '/api/services/app/RequestForQuotation',
 };
