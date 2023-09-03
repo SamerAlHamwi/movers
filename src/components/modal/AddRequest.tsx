@@ -341,14 +341,6 @@ export const AddRequest: React.FC = () => {
             toolId: null,
           };
         }
-        // } else if (parts[0] == 'withoutTool') {
-        //   result = {
-        //     serviceId: parseInt(parts[1].replace('service', '')),
-        //     subServiceId: parseInt(parts[2].replace('sub', '')),
-        //     toolId: null,
-        //     toolRelationType: null,
-        //   };
-        // }
         requestServices.push(result);
         return result;
       });
@@ -391,6 +383,7 @@ export const AddRequest: React.FC = () => {
 
       sourceTypeId: selectedSourceType,
       attributeForSourceTypeValues: requestSources,
+      attributeChoiceAndAttachments: [{}],
     };
     createRequestMutation.mutateAsync(requestData);
   };
