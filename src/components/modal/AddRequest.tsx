@@ -162,8 +162,9 @@ export const AddRequest: React.FC = () => {
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: `service${service?.id}`,
+      key: `withService service${service?.id}`,
       children: [],
+      disabled: service?.subServices?.length > 0 ? false : true,
     };
     if (service?.subServices?.length > 0) {
       serviceNode.children = service.subServices.map((subService: any) => {
@@ -174,10 +175,7 @@ export const AddRequest: React.FC = () => {
               {subService?.name}
             </span>
           ),
-          key:
-            subService?.tools?.length > 0
-              ? `withTool service${service?.id} sub${subService?.id}`
-              : `withoutTool service${service?.id} sub${subService?.id}`,
+          key: `withSub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
@@ -188,21 +186,11 @@ export const AddRequest: React.FC = () => {
                 {tool?.name}
               </span>
             ),
-            key: `withSub service${service?.id} sub${subService?.id} tool${tool?.id}`,
+            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
           }));
         }
         return subServiceNode;
       });
-    } else if (service?.tools?.length > 0) {
-      serviceNode.children = service.tools.map((tool: any) => ({
-        title: (
-          <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-            <Image src={tool?.attachment?.url} width={16} height={16} />
-            {tool?.name}
-          </span>
-        ),
-        key: `withoutSub service${service?.id} tool${tool?.id}`,
-      }));
     }
     return serviceNode;
   });
@@ -329,37 +317,44 @@ export const AddRequest: React.FC = () => {
       isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
       requestForQuotationContactType: 2,
     };
+
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
-        if (parts[0] == 'withSub') {
+        if (parts[0] == 'withTool') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: parseInt(parts[3].replace('tool', '')),
-            toolRelationType: 1,
           };
-        } else if (parts[0] == 'withoutSub') {
-          result = {
-            serviceId: parseInt(parts[1].replace('service', '')),
-            subServiceId: null,
-            toolId: parseInt(parts[2].replace('tool', '')),
-            toolRelationType: 2,
-          };
-        } else if (parts[0] == 'withoutTool') {
+        } else if (parts[0] == 'withSub') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: null,
-            toolRelationType: null,
+          };
+        } else if (parts[0] == 'withService') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: null,
+            toolId: null,
           };
         }
+        // } else if (parts[0] == 'withoutTool') {
+        //   result = {
+        //     serviceId: parseInt(parts[1].replace('service', '')),
+        //     subServiceId: parseInt(parts[2].replace('sub', '')),
+        //     toolId: null,
+        //     toolRelationType: null,
+        //   };
+        // }
         requestServices.push(result);
         return result;
       });
     }
     extractServicesIds(requestServicesArray);
+
     function extractSourcesIds(input: any) {
       input.map((obj: any) => {
         const parts = obj.split(' ');
@@ -762,13 +757,26 @@ export const AddRequest: React.FC = () => {
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}
                       onCheck={(checkedKeysValue: any) => {
+                        console.log(checkedKeysValue);
+
                         for (const key of checkedKeysValue) {
-                          if (key.includes('withSub') || key.includes('withoutSub') || key.includes('withoutTool')) {
-                            if (!requestServicesArray.includes(key)) {
-                              requestServicesArray.push(key);
-                            }
+                          console.log(key);
+
+                          // if (key.includes('withTool') || key.includes('withSub')) {
+
+                          if (!requestServicesArray.includes(key)) {
+                            requestServicesArray.push(key);
                           }
+                          // }
+                          console.log(requestServicesArray);
                         }
+                        // for (const key of checkedKeysValue) {
+                        //   if (key.includes('withSub') || key.includes('withoutSub') || key.includes('withoutTool')) {
+                        //     if (!requestServicesArray.includes(key)) {
+                        //       requestServicesArray.push(key);
+                        //     }
+                        //   }
+                        // }
                         setSelectedServicesKeysMap((prevSelectedKeysMap) => {
                           const updatedKeysMap = { ...prevSelectedKeysMap };
                           updatedKeysMap[serviceIndex] = checkedKeysValue;
