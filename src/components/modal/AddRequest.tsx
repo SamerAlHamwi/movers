@@ -18,7 +18,7 @@ import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
-import { getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
+import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
 import { Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { createRequest } from '@app/services/requests';
@@ -63,9 +63,13 @@ export const AddRequest: React.FC = () => {
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
   const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
-  const [selectedSourceKeys, setSelectedSourceKeys] = useState<React.Key[] | any>([]);
+  // const [selectedSourceKeys, setSelectedSourceKeys] = useState<React.Key[] | any>([]);
   const [selectedSourceType, setSelectedSourceType] = useState('0');
   const [sourceType, setSourceType] = useState('0');
+  const [selectedAttributeChild, setSelectedAttributeChild] = useState('0');
+  // const [selectedChoices, setSelectedChoices] = useState<{ [key: string]: React.Key }>({});
+  // const [selectedChoices, setSelectedChoices] = useState<{ [key: string]: number }>({});
+  const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
@@ -77,12 +81,22 @@ export const AddRequest: React.FC = () => {
   } = useQuery('GetAllCity', () => getCities(countryId), {
     enabled: countryId !== '0',
   });
+  console.log(selectedChoices);
 
   const {
     data: attributeForSourceTypesData,
     refetch: AttributeForSourceTypesRefetch,
-    isRefetching: attributeForSourceTypesAttributeForSourceTypes,
+    isRefetching: attributeForSourceTypesIsRefetching,
   } = useQuery('AttributeForSourceTypes', () => getAttributeForSourceTypes(selectedSourceType), {
+    refetchOnWindowFocus: false,
+    enabled: Number(selectedSourceType) !== 0,
+  });
+
+  const {
+    data: childAttributeChoicesData,
+    refetch: childAttributeChoicesRefetch,
+    isRefetching: childAttributeChoicesIsRefetching,
+  } = useQuery('childAttributeChoices', () => getChildAttributeChoice(selectedAttributeChild), {
     refetchOnWindowFocus: false,
     enabled: Number(selectedSourceType) !== 0,
   });
@@ -278,7 +292,7 @@ export const AddRequest: React.FC = () => {
           });
         requestServicesArray = [];
         requestSources = [];
-        setSelectedSourceKeys([]);
+        // setSelectedSourceKeys([]);
       })
       .catch((error) => {
         message.open({
@@ -286,7 +300,7 @@ export const AddRequest: React.FC = () => {
         });
         requestServicesArray = [];
         requestSources = [];
-        setSelectedSourceKeys([]);
+        // setSelectedSourceKeys([]);
       }),
   );
 
@@ -347,21 +361,30 @@ export const AddRequest: React.FC = () => {
     }
     extractServicesIds(requestServicesArray);
 
-    function extractSourcesIds(input: any) {
-      input.map((obj: any) => {
-        const parts = obj.split(' ');
-        let result = {};
-        if (parts[0] == 'sourceWithAttribute') {
-          result = {
-            attributeForSourcTypeId: parseInt(parts[1].replace('attributeForSourceType', '')),
-            attributeChoiceId: parseInt(parts[2].replace('parentAttributeChoice', '')),
-          };
-        }
-        requestSources.push(result);
-        return result;
-      });
-    }
-    extractSourcesIds(selectedSourceKeys);
+    const attributeForSourceTypeValues = Object.values(selectedChoices).map((choice: any) => ({
+      attributeForSourcTypeId: choice?.sourceTypeId,
+      attributeChoiceId: choice?.attributeChoiceId,
+    }));
+
+    // function extractSourcesIds(input: any) {
+    //   const arrayParent: any = [];
+    //   input.map((obj: any) => {
+    //     const parts = obj.split(' ');
+    //     let result = {};
+    //     if (parts[0] == 'sourceWithAttribute') {
+    //       result = {
+    //         attributeForSourcTypeId: parseInt(parts[1].replace('attributeForSourceType', '')),
+    //         attributeChoiceId: parseInt(parts[2].replace('parentAttributeChoice', '')),
+    //       };
+    //       arrayParent.push(parseInt(parts[2].replace('parentAttributeChoice', '')));
+    //     }
+    //     requestSources.push(result);
+
+    //     return result;
+    //   });
+    //   console.log(arrayParent);
+    // }
+    // extractSourcesIds(selectedSourceKeys);
 
     const requestData = {
       sourceCityId: cityId.source,
@@ -382,8 +405,8 @@ export const AddRequest: React.FC = () => {
       services: requestServices,
 
       sourceTypeId: selectedSourceType,
-      attributeForSourceTypeValues: requestSources,
-      attributeChoiceAndAttachments: [{}],
+      // attributeForSourceTypeValues: requestSources,
+      attributeForSourceTypeValues,
     };
     createRequestMutation.mutateAsync(requestData);
   };
@@ -421,7 +444,8 @@ export const AddRequest: React.FC = () => {
           const isRadio = fieldName === 'serviceType';
           const isTextArea = fieldName === 'comment';
           const isTreeService = fieldName === 'services';
-          const isTreeSource = fieldName === 'attributeForSourceTypeValues';
+          // const isTreeSource = fieldName === 'attributeForSourceTypeValues';
+          const isSource = fieldName === 'attributeForSourceTypeValues';
           const isSelectCountry = ['sourceCountry', 'destinationCountry'].includes(fieldName);
           const isSelectCity = ['sourceCity', 'destinationCity'].includes(fieldName);
           const isSelectSourceType = fieldName === 'sourceTypeId';
@@ -735,7 +759,7 @@ export const AddRequest: React.FC = () => {
               </BaseForm.Item>
             );
           }
-          if (isTreeService && fieldName === 'services') {
+          if (isTreeService) {
             return (
               <BaseForm.Item key={index} name={fieldName}>
                 {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
@@ -750,26 +774,11 @@ export const AddRequest: React.FC = () => {
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}
                       onCheck={(checkedKeysValue: any) => {
-                        console.log(checkedKeysValue);
-
                         for (const key of checkedKeysValue) {
-                          console.log(key);
-
-                          // if (key.includes('withTool') || key.includes('withSub')) {
-
                           if (!requestServicesArray.includes(key)) {
                             requestServicesArray.push(key);
                           }
-                          // }
-                          console.log(requestServicesArray);
                         }
-                        // for (const key of checkedKeysValue) {
-                        //   if (key.includes('withSub') || key.includes('withoutSub') || key.includes('withoutTool')) {
-                        //     if (!requestServicesArray.includes(key)) {
-                        //       requestServicesArray.push(key);
-                        //     }
-                        //   }
-                        // }
                         setSelectedServicesKeysMap((prevSelectedKeysMap) => {
                           const updatedKeysMap = { ...prevSelectedKeysMap };
                           updatedKeysMap[serviceIndex] = checkedKeysValue;
@@ -787,7 +796,8 @@ export const AddRequest: React.FC = () => {
               </BaseForm.Item>
             );
           }
-          if (isTreeSource) {
+          // Replace the previous code block with this one
+          if (isSource) {
             return (
               <BaseForm.Item key={index} name={fieldName}>
                 {sourceType == '0' ? (
@@ -795,35 +805,111 @@ export const AddRequest: React.FC = () => {
                 ) : attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
                   <p>This Source Type doesn&apos;t have any Attribute</p>
                 ) : sourceType == '1' ? (
-                  <Tree
-                    key={index}
-                    style={treeStyle}
-                    checkable
-                    defaultExpandAll
-                    onExpand={onExpand}
-                    expandedKeys={expandedKeys}
-                    autoExpandParent={autoExpandParent}
-                    onCheck={(checkedKeysValue: any) => {
-                      const newSelectedSourceKeys: React.Key[] = [];
-                      for (const key of checkedKeysValue) {
-                        if (key.includes('sourceWithAttribute')) {
-                          newSelectedSourceKeys.push(key);
-                        }
-                      }
-                      setSelectedSourceKeys(newSelectedSourceKeys);
-                      setCheckedKeys(checkedKeysValue);
-                    }}
-                    checkedKeys={checkedKeys}
-                    onSelect={onSelect}
-                    selectedKeys={selectedKeys}
-                    treeData={treeDataSourceType}
-                  />
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
+                      <div key={sourceTypeItem.id} style={{ marginRight: '20px' }}>
+                        <p style={{ fontWeight: 'bold' }}>{sourceTypeItem.name}</p>
+                        <Radio.Group
+                          onChange={(e) => {
+                            const sourceTypeId = sourceTypeItem.id;
+                            const parentAttributeChoiceId = parseInt(
+                              e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
+                            );
+                            setSelectedChoices((prevSelectedChoices) => {
+                              // Remove any previous selections for the same sourceTypeId
+                              const updatedChoices = prevSelectedChoices.filter(
+                                (choice) => choice.sourceTypeId !== sourceTypeId,
+                              );
+                              // Add the new selection
+                              updatedChoices.push({ sourceTypeId, attributeChoiceId: parentAttributeChoiceId });
+                              return updatedChoices;
+                            });
+                          }}
+                          value={
+                            selectedChoices.find((choice) => choice.sourceTypeId === sourceTypeItem.id)
+                              ?.attributeChoiceId
+                              ? `sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${
+                                  selectedChoices.find((choice) => choice.sourceTypeId === sourceTypeItem.id)
+                                    ?.attributeChoiceId
+                                }`
+                              : undefined
+                          }
+                        >
+                          {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
+                            <Radio
+                              key={parentAttributeChoice.id}
+                              value={`sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${parentAttributeChoice.id}`}
+                            >
+                              {parentAttributeChoice.name}
+                            </Radio>
+                          ))}
+                        </Radio.Group>
+                      </div>
+                    ))}
+                  </div>
                 ) : (
                   ''
                 )}
               </BaseForm.Item>
             );
           }
+
+          // if (isTreeSource) {
+          //   return (
+          //     <BaseForm.Item key={index} name={fieldName}>
+          //       {sourceType == '0' ? (
+          //         <p>Please choose an option from the select.</p>
+          //       ) : attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
+          //         <p>This Source Type doesn&apos;t have any Attribute</p>
+          //       ) : sourceType == '1' ? (
+          //         <Tree
+          //           key={index}
+          //           style={treeStyle}
+          //           checkable
+          //           multiple={false}
+          //           defaultExpandAll
+          //           onExpand={onExpand}
+          //           expandedKeys={expandedKeys}
+          //           autoExpandParent={autoExpandParent}
+          //           onCheck={(checkedKeysValue: any) => {
+          //             const newSelectedSourceKeys: React.Key[] = [];
+          //             console.log(checkedKeysValue);
+          //             for (const key of checkedKeysValue) {
+          //               console.log(key);
+          //               const parts = key.split(' ');
+          //               let result = {};
+          //               if (parts[0] == 'sourceWithAttribute') {
+          //                 console.log(parts);
+          //                 console.log(newSelectedSourceKeys);
+          //                 console.log(newSelectedSourceKeys.includes(parts[1]));
+          //                 if (newSelectedSourceKeys.includes(parts[1])) {
+          //                   console.log('error');
+          //                 }
+          //                 result = {
+          //                   attributeForSourcTypeId: parseInt(parts[1].replace('attributeForSourceType', '')),
+          //                   attributeChoiceId: parseInt(parts[2].replace('parentAttributeChoice', '')),
+          //                 };
+          //               }
+          //               if (key.includes('sourceWithAttribute')) {
+          //                 if (!requestServicesArray.includes(key)) {
+          //                   newSelectedSourceKeys.push(key);
+          //                 }
+          //               }
+          //             }
+          //             setSelectedSourceKeys(newSelectedSourceKeys);
+          //             setCheckedKeys(checkedKeysValue);
+          //           }}
+          //           checkedKeys={checkedKeys}
+          //           onSelect={onSelect}
+          //           selectedKeys={selectedKeys}
+          //           treeData={treeDataSourceType}
+          //         />
+          //       ) : (
+          //         ''
+          //       )}
+          //     </BaseForm.Item>
+          //   );
+          // }
         })}
 
         <Row justify={'end'}>
