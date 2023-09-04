@@ -76,8 +76,8 @@ const getAllChildAttributeChoices = async (id: string | undefined, page: number,
   );
 };
 
-const getChildAttributeChoice = async (id: string | undefined) => {
-  return await httpApi.get(`${apiPrefix.allAttributeChoices}/Get?ParentId=${id}&IsParent=false`);
+const getChildAttributeChoice = async (id: number | undefined) => {
+  return await httpApi.get(`${apiPrefix.allAttributeChoices}/GetAll?ParentId=${id}&IsParent=false`);
 };
 
 const createChildAttributeChoice = async (data: SourceTypeModel) => {

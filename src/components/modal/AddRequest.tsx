@@ -70,6 +70,8 @@ export const AddRequest: React.FC = () => {
   // const [selectedChoices, setSelectedChoices] = useState<{ [key: string]: React.Key }>({});
   // const [selectedChoices, setSelectedChoices] = useState<{ [key: string]: number }>({});
   const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
+  const [attributeChoiceItems, setAttributeChoiceItems] = useState<JSX.Element[]>([]);
+  const [imageUploads, setImageUploads] = useState<{ [key: number]: File[] }>({});
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
@@ -81,22 +83,12 @@ export const AddRequest: React.FC = () => {
   } = useQuery('GetAllCity', () => getCities(countryId), {
     enabled: countryId !== '0',
   });
-  console.log(selectedChoices);
 
   const {
     data: attributeForSourceTypesData,
     refetch: AttributeForSourceTypesRefetch,
     isRefetching: attributeForSourceTypesIsRefetching,
   } = useQuery('AttributeForSourceTypes', () => getAttributeForSourceTypes(selectedSourceType), {
-    refetchOnWindowFocus: false,
-    enabled: Number(selectedSourceType) !== 0,
-  });
-
-  const {
-    data: childAttributeChoicesData,
-    refetch: childAttributeChoicesRefetch,
-    isRefetching: childAttributeChoicesIsRefetching,
-  } = useQuery('childAttributeChoices', () => getChildAttributeChoice(selectedAttributeChild), {
     refetchOnWindowFocus: false,
     enabled: Number(selectedSourceType) !== 0,
   });
@@ -122,46 +114,46 @@ export const AddRequest: React.FC = () => {
   };
 
   const steps = [
-    {
-      title: 'Contact',
-      content: [
-        'Source',
-        'firstNameContactSource',
-        'lastNameContactSource',
-        'phoneNumberSource',
-        'isCallAvailableSource',
-        'isWhatsAppAvailableSource',
-        'isTelegramAvailableSource',
-        'Destination',
-        'firstNameContactDestination',
-        'lastNameContactDestination',
-        'phoneNumberDestination',
-        'isCallAvailableDestination',
-        'isWhatsAppAvailableDestination',
-        'isTelegramAvailableDestination',
-      ],
-    },
-    {
-      title: 'Location',
-      content: [
-        'Source',
-        'sourceCountry',
-        'sourceCity',
-        'sourceAddress',
-        'moveAtUtc',
-        'sourceLocation',
-        'Destination',
-        'destinationCountry',
-        'destinationCity',
-        'destinationAddress',
-        'arrivalAtUtc',
-        'destinationLocation',
-      ],
-    },
-    {
-      title: 'Services',
-      content: ['serviceType', 'services', 'comment'],
-    },
+    // {
+    //   title: 'Contact',
+    //   content: [
+    //     'Source',
+    //     'firstNameContactSource',
+    //     'lastNameContactSource',
+    //     'phoneNumberSource',
+    //     'isCallAvailableSource',
+    //     'isWhatsAppAvailableSource',
+    //     'isTelegramAvailableSource',
+    //     'Destination',
+    //     'firstNameContactDestination',
+    //     'lastNameContactDestination',
+    //     'phoneNumberDestination',
+    //     'isCallAvailableDestination',
+    //     'isWhatsAppAvailableDestination',
+    //     'isTelegramAvailableDestination',
+    //   ],
+    // },
+    // {
+    //   title: 'Location',
+    //   content: [
+    //     'Source',
+    //     'sourceCountry',
+    //     'sourceCity',
+    //     'sourceAddress',
+    //     'moveAtUtc',
+    //     'sourceLocation',
+    //     'Destination',
+    //     'destinationCountry',
+    //     'destinationCity',
+    //     'destinationAddress',
+    //     'arrivalAtUtc',
+    //     'destinationLocation',
+    //   ],
+    // },
+    // {
+    //   title: 'Services',
+    //   content: ['serviceType', 'services', 'comment'],
+    // },
     {
       title: 'SourceType',
       content: ['sourceTypeId', 'attributeForSourceTypeValues', 'attributeChoiceAndAttachments'],
@@ -275,8 +267,8 @@ export const AddRequest: React.FC = () => {
   };
 
   const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber.substring(dialCode.length);
+    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
+    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
     return {
       dialCode,
       phoneNumber,
@@ -331,7 +323,6 @@ export const AddRequest: React.FC = () => {
       isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
       requestForQuotationContactType: 2,
     };
-
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
         const parts = obj.split(' ');
@@ -361,30 +352,16 @@ export const AddRequest: React.FC = () => {
     }
     extractServicesIds(requestServicesArray);
 
-    const attributeForSourceTypeValues = Object.values(selectedChoices).map((choice: any) => ({
-      attributeForSourcTypeId: choice?.sourceTypeId,
-      attributeChoiceId: choice?.attributeChoiceId,
-    }));
-
-    // function extractSourcesIds(input: any) {
-    //   const arrayParent: any = [];
-    //   input.map((obj: any) => {
-    //     const parts = obj.split(' ');
-    //     let result = {};
-    //     if (parts[0] == 'sourceWithAttribute') {
-    //       result = {
-    //         attributeForSourcTypeId: parseInt(parts[1].replace('attributeForSourceType', '')),
-    //         attributeChoiceId: parseInt(parts[2].replace('parentAttributeChoice', '')),
-    //       };
-    //       arrayParent.push(parseInt(parts[2].replace('parentAttributeChoice', '')));
-    //     }
-    //     requestSources.push(result);
-
-    //     return result;
-    //   });
-    //   console.log(arrayParent);
-    // }
-    // extractSourcesIds(selectedSourceKeys);
+    const selectedChoicesArray = Object.entries(selectedChoices);
+    const attributeForSourceTypeValues = selectedChoicesArray.map(([sourceTypeId, choice]: any) => {
+      const sourceTypeIdNumber = parseInt(sourceTypeId);
+      const parts = choice.split(' ');
+      const attributeChoiceId = parseInt(parts[2].replace('parentAttributeChoice', ''));
+      return {
+        attributeForSourcTypeId: sourceTypeIdNumber,
+        attributeChoiceId: attributeChoiceId,
+      };
+    });
 
     const requestData = {
       sourceCityId: cityId.source,
@@ -405,10 +382,27 @@ export const AddRequest: React.FC = () => {
       services: requestServices,
 
       sourceTypeId: selectedSourceType,
-      // attributeForSourceTypeValues: requestSources,
       attributeForSourceTypeValues,
     };
     createRequestMutation.mutateAsync(requestData);
+  };
+
+  const handleImageUpload = (sourceTypeId: number, files: FileList | null) => {
+    if (files && files.length > 0) {
+      const uploadedFiles = Array.from(files);
+      setImageUploads((prevImageUploads) => ({
+        ...prevImageUploads,
+        [sourceTypeId]: [...(prevImageUploads[sourceTypeId] || []), ...uploadedFiles],
+      }));
+    }
+  };
+
+  const removeImage = (sourceTypeId: number, index: number) => {
+    setImageUploads((prevImageUploads) => {
+      const updatedUploads = { ...prevImageUploads };
+      updatedUploads[sourceTypeId] = updatedUploads[sourceTypeId].filter((_, i) => i !== index);
+      return updatedUploads;
+    });
   };
 
   return (
@@ -570,34 +564,34 @@ export const AddRequest: React.FC = () => {
               </Row>
             );
           }
-          if (isPhone) {
-            return (
-              <BaseButtonsForm.Item
-                name={fieldName}
-                key={index}
-                $successText={t('auth.phoneNumberVerified')}
-                label={t('common.phoneNumber')}
-                rules={[
-                  { required: true, message: t('common.requiredField') },
-                  () => ({
-                    validator(_, value) {
-                      if (!value || isValidPhoneNumber(value)) {
-                        return Promise.resolve();
-                      }
-                      if (formattedPhoneNumber.length > 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                      } else if (formattedPhoneNumber.length < 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                      }
-                    },
-                  }),
-                ]}
-                style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
-              >
-                <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-              </BaseButtonsForm.Item>
-            );
-          }
+          // if (isPhone) {
+          //   return (
+          //     <BaseButtonsForm.Item
+          //       name={fieldName}
+          //       key={index}
+          //       $successText={t('auth.phoneNumberVerified')}
+          //       label={t('common.phoneNumber')}
+          //       rules={[
+          //         { required: true, message: t('common.requiredField') },
+          //         () => ({
+          //           validator(_, value) {
+          //             if (!value || isValidPhoneNumber(value)) {
+          //               return Promise.resolve();
+          //             }
+          //             if (formattedPhoneNumber.length > 12) {
+          //               return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+          //             } else if (formattedPhoneNumber.length < 12) {
+          //               return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+          //             }
+          //           },
+          //         }),
+          //       ]}
+          //       style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+          //     >
+          //       <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+          //     </BaseButtonsForm.Item>
+          //   );
+          // }
           if (isRadio) {
             return (
               <BaseForm.Item key={index} name={fieldName}>
@@ -796,7 +790,6 @@ export const AddRequest: React.FC = () => {
               </BaseForm.Item>
             );
           }
-          // Replace the previous code block with this one
           if (isSource) {
             return (
               <BaseForm.Item key={index} name={fieldName}>
@@ -804,47 +797,64 @@ export const AddRequest: React.FC = () => {
                   <p>Please choose an option from the select.</p>
                 ) : attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
                   <p>This Source Type doesn&apos;t have any Attribute</p>
-                ) : sourceType == '1' ? (
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                ) : attributeForSourceTypesData?.data?.result?.items.length > 0 && sourceType == '1' ? (
+                  <div>
                     {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
-                      <div key={sourceTypeItem.id} style={{ marginRight: '20px' }}>
-                        <p style={{ fontWeight: 'bold' }}>{sourceTypeItem.name}</p>
-                        <Radio.Group
-                          onChange={(e) => {
-                            const sourceTypeId = sourceTypeItem.id;
-                            const parentAttributeChoiceId = parseInt(
-                              e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
-                            );
-                            setSelectedChoices((prevSelectedChoices) => {
-                              // Remove any previous selections for the same sourceTypeId
-                              const updatedChoices = prevSelectedChoices.filter(
-                                (choice) => choice.sourceTypeId !== sourceTypeId,
+                      <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
+                        <div style={{ margin: '1rem' }}>
+                          <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>{sourceTypeItem.name}</p>
+                          <Radio.Group
+                            style={{ display: 'flex', justifyContent: 'space-around' }}
+                            onChange={(e) => {
+                              const sourceTypeId = sourceTypeItem.id;
+                              const parentAttributeChoiceId = parseInt(
+                                e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
                               );
-                              // Add the new selection
-                              updatedChoices.push({ sourceTypeId, attributeChoiceId: parentAttributeChoiceId });
-                              return updatedChoices;
-                            });
-                          }}
-                          value={
-                            selectedChoices.find((choice) => choice.sourceTypeId === sourceTypeItem.id)
-                              ?.attributeChoiceId
-                              ? `sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${
-                                  selectedChoices.find((choice) => choice.sourceTypeId === sourceTypeItem.id)
-                                    ?.attributeChoiceId
-                                }`
-                              : undefined
-                          }
-                        >
-                          {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
-                            <Radio
-                              key={parentAttributeChoice.id}
-                              value={`sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${parentAttributeChoice.id}`}
-                            >
-                              {parentAttributeChoice.name}
-                            </Radio>
-                          ))}
-                        </Radio.Group>
-                      </div>
+                              setSelectedChoices((prevSelectedChoices) => ({
+                                ...prevSelectedChoices,
+                                [sourceTypeId]: e.target.value,
+                              }));
+
+                              getChildAttributeChoice(parentAttributeChoiceId)
+                                .then((data) => {
+                                  const items = data?.data?.result?.items || [];
+                                  const itemElements = items.map((item: any) => (
+                                    <div key={item.id} style={{ margin: '4rem 1rem 5rem' }}>
+                                      <p>{item.name}</p>
+                                      <input
+                                        type="file"
+                                        accept="image/*"
+                                        onChange={(e) => {
+                                          // handleImageUpload(e, item.id)
+                                        }}
+                                      />
+                                    </div>
+                                  ));
+                                  setAttributeChoiceItems((prevAttributeChoiceItems) => ({
+                                    ...prevAttributeChoiceItems,
+                                    [sourceTypeId]: itemElements,
+                                  }));
+                                })
+                                .catch((error) => {
+                                  console.error(error);
+                                });
+                            }}
+                            value={selectedChoices[sourceTypeItem.id]}
+                          >
+                            {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
+                              <Radio
+                                key={parentAttributeChoice.id}
+                                value={`sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${parentAttributeChoice.id}`}
+                              >
+                                {parentAttributeChoice.name}
+                              </Radio>
+                            ))}
+                          </Radio.Group>
+                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                            {attributeChoiceItems[sourceTypeItem.id]}
+                          </div>
+                        </div>
+                      </Card>
                     ))}
                   </div>
                 ) : (
@@ -853,63 +863,6 @@ export const AddRequest: React.FC = () => {
               </BaseForm.Item>
             );
           }
-
-          // if (isTreeSource) {
-          //   return (
-          //     <BaseForm.Item key={index} name={fieldName}>
-          //       {sourceType == '0' ? (
-          //         <p>Please choose an option from the select.</p>
-          //       ) : attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
-          //         <p>This Source Type doesn&apos;t have any Attribute</p>
-          //       ) : sourceType == '1' ? (
-          //         <Tree
-          //           key={index}
-          //           style={treeStyle}
-          //           checkable
-          //           multiple={false}
-          //           defaultExpandAll
-          //           onExpand={onExpand}
-          //           expandedKeys={expandedKeys}
-          //           autoExpandParent={autoExpandParent}
-          //           onCheck={(checkedKeysValue: any) => {
-          //             const newSelectedSourceKeys: React.Key[] = [];
-          //             console.log(checkedKeysValue);
-          //             for (const key of checkedKeysValue) {
-          //               console.log(key);
-          //               const parts = key.split(' ');
-          //               let result = {};
-          //               if (parts[0] == 'sourceWithAttribute') {
-          //                 console.log(parts);
-          //                 console.log(newSelectedSourceKeys);
-          //                 console.log(newSelectedSourceKeys.includes(parts[1]));
-          //                 if (newSelectedSourceKeys.includes(parts[1])) {
-          //                   console.log('error');
-          //                 }
-          //                 result = {
-          //                   attributeForSourcTypeId: parseInt(parts[1].replace('attributeForSourceType', '')),
-          //                   attributeChoiceId: parseInt(parts[2].replace('parentAttributeChoice', '')),
-          //                 };
-          //               }
-          //               if (key.includes('sourceWithAttribute')) {
-          //                 if (!requestServicesArray.includes(key)) {
-          //                   newSelectedSourceKeys.push(key);
-          //                 }
-          //               }
-          //             }
-          //             setSelectedSourceKeys(newSelectedSourceKeys);
-          //             setCheckedKeys(checkedKeysValue);
-          //           }}
-          //           checkedKeys={checkedKeys}
-          //           onSelect={onSelect}
-          //           selectedKeys={selectedKeys}
-          //           treeData={treeDataSourceType}
-          //         />
-          //       ) : (
-          //         ''
-          //       )}
-          //     </BaseForm.Item>
-          //   );
-          // }
         })}
 
         <Row justify={'end'}>
