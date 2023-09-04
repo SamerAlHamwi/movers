@@ -10,6 +10,7 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
 import { BankOutlined, ClearOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
+import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -31,7 +32,6 @@ import { Alert } from '../common/Alert/Alert';
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
-let requestSources: any = [];
 
 export const AddRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
@@ -56,19 +56,14 @@ export const AddRequest: React.FC = () => {
     lng: 55.34100848084654,
   });
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-  const [checkedKeys, setCheckedKeys] = useState<React.Key[]>(['0-0-0']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [valueRadio, setValueRadio] = useState(1);
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
   const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
-  // const [selectedSourceKeys, setSelectedSourceKeys] = useState<React.Key[] | any>([]);
   const [selectedSourceType, setSelectedSourceType] = useState('0');
   const [sourceType, setSourceType] = useState('0');
-  const [selectedAttributeChild, setSelectedAttributeChild] = useState('0');
-  // const [selectedChoices, setSelectedChoices] = useState<{ [key: string]: React.Key }>({});
-  // const [selectedChoices, setSelectedChoices] = useState<{ [key: string]: number }>({});
   const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
   const [attributeChoiceItems, setAttributeChoiceItems] = useState<JSX.Element[]>([]);
   const [imageUploads, setImageUploads] = useState<{ [key: number]: File[] }>({});
@@ -283,16 +278,12 @@ export const AddRequest: React.FC = () => {
             content: <Alert message={t('requests.deleteRequestSuccessMessage')} type={`success`} showIcon />,
           });
         requestServicesArray = [];
-        requestSources = [];
-        // setSelectedSourceKeys([]);
       })
       .catch((error) => {
         message.open({
           content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
         });
         requestServicesArray = [];
-        requestSources = [];
-        // setSelectedSourceKeys([]);
       }),
   );
 
@@ -438,7 +429,6 @@ export const AddRequest: React.FC = () => {
           const isRadio = fieldName === 'serviceType';
           const isTextArea = fieldName === 'comment';
           const isTreeService = fieldName === 'services';
-          // const isTreeSource = fieldName === 'attributeForSourceTypeValues';
           const isSource = fieldName === 'attributeForSourceTypeValues';
           const isSelectCountry = ['sourceCountry', 'destinationCountry'].includes(fieldName);
           const isSelectCity = ['sourceCity', 'destinationCity'].includes(fieldName);
@@ -564,34 +554,34 @@ export const AddRequest: React.FC = () => {
               </Row>
             );
           }
-          // if (isPhone) {
-          //   return (
-          //     <BaseButtonsForm.Item
-          //       name={fieldName}
-          //       key={index}
-          //       $successText={t('auth.phoneNumberVerified')}
-          //       label={t('common.phoneNumber')}
-          //       rules={[
-          //         { required: true, message: t('common.requiredField') },
-          //         () => ({
-          //           validator(_, value) {
-          //             if (!value || isValidPhoneNumber(value)) {
-          //               return Promise.resolve();
-          //             }
-          //             if (formattedPhoneNumber.length > 12) {
-          //               return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-          //             } else if (formattedPhoneNumber.length < 12) {
-          //               return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-          //             }
-          //           },
-          //         }),
-          //       ]}
-          //       style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
-          //     >
-          //       <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-          //     </BaseButtonsForm.Item>
-          //   );
-          // }
+          if (isPhone) {
+            return (
+              <BaseButtonsForm.Item
+                name={fieldName}
+                key={index}
+                $successText={t('auth.phoneNumberVerified')}
+                label={t('common.phoneNumber')}
+                rules={[
+                  { required: true, message: t('common.requiredField') },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || isValidPhoneNumber(value)) {
+                        return Promise.resolve();
+                      }
+                      if (formattedPhoneNumber.length > 12) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                      } else if (formattedPhoneNumber.length < 12) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                      }
+                    },
+                  }),
+                ]}
+                style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+              >
+                <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+              </BaseButtonsForm.Item>
+            );
+          }
           if (isRadio) {
             return (
               <BaseForm.Item key={index} name={fieldName}>
