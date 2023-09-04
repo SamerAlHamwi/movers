@@ -111,6 +111,64 @@ export type CreateGameFormData = {
   gameType?: number;
 };
 
+export interface CompanyModal {
+  id?: number;
+  translations: translation[];
+  services: Service[];
+  address: string;
+  regionId?: number;
+  
+  companyContact?: CompanyContact;
+  companyProfilePhotoId?: number;
+
+  companyBranches?: CompanyBranch[];
+  companyOwnerIdentityIds?:any;
+  companyCommercialRegisterIds?:any;
+  additionalAttachmentIds?: any;
+  userDto?: UserDto;
+  isActive: boolean;
+  companyOwnerIdentity?: any;
+  companyCommercialRegister?: any;
+  additionalAttachment?: any;
+}
+
+
+
+export interface Services {
+  numberOfBranch: number;
+  services: Service[];
+}
+export interface Service {
+  serviceId: number;
+  subServiceId: number;
+  toolId: number;
+
+}
+
+export interface CompanyContact {
+  dialCode: string;
+  phoneNumber: string;
+  emailAddress: string;
+  webSite: string;
+  isForBranchCompany: boolean;
+  companyBranchId?: number;
+  companyId?: number;
+}
+
+export interface CompanyBranch {
+  address: string;
+  regionId: string;
+  numberOfBranch: number;
+  companyContact: CompanyContact;
+}
+
+export interface UserDto {
+  dialCode: string;
+  phoneNumber: string;
+  password: string;
+}
+
+
 export interface UserModel {
   id: number;
   userName: string;
@@ -125,33 +183,13 @@ export interface UserModel {
   isActive: boolean | string;
 }
 
-export interface CompanyModal {
-  id?: number;
-  translations: translation[];
-  services: Services[];
-  address: string;
-  regionId: number;
-  cityId: number;
-  companyContact: CompanyContact;
-  companyProfilePhotoId: number;
-  companyBranches: CompanyBranch[];
-  companyOwnerIdentityIds: number[];
-  companyCommercialRegisterIds: number[];
-  additionalAttachmentIds: number[];
-  userDto: UserDto;
-  isActive: boolean;
-}
+
 
 export interface Services {
   numberOfBranch: number;
   services: Service[];
 }
-export interface Service {
-  serviceId: number;
-  subServiceId: number;
-  toolId: number;
-  toolRelationType: number;
-}
+
 
 export interface CompanyContact {
   dialCode: string;
