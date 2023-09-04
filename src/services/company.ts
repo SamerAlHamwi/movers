@@ -8,6 +8,9 @@ const getAllCompanies = async (page: number, pageSize: number) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(`${apiPrefix.companies}/GetAll`);
 };
+const getcompany = async (id?: number) => {
+  return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
+};
 // eslint-disable-next-line
 const Deletce = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.companies}/Delete?Id=${id}`);
@@ -29,4 +32,4 @@ const DeActivatCCe = async (id: number) => {
   return await httpApi.post(`${apiPrefix.users}/DeActivate`, { id });
 };
 
-export { getAllCompanies, createCompany, Updatce, Deletce, ActivatCe, DeActivatCCe };
+export { getAllCompanies, getcompany, createCompany, Updatce, Deletce, ActivatCe, DeActivatCCe };

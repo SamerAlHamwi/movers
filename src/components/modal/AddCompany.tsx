@@ -3,10 +3,10 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 
 import { P1 } from '../common/typography/P1/P1';
 import { InputPassword } from '../common/inputs/InputPassword/InputPassword.styles';
-import { LableText } from '../GeneralStyles';
+import { CreateButtonText, LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CompanyModal, Services, subservices } from '@app/interfaces/interfaces';
+import { CompanyModal, Service, subservices } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { Text } from '../GeneralStyles';
 import { UploadDragger } from '../common/Upload/Upload';
@@ -110,22 +110,6 @@ export const AddCompany: React.FC = () => {
     },
   );
 
-  // const serviece = useQuery(
-  //   ['SubServices', selectedService, page, pageSize],
-  //   () => (selectedService ? getAllSubServices(selectedService, page, pageSize) : null),
-  //   {
-  //     enabled: Dat !== null,
-  //   },
-  // );
-
-  const Tool = useQuery(
-    ['Tools', selectedSubService, page, pageSize],
-    () => (selectedSubService ? getAllTools('', '', page, pageSize) : null),
-    {
-      enabled: selectedSubService !== null,
-    },
-  );
-
   const country = useQuery(
     ['Countries'],
     () =>
@@ -159,9 +143,66 @@ export const AddCompany: React.FC = () => {
   //     enabled: Data === undefined,
   //   },
   // );
+  // let record: services | undefined;
+  // const ChangeServieceHandler = (e: any) => {
+  //   setServieceId(e);
+
+  //   getAllSubServices(e, page, pageSize)
+  //     .then((data) => {
+  //       const result = data.data?.result?.items;
+  //       setTotalCount(data.data?.result?.totalCount);
+  //       setDatr(result);
+  //     })
+  //     .catch((error) => {
+  //       notificationController.error({ message: error.message || error.error?.message });
+  //     });
+
+  //   if ((record?.tools ?? []).length > 0) {
+  //     getAllTools(e, '', page, pageSize)
+  //       .then((data) => {
+  //         const result = data?.data?.result?.items;
+  //         setTotalCount(data?.data?.result?.totalCount);
+  //         setData(result);
+  //       })
+  //       .catch((error) => {
+  //         notificationController.error({ message: error.message || error.error?.message });
+  //       });
+  //   }
+  // };
+
+  // let record: services | undefined;
+  // const changeServiceHandler = (value: string[]) => {
+  //   setSelectedServices(value);
+
+  //   // Fetch sub-services and tools for each selected service
+  //   value.forEach((serviceId) => {
+  //     getAllSubServices(serviceId, page, pageSize)
+  //       .then((data) => {
+  //         const result = data.data?.result?.items;
+  //         setSubServices((prevSubServices) => [...prevSubServices, result]);
+  //       })
+  //       .catch((error) => {
+  //         notificationController.error({ message: error.message || error.error?.message });
+  //       });
+
+  //     if (record && record.tools && record.tools.length > 0) {
+  //       getAllTools(serviceId, '', page, pageSize)
+  //         .then((data) => {
+  //           const result = data?.data?.result?.items;
+  //           setTools((prevTools) => [...prevTools, result]);
+  //         })
+  //         .catch((error) => {
+  //           notificationController.error({ message: error.message || error.error?.message });
+  //         });
+  //     }
+  //   });
+  // };
+  const [services, setServices] = useState([{ serviceId: '', subserviceId: '' }]);
   let record: services | undefined;
-  const ChangeServieceHandler = (e: any) => {
-    setServieceId(e);
+  const ChangeServieceHandler = (index: any, e: any) => {
+    const updatedServices = [...services];
+    updatedServices[index] = { ...updatedServices[index], serviceId: e };
+    setServices(updatedServices);
 
     getAllSubServices(e, page, pageSize)
       .then((data) => {
@@ -185,7 +226,6 @@ export const AddCompany: React.FC = () => {
         });
     }
   };
-
   const ChangeRegionHandler = (e: any) => {
     setRegionId(e);
     console.log('sdfghjk', Region_id);
@@ -271,21 +311,15 @@ export const AddCompany: React.FC = () => {
     ],
     services: [
       {
-        numberOfBranch: 0,
-        services: [
-          {
-            serviceId: 0,
-            subServiceId: 0,
-            toolId: 0,
-            toolRelationType: 1,
-          },
-        ],
+        serviceId: 0,
+        subServiceId: 0,
+        toolId: 0,
       },
     ],
 
     regionId: Region_id,
     address: 'string',
-    cityId: 0,
+
     companyContact: {
       dialCode: 's7',
       phoneNumber: 'string',
@@ -293,20 +327,7 @@ export const AddCompany: React.FC = () => {
       webSite: 'string',
       isForBranchCompany: false,
     },
-    companyBranches: [
-      {
-        address: 'str',
-        regionId: '5',
-        numberOfBranch: 0,
-        companyContact: {
-          dialCode: 'stri',
-          phoneNumber: 'str',
-          emailAddress: 'st',
-          webSite: 's',
-          isForBranchCompany: true,
-        },
-      },
-    ],
+
     companyProfilePhotoId: 0,
     companyOwnerIdentityIds: [0],
     companyCommercialRegisterIds: [0],
@@ -587,9 +608,7 @@ export const AddCompany: React.FC = () => {
                 fontSize: FONT_SIZE.xxl,
                 fontWeight: 'Bold',
               }}
-            >
-              {t('companies.Company Branches')}
-            </h2>
+            ></h2>
             {branches.map((branch, index) => (
               <div key={index}>
                 <h2>Company Branch {index + 1}</h2>
@@ -674,15 +693,63 @@ export const AddCompany: React.FC = () => {
             }
             key="2"
           >
-            <BaseForm.Item
+            {services.map((service, index) => (
+              <div key={index}>
+                <BaseForm.Item
+                  label={<LableText>{t('companies.selectService')}</LableText>}
+                  name={['services', index, 'serviceId']}
+                  style={{ marginTop: '-1rem' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Select onChange={(e) => ChangeServieceHandler(index, e)}>
+                    {Dat?.map((service) => (
+                      <Option key={service.id} value={service.id}>
+                        {service.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('companies.selectSubService')}</LableText>}
+                  name={['services', index, 'subserviceId']}
+                  style={{ marginTop: '-1rem' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Select>
+                    {Datr?.map((subservices) => (
+                      <Option key={subservices.id} value={subservices.id}>
+                        {subservices.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </BaseForm.Item>
+              </div>
+            ))}
+            <Button
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => setServices([...services, { serviceId: '', subserviceId: '' }])}
+            >
+              {' '}
+              <CreateButtonText>{t('companies.Add Service')}</CreateButtonText>
+            </Button>
+            {/* <BaseForm.Item
               label={<LableText>{t('companies.selectService')}</LableText>}
-              name={['services', 0, 'services', 0, 'serviceId']}
+              name={['services', 0, 'serviceId']}
               style={{ marginTop: '-1rem' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeServieceHandler}>
+              <Select mode="multiple" onChange={(value) => changeServiceHandler(value as string[])}>
                 {Dat?.map((service) => (
                   <Option key={service.id} value={service.id}>
                     {service.name}
@@ -690,22 +757,52 @@ export const AddCompany: React.FC = () => {
                 ))}
               </Select>
             </BaseForm.Item>
-            <BaseForm.Item
-              label={<LableText>{t('companies.selectSubService')}</LableText>}
-              name={['services', 0, 'services', 0, 'subserviceId']}
-              style={{ marginTop: '-1rem' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Select>
-                {Datr?.map((subservices) => (
-                  <Option key={subservices.id} value={subservices.id}>
-                    {subservices?.name}
-                  </Option>
-                ))}
-              </Select>
-            </BaseForm.Item>
+            {selectedServices.map((serviceId, index) => (
+              <React.Fragment key={serviceId}>
+                {!tools[index]?.length && subServices[index]?.length > 0 && (
+                  <BaseForm.Item
+                    label={<LableText>{t('companies.selectSubService')}</LableText>}
+                    name={['services', 0, 'subserviceId']}
+                    style={{ marginTop: '-1rem' }}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                  >
+                    <Select>
+                      {subServices[index]?.map((subservice: any) => (
+                        <Option key={subservice.id} value={subservice.id}>
+                          {subservice?.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </BaseForm.Item>
+                )}
+                {!subServices[index]?.length && tools[index]?.length > 0 && (
+                  <BaseForm.Item
+                    label={<LableText>{t('companies.selectTool')}</LableText>}
+                    name={['toolIds', index]}
+                    style={{ marginTop: '-1rem' }}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                  >
+                    <Select>
+                      {tools[index]?.map((tool: any) => (
+                        <Option key={tool.id} value={tool.id}>
+                          {tool?.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </BaseForm.Item>
+                )}
+              </React.Fragment>
+            ))} */}
 
             {/* 
             {selectedService && (
@@ -762,6 +859,13 @@ export const AddCompany: React.FC = () => {
                   <a href={attachments[1]?.url} target="_blank" rel="noopener noreferrer">
                     {attachments[1]?.name}
                   </a>
+                  {attachments[1]?.reftype === '9' && (
+                    <img
+                      src={attachments[1]?.url}
+                      alt={attachments[1]?.name}
+                      style={{ width: '100px', height: '100px' }}
+                    />
+                  )}
                 </Space>
               ) : (
                 <>
@@ -824,6 +928,11 @@ export const AddCompany: React.FC = () => {
                   <a href={attachments[3]?.url} target="_blank" rel="noopener noreferrer">
                     {attachments[3]?.name}
                   </a>
+                  <img
+                    src={attachments[3]?.url}
+                    alt={attachments[3]?.name}
+                    style={{ width: '100px', height: '100px' }}
+                  />
                 </Space>
               ) : (
                 <>
@@ -843,13 +952,19 @@ export const AddCompany: React.FC = () => {
           </BaseForm.Item> */}
           <BaseForm.Item>
             <Button
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
               disabled={addCompany.isLoading || uploadImage.isLoading}
               onClick={() => onFinish(form.getFieldsValue())}
             >
               {addCompany.isLoading || uploadImage.isLoading ? (
                 <LoadingOutlined style={{ fontSize: FONT_SIZE.md }} spin />
               ) : (
-                t('common.submit')
+                <CreateButtonText>{t('common.submit')}</CreateButtonText>
               )}
             </Button>
           </BaseForm.Item>
