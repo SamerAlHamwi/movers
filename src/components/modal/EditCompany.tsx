@@ -9,6 +9,7 @@ import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { CreateButtonText, LableText, Text } from '../GeneralStyles';
+
 // import { Steps } from './CreateSliderImage';
 import { UploadDragger } from '../common/Upload/Upload';
 import { uploadAttachment } from '@app/services/Attachment';
@@ -71,8 +72,10 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   const [selectedSubService, setSelectedSubService] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
+
   const onOk = () => {
     form.submit();
+    onCancel();
   };
 
   const { refetch, isRefetching } = useQuery(['User', page, pageSize, refetchOnAddManager], () =>
@@ -419,7 +422,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
       companyProfilePhotoId: companyData?.companyProfile?.id,
       companyOwnerIdentityIds: [companyData?.companyOwnerIdentity[0]?.id],
       companyCommercialRegisterIds: [companyData?.companyCommercialRegister[0]?.id],
-      additionalAttachmentIds: [companyData?.companyProfile?.id],
+      additionalAttachmentIds: [companyData?.additionalAttachment[0]?.id],
       regionId: companyData?.region?.id,
     };
 
@@ -429,7 +432,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
     onEdit(updatedFormData);
     console.log('sdfghjdfghjk', updatedFormData);
 
-    navigate('/companies'); // Sending the updatedFormData when the submit button is pressed
+    // Sending the updatedFormData when the submit button is pressed
   };
   // const onFinish = (info: CompanyModal) => {
   //   const updatedFormData = {
@@ -466,7 +469,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('companies.addCompanyModalTitle')}
+          {t('companies.editeCompanyModalTitle')}
         </div>
       }
       onCancel={onCancel}
@@ -616,7 +619,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
 
               <BaseForm.Item
                 label={<LableText>{t('companies.CompanyPhoneNumber')}</LableText>}
-                name={['comapnyContact', 'phoneNumber']}
+                name={['companyContact', 'phoneNumber']}
                 style={{ marginTop: '-1rem' }}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -626,7 +629,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
               </BaseForm.Item>
               <BaseForm.Item
                 label={<LableText>{t('companies.CompanyEmail')}</LableText>}
-                name={['comapnyContact', 'emailAddress']}
+                name={['companyContact', 'emailAddress']}
                 style={{ marginTop: '-1rem' }}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -636,7 +639,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
               </BaseForm.Item>
               <BaseForm.Item
                 label={<LableText>{t('companies.website')}</LableText>}
-                name={['comapnyContact', 'webSite']}
+                name={['companyContact', 'webSite']}
                 style={{ marginTop: '-1rem' }}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -661,7 +664,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                   accept=".jpeg,.png,.jpg"
                   customRequest={({ file }) => {
                     const formData = new FormData();
-                    formData.append('RefType', '9');
+                    formData.append('RefType', '8');
                     formData.append('File', file);
                     uploadCompanyProfilePhoto.mutateAsync(formData);
                   }}
@@ -758,7 +761,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                 <div key={index}>
                   <BaseForm.Item
                     label={<LableText>{t('companies.selectService')}</LableText>}
-                    name={['services', index, 'name']}
+                    name={['services', index, 'serviceId']}
                     style={{ marginTop: '-1rem' }}
                   >
                     <Select onChange={(e) => ChangeServieceHandler(index, e)}>
@@ -771,7 +774,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                   </BaseForm.Item>
                   <BaseForm.Item
                     label={<LableText>{t('companies.selectSubService')}</LableText>}
-                    name={['services', index, 'services', 0, 'subserviceId']}
+                    name={['services', index, 'subserviceId']}
                     style={{ marginTop: '-1rem' }}
                   >
                     <Select>
@@ -838,12 +841,12 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                           objectFit: 'contain',
                         }}
                         src={
-                          urlAfterUpload !== ''
+                          uploadCompanyOwnerIdentity.isLoading
                             ? urlAfterUpload
-                            : companyData !== undefined
-                            ? companyData?.companyOwnerIdentity !== undefined
-                              ? companyData?.companyOwnerIdentity?.[0]?.url
-                              : ''
+                            : companyData !== undefined &&
+                              companyData.companyOwnerIdentity !== undefined &&
+                              companyData.companyOwnerIdentity.length > 0
+                            ? companyData.companyOwnerIdentity[companyData.companyOwnerIdentity.length - 1]?.url
                             : ''
                         }
                       />
@@ -895,12 +898,13 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                           objectFit: 'contain',
                         }}
                         src={
-                          urlAfterUpload !== ''
+                          uploadCompanyCommercialRegister.isLoading
                             ? urlAfterUpload
-                            : companyData !== undefined
-                            ? companyData?.companyCommercialRegister[0] !== undefined
-                              ? companyData?.companyCommercialRegister[0].url
-                              : ''
+                            : companyData !== undefined &&
+                              companyData.companyCommercialRegister !== undefined &&
+                              companyData.companyCommercialRegister.length > 0
+                            ? companyData.companyCommercialRegister[companyData.companyCommercialRegister.length - 1]
+                                ?.url
                             : ''
                         }
                       />
@@ -952,13 +956,22 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                           height: isDesktop || isTablet ? '42px' : '35px',
                           objectFit: 'contain',
                         }}
+                        // src={
+                        //   uploadAdditionalAttachment.isLoading
+                        //     ? urlAfterUpload
+                        //     : companyData !== undefined &&
+                        //       companyData.additionalAttachment !== undefined &&
+                        //       companyData.additionalAttachment.length > 0
+                        //     ? companyData.additionalAttachment[companyData?.additionalAttachment.length - 1]?.url
+                        //     : ''
+                        // }
                         src={
                           uploadAdditionalAttachment.isLoading
                             ? urlAfterUpload
                             : companyData !== undefined &&
                               companyData.additionalAttachment !== undefined &&
                               companyData.additionalAttachment.length > 0
-                            ? companyData.additionalAttachment[companyData?.additionalAttachment.length - 1]?.url
+                            ? companyData.additionalAttachment[companyData.additionalAttachment.length - 1]?.url
                             : ''
                         }
                       />

@@ -21,15 +21,15 @@ const createCompany = async (data: CompanyModal) => {
 };
 // eslint-disable-next-line
 const Updatce = async (data: CompanyModal) => {
-  return await httpApi.put(`${apiPrefix.users}/Update`, data);
+  return await httpApi.put(`${apiPrefix.companies}/Update`, data);
 };
 // eslint-disable-next-line
 const ActivatCe = async (id: number) => {
-  return await httpApi.post(`${apiPrefix.users}/Activate`, { id });
+  return await httpApi.post(`${apiPrefix.companies}/Activate`, { id });
 };
 // eslint-disable-next-line
 const DeActivatCCe = async (id: number) => {
-  return await httpApi.post(`${apiPrefix.users}/DeActivate`, { id });
+  return await httpApi.post(`${apiPrefix.companies}/DeActivate`, { id });
 };
 
 export { getAllCompanies, getcompany, createCompany, Updatce, Deletce, ActivatCe, DeActivatCCe };

@@ -197,7 +197,7 @@ export const Companies: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`managers.editManagerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`Companies.editeCompanySuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
