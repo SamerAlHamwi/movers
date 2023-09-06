@@ -76,6 +76,10 @@ const getAllChildAttributeChoices = async (id: string | undefined, page: number,
   );
 };
 
+const getChildAttributeChoice = async (id: number | undefined) => {
+  return await httpApi.get(`${apiPrefix.allAttributeChoices}/GetAll?ParentId=${id}&IsParent=false`);
+};
+
 const createChildAttributeChoice = async (data: SourceTypeModel) => {
   return await httpApi.post(`${apiPrefix.allAttributeChoices}/Create`, data);
 };
@@ -104,6 +108,7 @@ export {
   DeleteAttributeChoice,
   UpdateAttributeChoice,
   getAllChildAttributeChoices,
+  getChildAttributeChoice,
   createChildAttributeChoice,
   DeleteChildAttributeChoice,
   UpdateChildAttributeChoice,
