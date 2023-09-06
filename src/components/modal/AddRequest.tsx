@@ -28,10 +28,52 @@ import { Select, Option } from '../common/selects/Select/Select';
 import { getCountries, getCities } from '@app/services/locations';
 import { DatePicker } from '../common/pickers/DatePicker';
 import { Alert } from '../common/Alert/Alert';
+import { uploadAttachment } from '@app/services/Attachment';
+import { PlusOutlined } from '@ant-design/icons';
+import { Modal, Upload } from 'antd';
+import type { RcFile } from 'antd/es/upload';
+import type { UploadFile } from 'antd/es/upload/interface';
+
+const getBase64 = (file: RcFile): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
+const res: any = [];
+
+let requestData = {
+  sourceCityId: '',
+  sourceAddress: '',
+  sourceLongitude: 0,
+  sourceLatitude: 0,
+  moveAtUtc: null,
+
+  destinationCityId: '',
+  destinationAddress: '',
+  destinationLongitude: 0,
+  destinationLatitude: 0,
+  arrivalAtUtc: null,
+
+  requestForQuotationContacts: [{}],
+  serviceType: 0,
+  comment: '',
+  services: [],
+
+  sourceTypeId: '',
+  attributeForSourceTypeValues: [{}],
+  attributeChoiceAndAttachments: [
+    {
+      attributeChoiceId: null,
+      attachmentIds: [0],
+    },
+  ],
+};
 
 export const AddRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
@@ -66,7 +108,44 @@ export const AddRequest: React.FC = () => {
   const [sourceType, setSourceType] = useState('0');
   const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
   const [attributeChoiceItems, setAttributeChoiceItems] = useState<JSX.Element[]>([]);
-  const [imageUploads, setImageUploads] = useState<{ [key: number]: File[] }>({});
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [fileList, setFileList] = useState([]);
+  const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
+  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+
+  const handleCancel = () => setPreviewOpen(false);
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+  };
+
+  const uploadImage = useMutation((data: any) => uploadAttachment(data), {
+    onSuccess: (data: any) => {
+      if (data.data.success) {
+        setAttachmentIds((prevIds) => [...prevIds, data.data.result?.id]);
+        setPreviewImage(data.data.result?.url);
+      } else {
+        message.open({
+          content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
+        });
+      }
+    },
+    onError: (error: any) => {
+      message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
+    },
+  });
+
+  const handleChange = ({ fileList }: any) => {
+    setFileList(fileList);
+  };
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
@@ -196,33 +275,6 @@ export const AddRequest: React.FC = () => {
     return serviceNode;
   });
 
-  const treeDataSourceType: DataNode[] = attributeForSourceTypesData?.data?.result?.items?.map((sourceType: any) => {
-    const sourceTypeNode: DataNode = {
-      title: (
-        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <span style={{ fontWeight: 'bold' }}>{sourceType?.name}</span>
-        </span>
-      ),
-      key: `onlySource attributeForSourceType${sourceType?.id}`,
-      children: [],
-    };
-    if (sourceType?.attributeChoices?.length > 0) {
-      sourceTypeNode.children = sourceType.attributeChoices.map((parentAttributeChoice: any) => {
-        const parentAttributeChoiceNode = {
-          title: (
-            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              {parentAttributeChoice?.name}
-            </span>
-          ),
-          key: `sourceWithAttribute attributeForSourceType${sourceType?.id} parentAttributeChoice${parentAttributeChoice?.id}`,
-          children: [],
-        };
-        if (parentAttributeChoice) return parentAttributeChoiceNode;
-      });
-    }
-    return sourceTypeNode;
-  });
-
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
@@ -344,6 +396,7 @@ export const AddRequest: React.FC = () => {
     extractServicesIds(requestServicesArray);
 
     const selectedChoicesArray = Object.entries(selectedChoices);
+
     const attributeForSourceTypeValues = selectedChoicesArray.map(([sourceTypeId, choice]: any) => {
       const sourceTypeIdNumber = parseInt(sourceTypeId);
       const parts = choice.split(' ');
@@ -354,7 +407,26 @@ export const AddRequest: React.FC = () => {
       };
     });
 
-    const requestData = {
+    const formDataArray = fileList.map((file: any) => {
+      const formData = new FormData();
+      formData.append('RefType', '2');
+      formData.append('file', file.originFileObj);
+      return formData;
+    });
+
+    const uploadPromises = formDataArray.map((formData: any) => {
+      return uploadImage.mutateAsync(formData);
+    });
+
+    Promise.all(uploadPromises)
+      .then(() => {
+        setAttachmentIdsChanged(true);
+      })
+      .catch((error) => {
+        console.error('File upload error:', error);
+      });
+
+    requestData = {
       sourceCityId: cityId.source,
       sourceAddress: form.getFieldValue('sourceAddress'),
       sourceLongitude: sourcePosition.lng,
@@ -374,27 +446,29 @@ export const AddRequest: React.FC = () => {
 
       sourceTypeId: selectedSourceType,
       attributeForSourceTypeValues,
+      attributeChoiceAndAttachments: [
+        {
+          attributeChoiceId: null,
+          attachmentIds: attachmentIds,
+        },
+      ],
     };
-    createRequestMutation.mutateAsync(requestData);
   };
 
-  const handleImageUpload = (sourceTypeId: number, files: FileList | null) => {
-    if (files && files.length > 0) {
-      const uploadedFiles = Array.from(files);
-      setImageUploads((prevImageUploads) => ({
-        ...prevImageUploads,
-        [sourceTypeId]: [...(prevImageUploads[sourceTypeId] || []), ...uploadedFiles],
-      }));
+  useEffect(() => {
+    if (attachmentIdsChanged) {
+      requestData.attributeChoiceAndAttachments[0].attachmentIds = attachmentIds;
+      createRequestMutation.mutateAsync(requestData);
+      setAttachmentIdsChanged(false);
     }
-  };
+  }, [attachmentIdsChanged]);
 
-  const removeImage = (sourceTypeId: number, index: number) => {
-    setImageUploads((prevImageUploads) => {
-      const updatedUploads = { ...prevImageUploads };
-      updatedUploads[sourceTypeId] = updatedUploads[sourceTypeId].filter((_, i) => i !== index);
-      return updatedUploads;
-    });
-  };
+  const uploadButton = (
+    <div>
+      <PlusOutlined />
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
 
   return (
     <Card title={t('addRequest.addRequest')} padding="1.25rem 1.25rem 1.25rem">
@@ -464,7 +538,6 @@ export const AddRequest: React.FC = () => {
               </h4>
             );
           }
-
           if (fieldName === 'sourceLocation') {
             return (
               <div
@@ -535,7 +608,6 @@ export const AddRequest: React.FC = () => {
               </div>
             );
           }
-
           if (isCheckbox) {
             return (
               <Row
@@ -619,7 +691,6 @@ export const AddRequest: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                   ]}
-                  // style={{ width: '46%', margin: '0 2%', display: 'inline-block' }}
                   style={{ width: '40%', margin: '0 2%', display: 'inline-block' }}
                 >
                   <Input />
@@ -703,10 +774,6 @@ export const AddRequest: React.FC = () => {
                 <Select
                   showSearch
                   optionFilterProp="children"
-                  // filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                  // filterSort={(optionA: any, optionB: any) =>
-                  //   optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                  // }
                   onChange={(e: any) => {
                     setSelectedSourceType(e);
                     setSourceType('1');
@@ -808,18 +875,13 @@ export const AddRequest: React.FC = () => {
                               getChildAttributeChoice(parentAttributeChoiceId)
                                 .then((data) => {
                                   const items = data?.data?.result?.items || [];
+
                                   const itemElements = items.map((item: any) => (
                                     <div key={item.id} style={{ margin: '4rem 1rem 5rem' }}>
                                       <p>{item.name}</p>
-                                      <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={(e) => {
-                                          // handleImageUpload(e, item.id)
-                                        }}
-                                      />
                                     </div>
                                   ));
+
                                   setAttributeChoiceItems((prevAttributeChoiceItems) => ({
                                     ...prevAttributeChoiceItems,
                                     [sourceTypeId]: itemElements,
@@ -846,6 +908,19 @@ export const AddRequest: React.FC = () => {
                         </div>
                       </Card>
                     ))}
+                    <Upload
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      accept=".jpeg,.png,.jpg"
+                      listType="picture-card"
+                      fileList={fileList}
+                      onPreview={handlePreview}
+                      onChange={handleChange}
+                    >
+                      {fileList.length >= 8 ? null : uploadButton}
+                    </Upload>
+                    <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                    </Modal>
                   </div>
                 ) : (
                   ''
