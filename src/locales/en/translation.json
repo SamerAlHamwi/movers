@@ -235,6 +235,8 @@
     "Adress": "Adress",
     "Add Service":"Add Service",
     "PhoneNumber": "Phone Number",
+   "editeCompanyModalTitle":"Edit Company",
+   "editeCompanySuccessMessage":"Edit Company Info Successfully",
 
     "Email": "Email",
     "addCompanyModalTitle": "Add Company",
