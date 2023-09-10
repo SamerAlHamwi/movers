@@ -8,7 +8,7 @@
     "@craco/craco": "^6.1.2",
     "@fontsource/cairo": "^4.5.13",
     "@fontsource/lato": "^4.5.10",
-    "@react-google-maps/api": "^2.19.2",
+    "@react-google-maps/api": "^2.7.0",
     "@reduxjs/toolkit": "^1.7.1",
     "antd": "^4.22.4",
     "axios": "^0.24.0",
