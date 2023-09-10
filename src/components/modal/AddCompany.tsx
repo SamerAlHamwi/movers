@@ -22,7 +22,7 @@ import {
   MinusOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
-import { Button, Input, Tabs } from 'antd';
+import { Button, Input, Tabs, TreeSelect } from 'antd';
 import { Space, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -85,6 +85,18 @@ export const AddCompany: React.FC = () => {
     updatedBranches.splice(index, 1);
     setBranches(updatedBranches);
   };
+  // Define a state variable to keep track of the active tab
+  const [activeTab, setActiveTab] = useState('1');
+
+  // Function to navigate to the next tab
+  const next = () => {
+    setActiveTab((parseInt(activeTab) + 1).toString());
+  };
+
+  // Function to navigate to the previous tab
+  const prev = () => {
+    setActiveTab((parseInt(activeTab) - 1).toString());
+  };
 
   const handleBranchChange = (index: number, field: string, value: string) => {
     const updatedBranches = [...branches];
@@ -109,6 +121,31 @@ export const AddCompany: React.FC = () => {
       enabled: Dat === undefined,
     },
   );
+
+  const [uploadSuccess, setUploadSuccess] = useState(false);
+  const [uploadSucces, setUploadSucces] = useState(false);
+  const [uploadSucce, setUploadSucce] = useState(false);
+  const [uploadSucc, setUploadSucc] = useState(false);
+  const [uploadedPhotoPR, setUploadedPhotoPR] = useState('');
+  const [uploadedPhotoid, setUploadedPhotoid] = useState('');
+  const [uploadedPhotoreg, setUploadedPhotoreg] = useState('');
+  const [uploadedPhotoidin, setUploadedPhotoidin] = useState('');
+  const handleUploadSuccess = (photoUrl: any) => {
+    setUploadSuccess(true);
+    setUploadedPhotoPR(photoUrl);
+  };
+  const handleUploadSucces = (photoUrl: any) => {
+    setUploadSucces(true);
+    setUploadedPhotoid(photoUrl);
+  };
+  const handleUploadSucce = (photoUrl: any) => {
+    setUploadSucce(true);
+    setUploadedPhotoreg(photoUrl);
+  };
+  const handleUploadSucc = (photoUrl: any) => {
+    setUploadSucc(true);
+    setUploadedPhotoidin(photoUrl);
+  };
 
   const country = useQuery(
     ['Countries'],
@@ -245,6 +282,11 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
+  const removeService = (index: any) => {
+    const updatedServices = [...services];
+    updatedServices.splice(index, 1);
+    setServices(updatedServices);
+  };
 
   const ChangeCityHandler = (e: any) => {
     setCityId(e);
@@ -259,12 +301,15 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
-
+  const isServiceSelected = (serviceId: any) => {
+    return services.some((service) => service.serviceId === serviceId);
+  };
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
       .then((response) => {
         const photoId = response.data.result.id;
         const refType = response.data.result.refType;
+        const photoUrl = response.data.result.url;
         console.log('sdfghjk', refType);
         console.log('sdfghjk', photoId);
         setFormData((prevFormData) => {
@@ -275,21 +320,25 @@ export const AddCompany: React.FC = () => {
               ...updatedFormData,
               companyOwnerIdentityIds: [...updatedFormData.companyOwnerIdentityIds, photoId],
             };
+            handleUploadSucces(photoUrl);
           } else if (refType === 10) {
             updatedFormData = {
               ...updatedFormData,
               companyCommercialRegisterIds: [...updatedFormData.companyCommercialRegisterIds, photoId],
             };
+            handleUploadSucce(photoUrl);
           } else if (refType === 11) {
             updatedFormData = {
               ...updatedFormData,
               additionalAttachmentIds: [...updatedFormData.additionalAttachmentIds, photoId],
             };
+            handleUploadSucc(photoUrl);
           } else if (refType === 8) {
             updatedFormData = {
               ...updatedFormData,
               companyProfilePhotoId: photoId,
             };
+            handleUploadSuccess(photoUrl);
           }
 
           console.log('Updated FormData:', updatedFormData);
@@ -306,6 +355,7 @@ export const AddCompany: React.FC = () => {
       {
         name: 'string',
         bio: 'string',
+        address: 'string',
         language: 'en',
       },
     ],
@@ -332,12 +382,15 @@ export const AddCompany: React.FC = () => {
     companyOwnerIdentityIds: [0],
     companyCommercialRegisterIds: [0],
     additionalAttachmentIds: [0],
+    availableCitiesIds: [],
     userDto: {
       dialCode: '963',
       phoneNumber: '0997829849',
       password: '865fghjk',
     },
     isActive: true,
+    comment: 'string',
+    serviceType: 1,
   };
 
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
@@ -368,11 +421,14 @@ export const AddCompany: React.FC = () => {
     addCompany.mutate(updatedFormData);
     navigate('/companies'); // Sending the updatedFormData when the submit button is pressed
   };
+  const handleTabChange = (key: any) => {
+    setActiveTab(key);
+  };
 
   return (
     <div>
       <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
-        <Tabs defaultActiveKey="1">
+        <Tabs activeKey={activeTab} onChange={handleTabChange} defaultActiveKey="1">
           <TabPane
             tab={
               <span
@@ -409,6 +465,16 @@ export const AddCompany: React.FC = () => {
               <Input />
             </BaseForm.Item>
             <BaseForm.Item
+              name={['translations', 0, 'address']}
+              label={<LableText>{t('companies.addressA')}</LableText>}
+              style={{ marginTop: '-1rem' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Input />
+            </BaseForm.Item>
+            <BaseForm.Item
               name={['translations', 1, 'name']}
               label={<LableText>{t('companies.name')}</LableText>}
               style={{ marginTop: '-1rem' }}
@@ -429,7 +495,7 @@ export const AddCompany: React.FC = () => {
               <Input />
             </BaseForm.Item>
             <BaseForm.Item
-              name={['address']}
+              name={['translations', 1, 'address']}
               label={<LableText>{t('companies.address')}</LableText>}
               style={{ marginTop: '-1rem' }}
               rules={[
@@ -553,9 +619,15 @@ export const AddCompany: React.FC = () => {
                 </Space>
               ) : (
                 <>
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined />
-                  </p>
+                  {uploadSuccess ? (
+                    <div>
+                      <img src={uploadedPhotoPR} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
+                    </div>
+                  ) : (
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined />
+                    </p>
+                  )}
                 </>
               )}
             </UploadDragger>
@@ -676,6 +748,30 @@ export const AddCompany: React.FC = () => {
             ))}
             {/* <Button style={{ marginBottom: '1px' }} icon={<PlusOutlined />} onClick={addBranch}></Button> */}
             {/* <Button icon={<PlusOutlined />} onClick={addBranch}></Button> */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
+              <Button
+                type="primary"
+                style={{
+                  margin: '1rem 1rem 1rem 0',
+                  width: 'auto',
+                  height: 'auto',
+                }}
+                onClick={() => prev()}
+              >
+                <CreateButtonText> {t('common.Previous')}</CreateButtonText>
+              </Button>
+              <Button
+                type="primary"
+                style={{
+                  margin: '1rem 1rem 1rem 0',
+                  width: 'auto',
+                  height: 'auto',
+                }}
+                onClick={() => next()}
+              >
+                <CreateButtonText>{t('common.next')}</CreateButtonText>
+              </Button>
+            </div>
           </TabPane>
           <TabPane
             tab={
@@ -695,6 +791,19 @@ export const AddCompany: React.FC = () => {
           >
             {services.map((service, index) => (
               <div key={index}>
+                {index !== 0 && (
+                  <Button
+                    type="primary"
+                    style={{
+                      margin: '2rem 2rem 2rem 0',
+                      width: 'auto',
+                      height: 'auto',
+                    }}
+                    onClick={() => removeService(index)}
+                  >
+                    <CreateButtonText>{t('companies.Remove')}</CreateButtonText>
+                  </Button>
+                )}
                 <BaseForm.Item
                   label={<LableText>{t('companies.selectService')}</LableText>}
                   name={['services', index, 'serviceId']}
@@ -705,7 +814,7 @@ export const AddCompany: React.FC = () => {
                 >
                   <Select onChange={(e) => ChangeServieceHandler(index, e)}>
                     {Dat?.map((service) => (
-                      <Option key={service.id} value={service.id}>
+                      <Option key={service.id} value={service.id} disabled={isServiceSelected(service.id)}>
                         {service.name}
                       </Option>
                     ))}
@@ -715,9 +824,6 @@ export const AddCompany: React.FC = () => {
                   label={<LableText>{t('companies.selectSubService')}</LableText>}
                   name={['services', index, 'subserviceId']}
                   style={{ marginTop: '-1rem' }}
-                  rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                  ]}
                 >
                   <Select>
                     {Datr?.map((subservices) => (
@@ -738,97 +844,32 @@ export const AddCompany: React.FC = () => {
               }}
               onClick={() => setServices([...services, { serviceId: '', subserviceId: '' }])}
             >
-              {' '}
               <CreateButtonText>{t('companies.Add Service')}</CreateButtonText>
             </Button>
-            {/* <BaseForm.Item
-              label={<LableText>{t('companies.selectService')}</LableText>}
-              name={['services', 0, 'serviceId']}
-              style={{ marginTop: '-1rem' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Select mode="multiple" onChange={(value) => changeServiceHandler(value as string[])}>
-                {Dat?.map((service) => (
-                  <Option key={service.id} value={service.id}>
-                    {service.name}
-                  </Option>
-                ))}
-              </Select>
-            </BaseForm.Item>
-            {selectedServices.map((serviceId, index) => (
-              <React.Fragment key={serviceId}>
-                {!tools[index]?.length && subServices[index]?.length > 0 && (
-                  <BaseForm.Item
-                    label={<LableText>{t('companies.selectSubService')}</LableText>}
-                    name={['services', 0, 'subserviceId']}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                  >
-                    <Select>
-                      {subServices[index]?.map((subservice: any) => (
-                        <Option key={subservice.id} value={subservice.id}>
-                          {subservice?.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </BaseForm.Item>
-                )}
-                {!subServices[index]?.length && tools[index]?.length > 0 && (
-                  <BaseForm.Item
-                    label={<LableText>{t('companies.selectTool')}</LableText>}
-                    name={['toolIds', index]}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                  >
-                    <Select>
-                      {tools[index]?.map((tool: any) => (
-                        <Option key={tool.id} value={tool.id}>
-                          {tool?.name}
-                        </Option>
-                      ))}
-                    </Select>
-                  </BaseForm.Item>
-                )}
-              </React.Fragment>
-            ))} */}
-
-            {/* 
-            {selectedService && (
-              <>
-                <P1>{t('companies.selectSubService')}</P1>
-                <Select placeholder={t('companies.selectSubService')} value={selectedSubService}>
-                  {Dat?.map((subService) => (
-                    <Option key={subService.id} value={subService.id}>
-                      {subService.name}
-                    </Option>
-                  ))}
-                </Select>
-              </>
-            )} */}
-            {/* 
-      {selectedSubService && (
-        <>
-          <P1>{t('companies.selectTool')}</P1>
-          <Select placeholder={t('companies.selectTool')}>
-            {Tool?.map((tool) => (
-              <Option key={tool.id} value={tool.id}>
-                {tool.name}
-              </Option>
-            ))}
-          </Select>
-        </> */}
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '2rem' }}>
+              <Button
+                type="primary"
+                style={{
+                  margin: '1rem 1rem 1rem 0',
+                  width: 'auto',
+                  height: 'auto',
+                }}
+                onClick={() => prev()}
+              >
+                <CreateButtonText> {t('common.Previous')}</CreateButtonText>
+              </Button>
+              <Button
+                type="primary"
+                style={{
+                  margin: '1rem 1rem 1rem 0',
+                  width: 'auto',
+                  height: 'auto',
+                }}
+                onClick={() => next()}
+              >
+                <CreateButtonText>{t('common.next')}</CreateButtonText>
+              </Button>
+            </div>
           </TabPane>
           <TabPane
             tab={
@@ -869,9 +910,15 @@ export const AddCompany: React.FC = () => {
                 </Space>
               ) : (
                 <>
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined /> <FilePdfTwoTone />
-                  </p>
+                  {uploadSucces ? (
+                    <div>
+                      <img src={uploadedPhotoid} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
+                    </div>
+                  ) : (
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined /> <FilePdfTwoTone />
+                    </p>
+                  )}
                 </>
               )}
             </UploadDragger>
@@ -900,9 +947,15 @@ export const AddCompany: React.FC = () => {
                 </Space>
               ) : (
                 <>
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined /> <FilePdfTwoTone />
-                  </p>
+                  {uploadSucce ? (
+                    <div>
+                      <img src={uploadedPhotoreg} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
+                    </div>
+                  ) : (
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined /> <FilePdfTwoTone />
+                    </p>
+                  )}
                 </>
               )}
             </UploadDragger>
@@ -936,21 +989,52 @@ export const AddCompany: React.FC = () => {
                 </Space>
               ) : (
                 <>
-                  <p className="ant-upload-drag-icon">
-                    <InboxOutlined /> <FilePdfTwoTone />
-                  </p>
+                  {uploadSucc ? (
+                    <div>
+                      <img src={uploadedPhotoidin} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
+                    </div>
+                  ) : (
+                    <p className="ant-upload-drag-icon">
+                      <InboxOutlined /> <FilePdfTwoTone />
+                    </p>
+                  )}
                 </>
               )}
             </UploadDragger>
-          </TabPane>
-        </Tabs>
-        <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
-          {/* <BaseForm.Item>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}>
+              {/* <BaseForm.Item>
             <Button onClick={onCancel} style={{ marginRight: '1rem' }}>
               {t('common.cancel')}
             </Button>
           </BaseForm.Item> */}
-          <BaseForm.Item>
+              <BaseForm.Item>
+                <Button
+                  type="primary"
+                  style={{
+                    margin: '1rem 1rem 1rem 0',
+                    width: 'auto',
+                    height: 'auto',
+                  }}
+                  disabled={addCompany.isLoading || uploadImage.isLoading}
+                  onClick={() => onFinish(form.getFieldsValue())}
+                >
+                  {addCompany.isLoading || uploadImage.isLoading ? (
+                    <LoadingOutlined style={{ fontSize: FONT_SIZE.md }} spin />
+                  ) : (
+                    <CreateButtonText>{t('common.submit')}</CreateButtonText>
+                  )}
+                </Button>
+              </BaseForm.Item>
+            </div>
+          </TabPane>
+        </Tabs>
+        {/* <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '2rem' }}> */}
+        {/* <BaseForm.Item>
+            <Button onClick={onCancel} style={{ marginRight: '1rem' }}>
+              {t('common.cancel')}
+            </Button>
+          </BaseForm.Item> */}
+        {/* <BaseForm.Item>
             <Button
               type="primary"
               style={{
@@ -968,7 +1052,7 @@ export const AddCompany: React.FC = () => {
               )}
             </Button>
           </BaseForm.Item>
-        </div>
+        </div> */}
       </BaseForm>
     </div>
   );
