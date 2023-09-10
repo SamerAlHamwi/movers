@@ -339,6 +339,10 @@ export const AddRequest: React.FC = () => {
       }),
   );
 
+  console.log(createRequestMutation.isLoading);
+  console.log(uploadImage.isLoading);
+  console.log(createRequestMutation.isLoading && uploadImage.isLoading);
+
   const onFinish = async (values: any) => {
     const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
       form.getFieldValue('phoneNumberSource'),
@@ -973,6 +977,7 @@ export const AddRequest: React.FC = () => {
                 height: 'auto',
               }}
               htmlType="submit"
+              loading={createRequestMutation.isLoading || uploadImage.isLoading}
             >
               Done
             </Button>
