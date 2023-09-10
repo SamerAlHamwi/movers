@@ -94,6 +94,8 @@ export type translation = {
   bio?: string;
   description?: string;
   language: LanguageType;
+  address?: string;
+
 };
 
 export interface ProductInitalModeDto
@@ -115,7 +117,7 @@ export interface CompanyModal {
   id?: number;
   translations: translation[];
   services: Service[];
-  address: string;
+  address?: string;
   regionId?: number;
   
   companyContact?: CompanyContact;
@@ -125,11 +127,15 @@ export interface CompanyModal {
   companyOwnerIdentityIds?:any;
   companyCommercialRegisterIds?:any;
   additionalAttachmentIds?: any;
+  availableCitiesIds?: any;
   userDto?: UserDto;
   isActive: boolean;
   companyOwnerIdentity?: any;
   companyCommercialRegister?: any;
   additionalAttachment?: any;
+  comment?: "string",
+  serviceType?: 1
+
 }
 
 
