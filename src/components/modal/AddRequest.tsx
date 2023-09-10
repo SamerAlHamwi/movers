@@ -188,46 +188,46 @@ export const AddRequest: React.FC = () => {
   };
 
   const steps = [
-    // {
-    //   title: 'Contact',
-    //   content: [
-    //     'Source',
-    //     'firstNameContactSource',
-    //     'lastNameContactSource',
-    //     'phoneNumberSource',
-    //     'isCallAvailableSource',
-    //     'isWhatsAppAvailableSource',
-    //     'isTelegramAvailableSource',
-    //     'Destination',
-    //     'firstNameContactDestination',
-    //     'lastNameContactDestination',
-    //     'phoneNumberDestination',
-    //     'isCallAvailableDestination',
-    //     'isWhatsAppAvailableDestination',
-    //     'isTelegramAvailableDestination',
-    //   ],
-    // },
-    // {
-    //   title: 'Location',
-    //   content: [
-    //     'Source',
-    //     'sourceCountry',
-    //     'sourceCity',
-    //     'sourceAddress',
-    //     'moveAtUtc',
-    //     'sourceLocation',
-    //     'Destination',
-    //     'destinationCountry',
-    //     'destinationCity',
-    //     'destinationAddress',
-    //     'arrivalAtUtc',
-    //     'destinationLocation',
-    //   ],
-    // },
-    // {
-    //   title: 'Services',
-    //   content: ['serviceType', 'services', 'comment'],
-    // },
+    {
+      title: 'Contact',
+      content: [
+        'Source',
+        'firstNameContactSource',
+        'lastNameContactSource',
+        'phoneNumberSource',
+        'isCallAvailableSource',
+        'isWhatsAppAvailableSource',
+        'isTelegramAvailableSource',
+        'Destination',
+        'firstNameContactDestination',
+        'lastNameContactDestination',
+        'phoneNumberDestination',
+        'isCallAvailableDestination',
+        'isWhatsAppAvailableDestination',
+        'isTelegramAvailableDestination',
+      ],
+    },
+    {
+      title: 'Location',
+      content: [
+        'Source',
+        'sourceCountry',
+        'sourceCity',
+        'sourceAddress',
+        'moveAtUtc',
+        'sourceLocation',
+        'Destination',
+        'destinationCountry',
+        'destinationCity',
+        'destinationAddress',
+        'arrivalAtUtc',
+        'destinationLocation',
+      ],
+    },
+    {
+      title: 'Services',
+      content: ['serviceType', 'services', 'comment'],
+    },
     {
       title: 'SourceType',
       content: ['sourceTypeId', 'attributeForSourceTypeValues', 'attributeChoiceAndAttachments'],
@@ -242,7 +242,7 @@ export const AddRequest: React.FC = () => {
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: `withService service${service?.id}`,
+      key: `service${service?.id}`,
       children: [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
@@ -255,7 +255,7 @@ export const AddRequest: React.FC = () => {
               {subService?.name}
             </span>
           ),
-          key: `withSub service${service?.id} sub${subService?.id}`,
+          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
@@ -339,6 +339,10 @@ export const AddRequest: React.FC = () => {
       }),
   );
 
+  console.log(createRequestMutation.isLoading);
+  console.log(uploadImage.isLoading);
+  console.log(createRequestMutation.isLoading && uploadImage.isLoading);
+
   const onFinish = async (values: any) => {
     const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
       form.getFieldValue('phoneNumberSource'),
@@ -370,28 +374,34 @@ export const AddRequest: React.FC = () => {
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
+        console.log(parts[0]);
+
         if (parts[0] == 'withTool') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: parseInt(parts[3].replace('tool', '')),
           };
-        } else if (parts[0] == 'withSub') {
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: null,
           };
-        } else if (parts[0] == 'withService') {
-          result = {
-            serviceId: parseInt(parts[1].replace('service', '')),
-            subServiceId: null,
-            toolId: null,
-          };
+          requestServices.push(result);
         }
-        requestServices.push(result);
+        // else if (parts[0] == 'withService') {
+        //   result = {
+        //     serviceId: parseInt(parts[1].replace('service', '')),
+        //     subServiceId: null,
+        //     toolId: null,
+        //   };
+        // }
+
         return result;
       });
+      console.log(requestServices);
     }
     extractServicesIds(requestServicesArray);
 
@@ -827,6 +837,8 @@ export const AddRequest: React.FC = () => {
                       onCheck={(checkedKeysValue: any) => {
                         for (const key of checkedKeysValue) {
                           if (!requestServicesArray.includes(key)) {
+                            console.log(key);
+
                             requestServicesArray.push(key);
                           }
                         }
@@ -965,6 +977,7 @@ export const AddRequest: React.FC = () => {
                 height: 'auto',
               }}
               htmlType="submit"
+              loading={createRequestMutation.isLoading || uploadImage.isLoading}
             >
               Done
             </Button>
