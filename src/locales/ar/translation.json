@@ -468,6 +468,7 @@
     "DestinationLocation": "موقع الوجهة",
     "country": "البلد",
     "city": "المدينة",
+    "date": "التاريخ",
     "sourceAddress": "العنوان",
     "destinationAddress": "العنوان",
     "moveAtUtc": "وقت الإنطلاق",

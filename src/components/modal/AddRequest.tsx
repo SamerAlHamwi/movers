@@ -850,7 +850,7 @@ export const AddRequest: React.FC = () => {
               <BaseForm.Item
                 key={index}
                 name={fieldName}
-                label={<LableText>{t('addRequest.city')}</LableText>}
+                label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}

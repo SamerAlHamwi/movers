@@ -472,6 +472,7 @@
     "DestinationLocation": "Destination Location",
     "country": "Country",
     "city": "City",
+    "date": "date",
     "sourceAddress": "Address",
     "destinationAddress": "Address",
     "moveAtUtc": "Move Time",
