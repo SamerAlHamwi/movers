@@ -232,6 +232,7 @@
   "companies": {
     "companiesList": "قائمة الشركات",
     "CountryName": "اسم البلد",
+    "selectTool":"حدد أداة",
     "CityName": "اسم المدينة",
     "addressA": " العنوان بالعربية ",
     "address": "العنوان بالإنكليزية ",
