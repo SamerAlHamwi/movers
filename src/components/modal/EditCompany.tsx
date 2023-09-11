@@ -269,15 +269,15 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
-  // const uploadImage = useMutation((data: FormData) =>
-  //   uploadAttachment(data)
-  //     .then((data) => {
-  //       data.data.success && (setAttachmentId(data.data.result?.id), setUrlAfterUpload(data.data.result?.url));
-  //     })
-  //     .catch((error) => {
-  //       message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-  //     }),
-  // );
+  const uploadImage = useMutation((data: FormData) =>
+    uploadAttachment(data)
+      .then((data) => {
+        // data.data.success && (setAttachmentId(data.data.result?.id), setUrlAfterUpload(data.data.result?.url));
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
+      }),
+  );
   const uploadCompanyProfilePhoto = useMutation<void, Error, FormData>(
     'uploadCompanyProfilePhoto',
     (data: FormData) => {

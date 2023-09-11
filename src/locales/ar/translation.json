@@ -265,7 +265,7 @@
     " Uploadfiles (copy of the company's ID)": "صورة هوية لمالك الشركة",
     "Upload files (Commercial Register)": "سجل الشركة التجاري",
     "Upload additional  files (3 maximum)": "ملفات إضافية عللى الاكثر 3 ملفات",
-    
+
     "Regionname": "اسم المنطقة",
     " Profile": "صورة الشركة",
     "deleteCompanySuccessMessage": " تم حذف الشركة بنجاح",
@@ -273,7 +273,7 @@
     "selectSubService": "حدد خدمة فرعية",
     "PhoneNumber": "رقم الهاتف",
     "CompanydialCode": "الرمز الدولي",
-    "User information": "معلومات المستخدم",
+    "Userinformation": "معلومات المستخدم",
 
     "password": "كلمة المرور",
     "activateManagerConfirm": "تفعيل الشركة",
