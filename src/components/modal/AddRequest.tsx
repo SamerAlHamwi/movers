@@ -327,7 +327,7 @@ export const AddRequest: React.FC = () => {
       .then((data) => {
         data.data?.success &&
           message.open({
-            content: <Alert message={t('requests.deleteRequestSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('requests.addRequestSuccessMessage')} type={`success`} showIcon />,
           });
         requestServicesArray = [];
       })
@@ -482,6 +482,47 @@ export const AddRequest: React.FC = () => {
 
   return (
     <Card title={t('addRequest.addRequest')} padding="1.25rem 1.25rem 1.25rem">
+      <Row justify={'end'} style={{ width: '100%' }}>
+        {current > 0 && (
+          <Button
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => prev()}
+          >
+            {t('common.Previous')}
+          </Button>
+        )}
+        {current < steps.length - 1 && (
+          <Button
+            type="primary"
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => next()}
+          >
+            <CreateButtonText>{t('common.next')}</CreateButtonText>
+          </Button>
+        )}
+        {current === steps.length - 1 && (
+          <Button
+            type="primary"
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            htmlType="submit"
+            loading={createRequestMutation.isLoading || uploadImage.isLoading}
+          >
+            Done
+          </Button>
+        )}
+      </Row>
       <Steps current={current} style={{ margin: '10px 10px 30px 0', padding: '0px 40px' }}>
         {steps.map((step, index) => (
           <Step
@@ -604,7 +645,6 @@ export const AddRequest: React.FC = () => {
                       }
                 }
               >
-                {/* <h4 style={{ marginBottom: '2rem', fontWeight: '700' }}>{t(`addRequest.DestinationLocation`)}:</h4> */}
                 <div style={{ width: '100%', height: '400px' }}>
                   <GoogleMap
                     center={centerDestination}
@@ -941,48 +981,6 @@ export const AddRequest: React.FC = () => {
             );
           }
         })}
-
-        <Row justify={'end'}>
-          {current > 0 && (
-            <Button
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => prev()}
-            >
-              {t('common.Previous')}
-            </Button>
-          )}
-          {current < steps.length - 1 && (
-            <Button
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => next()}
-            >
-              <CreateButtonText>{t('common.next')}</CreateButtonText>
-            </Button>
-          )}
-          {current === steps.length - 1 && (
-            <Button
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              htmlType="submit"
-              loading={createRequestMutation.isLoading || uploadImage.isLoading}
-            >
-              Done
-            </Button>
-          )}
-        </Row>
       </BaseForm>
     </Card>
   );

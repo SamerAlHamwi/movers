@@ -209,7 +209,7 @@ export const Requests: React.FC = () => {
       title: <Header>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
-        <Space>
+        <Space style={{ display: 'grid' }}>
           {record?.map((service: any) => (
             <Tag key={service?.id}>{service?.name}</Tag>
           ))}
@@ -223,7 +223,7 @@ export const Requests: React.FC = () => {
         return <>{record?.name}</>;
       },
     },
-    { title: <Header>{t('requests.status')}</Header>, dataIndex: 'status' },
+    // { title: <Header>{t('requests.status')}</Header>, dataIndex: 'status' },
     {
       title: <Header>{t('requests.details')}</Header>,
       dataIndex: 'details',
@@ -251,7 +251,23 @@ export const Requests: React.FC = () => {
         );
       },
     },
-    { title: <Header>{t('requests.comment')}</Header>, dataIndex: 'comment' },
+    {
+      title: <Header>{t('requests.comment')}</Header>,
+      dataIndex: 'comment',
+      render: (text: string) => (
+        <div
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'break-spaces',
+            textAlign: 'center',
+          }}
+        >
+          {text}
+        </div>
+      ),
+    },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
