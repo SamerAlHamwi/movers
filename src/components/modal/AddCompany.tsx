@@ -391,7 +391,7 @@ export const AddCompany: React.FC = () => {
         isForBranchCompany: false,
       },
       userDto: {
-        dialCode: form.getFieldValue(['userDto', 'dialCode']),
+        dialCode: '+963',
         phoneNumber: form.getFieldValue(['userDto', 'phoneNumber']),
         password: form.getFieldValue(['userDto', 'password']),
       },
@@ -742,16 +742,6 @@ export const AddCompany: React.FC = () => {
             >
               {t('companies.Userinformation')}
             </h2>
-            <BaseForm.Item
-              name={['userDto', 'dialCode']}
-              label={<LableText>{t('companies.CompanydialCode')}</LableText>}
-              style={{ width: '50%', margin: 'auto' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Input />
-            </BaseForm.Item>
             <BaseForm.Item
               name={['userDto', 'phoneNumber']}
               label={<LableText>{t('companies.PhoneNumber')}</LableText>}
