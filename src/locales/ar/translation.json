@@ -242,10 +242,10 @@
     "addCompaniesModalTitle": "أضاف شركة",
     "addCompany": "إضافة شركة",
     "CompanyNamear": "الاسم بالعربية",
-    "Adress":"العنوان",
+    "Adress": "العنوان",
     "Country name": "اسم البلد",
     "Companybioar": "وصف بالعربية",
-    
+
     "name": "الاسم بالانكليزية",
     "Remove": "حذف",
 
@@ -266,8 +266,8 @@
     "selectService": "حدد خدمة",
     " Uploadfiles (copy of the company's ID)": "صورة هوية لمالك الشركة",
     "Upload files (Commercial Register)": "سجل الشركة التجاري",
-    "Upload additional  files (3 maximum)": "ملفات إضافية",
-    
+    "Upload additional  files (3 maximum)": "ملفات إضافية عللى الاكثر 3 ملفات",
+
     "Regionname": "اسم المنطقة",
     " Profile": "صورة الشركة",
     "deleteCompanySuccessMessage": " تم حذف الشركة بنجاح",
@@ -275,7 +275,7 @@
     "selectSubService": "حدد خدمة فرعية",
     "PhoneNumber": "رقم الهاتف",
     "CompanydialCode": "الرمز الدولي",
-    "User information": "معلومات المستخدم",
+    "Userinformation": "معلومات المستخدم",
 
     "password": "كلمة المرور",
     "activateManagerConfirm": "تفعيل الشركة",
@@ -470,6 +470,7 @@
     "DestinationLocation": "موقع الوجهة",
     "country": "البلد",
     "city": "المدينة",
+    "date": "التاريخ",
     "sourceAddress": "العنوان",
     "destinationAddress": "العنوان",
     "moveAtUtc": "وقت الإنطلاق",

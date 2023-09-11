@@ -129,6 +129,8 @@ export const AddRequest: React.FC = () => {
 
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
     onSuccess: (data: any) => {
+      console.log('uploadImage');
+
       if (data.data.success) {
         setAttachmentIds((prevIds) => [...prevIds, data.data.result?.id]);
         setPreviewImage(data.data.result?.url);
@@ -339,11 +341,9 @@ export const AddRequest: React.FC = () => {
       }),
   );
 
-  console.log(createRequestMutation.isLoading);
-  console.log(uploadImage.isLoading);
-  console.log(createRequestMutation.isLoading && uploadImage.isLoading);
-
   const onFinish = async (values: any) => {
+    console.log('onFinish');
+
     const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
       form.getFieldValue('phoneNumberSource'),
     );
@@ -463,6 +463,8 @@ export const AddRequest: React.FC = () => {
         },
       ],
     };
+
+    console.log(requestData);
   };
 
   useEffect(() => {
@@ -516,7 +518,8 @@ export const AddRequest: React.FC = () => {
               width: 'auto',
               height: 'auto',
             }}
-            htmlType="submit"
+            // htmlType="submit"
+            onClick={onFinish}
             loading={createRequestMutation.isLoading || uploadImage.isLoading}
           >
             Done
@@ -850,7 +853,7 @@ export const AddRequest: React.FC = () => {
               <BaseForm.Item
                 key={index}
                 name={fieldName}
-                label={<LableText>{t('addRequest.city')}</LableText>}
+                label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
