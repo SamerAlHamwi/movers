@@ -127,7 +127,7 @@ export const Partners: React.FC = () => {
   const addManager = useMutation((data: Partner) =>
     CreatePartner(data)
       .then((data) => {
-        notificationController.success({ message: t('Partner.addPartnerSuccessMessage') });
+        notificationController.success({ message: t('Brokers.addPartnerSuccessMessage') });
         setRefetchOnAddManager(data.data?.success);
       })
       .catch((error) => {

@@ -233,7 +233,7 @@
     "companiesList": "قائمة الشركات",
     "CountryName": "اسم البلد",
     "CityName": "اسم المدينة",
-    "adressA": " العنوان بالعربية ",
+    "addressA": " العنوان بالعربية ",
     "address": "العنوان بالإنكليزية ",
     "phoneNumber": "رقم الهاتف",
     "Website": "الموقع الالكتروني",
@@ -242,8 +242,10 @@
     "addCompaniesModalTitle": "أضاف شركة",
     "addCompany": "إضافة شركة",
     "CompanyNamear": "الاسم بالعربية",
+    "Adress":"العنوان",
     "Country name": "اسم البلد",
     "Companybioar": "وصف بالعربية",
+    
     "name": "الاسم بالانكليزية",
     "Remove": "حذف",
 
@@ -264,7 +266,7 @@
     "selectService": "حدد خدمة",
     " Uploadfiles (copy of the company's ID)": "صورة هوية لمالك الشركة",
     "Upload files (Commercial Register)": "سجل الشركة التجاري",
-    "Upload additional  files (3 maximum)": "ملفات إضافية عللى الاكثر 3 ملفات",
+    "Upload additional  files (3 maximum)": "ملفات إضافية",
     
     "Regionname": "اسم المنطقة",
     " Profile": "صورة الشركة",
@@ -340,8 +342,8 @@
     "addBrokerModalTitle": "إضافة وسيط",
     "partnerdiscountPercentage": "نسبة للوسيط",
     "partnerPhoneNumber": "رقم الهاتف ",
-    "addPartnerSuccessMessage": "Done Successfully",
-    "editPartnerSuccessMessage": "Done Successfully"
+    "addPartnerSuccessMessage": "تمت العملية بنجاح",
+    "editPartnerSuccessMessage": "تمت العملية بنجاح"
   },
   "_comment11": "*********************************** Partners ************************************************",
   "Partners": {

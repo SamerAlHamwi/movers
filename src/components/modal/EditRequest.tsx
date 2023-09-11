@@ -33,7 +33,7 @@ export const EditRequest: React.FC<EditRequestProps> = ({ visible, onCancel, val
       open={visible}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('requests.editRoleModalTitle')}
+          {t('requests.editRequestModalTitle')}
         </div>
       }
       onCancel={onCancel}
