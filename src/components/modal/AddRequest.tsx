@@ -46,6 +46,7 @@ const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
 const res: any = [];
+const lang = localStorage.getItem('movers&-lang');
 
 let requestData = {
   sourceCityId: '',
@@ -129,8 +130,6 @@ export const AddRequest: React.FC = () => {
 
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
     onSuccess: (data: any) => {
-      console.log('uploadImage');
-
       if (data.data.success) {
         setAttachmentIds((prevIds) => [...prevIds, data.data.result?.id]);
         setPreviewImage(data.data.result?.url);
@@ -342,8 +341,6 @@ export const AddRequest: React.FC = () => {
   );
 
   const onFinish = async (values: any) => {
-    console.log('onFinish');
-
     const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
       form.getFieldValue('phoneNumberSource'),
     );
@@ -374,8 +371,6 @@ export const AddRequest: React.FC = () => {
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
-        console.log(parts[0]);
-
         if (parts[0] == 'withTool') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
@@ -391,17 +386,8 @@ export const AddRequest: React.FC = () => {
           };
           requestServices.push(result);
         }
-        // else if (parts[0] == 'withService') {
-        //   result = {
-        //     serviceId: parseInt(parts[1].replace('service', '')),
-        //     subServiceId: null,
-        //     toolId: null,
-        //   };
-        // }
-
         return result;
       });
-      console.log(requestServices);
     }
     extractServicesIds(requestServicesArray);
 
@@ -463,8 +449,6 @@ export const AddRequest: React.FC = () => {
         },
       ],
     };
-
-    console.log(requestData);
   };
 
   useEffect(() => {
@@ -518,11 +502,10 @@ export const AddRequest: React.FC = () => {
               width: 'auto',
               height: 'auto',
             }}
-            // htmlType="submit"
             onClick={onFinish}
             loading={createRequestMutation.isLoading || uploadImage.isLoading}
           >
-            Done
+            {t('common.done')}
           </Button>
         )}
       </Row>
@@ -581,13 +564,13 @@ export const AddRequest: React.FC = () => {
 
           if (index === steps[current].content.indexOf('Destination')) {
             return (
-              <h4 key={index} style={{ marginBottom: '2rem', fontWeight: '700' }}>
+              <h4 key={index} style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>
                 {t('addRequest.ForDestination')}:
               </h4>
             );
           } else if (index === steps[current].content.indexOf('Source')) {
             return (
-              <h4 key={index} style={{ marginBottom: '2rem', fontWeight: '700' }}>
+              <h4 key={index} style={{ margin: '2rem 0', fontWeight: '700' }}>
                 {t('addRequest.ForSource')}:
               </h4>
             );
@@ -597,21 +580,15 @@ export const AddRequest: React.FC = () => {
               <div
                 key={index}
                 style={
-                  localStorage.getItem('movers&-lang') == 'en'
-                    ? {
-                        right: '0',
-                        width: '50%',
-                        float: 'right',
-                        position: 'relative',
-                        top: '-450px',
-                      }
-                    : {
-                        left: '0',
-                        width: '50%',
-                        float: 'left',
-                        position: 'relative',
-                        top: '-450px',
-                      }
+                  lang == 'en' && (isDesktop || isTablet)
+                    ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'en' && isMobile
+                    ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
+                    : lang == 'ar' && (isDesktop || isTablet)
+                    ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'ar' && isMobile
+                    ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
+                    : {}
                 }
               >
                 <div style={{ width: '100%', height: '400px' }}>
@@ -631,21 +608,15 @@ export const AddRequest: React.FC = () => {
               <div
                 key={index}
                 style={
-                  localStorage.getItem('movers&-lang') == 'en'
-                    ? {
-                        right: '0',
-                        width: '50%',
-                        float: 'right',
-                        position: 'relative',
-                        top: '-450px',
-                      }
-                    : {
-                        left: '0',
-                        width: '50%',
-                        float: 'left',
-                        position: 'relative',
-                        top: '-450px',
-                      }
+                  lang == 'en' && (isDesktop || isTablet)
+                    ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'en' && isMobile
+                    ? { right: '0', float: 'right', position: 'relative', width: '100%' }
+                    : lang == 'ar' && (isDesktop || isTablet)
+                    ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'ar' && isMobile
+                    ? { left: '0', float: 'left', position: 'relative', width: '100%' }
+                    : {}
                 }
               >
                 <div style={{ width: '100%', height: '400px' }}>
@@ -666,9 +637,15 @@ export const AddRequest: React.FC = () => {
               <Row
                 key={index}
                 style={
-                  desktopOnly && localStorage.getItem('movers&-lang') == 'en'
-                    ? { display: 'inline-block', width: '30%', marginRight: '3%', marginBottom: '5rem' }
-                    : { display: 'inline-block', width: '30%', marginLeft: '3%', marginBottom: '5rem' }
+                  lang == 'en' && (isDesktop || isTablet)
+                    ? { display: 'inline-block', width: '30%', marginRight: '3%', marginBottom: '2rem' }
+                    : lang == 'en' && isMobile
+                    ? { display: 'block', width: '100%', margin: '1rem' }
+                    : lang == 'ar' && (isDesktop || isTablet)
+                    ? { display: 'inline-block', width: '30%', marginLeft: '3%', marginBottom: '2rem' }
+                    : lang == 'ar' && isMobile
+                    ? { display: 'block', width: '100%', margin: '1rem' }
+                    : {}
                 }
               >
                 <Col key={index} style={{ width: '100%' }}>
@@ -730,7 +707,7 @@ export const AddRequest: React.FC = () => {
           if (isTextArea) {
             return (
               <BaseForm.Item key={index} name={fieldName}>
-                <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder="comment" />
+                <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
               </BaseForm.Item>
             );
           }
@@ -744,7 +721,13 @@ export const AddRequest: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                   ]}
-                  style={{ width: '40%', margin: '0 2%', display: 'inline-block' }}
+                  style={
+                    isDesktop || isTablet
+                      ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                      : isMobile
+                      ? { width: '100%', display: 'block' }
+                      : {}
+                  }
                 >
                   <Input />
                 </BaseForm.Item>
@@ -760,7 +743,9 @@ export const AddRequest: React.FC = () => {
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
-                style={{ margin: '0 2% 2rem', width: '40%' }}
+                style={
+                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                }
               >
                 <Select
                   showSearch
@@ -791,7 +776,9 @@ export const AddRequest: React.FC = () => {
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
-                style={{ margin: '0 2% 2rem', width: '40%' }}
+                style={
+                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                }
               >
                 <Select
                   showSearch
@@ -822,7 +809,7 @@ export const AddRequest: React.FC = () => {
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
-                style={{ width: '50%', margin: 'auto' }}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : isMobile ? { width: '100%' } : {}}
               >
                 <Select
                   showSearch
@@ -857,7 +844,13 @@ export const AddRequest: React.FC = () => {
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
-                style={{ margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }}
+                style={
+                  isDesktop || isTablet
+                    ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                    : isMobile
+                    ? { width: '100%', marginBottom: '5rem' }
+                    : {}
+                }
               >
                 <DatePicker style={{ width: '100%' }} />
               </BaseForm.Item>
@@ -880,8 +873,6 @@ export const AddRequest: React.FC = () => {
                       onCheck={(checkedKeysValue: any) => {
                         for (const key of checkedKeysValue) {
                           if (!requestServicesArray.includes(key)) {
-                            console.log(key);
-
                             requestServicesArray.push(key);
                           }
                         }
