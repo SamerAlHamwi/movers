@@ -1,8 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-
-import { P1 } from '../common/typography/P1/P1';
-import { InputPassword } from '../common/inputs/InputPassword/InputPassword.styles';
 import { CreateButtonText, LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
@@ -10,7 +7,7 @@ import { CompanyModal, Service, subservices } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { Text } from '../GeneralStyles';
 import { UploadDragger } from '../common/Upload/Upload';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
   BankOutlined,
@@ -33,7 +30,6 @@ import { Button, Col, Input, Radio, Row, Steps, Tabs, TreeSelect } from 'antd';
 import { Space, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
 import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
@@ -53,9 +49,9 @@ const { Step } = Steps;
 export const AddCompany: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
+  const queryClient = useQueryClient();
 
   const [attachments, setAttachments] = useState<any[]>([]);
-  const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
   const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
   const [countryPageSize, setcountryPageSize] = useAtom(gamesPageSizeAtom);
   const [Data, setData] = useState<cities[] | undefined>();
@@ -64,14 +60,9 @@ export const AddCompany: React.FC = () => {
   const [page, setPage] = useAtom(currentGamesPageAtom);
   const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
-  const [id, SetId] = useState<string>('');
-  const [selectedCountry, setSelectedCountry] = useState(false);
-
-  const { countryId } = useParams();
   const [Contry_id, setContryId] = useState(0);
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
-  const [Serviece_id, setServieceId] = useState(0);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadSucces, setUploadSucces] = useState(false);
   const [uploadSucce, setUploadSucce] = useState(false);
@@ -84,8 +75,6 @@ export const AddCompany: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
   const [branches, setBranches] = useState<any[]>([]);
-  const [selectedService, setSelectedService] = useState<any>([]);
-  const [selectedSubService, setSelectedSubService] = useState<string | null>(null);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
@@ -357,7 +346,7 @@ export const AddCompany: React.FC = () => {
     createCompany(data)
       .then((data: any) => {
         notificationController.success({ message: t('companies.addCompanySuccessMessage') });
-        setRefetchOnAddManager(data.data?.success);
+        queryClient.invalidateQueries('AllCompanies');
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -472,7 +461,7 @@ export const AddCompany: React.FC = () => {
             disabled={addCompany.isLoading || uploadImage.isLoading}
             onClick={() => onFinish(form.getFieldsValue())}
           >
-            Done
+            {t('common.done')}
           </Button>
         )}
       </Row>
@@ -499,7 +488,7 @@ export const AddCompany: React.FC = () => {
         {current === 0 && (
           <>
             <Row>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'name']}
                   label={<LableText>{t('companies.CompanyNamear')}</LableText>}
@@ -511,7 +500,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'name']}
                   label={<LableText>{t('companies.name')}</LableText>}
@@ -525,7 +514,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'bio']}
                   label={<LableText>{t('companies.Companybioar')}</LableText>}
@@ -537,7 +526,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'bio']}
                   label={<LableText>{t('companies.bio')}</LableText>}
@@ -551,7 +540,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'address']}
                   label={<LableText>{t('companies.addressA')}</LableText>}
@@ -563,7 +552,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'address']}
                   label={<LableText>{t('companies.address')}</LableText>}
@@ -579,7 +568,7 @@ export const AddCompany: React.FC = () => {
 
             <BaseForm.Item
               label={<LableText>{t('companies.Country name')}</LableText>}
-              style={{ width: '50%', margin: 'auto' }}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -596,7 +585,7 @@ export const AddCompany: React.FC = () => {
             <BaseForm.Item
               name={['cityId']}
               label={<LableText>{t('companies.City name')}</LableText>}
-              style={{ width: '50%', margin: 'auto' }}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -613,7 +602,7 @@ export const AddCompany: React.FC = () => {
             <BaseForm.Item
               name={['regionId']}
               label={<LableText>{t('companies.Regionname')}</LableText>}
-              style={{ width: '50%', margin: 'auto' }}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -641,7 +630,7 @@ export const AddCompany: React.FC = () => {
             </h2>
 
             <Row>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.CompanyPhoneNumber')}</LableText>}
                   name={['companyContact', 'phoneNumber']}
@@ -653,7 +642,7 @@ export const AddCompany: React.FC = () => {
                   <Input value={companyInfo?.companyContact?.phoneNumber} />
                 </BaseForm.Item>
               </Col>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.CompanyEmail')}</LableText>}
                   name={['companyContact', 'emailAddress']}
@@ -667,7 +656,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.website')}</LableText>}
                   name={['companyContact', 'webSite']}
@@ -679,7 +668,7 @@ export const AddCompany: React.FC = () => {
                   <Input value={companyInfo?.companyContact?.webSite} />
                 </BaseForm.Item>
               </Col>
-              <Col style={{ width: '40%', margin: '0 5%' }}>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <UploadDragger
                   maxCount={1}
                   listType="text"
@@ -745,7 +734,7 @@ export const AddCompany: React.FC = () => {
             <BaseForm.Item
               name={['userDto', 'phoneNumber']}
               label={<LableText>{t('companies.PhoneNumber')}</LableText>}
-              style={{ width: '50%', margin: 'auto' }}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -755,7 +744,7 @@ export const AddCompany: React.FC = () => {
             <BaseForm.Item
               name={['userDto', 'password']}
               label={<LableText>{t('companies.password')}</LableText>}
-              style={{ width: '50%', margin: 'auto' }}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -808,7 +797,9 @@ export const AddCompany: React.FC = () => {
                     <BaseForm.Item
                       label={<LableText>{t('companies.selectService')}</LableText>}
                       name={['services', index, 'serviceId']}
-                      style={{ width: '50%', margin: 'auto' }}
+                      style={
+                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                      }
                       rules={[
                         {
                           required: true,
@@ -827,7 +818,9 @@ export const AddCompany: React.FC = () => {
                     <BaseForm.Item
                       label={<LableText>{t('companies.selectSubService')}</LableText>}
                       name={['services', index, 'subserviceId']}
-                      style={{ width: '50%', margin: 'auto' }}
+                      style={
+                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                      }
                     >
                       <Select onChange={(e) => ChangeSubServieceHandler(index, e)}>
                         {Datr?.map((subservices) => (
@@ -874,7 +867,11 @@ export const AddCompany: React.FC = () => {
               {t("companies. Uploadfiles (copy of the company's ID)")}
             </Text>
             <UploadDragger
-              style={{ width: '50%', margin: 'auto', marginBottom: '2rem' }}
+              style={
+                isDesktop || isTablet
+                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
+                  : { width: '80%', margin: '0 10%' }
+              }
               beforeUpload={(file) => {
                 const formData = new FormData();
                 formData.append('RefType', '9');
@@ -927,7 +924,11 @@ export const AddCompany: React.FC = () => {
               {t('companies.Upload files (Commercial Register)')}
             </Text>
             <UploadDragger
-              style={{ width: '50%', margin: 'auto', marginBottom: '2rem' }}
+              style={
+                isDesktop || isTablet
+                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
+                  : { width: '80%', margin: '0 10%' }
+              }
               beforeUpload={(file) => {
                 const formData = new FormData();
                 formData.append('RefType', '10');
@@ -973,7 +974,11 @@ export const AddCompany: React.FC = () => {
               {t('companies.Upload additional  files (3 maximum)')}
             </Text>
             <UploadDragger
-              style={{ width: '50%', margin: 'auto', marginBottom: '2rem' }}
+              style={
+                isDesktop || isTablet
+                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
+                  : { width: '80%', margin: '0 10%' }
+              }
               beforeUpload={(file) => {
                 const formData = new FormData();
                 formData.append('RefType', '11');
@@ -1013,7 +1018,7 @@ export const AddCompany: React.FC = () => {
             </UploadDragger>
 
             <BaseForm.Item key={88} name="comment">
-              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder="comment" />
+              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
             </BaseForm.Item>
           </>
         )}
