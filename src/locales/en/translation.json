@@ -37,6 +37,7 @@
     "inactive": "Inactive",
     "user": "User",
     "company": "Company",
+    "done": "Done",
     "error": "Error",
     "saveEdit": "Save Edit",
     "requiredField": "This field is required!",
@@ -226,11 +227,19 @@
     "deleteServiceModalTitle": "Delete Service",
     "deleteServiceModalDescription": "Are You Sure To Delete This Service?"
   },
-
+  "Companies": {
+    "Companies": "Companies"
+  },
+  "compnies": {
+    "addcompany": "Add Company"
+  },
   "_comment6": "*********************************** companies ***************************",
   "companies": {
     "companiesList": "Companies List",
     "CountryName": "Country Name",
+    "addcompany": "Add Company",
+    "Adress": "Address",
+
     "CityName": "City Name",
     "addressA": " ArabicAdress",
     "address": "English Adress",
