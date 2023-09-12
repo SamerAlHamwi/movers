@@ -15,8 +15,11 @@ import {
   FilePdfTwoTone,
   InboxOutlined,
   LoadingOutlined,
+  PictureOutlined,
+  PlusCircleOutlined,
   PlusOutlined,
   PushpinOutlined,
+  UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Col, Input, Radio, Row, Steps, Tabs } from 'antd';
@@ -534,13 +537,13 @@ export const AddCompany: React.FC = () => {
             title={t(`companies.${step.title}`)}
             icon={
               index === 0 ? (
-                <UserOutlined />
+                <PlusCircleOutlined />
               ) : index === 1 ? (
-                <PushpinOutlined />
+                <UserAddOutlined />
               ) : index === 2 ? (
                 <ClearOutlined />
               ) : index === 3 ? (
-                <ClearOutlined />
+                <PictureOutlined /> 
               ) : undefined
             }
           />
