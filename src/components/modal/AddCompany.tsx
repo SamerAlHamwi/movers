@@ -39,6 +39,7 @@ import { tools } from '../Admin/Services/tools';
 import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
+import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 
 const { Step } = Steps;
 const steps = [
@@ -840,16 +841,20 @@ export const AddCompany: React.FC = () => {
             >
               <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
-            <BaseForm.Item
+
+            <Auth.FormItem
+              label={t('auth.password')}
               name={['userDto', 'password']}
-              label={<LableText>{t('companies.password')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                {
+                  required: true,
+                  message: t('common.requiredField'),
+                },
               ]}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <Input />
-            </BaseForm.Item>
+              <Auth.FormInputPassword placeholder={t('auth.password')} />
+            </Auth.FormItem>
           </>
         )}
         {current === 2 && (
