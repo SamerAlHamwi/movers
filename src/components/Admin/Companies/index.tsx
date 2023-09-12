@@ -67,7 +67,18 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Users', page, pageSize, refetchOnAddManager, isDelete, isEdit, isActivate, isDeActivate, isAdmin, isEmployee],
+    [
+      'AllCompanies',
+      page,
+      pageSize,
+      refetchOnAddManager,
+      isDelete,
+      isEdit,
+      isActivate,
+      isDeActivate,
+      isAdmin,
+      isEmployee,
+    ],
     () =>
       getAllCompanies(page, pageSize)
         .then((data) => {
