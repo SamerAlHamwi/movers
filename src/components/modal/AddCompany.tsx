@@ -46,6 +46,7 @@ import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
+import { tools } from '../Admin/Services/tools';
 
 const { TabPane } = Tabs;
 const { Step } = Steps;
@@ -61,6 +62,7 @@ export const AddCompany: React.FC = () => {
   const [Data, setData] = useState<cities[] | undefined>();
   const [Dat, setDat] = useState<services[] | undefined>();
   const [Datr, setDatr] = useState<subservices[] | undefined>();
+  const [Datt, setDatt] = useState<tools[] | undefined>();
   const [page, setPage] = useAtom(currentGamesPageAtom);
   const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
@@ -71,6 +73,7 @@ export const AddCompany: React.FC = () => {
   const [Contry_id, setContryId] = useState(0);
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
+  const [tool_id, settoolId] = useState(0);
   const [Serviece_id, setServieceId] = useState(0);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadSucces, setUploadSucces] = useState(false);
@@ -80,7 +83,7 @@ export const AddCompany: React.FC = () => {
   const [uploadedPhotoid, setUploadedPhotoid] = useState('');
   const [uploadedPhotoreg, setUploadedPhotoreg] = useState('');
   const [uploadedPhotoidin, setUploadedPhotoidin] = useState('');
-  const [services, setServices] = useState([{ serviceId: '', subserviceId: '' }]);
+  const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
   const [branches, setBranches] = useState<any[]>([]);
@@ -198,27 +201,72 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
 
-    if ((record?.tools ?? []).length > 0) {
-      getAllTools(e, '', page, pageSize)
-        .then((data) => {
-          const result = data?.data?.result?.items;
-          setTotalCount(data?.data?.result?.totalCount);
-          setData(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        });
-    }
+    getAllTools('', e, page, pageSize)
+      .then((data) => {
+        const result = data?.data?.result?.items;
+        setTotalCount(data?.data?.result?.totalCount);
+        setDatt(result);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      });
   };
-
-  const ChangeSubServieceHandler = (index: any, e: any) => {
+  const ChangeSubServiceHandler = (index: number, e: any) => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], subserviceId: e };
     setServices(updatedServices);
+    console.log('sdzzzzzzzzzzzzfghjkl', e);
+    getAllTools(e, e, page, pageSize)
+      .then((data) => {
+        const result = data?.data?.result?.items;
+        setTotalCount(data?.data?.result?.totalCount);
+        setDatt(result);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }); /////////////
   };
+  const handleSubserviceSelection = (index: number, e: any) => {
+    ChangeSubServiceHandler(index, e);
+    getAllTools('', e, page, pageSize)
+      .then((data) => {
+        const result = data?.data?.result?.items;
+        setTotalCount(data?.data?.result?.totalCount);
+        setDatt(result);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      });
+  };
+  // const ChangeSubServieceHandler = (index: any, e: any) => {
+  //   const updatedServices = [...services];
+  //   updatedServices[index] = { ...updatedServices[index], subserviceId: e };
+  //   setServices(updatedServices);
+  //   getAllTools('', e, page, pageSize)
+  //     .then((data) => {
+  //       const result = data?.data?.result?.items;
+  //       setTotalCount(data?.data?.result?.totalCount);
+  //       setDatt(result);
+  //     })
+  //     .catch((error) => {
+  //       notificationController.error({ message: error.message || error.error?.message });
+  //     });
+  // };
 
   const ChangeRegionHandler = (e: any) => {
     setRegionId(e);
+  };
+  const ChangesubHandler = (index: any, e: any) => {
+    settoolId(e);
+    getAllTools('', e, page, pageSize)
+      .then((data) => {
+        const result = data?.data?.result?.items;
+        setTotalCount(data?.data?.result?.totalCount);
+        setData(result);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      });
   };
 
   const ChangeCountryHandler = (e: any) => {
@@ -829,10 +877,23 @@ export const AddCompany: React.FC = () => {
                       name={['services', index, 'subserviceId']}
                       style={{ width: '50%', margin: 'auto' }}
                     >
-                      <Select onChange={(e) => ChangeSubServieceHandler(index, e)}>
-                        {Datr?.map((subservices) => (
-                          <Option key={subservices.id} value={subservices.id}>
-                            {subservices.name}
+                      <Select onChange={(e) => handleSubserviceSelection(index, e)}>
+                        {Datr?.map((subservice) => (
+                          <Option key={subservice.id} value={subservice.id}>
+                            {subservice.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    </BaseForm.Item>
+                    <BaseForm.Item
+                      label={<LableText>{t('companies.selectTool')}</LableText>}
+                      name={['services', index, 'toolId']}
+                      style={{ width: '50%', margin: 'auto' }}
+                    >
+                      <Select>
+                        {Datt?.map((tool) => (
+                          <Option key={tool.id} value={tool.id}>
+                            {tool.name}
                           </Option>
                         ))}
                       </Select>
@@ -849,7 +910,7 @@ export const AddCompany: React.FC = () => {
                       margin: '2rem auto',
                       justifyContent: 'space-around',
                     }}
-                    onClick={() => setServices([...services, { serviceId: '', subserviceId: '' }])}
+                    onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
                   >
                     <PlusOutlined />
                     {/* <CreateButtonText>

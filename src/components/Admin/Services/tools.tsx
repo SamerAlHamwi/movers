@@ -25,6 +25,7 @@ import { number } from 'echarts';
 export type tools = {
   id: number;
   title: string;
+  name?: string;
   description: string;
   attachment?: Attachment;
 };

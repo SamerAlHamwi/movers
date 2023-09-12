@@ -233,7 +233,10 @@
     "CountryName": "Country Name",
     "CityName": "City Name",
     "addressA": " ArabicAdress",
+
     "address": "English Adress",
+    "selectTool":"Select Tool",
+    "Adress":"Address",
     "Add Service": "Add Service",
     "PhoneNumber": "Phone Number",
     "editeCompanyModalTitle": "Edit Company",
