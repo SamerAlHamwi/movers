@@ -3,30 +3,23 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CompanyModal, Service, subservices } from '@app/interfaces/interfaces';
+import { CompanyModal, subservices } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { Text } from '../GeneralStyles';
 import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
-  BankOutlined,
   ClearOutlined,
   DeleteOutlined,
   FilePdfTwoTone,
-  FundTwoTone,
   InboxOutlined,
-  InfoCircleTwoTone,
   LoadingOutlined,
-  MinusOutlined,
   PlusOutlined,
-  PlusSquareOutlined,
   PushpinOutlined,
-  SmileOutlined,
-  SolutionOutlined,
   UserOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Input, Radio, Row, Steps, Tabs, TreeSelect } from 'antd';
+import { Button, Col, Input, Radio, Row, Steps, Tabs } from 'antd';
 import { Space, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -34,7 +27,7 @@ import { getAllCities, getAllCountries, getAllRegions } from '@app/services/loca
 import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
 import { getAllServices, getAllSubServices } from '@app/services/services';
 import { getAllTools } from '@app/services/tools';
@@ -43,13 +36,67 @@ import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
 
-const { TabPane } = Tabs;
 const { Step } = Steps;
+const steps = [
+  {
+    title: 'Company Information',
+  },
+  {
+    title: 'Userinformation',
+  },
+  {
+    title: 'Services',
+  },
+  {
+    title: 'Attachment',
+  },
+];
+let companyInfo: any = {
+  translations: [
+    {
+      name: 'string',
+      bio: 'string',
+      address: 'string',
+      language: 'en',
+    },
+  ],
+  services: [
+    {
+      serviceId: 0,
+      subServiceId: 0,
+      toolId: 0,
+    },
+  ],
+  regionId: '0',
+  companyContact: {
+    dialCode: 's7',
+    phoneNumber: 'string',
+    emailAddress: 'string',
+    webSite: 'string',
+    isForBranchCompany: false,
+  },
+  isActive: true,
+  comment: 'string',
+  serviceType: 1,
+  userDto: {
+    dialCode: '963',
+    phoneNumber: '0997829849',
+    password: '865fghjk',
+  },
+
+  companyProfilePhotoId: 0,
+  companyOwnerIdentityIds: [0],
+  companyCommercialRegisterIds: [0],
+  additionalAttachmentIds: [0],
+  availableCitiesIds: [],
+};
 
 export const AddCompany: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
+  const navigate = useNavigate();
+  let record: services | undefined;
 
   const [attachments, setAttachments] = useState<any[]>([]);
   const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
@@ -83,38 +130,47 @@ export const AddCompany: React.FC = () => {
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
+  const [formData, setFormData] = useState<CompanyModal>(companyInfo);
 
-  const addBranch = () => {
-    const newBranch = {
-      phone: '',
-      email: '',
-      region: '',
-      city: '',
-      country: '',
-      website: '',
-    };
-    setBranches([...branches, newBranch]);
-  };
-  const removeBranch = (index: number) => {
-    const updatedBranches = [...branches];
-    updatedBranches.splice(index, 1);
-    setBranches(updatedBranches);
-  };
-  const [activeTab, setActiveTab] = useState('1');
+  // const [activeTab, setActiveTab] = useState('1');
+  // const addBranch = () => {
+  //   const newBranch = {
+  //     phone: '',
+  //     email: '',
+  //     region: '',
+  //     city: '',
+  //     country: '',
+  //     website: '',
+  //   };
+  //   setBranches([...branches, newBranch]);
+  // };
+  // const removeBranch = (index: number) => {
+  //   const updatedBranches = [...branches];
+  //   updatedBranches.splice(index, 1);
+  //   setBranches(updatedBranches);
+  // };
+  // const handleBranchChange = (index: number, field: string, value: string) => {
+  //   const updatedBranches = [...branches];
+  //   updatedBranches[index][field] = value;
+  //   setBranches(updatedBranches);
+  // };
 
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
-  const handleBranchChange = (index: number, field: string, value: string) => {
-    const updatedBranches = [...branches];
-    updatedBranches[index][field] = value;
-    setBranches(updatedBranches);
-  };
+  const country = useQuery(
+    ['Countries'],
+    () =>
+      getAllCountries(countryPage, countryPageSize)
+        .then((data) => {
+          const result = data.data?.result?.items;
+          setTotalCount(data.data?.result?.totalCount);
+          setCountryData(result);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: countryData === undefined,
+    },
+  );
 
   const ser = useQuery(
     ['Services', page, pageSize],
@@ -132,6 +188,14 @@ export const AddCompany: React.FC = () => {
       enabled: Dat === undefined,
     },
   );
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
 
   const handleUploadSuccess = (photoUrl: any) => {
     setUploadSuccess(true);
@@ -152,25 +216,6 @@ export const AddCompany: React.FC = () => {
     setUploadSucc(true);
     setUploadedPhotoidin(photoUrl);
   };
-
-  const country = useQuery(
-    ['Countries'],
-    () =>
-      getAllCountries(countryPage, countryPageSize)
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setCountryData(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: countryData === undefined,
-    },
-  );
-
-  let record: services | undefined;
 
   const ChangeServieceHandler = (index: any, e: any) => {
     const updatedServices = [...services];
@@ -300,48 +345,6 @@ export const AddCompany: React.FC = () => {
       }),
   );
 
-  let companyInfo: any = {
-    translations: [
-      {
-        name: 'string',
-        bio: 'string',
-        address: 'string',
-        language: 'en',
-      },
-    ],
-    services: [
-      {
-        serviceId: 0,
-        subServiceId: 0,
-        toolId: 0,
-      },
-    ],
-    regionId: Region_id,
-    companyContact: {
-      dialCode: 's7',
-      phoneNumber: 'string',
-      emailAddress: 'string',
-      webSite: 'string',
-      isForBranchCompany: false,
-    },
-    isActive: true,
-    comment: 'string',
-    serviceType: 1,
-    userDto: {
-      dialCode: '963',
-      phoneNumber: '0997829849',
-      password: '865fghjk',
-    },
-
-    companyProfilePhotoId: 0,
-    companyOwnerIdentityIds: [0],
-    companyCommercialRegisterIds: [0],
-    additionalAttachmentIds: [0],
-    availableCitiesIds: [],
-  };
-
-  const [formData, setFormData] = useState<CompanyModal>(companyInfo);
-
   const addCompany = useMutation((data: CompanyModal) =>
     createCompany(data)
       .then((data: any) => {
@@ -352,8 +355,6 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       }),
   );
-
-  const navigate = useNavigate();
 
   const onFinish = (values: any) => {
     companyInfo = {
@@ -391,6 +392,7 @@ export const AddCompany: React.FC = () => {
       additionalAttachmentIds: [additionalAttachmentIds],
       companyOwnerIdentityIds: [OwnerIdentityIds],
       comment: form.getFieldValue('comment'),
+      regionId: Region_id,
     };
     const updatedFormData = { ...formData };
 
@@ -405,21 +407,6 @@ export const AddCompany: React.FC = () => {
     addCompany.mutate(companyInfo);
     navigate('/companies');
   };
-
-  const steps = [
-    {
-      title: 'Company Information',
-    },
-    {
-      title: 'Userinformation',
-    },
-    {
-      title: 'Services',
-    },
-    {
-      title: 'Attachment',
-    },
-  ];
 
   return (
     <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
