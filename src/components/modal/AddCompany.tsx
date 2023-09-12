@@ -35,6 +35,9 @@ import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
+import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm';
+import PhoneInput from 'react-phone-input-2';
+import { isValidPhoneNumber } from 'react-phone-number-input';
 
 const { Step } = Steps;
 const steps = [
@@ -131,6 +134,7 @@ export const AddCompany: React.FC = () => {
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
+  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
 
   // const [activeTab, setActiveTab] = useState('1');
   // const addBranch = () => {
@@ -293,6 +297,21 @@ export const AddCompany: React.FC = () => {
     return services.some((service) => service.serviceId === serviceId);
   };
 
+  const handleFormattedValueChange = (value: string) => {
+    setFormattedPhoneNumber(value);
+  };
+
+  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
+    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
+    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
+    console.log(dialCode);
+
+    return {
+      dialCode,
+      phoneNumber,
+    };
+  };
+
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
       .then((response) => {
@@ -357,6 +376,12 @@ export const AddCompany: React.FC = () => {
   );
 
   const onFinish = (values: any) => {
+    const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(
+      form.getFieldValue(['companyContact', 'phoneNumber']),
+    );
+    const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
+      form.getFieldValue(['userDto', 'phoneNumber']),
+    );
     companyInfo = {
       ...companyInfo,
       translations: [
@@ -374,15 +399,15 @@ export const AddCompany: React.FC = () => {
         },
       ],
       companyContact: {
-        dialCode: '+963',
-        phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
+        dialCode: '+' + dialCodeC,
+        phoneNumber: phoneNumberC,
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: false,
       },
       userDto: {
-        dialCode: '+963',
-        phoneNumber: form.getFieldValue(['userDto', 'phoneNumber']),
+        dialCode: '+' + dialCodeU,
+        phoneNumber: phoneNumberU,
         password: form.getFieldValue(['userDto', 'password']),
       },
       serviceType: valueRadio,
@@ -618,16 +643,29 @@ export const AddCompany: React.FC = () => {
 
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <BaseForm.Item
-                  label={<LableText>{t('companies.CompanyPhoneNumber')}</LableText>}
+                <BaseButtonsForm.Item
                   name={['companyContact', 'phoneNumber']}
-                  style={{ marginTop: '-1rem' }}
+                  $successText={t('auth.phoneNumberVerified')}
+                  label={t('common.phoneNumber')}
                   rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    { required: true, message: t('common.requiredField') },
+                    () => ({
+                      validator(_, value) {
+                        if (!value || isValidPhoneNumber(value)) {
+                          return Promise.resolve();
+                        }
+                        if (formattedPhoneNumber.length > 12) {
+                          return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                        } else if (formattedPhoneNumber.length < 12) {
+                          return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                        }
+                      },
+                    }),
                   ]}
+                  style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
                 >
-                  <Input value={companyInfo?.companyContact?.phoneNumber} />
-                </BaseForm.Item>
+                  <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+                </BaseButtonsForm.Item>
               </Col>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
@@ -718,16 +756,41 @@ export const AddCompany: React.FC = () => {
             >
               {t('companies.Userinformation')}
             </h2>
-            <BaseForm.Item
+            <BaseButtonsForm.Item
               name={['userDto', 'phoneNumber']}
-              label={<LableText>{t('companies.PhoneNumber')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              $successText={t('auth.phoneNumberVerified')}
+              label={t('common.phoneNumber')}
               rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                { required: true, message: t('common.requiredField') },
+                () => ({
+                  validator(_, value) {
+                    if (!value || isValidPhoneNumber(value)) {
+                      return Promise.resolve();
+                    }
+                    if (formattedPhoneNumber.length > 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                    } else if (formattedPhoneNumber.length < 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                    }
+                  },
+                }),
               ]}
+              style={
+                isDesktop || isTablet
+                  ? {
+                      width: '50%',
+                      margin: 'auto',
+                      direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+                  : {
+                      width: '80%',
+                      margin: '0 10%',
+                      direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+              }
             >
-              <Input />
-            </BaseForm.Item>
+              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+            </BaseButtonsForm.Item>
             <BaseForm.Item
               name={['userDto', 'password']}
               label={<LableText>{t('companies.password')}</LableText>}

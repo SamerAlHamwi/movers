@@ -348,7 +348,7 @@ export const AddRequest: React.FC = () => {
       form.getFieldValue('phoneNumberDestination'),
     );
     const sourceContact = {
-      dailCode: dialCodeS,
+      dailCode: '+' + dialCodeS,
       phoneNumber: phoneNumberS,
       firstNameContact: form.getFieldValue('firstNameContactSource'),
       lastNameContact: form.getFieldValue('lastNameContactSource'),
@@ -358,7 +358,7 @@ export const AddRequest: React.FC = () => {
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
-      dailCode: dialCodeD,
+      dailCode: '+' + dialCodeD,
       phoneNumber: phoneNumberD,
       firstNameContact: form.getFieldValue('firstNameContactDestination'),
       lastNameContact: form.getFieldValue('lastNameContactDestination'),
