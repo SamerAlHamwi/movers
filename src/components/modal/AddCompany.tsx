@@ -20,8 +20,7 @@ import {
   PlusOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
-import { message, Alert } from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
@@ -41,11 +40,7 @@ import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
-<<<<<<< HEAD
 import { RcFile, UploadFile } from 'antd/es/upload';
-=======
-import { useForm } from 'react-hook-form';
->>>>>>> update
 
 const { Step } = Steps;
 const steps = [
@@ -186,7 +181,6 @@ export const AddCompany: React.FC = () => {
   //   updatedBranches[index][field] = value;
   //   setBranches(updatedBranches);
   // };
-  const { register, reset } = useForm();
 
   const country = useQuery(
     ['Countries'],
@@ -333,11 +327,6 @@ export const AddCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
-    // reset the city and region fields
-    reset({
-      cityId: null,
-      regionId: null,
-    }); // reset the city and region fields
   };
 
   const removeService = (index: any) => {
@@ -713,12 +702,11 @@ export const AddCompany: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeRegionHandler}>
-                {Contry_id &&
-                  Data?.map((Region) => (
-                    <Select key={Region?.name} value={Region?.id}>
-                      {Region?.name}
-                    </Select>
-                  ))}
+                {Data?.map((Region) => (
+                  <Select key={Region?.name} value={Region?.id}>
+                    {Region?.name}
+                  </Select>
+                ))}
               </Select>
             </BaseForm.Item>
 
@@ -1006,8 +994,6 @@ export const AddCompany: React.FC = () => {
                     onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
                   >
                     <PlusOutlined />
-                    {/* <CreateButtonText>
-                  </CreateButtonText> */}
                   </Button>
                 </div>
               </>
