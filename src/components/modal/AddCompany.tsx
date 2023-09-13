@@ -10,13 +10,17 @@ import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
+  BankOutlined,
   ClearOutlined,
   DeleteOutlined,
   FilePdfTwoTone,
   InboxOutlined,
   LoadingOutlined,
+  PictureOutlined,
+  PlusCircleOutlined,
   PlusOutlined,
   PushpinOutlined,
+  UserAddOutlined,
   UserOutlined,
 } from '@ant-design/icons';
 import { Button, Col, Input, Radio, Row, Steps, Tabs } from 'antd';
@@ -534,13 +538,13 @@ export const AddCompany: React.FC = () => {
             title={t(`companies.${step.title}`)}
             icon={
               index === 0 ? (
-                <UserOutlined />
+                <BankOutlined />
               ) : index === 1 ? (
-                <PushpinOutlined />
+                <UserAddOutlined />
               ) : index === 2 ? (
                 <ClearOutlined />
               ) : index === 3 ? (
-                <ClearOutlined />
+                <PictureOutlined />
               ) : undefined
             }
           />

@@ -21,8 +21,8 @@ const Error404Page = lazy(() => import('@app/pages/ErrorsPages/Error404Page'));
 const Logout = lazy(() => import('./Logout'));
 const StatisticsAdmin = lazy(() => import('@app/pages/StatsticsPages/StatisticsPage'));
 const StatisticsManager = lazy(() => import('@app/pages/StatsticsPages/StatisticsManagerPage'));
-const UserPage = lazy(() => import('@app/pages/AllUsersPages/UsersPage'));
-const ManagerPage = lazy(() => import('@app/pages/AllUsersPages/ManagersPage'));
+const UserPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/UsersPage'));
+const ManagerPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/ManagersPage'));
 const ServicePage = lazy(() => import('@app/pages/ServicesPages/ServicesPage'));
 const SubServicePage = lazy(() => import('@app/pages/ServicesPages/SubServicesPage'));
 const ToolPage = lazy(() => import('@app/pages/ServicesPages/ToolsPage'));
@@ -37,13 +37,13 @@ const Notifications = lazy(() => import('@app/pages/RelatedPages/NotificationsPa
 const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
-const Companiespage = lazy(() => import('@app/pages/AllUsersPages/Companiespage'));
-const AddCompaniesPage = lazy(() => import('@app/pages/AllUsersPages/AddCompanyPage'));
+const Companiespage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/Companiespage'));
+const AddCompaniesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddCompanyPage'));
 const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
-const Brokerspage = lazy(() => import('@app/pages/AllUsersPages/BrokerPage'));
-const Partnerspage = lazy(() => import('@app/pages/AllUsersPages/PartnersPage'));
+const Brokerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/BrokerPage'));
+const Partnerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/PartnersPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);

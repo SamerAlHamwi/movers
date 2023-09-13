@@ -14,6 +14,7 @@ import {
   UsergroupAddOutlined,
   PlusCircleOutlined,
   AuditOutlined,
+  HomeOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -57,7 +58,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.Companies',
     key: 'Companies',
     url: '/companies',
-    icon: <PlusCircleOutlined />,
+    icon: <BankOutlined />,
   },
   {
     title: 'sidebarNavigation.Services',
@@ -69,7 +70,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.SourceType',
     key: 'sourceType',
     url: `/sourceType`,
-    icon: <BankOutlined />,
+    icon: <HomeOutlined />,
   },
   {
     title: 'sidebarNavigation.Locations',
