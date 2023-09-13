@@ -409,7 +409,6 @@ export const AddCompany: React.FC = () => {
             console.log(updatedFormData);
             handleUploadSuccess(photoUrl);
           }
-
           return updatedFormData;
         });
       })
