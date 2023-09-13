@@ -44,6 +44,7 @@ import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
+import { useForm } from 'react-hook-form';
 
 const { Step } = Steps;
 const steps = [
@@ -167,6 +168,7 @@ export const AddCompany: React.FC = () => {
   //   updatedBranches[index][field] = value;
   //   setBranches(updatedBranches);
   // };
+  const { register, reset } = useForm();
 
   const country = useQuery(
     ['Countries'],
@@ -255,6 +257,7 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
+
   const ChangeSubServiceHandler = (index: number, e: any) => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], subserviceId: e };
@@ -325,6 +328,11 @@ export const AddCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
+    // reset the city and region fields
+    reset({
+      cityId: null,
+      regionId: null,
+    }); // reset the city and region fields
   };
 
   const removeService = (index: any) => {
@@ -673,11 +681,12 @@ export const AddCompany: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeRegionHandler}>
-                {Data?.map((Region) => (
-                  <Select key={Region?.name} value={Region?.id}>
-                    {Region?.name}
-                  </Select>
-                ))}
+                {Contry_id &&
+                  Data?.map((Region) => (
+                    <Select key={Region?.name} value={Region?.id}>
+                      {Region?.name}
+                    </Select>
+                  ))}
               </Select>
             </BaseForm.Item>
 
