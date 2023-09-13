@@ -10,7 +10,7 @@ const Brokerspage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('Brokers.Brokers')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.Brokers')}</PageTitle>
       <Brokers />
     </>
   );

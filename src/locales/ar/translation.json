@@ -29,6 +29,7 @@
     "cancel": "إلغاء",
     "Previous": "السابق",
     "delete": "حذف",
+    "done": "إرسال",
     "edit": "تعديل",
     "create": "إنشاء",
     "upload": "تحميل",
@@ -232,7 +233,7 @@
   "companies": {
     "companiesList": "قائمة الشركات",
     "CountryName": "اسم البلد",
-    "selectTool":"حدد أداة",
+    "selectTool": "حدد أداة",
     "CityName": "اسم المدينة",
     "addressA": " العنوان بالعربية ",
     "address": "العنوان بالإنكليزية ",
@@ -505,7 +506,9 @@
     "PrivacyPolicy": "سياسة الخصوصية",
     "Roles": "الأدوار",
     "Requests": "طلبات النقل",
-    "addRequest": "إضافة طلب نقل"
+    "addRequest": "إضافة طلب نقل",
+    "addcompany": "إضافة شركة",
+    "companies": "الشركات"
   },
   "header": {
     "changeLanguage": "تغيير اللغة",

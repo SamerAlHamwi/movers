@@ -29,6 +29,7 @@
     "cancel": "Cancel",
     "Previous": "Previous",
     "delete": "Delete",
+    "done": "Done",
     "edit": "Edit",
     "create": "Create",
     "upload": "Upload",
@@ -242,7 +243,10 @@
 
     "CityName": "City Name",
     "addressA": " ArabicAdress",
+
     "address": "English Adress",
+    "selectTool": "Select Tool",
+    "Adress": "Address",
     "Add Service": "Add Service",
     "PhoneNumber": "Phone Number",
     "editeCompanyModalTitle": "Edit Company",
@@ -250,8 +254,8 @@
     "Remove": "Remove",
     "Email": "Email",
     "addCompanyModalTitle": "Add Company",
-    "addCompaniesModalTitle": "Add Comapny",
-    "addCompany": "Add Comapny",
+    "addCompaniesModalTitle": "Add Comapany",
+    "addCompany": "Add Comapany",
     "services": "Services",
     "service1": "Service1",
     "service2": "Service2",
@@ -515,7 +519,9 @@
     "PrivacyPolicy": "Privacy Policy",
     "Roles": "Roles",
     "Requests": "Requests",
-    "addRequest": "Add Request For Quotations"
+    "addRequest": "Add Request For Quotations",
+    "addcompany": "Add Comapany",
+    "companies": "Companies"
   },
   "header": {
     "changeLanguage": "Change language",
@@ -557,7 +563,7 @@
       "gameDetails": "Game Details",
       "companyList": "Companies List",
       "companyCode": "Company code",
-      "companyId": "Comapny Id",
+      "companyId": "Comapany Id",
       "players": "Players",
       "playerCompanyRole": {
         "playerCompanyRole": "Player company role",
@@ -825,9 +831,9 @@
       }
     },
     "SRLDD": "Start Round Last Decision Duration",
-    "CCRAMI": "Calculate market indicator and comapny result",
+    "CCRAMI": "Calculate market indicator and comapany result",
     "CMI": "Calculate market indicator",
-    "CCR": "Calculate comapny result",
+    "CCR": "Calculate comapany result",
     "SLDD": "Start Last Decision Duration",
     "SLDDModalDescription": "Wanna start last decision duration?",
     "end": "End Round",

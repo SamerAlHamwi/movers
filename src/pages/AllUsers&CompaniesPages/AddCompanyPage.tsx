@@ -7,7 +7,7 @@ const AddCompanyPage: React.FC = () => {
   const { t } = useTranslation();
   return (
     <>
-      <PageTitle>{t('compnies.addcompany')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.addcompany')}</PageTitle>
       <AddCompany />
     </>
   );
