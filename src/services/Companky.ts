@@ -6,7 +6,7 @@ import apiPrefix from '@app/constants/apiPrefix';
 // eslint-disable-next-line
 const getAllCompanies = async (page: number, pageSize: number) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${apiPrefix.companies}/GetAll`);
+  return await httpApi.get(`${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
 };
 // eslint-disable-next-line
 const Deletce = async (id: number) => {
