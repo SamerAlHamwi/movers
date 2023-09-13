@@ -10,13 +10,10 @@ import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
+  BankOutlined,
   ClearOutlined,
   DeleteOutlined,
   FilePdfTwoTone,
-<<<<<<< HEAD
-  FolderAddTwoTone,
-=======
->>>>>>> develop
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
@@ -46,10 +43,7 @@ import { tools } from '../Admin/Services/tools';
 import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-<<<<<<< HEAD
-=======
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
->>>>>>> develop
 
 const { Step } = Steps;
 const steps = [
@@ -318,12 +312,6 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
-<<<<<<< HEAD
-  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
-  const [selectedCity, setSelectedCity] = useState<string | null>(null);
-  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
-=======
->>>>>>> develop
 
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
@@ -337,9 +325,6 @@ export const AddCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
-    setSelectedCountry(e);
-    setSelectedCity(null); // Reset the selected city
-    setSelectedRegion(null);
   };
 
   const removeService = (index: any) => {
@@ -431,16 +416,7 @@ export const AddCompany: React.FC = () => {
         message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
       }),
   );
-<<<<<<< HEAD
-  const uploadButton = (
-    <div>
-      <PlusOutlined />
-      <div className="ant-upload-text">Upload</div>
-    </div>
-  );
-=======
 
->>>>>>> develop
   const addCompany = useMutation((data: CompanyModal) =>
     createCompany(data)
       .then((data: any) => {
@@ -561,11 +537,7 @@ export const AddCompany: React.FC = () => {
             title={t(`companies.${step.title}`)}
             icon={
               index === 0 ? (
-<<<<<<< HEAD
-                <PlusCircleOutlined />
-=======
                 <BankOutlined />
->>>>>>> develop
               ) : index === 1 ? (
                 <UserAddOutlined />
               ) : index === 2 ? (
@@ -666,7 +638,7 @@ export const AddCompany: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeCountryHandler} defaultValue={selectedCountry}>
+              <Select onChange={ChangeCountryHandler}>
                 {countryData?.map((country) => (
                   <Option key={country.id} value={country.id}>
                     {country?.name}
@@ -683,7 +655,7 @@ export const AddCompany: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeCityHandler} value={selectedCity} defaultValue={selectedCity}>
+              <Select onChange={ChangeCityHandler}>
                 {Data?.map((city) => (
                   <Select key={city.name} value={city.id}>
                     {city?.name}
@@ -700,7 +672,7 @@ export const AddCompany: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeRegionHandler} value={selectedRegion} defaultValue={selectedRegion}>
+              <Select onChange={ChangeRegionHandler}>
                 {Data?.map((Region) => (
                   <Select key={Region?.name} value={Region?.id}>
                     {Region?.name}
@@ -872,17 +844,10 @@ export const AddCompany: React.FC = () => {
             >
               <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
-<<<<<<< HEAD
-            <BaseForm.Item
-              name={['userDto', 'password']}
-              label={<LableText>{t('companies.password')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-=======
 
             <Auth.FormItem
               label={t('auth.password')}
               name={['userDto', 'password']}
->>>>>>> develop
               rules={[
                 {
                   required: true,
