@@ -13,17 +13,15 @@ import {
   BankOutlined,
   ClearOutlined,
   DeleteOutlined,
+  FileAddOutlined,
   FilePdfTwoTone,
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
-  PlusCircleOutlined,
   PlusOutlined,
-  PushpinOutlined,
   UserAddOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Input, Radio, Row, Steps, Tabs } from 'antd';
+import { Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
 import { Space, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -44,15 +42,16 @@ import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
+import { RcFile, UploadFile } from 'antd/es/upload';
 
 const { Step } = Steps;
 const steps = [
-  {
-    title: 'Company Information',
-  },
-  {
-    title: 'Userinformation',
-  },
+  // {
+  //   title: 'Company Information',
+  // },
+  // {
+  //   title: 'Userinformation',
+  // },
   {
     title: 'Services',
   },
@@ -94,11 +93,18 @@ let companyInfo: any = {
   },
 
   companyProfilePhotoId: 0,
-  companyOwnerIdentityIds: [0],
-  companyCommercialRegisterIds: [0],
-  additionalAttachmentIds: [0],
+  companyOwnerIdentityIds: [],
+  companyCommercialRegisterIds: [],
+  additionalAttachmentIds: [],
   availableCitiesIds: [],
 };
+const getBase64 = (file: RcFile): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 export const AddCompany: React.FC = () => {
   const [form] = BaseForm.useForm();
@@ -121,7 +127,6 @@ export const AddCompany: React.FC = () => {
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
   const [tool_id, settoolId] = useState(0);
-  const [Serviece_id, setServieceId] = useState(0);
   const [uploadSuccess, setUploadSuccess] = useState(false);
   const [uploadSucces, setUploadSucces] = useState(false);
   const [uploadSucce, setUploadSucce] = useState(false);
@@ -144,6 +149,17 @@ export const AddCompany: React.FC = () => {
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [fileOwnerList, setFileOwnerList] = useState([]);
+  const [imageOwnerList, setImageOwnerList] = useState([]);
+  const [fileCommercialList, setFileCommercialList] = useState([]);
+  const [imageCommercialList, setImageCommercialList] = useState([]);
+  const [fileOtherList, setFileOtherList] = useState([]);
+  const [imageOtherList, setImageOtherList] = useState([]);
+  const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
+  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
 
   // const [activeTab, setActiveTab] = useState('1');
   // const addBranch = () => {
@@ -255,11 +271,11 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
+
   const ChangeSubServiceHandler = (index: number, e: any) => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], subserviceId: e };
     setServices(updatedServices);
-    console.log('sdzzzzzzzzzzzzfghjkl', e);
     getAllTools(e, e, page, pageSize)
       .then((data) => {
         const result = data?.data?.result?.items;
@@ -268,8 +284,9 @@ export const AddCompany: React.FC = () => {
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
-      }); /////////////
+      });
   };
+
   const handleSubserviceSelection = (index: number, e: any) => {
     ChangeSubServiceHandler(index, e);
     getAllTools('', e, page, pageSize)
@@ -282,36 +299,23 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
   };
-  // const ChangeSubServieceHandler = (index: any, e: any) => {
-  //   const updatedServices = [...services];
-  //   updatedServices[index] = { ...updatedServices[index], subserviceId: e };
-  //   setServices(updatedServices);
+
+  const ChangeRegionHandler = (e: any) => {
+    setRegionId(e);
+  };
+
+  // const ChangesubHandler = (index: any, e: any) => {
+  //   settoolId(e);
   //   getAllTools('', e, page, pageSize)
   //     .then((data) => {
   //       const result = data?.data?.result?.items;
   //       setTotalCount(data?.data?.result?.totalCount);
-  //       setDatt(result);
+  //       setData(result);
   //     })
   //     .catch((error) => {
   //       notificationController.error({ message: error.message || error.error?.message });
   //     });
   // };
-
-  const ChangeRegionHandler = (e: any) => {
-    setRegionId(e);
-  };
-  const ChangesubHandler = (index: any, e: any) => {
-    settoolId(e);
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
 
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
@@ -358,13 +362,29 @@ export const AddCompany: React.FC = () => {
   const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
     const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
     const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    console.log(dialCode);
-
     return {
       dialCode,
       phoneNumber,
     };
   };
+
+  const handleCancel = () => {
+    setPreviewOpen(false);
+  };
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+  };
+
+  // const handleChange = ({ fileList, imageList }: any) => {
+  //   setFileOwnerList(fileList);
+  //   setImageList(imageList);
+  // };
 
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
@@ -382,6 +402,9 @@ export const AddCompany: React.FC = () => {
               ...updatedFormData,
               companyOwnerIdentityIds: [...updatedFormData.companyOwnerIdentityIds, photoId],
             };
+            console.log(photoId);
+            console.log(updatedFormData);
+
             setOwnerIdentityIds(photoId);
             handleUploadSucces(photoUrl);
           } else if (refType === 10) {
@@ -405,8 +428,6 @@ export const AddCompany: React.FC = () => {
               companyProfilePhotoId: photoId,
             };
             setLogo(photoId);
-            console.log(photoId);
-            console.log(updatedFormData);
             handleUploadSuccess(photoUrl);
           }
           return updatedFormData;
@@ -435,6 +456,7 @@ export const AddCompany: React.FC = () => {
     const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
+    const updatedFormData = { ...formData };
     companyInfo = {
       ...companyInfo,
       translations: [
@@ -466,25 +488,34 @@ export const AddCompany: React.FC = () => {
       serviceType: valueRadio,
       services: services,
       companyProfilePhotoId: logo,
-      companyCommercialRegisterIds: [CommercialRegisterIds],
-      additionalAttachmentIds: [additionalAttachmentIds],
-      companyOwnerIdentityIds: [OwnerIdentityIds],
+      additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
+      companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
+      companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
       comment: form.getFieldValue('comment'),
       regionId: Region_id,
     };
-    const updatedFormData = { ...formData };
-
-    console.log(companyInfo);
     updatedFormData.translations = companyInfo.translations;
-    updatedFormData.companyOwnerIdentityIds = updatedFormData.companyOwnerIdentityIds.filter((id: any) => id !== 0);
-    updatedFormData.companyCommercialRegisterIds = updatedFormData.companyCommercialRegisterIds.filter(
-      (id: any) => id !== 0,
-    );
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
     updatedFormData.isActive = true;
     addCompany.mutate(companyInfo);
     navigate('/companies');
   };
+
+  const uploadImageButton = (
+    <div style={{ color: '#40aaff' }}>
+      <PictureOutlined />
+      <div className="ant-upload-text">Upload Image</div>
+    </div>
+  );
+
+  const uploadFileButton = (
+    <div style={{ color: 'rgb(14 190 21)' }}>
+      <div>
+        <FileAddOutlined />
+      </div>
+      <div className="ant-upload-text">Upload File</div>
+    </div>
+  );
 
   return (
     <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
@@ -550,7 +581,7 @@ export const AddCompany: React.FC = () => {
         ))}
       </Steps>
       <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
-        {current === 0 && (
+        {current === 3 && (
           <>
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
@@ -973,7 +1004,7 @@ export const AddCompany: React.FC = () => {
             ))}
           </>
         )}
-        {current === 3 && (
+        {current === 0 && (
           <>
             <Text
               style={{
@@ -986,51 +1017,56 @@ export const AddCompany: React.FC = () => {
             >
               {t("companies. Uploadfiles (copy of the company's ID)")}
             </Text>
-            <UploadDragger
-              style={
-                isDesktop || isTablet
-                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
-                  : { width: '80%', margin: '0 10%' }
-              }
-              beforeUpload={(file) => {
-                const formData = new FormData();
-                formData.append('RefType', '9');
-                formData.append('file', file);
-                uploadImage.mutate(formData);
-                return false;
-              }}
-              accept=".jpeg, .png, .jpg ,.Pdf"
-              multiple={false}
-              showUploadList={false}
-            >
-              {attachments.length > 0 ? (
-                <Space>
-                  <InboxOutlined />
-                  <a href={attachments[1]?.url} target="_blank" rel="noopener noreferrer">
-                    {attachments[1]?.name}
-                  </a>
-                  {attachments[1]?.reftype === '9' && (
-                    <img
-                      src={attachments[1]?.url}
-                      alt={attachments[1]?.name}
-                      style={{ width: '100px', height: '100px' }}
-                    />
-                  )}
-                </Space>
-              ) : (
-                <>
-                  {uploadSucces ? (
-                    <div>
-                      <img src={uploadedPhotoid} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
-                    </div>
-                  ) : (
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined /> <FilePdfTwoTone />
-                    </p>
-                  )}
-                </>
-              )}
-            </UploadDragger>
+            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Col>
+                <Upload
+                  key="image-owner"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={imageOwnerList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '9');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageOwnerList(e.fileList)}
+                  maxCount={1}
+                >
+                  {imageOwnerList.length >= 1 ? null : uploadImageButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+              <Col>
+                <Upload
+                  key="file-owner"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".Pdf"
+                  listType="picture-card"
+                  fileList={fileOwnerList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '9');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setFileOwnerList(e.fileList)}
+                  maxCount={1}
+                >
+                  {fileOwnerList.length >= 1 ? null : uploadFileButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
 
             <Text
               style={{
@@ -1043,44 +1079,56 @@ export const AddCompany: React.FC = () => {
             >
               {t('companies.Upload files (Commercial Register)')}
             </Text>
-            <UploadDragger
-              style={
-                isDesktop || isTablet
-                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
-                  : { width: '80%', margin: '0 10%' }
-              }
-              beforeUpload={(file) => {
-                const formData = new FormData();
-                formData.append('RefType', '10');
-                formData.append('file', file);
-                uploadImage.mutate(formData);
-                return false;
-              }}
-              accept=".jpeg, .png, .jpg"
-              multiple={false}
-              showUploadList={false}
-            >
-              {attachments.length > 0 ? (
-                <Space>
-                  <InboxOutlined />
-                  <a href={attachments[2]?.url} target="_blank" rel="noopener noreferrer">
-                    {attachments[2]?.name}
-                  </a>
-                </Space>
-              ) : (
-                <>
-                  {uploadSucce ? (
-                    <div>
-                      <img src={uploadedPhotoreg} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
-                    </div>
-                  ) : (
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined /> <FilePdfTwoTone />
-                    </p>
-                  )}
-                </>
-              )}
-            </UploadDragger>
+            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Col>
+                <Upload
+                  key="image-commercial "
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={imageCommercialList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '10');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageCommercialList(e.fileList)}
+                  maxCount={1}
+                >
+                  {imageCommercialList.length >= 1 ? null : uploadImageButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+              <Col>
+                <Upload
+                  key="file-commercial "
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".Pdf"
+                  listType="picture-card"
+                  fileList={fileCommercialList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '10');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setFileCommercialList(e.fileList)}
+                  maxCount={1}
+                >
+                  {fileCommercialList.length >= 1 ? null : uploadFileButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
 
             <Text
               style={{
@@ -1093,49 +1141,56 @@ export const AddCompany: React.FC = () => {
             >
               {t('companies.Upload additional  files (3 maximum)')}
             </Text>
-            <UploadDragger
-              style={
-                isDesktop || isTablet
-                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
-                  : { width: '80%', margin: '0 10%' }
-              }
-              beforeUpload={(file) => {
-                const formData = new FormData();
-                formData.append('RefType', '11');
-                formData.append('file', file);
-                uploadImage.mutate(formData);
-                return false;
-              }}
-              accept=".jpeg, .png, .jpg"
-              multiple={false}
-              showUploadList={false}
-            >
-              {attachments.length > 0 ? (
-                <Space>
-                  <InboxOutlined />
-                  <a href={attachments[3]?.url} target="_blank" rel="noopener noreferrer">
-                    {attachments[3]?.name}
-                  </a>
-                  <img
-                    src={attachments[3]?.url}
-                    alt={attachments[3]?.name}
-                    style={{ width: '100px', height: '100px' }}
-                  />
-                </Space>
-              ) : (
-                <>
-                  {uploadSucc ? (
-                    <div>
-                      <img src={uploadedPhotoidin} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
-                    </div>
-                  ) : (
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined /> <FilePdfTwoTone />
-                    </p>
-                  )}
-                </>
-              )}
-            </UploadDragger>
+            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Col>
+                <Upload
+                  key="image-other"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={imageOtherList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '11');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageOtherList(e.fileList)}
+                  maxCount={3}
+                >
+                  {imageOtherList.length >= 3 ? null : uploadImageButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+              <Col>
+                <Upload
+                  key="file-other"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".Pdf"
+                  listType="picture-card"
+                  fileList={fileOtherList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '11');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setFileOtherList(e.fileList)}
+                  maxCount={3}
+                >
+                  {fileOtherList.length >= 3 ? null : uploadFileButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
 
             <BaseForm.Item key={88} name="comment">
               <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />

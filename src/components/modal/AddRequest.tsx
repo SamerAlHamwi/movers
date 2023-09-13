@@ -128,6 +128,10 @@ export const AddRequest: React.FC = () => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
+  const handleChange = ({ fileList }: any) => {
+    setFileList(fileList);
+  };
+
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
     onSuccess: (data: any) => {
       if (data.data.success) {
@@ -143,10 +147,6 @@ export const AddRequest: React.FC = () => {
       message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
     },
   });
-
-  const handleChange = ({ fileList }: any) => {
-    setFileList(fileList);
-  };
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
