@@ -14,7 +14,6 @@ import {
   ClearOutlined,
   DeleteOutlined,
   FileAddOutlined,
-  FilePdfTwoTone,
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
@@ -22,7 +21,7 @@ import {
   UserAddOutlined,
 } from '@ant-design/icons';
 import { Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
-import { Space, message, Alert } from 'antd';
+import { message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
@@ -46,12 +45,12 @@ import { RcFile, UploadFile } from 'antd/es/upload';
 
 const { Step } = Steps;
 const steps = [
-  // {
-  //   title: 'Company Information',
-  // },
-  // {
-  //   title: 'Userinformation',
-  // },
+  {
+    title: 'Company Information',
+  },
+  {
+    title: 'Userinformation',
+  },
   {
     title: 'Services',
   },
@@ -581,7 +580,7 @@ export const AddCompany: React.FC = () => {
         ))}
       </Steps>
       <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
-        {current === 3 && (
+        {current === 0 && (
           <>
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
@@ -1004,7 +1003,7 @@ export const AddCompany: React.FC = () => {
             ))}
           </>
         )}
-        {current === 0 && (
+        {current === 3 && (
           <>
             <Text
               style={{
