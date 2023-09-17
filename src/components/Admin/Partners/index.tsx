@@ -30,7 +30,7 @@ import {
   DeletePartner,
   UpdatePartner,
   getAllPartner,
-} from '@app/services/Partner';
+} from '@app/services/partner';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
 

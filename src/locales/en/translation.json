@@ -482,7 +482,9 @@
 
   "_comment18": "*********************************** Branches ************************************************",
   "branch": {
-    "addBranchModalTitle": ""
+    "addBranchModalTitle": "Add Branch",
+    "addBranch": "Add Branch",
+    "addBranchSuccessMessage": "The Branch has been Added Successfully"
   },
 
   "error404": {
@@ -513,7 +515,8 @@
     "Requests": "Requests",
     "addRequest": "Add Request For Quotations",
     "addcompany": "Add Comapany",
-    "companies": "Companies"
+    "companies": "Companies",
+    "AddBranch": "Add Branch"
   },
   "header": {
     "changeLanguage": "Change language",

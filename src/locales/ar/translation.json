@@ -477,7 +477,9 @@
 
   "_comment18": "*********************************** Branches ************************************************",
   "branch": {
-    "addBranchModalTitle": ""
+    "addBranchModalTitle": "إضافة فرع للشركة",
+    "addBranch": "إضافة فرع للشركة",
+    "addBranchSuccessMessage": "تمت إضافة الفرع بنجاح"
   },
 
   "error404": {
@@ -508,7 +510,8 @@
     "Requests": "طلبات النقل",
     "addRequest": "إضافة طلب نقل",
     "addcompany": "إضافة شركة",
-    "companies": "الشركات"
+    "companies": "الشركات",
+    "AddBranch": "إضافة فرع لشركة"
   },
   "header": {
     "changeLanguage": "تغيير اللغة",

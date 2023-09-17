@@ -1,46 +1,31 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CompanyModal, subservices } from '@app/interfaces/interfaces';
+import { BranchModel, CompanyModal, subservices } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
-import { Text } from '../GeneralStyles';
-import { UploadDragger } from '../common/Upload/Upload';
-import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { uploadAttachment } from '@app/services/Attachment';
-import {
-  BankOutlined,
-  ClearOutlined,
-  DeleteOutlined,
-  FileAddOutlined,
-  InboxOutlined,
-  LoadingOutlined,
-  PictureOutlined,
-  PlusOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons';
-import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
+import { useMutation, useQuery } from 'react-query';
+import { BankOutlined, ClearOutlined, DeleteOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Col, Input, Row, Steps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
 import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
-import { getAllServices, getAllSubServices } from '@app/services/services';
-import { getAllTools } from '@app/services/tools';
+import { getServices, getSubServices } from '@app/services/services';
+import { getTools } from '@app/services/tools';
 import { services } from '../Admin/Services';
-import { createCompany } from '@app/services/company';
+import { createBranch } from '@app/services/branches';
 import { Card } from '@app/components/common/Card/Card';
-import { TextArea } from '../Admin/Translations';
 import { tools } from '../Admin/Services/tools';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
-import { RcFile, UploadFile } from 'antd/es/upload';
 
 const { Step } = Steps;
 const steps = [
@@ -52,9 +37,6 @@ const steps = [
   },
   {
     title: 'Services',
-  },
-  {
-    title: 'Attachment',
   },
 ];
 let companyInfo: any = {
@@ -83,104 +65,78 @@ let companyInfo: any = {
   },
   isActive: true,
   comment: 'string',
-  serviceType: 1,
   userDto: {
     dialCode: '963',
     phoneNumber: '0997829849',
     password: '865fghjk',
   },
-
-  companyProfilePhotoId: 0,
-  companyOwnerIdentityIds: [],
-  companyCommercialRegisterIds: [],
-  additionalAttachmentIds: [],
-  availableCitiesIds: [],
 };
-const getBase64 = (file: RcFile): Promise<string> =>
-  new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => resolve(reader.result as string);
-    reader.onerror = (error) => reject(error);
-  });
 
 export const AddBranch: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
-  const queryClient = useQueryClient();
   const navigate = useNavigate();
-  let record: services | undefined;
+  const { companyId } = useParams();
 
-  const [attachments, setAttachments] = useState<any[]>([]);
   const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
   const [countryPageSize, setcountryPageSize] = useAtom(gamesPageSizeAtom);
   const [Data, setData] = useState<cities[] | undefined>();
-  const [Dat, setDat] = useState<services[] | undefined>();
-  const [Datr, setDatr] = useState<subservices[] | undefined>();
-  const [Datt, setDatt] = useState<tools[] | undefined>();
   const [page, setPage] = useAtom(currentGamesPageAtom);
   const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
+  const [serviceId, setServiceId] = useState<string>('0');
+  const [subServiceId, setSubServiceId] = useState<string>('0');
+  const [toolId, setToolId] = useState<string>('0');
+
   const [Contry_id, setContryId] = useState(0);
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
-  const [tool_id, settoolId] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [uploadSucces, setUploadSucces] = useState(false);
-  const [uploadSucce, setUploadSucce] = useState(false);
-  const [uploadSucc, setUploadSucc] = useState(false);
-  const [uploadedPhotoPR, setUploadedPhotoPR] = useState('');
-  const [uploadedPhotoid, setUploadedPhotoid] = useState('');
-  const [uploadedPhotoreg, setUploadedPhotoreg] = useState('');
-  const [uploadedPhotoidin, setUploadedPhotoidin] = useState('');
   const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
-  const [branches, setBranches] = useState<any[]>([]);
   const [current, setCurrent] = useState(0);
-  const [attachmentId, setAttachmentId] = useState<number>(0);
-  const [urlAfterUpload, setUrlAfterUpload] = useState('');
-  const [valueRadio, setValueRadio] = useState(1);
-  const [logo, setLogo] = useState();
-  const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
-  const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
-  const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-  const [previewOpen, setPreviewOpen] = useState(false);
-  const [previewImage, setPreviewImage] = useState('');
-  const [previewTitle, setPreviewTitle] = useState('');
-  const [fileOwnerList, setFileOwnerList] = useState([]);
-  const [imageOwnerList, setImageOwnerList] = useState([]);
-  const [fileCommercialList, setFileCommercialList] = useState([]);
-  const [imageCommercialList, setImageCommercialList] = useState([]);
-  const [fileOtherList, setFileOtherList] = useState([]);
-  const [imageOtherList, setImageOtherList] = useState([]);
-  const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
 
-  // const [activeTab, setActiveTab] = useState('1');
-  // const addBranch = () => {
-  //   const newBranch = {
-  //     phone: '',
-  //     email: '',
-  //     region: '',
-  //     city: '',
-  //     country: '',
-  //     website: '',
-  //   };
-  //   setBranches([...branches, newBranch]);
-  // };
-  // const removeBranch = (index: number) => {
-  //   const updatedBranches = [...branches];
-  //   updatedBranches.splice(index, 1);
-  //   setBranches(updatedBranches);
-  // };
-  // const handleBranchChange = (index: number, field: string, value: string) => {
-  //   const updatedBranches = [...branches];
-  //   updatedBranches[index][field] = value;
-  //   setBranches(updatedBranches);
-  // };
+  const GetAllServices = useQuery('getAllServices', getServices);
+  const { data: subServicesData, refetch: subServicesRefetch } = useQuery(
+    'getSubServices',
+    () => getSubServices(serviceId),
+    {
+      enabled: serviceId !== '0',
+    },
+  );
+  const { data: toolsData, refetch: toolsRefetch } = useQuery('getTools', () => getTools(subServiceId), {
+    enabled: subServiceId !== '0',
+  });
+  useEffect(() => {
+    subServicesRefetch();
+    toolsRefetch();
+  }, [serviceId, subServiceId]);
+
+  const ChangeServieceHandler = (e: any, index: number) => {
+    setServiceId(e);
+    form.setFieldValue(['services', index, 'subserviceId'], '');
+    form.setFieldValue(['services', index, 'toolId'], '');
+    const updatedServices = [...services];
+    updatedServices[index] = { ...updatedServices[index], serviceId: e };
+    setServices(updatedServices);
+  };
+
+  const ChangeSubServiceHandler = (e: any, index: number) => {
+    setSubServiceId(e);
+    form.setFieldValue(['services', index, 'toolId'], '');
+    const updatedServices = [...services];
+    updatedServices[index] = { ...updatedServices[index], subserviceId: e };
+    setServices(updatedServices);
+  };
+
+  const ChangeToolsHandler = (e: any, index: number) => {
+    setToolId(e);
+    const updatedServices = [...services];
+    updatedServices[index] = { ...updatedServices[index], toolId: e };
+    setServices(updatedServices);
+  };
 
   const country = useQuery(
     ['Countries'],
@@ -199,121 +155,9 @@ export const AddBranch: React.FC = () => {
     },
   );
 
-  const ser = useQuery(
-    ['Services', page, pageSize],
-    () =>
-      getAllServices(page, pageSize)
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setDat(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: Dat === undefined,
-    },
-  );
-
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
-  const handleUploadSuccess = (photoUrl: any) => {
-    setUploadSuccess(true);
-    setUploadedPhotoPR(photoUrl);
-  };
-
-  const handleUploadSucces = (photoUrl: any) => {
-    setUploadSucces(true);
-    setUploadedPhotoid(photoUrl);
-  };
-
-  const handleUploadSucce = (photoUrl: any) => {
-    setUploadSucce(true);
-    setUploadedPhotoreg(photoUrl);
-  };
-
-  const handleUploadSucc = (photoUrl: any) => {
-    setUploadSucc(true);
-    setUploadedPhotoidin(photoUrl);
-  };
-
-  const ChangeServieceHandler = (index: any, e: any) => {
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], serviceId: e };
-    setServices(updatedServices);
-
-    getAllSubServices(e, page, pageSize)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setDatr(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-
-  const ChangeSubServiceHandler = (index: number, e: any) => {
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], subserviceId: e };
-    setServices(updatedServices);
-    getAllTools(e, e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-
-  const handleSubserviceSelection = (index: number, e: any) => {
-    ChangeSubServiceHandler(index, e);
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-
   const ChangeRegionHandler = (e: any) => {
     setRegionId(e);
   };
-
-  // const ChangesubHandler = (index: any, e: any) => {
-  //   settoolId(e);
-  //   getAllTools('', e, page, pageSize)
-  //     .then((data) => {
-  //       const result = data?.data?.result?.items;
-  //       setTotalCount(data?.data?.result?.totalCount);
-  //       setData(result);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     });
-  // };
 
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
@@ -327,12 +171,6 @@ export const AddBranch: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
-  };
-
-  const removeService = (index: any) => {
-    const updatedServices = [...services];
-    updatedServices.splice(index, 1);
-    setServices(updatedServices);
   };
 
   const ChangeCityHandler = (e: any) => {
@@ -349,8 +187,21 @@ export const AddBranch: React.FC = () => {
       });
   };
 
-  const isServiceSelected = (serviceId: any) => {
-    return services.some((service) => service.serviceId === serviceId);
+  const removeService = (index: any) => {
+    form.setFieldValue(['services', index, 'serviceId'], '');
+    form.setFieldValue(['services', index, 'subserviceId'], '');
+    form.setFieldValue(['services', index, 'toolId'], '');
+    const updatedServices = [...services];
+    updatedServices.splice(index, 1);
+    setServices(updatedServices);
+  };
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
   };
 
   const handleFormattedValueChange = (value: string) => {
@@ -366,81 +217,10 @@ export const AddBranch: React.FC = () => {
     };
   };
 
-  const handleCancel = () => {
-    setPreviewOpen(false);
-  };
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as RcFile);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
-  };
-
-  // const handleChange = ({ fileList, imageList }: any) => {
-  //   setFileOwnerList(fileList);
-  //   setImageList(imageList);
-  // };
-
-  const uploadImage = useMutation((data: FormData) =>
-    uploadAttachment(data)
-      .then((response) => {
-        response.data.success &&
-          (setAttachmentId(response.data.result?.id), setUrlAfterUpload(response.data.result?.url));
-
-        const photoId = response.data.result.id;
-        const refType = response.data.result.refType;
-        const photoUrl = response.data.result.url;
-        setFormData((prevFormData) => {
-          let updatedFormData = { ...prevFormData };
-          if (refType === 9) {
-            updatedFormData = {
-              ...updatedFormData,
-              companyOwnerIdentityIds: [...updatedFormData.companyOwnerIdentityIds, photoId],
-            };
-            console.log(photoId);
-            console.log(updatedFormData);
-
-            setOwnerIdentityIds(photoId);
-            handleUploadSucces(photoUrl);
-          } else if (refType === 10) {
-            updatedFormData = {
-              ...updatedFormData,
-              companyCommercialRegisterIds: [...updatedFormData.companyCommercialRegisterIds, photoId],
-            };
-            setCommercialRegisterIds(photoId);
-            handleUploadSucce(photoUrl);
-          } else if (refType === 11) {
-            updatedFormData = {
-              ...updatedFormData,
-              additionalAttachmentIds: [...updatedFormData.additionalAttachmentIds, photoId],
-            };
-            setAdditionalAttachmentIds(photoId);
-            handleUploadSucc(photoUrl);
-          } else if (refType === 8) {
-            updatedFormData = {
-              ...updatedFormData,
-
-              companyProfilePhotoId: photoId,
-            };
-            setLogo(photoId);
-            handleUploadSuccess(photoUrl);
-          }
-          return updatedFormData;
-        });
-      })
-      .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-      }),
-  );
-
-  const addCompany = useMutation((data: CompanyModal) =>
-    createCompany(data)
+  const addBranch = useMutation((data: BranchModel) =>
+    createBranch(data)
       .then((data: any) => {
-        notificationController.success({ message: t('companies.addCompanySuccessMessage') });
-        queryClient.invalidateQueries('AllCompanies');
+        notificationController.success({ message: t('branch.addBranchSuccessMessage') });
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -457,6 +237,7 @@ export const AddBranch: React.FC = () => {
     const updatedFormData = { ...formData };
     companyInfo = {
       ...companyInfo,
+      companyId: companyId,
       translations: [
         {
           name: form.getFieldValue(['translations', 0, 'name']),
@@ -476,47 +257,25 @@ export const AddBranch: React.FC = () => {
         phoneNumber: phoneNumberC,
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
-        isForBranchCompany: false,
+        isForBranchCompany: true,
       },
       userDto: {
         dialCode: '+' + dialCodeU,
         phoneNumber: phoneNumberU,
         password: form.getFieldValue(['userDto', 'password']),
       },
-      serviceType: valueRadio,
       services: services,
-      companyProfilePhotoId: logo,
-      additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
-      companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
-      companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
-      comment: form.getFieldValue('comment'),
       regionId: Region_id,
     };
     updatedFormData.translations = companyInfo.translations;
-    updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
-    updatedFormData.isActive = true;
-    addCompany.mutate(companyInfo);
+    console.log(companyInfo);
+
+    addBranch.mutate(companyInfo);
     navigate('/companies');
   };
 
-  const uploadImageButton = (
-    <div style={{ color: '#40aaff' }}>
-      <PictureOutlined />
-      <div className="ant-upload-text">Upload Image</div>
-    </div>
-  );
-
-  const uploadFileButton = (
-    <div style={{ color: 'rgb(14 190 21)' }}>
-      <div>
-        <FileAddOutlined />
-      </div>
-      <div className="ant-upload-text">Upload File</div>
-    </div>
-  );
-
   return (
-    <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
+    <Card title={t('branch.addBranch')} padding="1.25rem 1.25rem 1.25rem">
       <Row justify={'end'} style={{ width: '100%' }}>
         {current > 0 && (
           <Button
@@ -552,7 +311,8 @@ export const AddBranch: React.FC = () => {
               height: 'auto',
             }}
             htmlType="submit"
-            disabled={addCompany.isLoading || uploadImage.isLoading}
+            // disabled={addBranch.isLoading || uploadImage.isLoading}
+            disabled={addBranch.isLoading}
             onClick={() => onFinish(form.getFieldsValue())}
           >
             {t('common.done')}
@@ -571,8 +331,6 @@ export const AddBranch: React.FC = () => {
                 <UserAddOutlined />
               ) : index === 2 ? (
                 <ClearOutlined />
-              ) : index === 3 ? (
-                <PictureOutlined />
               ) : undefined
             }
           />
@@ -776,7 +534,7 @@ export const AddBranch: React.FC = () => {
                   <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
                 </BaseButtonsForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              {/* <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <UploadDragger
                   maxCount={1}
                   listType="text"
@@ -821,7 +579,7 @@ export const AddBranch: React.FC = () => {
                     </p>
                   </div>
                 </UploadDragger>
-              </Col>
+              </Col> */}
             </Row>
           </>
         )}
@@ -893,25 +651,148 @@ export const AddBranch: React.FC = () => {
         )}
         {current === 2 && (
           <>
-            <BaseForm.Item key={10} name="serviceType">
-              <Radio.Group
-                style={{ display: 'flex', width: '100%' }}
-                onChange={(event) => {
-                  setValueRadio(event.target.value);
-                }}
-              >
-                <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Internal
-                </Radio>
-                <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  External
-                </Radio>
-                <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Both
-                </Radio>
-              </Radio.Group>
-            </BaseForm.Item>
             {services.map((service, index) => (
+              <>
+                <div key={index}>
+                  <Card padding="1.25rem 1.25rem 1.25rem" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
+                    {index !== 0 && (
+                      <Button
+                        type="primary"
+                        style={{
+                          width: '5rem',
+                          height: 'auto',
+                          display: 'flex',
+                          alignItems: 'center',
+                          textAlign: 'center',
+                          margin: '2rem auto 0',
+                          justifyContent: 'space-around',
+                        }}
+                        onClick={() => removeService(index)}
+                      >
+                        <DeleteOutlined />
+                      </Button>
+                    )}
+                    <BaseForm.Item
+                      label={<LableText>{t('companies.selectService')}</LableText>}
+                      name={['services', index, 'serviceId']}
+                      style={
+                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                      ]}
+                    >
+                      <Select
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option: any) =>
+                          option!.children?.toLowerCase().includes(input?.toLowerCase())
+                        }
+                        filterSort={(optionA: any, optionB: any) =>
+                          optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                        }
+                        onChange={(e) => ChangeServieceHandler(e, index)}
+                      >
+                        {GetAllServices?.data?.data?.result?.items?.map((ele: any) => {
+                          return (
+                            <Option value={ele.id} key={ele?.id}>
+                              {ele.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </BaseForm.Item>
+                    <BaseForm.Item
+                      label={<LableText>{t('companies.selectSubService')}</LableText>}
+                      name={['services', index, 'subserviceId']}
+                      style={
+                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                      ]}
+                    >
+                      <Select
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option: any) =>
+                          option!.children?.toLowerCase().includes(input?.toLowerCase())
+                        }
+                        filterSort={(optionA: any, optionB: any) =>
+                          optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                        }
+                        onChange={(e) => ChangeSubServiceHandler(e, index)}
+                        value={subServiceId}
+                      >
+                        {subServicesData?.data?.result?.items?.map((ele: any) => {
+                          return (
+                            <Option value={ele.id} key={ele?.id}>
+                              {ele.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </BaseForm.Item>
+                    <BaseForm.Item
+                      label={<LableText>{t('companies.selectTool')}</LableText>}
+                      name={['services', index, 'toolId']}
+                      style={
+                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                      }
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                      ]}
+                    >
+                      <Select
+                        showSearch
+                        optionFilterProp="children"
+                        filterOption={(input, option: any) =>
+                          option!.children?.toLowerCase().includes(input?.toLowerCase())
+                        }
+                        filterSort={(optionA: any, optionB: any) =>
+                          optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                        }
+                        onChange={(e) => ChangeToolsHandler(e, index)}
+                      >
+                        {toolsData?.data?.result?.items?.map((ele: any) => {
+                          return (
+                            <Option value={ele.id} key={ele?.id}>
+                              {ele.name}
+                            </Option>
+                          );
+                        })}
+                      </Select>
+                    </BaseForm.Item>
+                  </Card>
+                  <Button
+                    type="primary"
+                    style={{
+                      width: '8rem',
+                      height: 'auto',
+                      display: 'flex',
+                      alignItems: 'center',
+                      textAlign: 'center',
+                      margin: '2rem auto',
+                      justifyContent: 'space-around',
+                    }}
+                    onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
+                  >
+                    <PlusOutlined />
+                  </Button>
+                </div>
+              </>
+            ))}
+
+            {/* {services.map((service, index) => (
               <>
                 <div key={index}>
                   <Card padding="1.25rem 1.25rem 1.25rem" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
@@ -999,200 +880,7 @@ export const AddBranch: React.FC = () => {
                   </Button>
                 </div>
               </>
-            ))}
-          </>
-        )}
-        {current === 3 && (
-          <>
-            <Text
-              style={{
-                color: '#01509A',
-                fontSize: FONT_SIZE.md,
-                marginBottom: '3rem',
-                paddingTop: '17px',
-                textAlign: 'center',
-              }}
-            >
-              {t("companies. Uploadfiles (copy of the company's ID)")}
-            </Text>
-            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Col>
-                <Upload
-                  key="image-owner"
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  accept=".jpeg,.png,.jpg"
-                  listType="picture-card"
-                  fileList={imageOwnerList}
-                  onPreview={handlePreview}
-                  beforeUpload={(file) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '9');
-                    formData.append('file', file);
-                    uploadImage.mutate(formData);
-                    return false;
-                  }}
-                  onChange={(e: any) => setImageOwnerList(e.fileList)}
-                  maxCount={1}
-                >
-                  {imageOwnerList.length >= 1 ? null : uploadImageButton}
-                </Upload>
-                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                </Modal>
-              </Col>
-              <Col>
-                <Upload
-                  key="file-owner"
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  accept=".Pdf"
-                  listType="picture-card"
-                  fileList={fileOwnerList}
-                  onPreview={handlePreview}
-                  beforeUpload={(file) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '9');
-                    formData.append('file', file);
-                    uploadImage.mutate(formData);
-                    return false;
-                  }}
-                  onChange={(e: any) => setFileOwnerList(e.fileList)}
-                  maxCount={1}
-                >
-                  {fileOwnerList.length >= 1 ? null : uploadFileButton}
-                </Upload>
-                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                </Modal>
-              </Col>
-            </Row>
-
-            <Text
-              style={{
-                color: '#01509A',
-                fontSize: FONT_SIZE.md,
-                marginBottom: '3rem',
-                paddingTop: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {t('companies.Upload files (Commercial Register)')}
-            </Text>
-            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Col>
-                <Upload
-                  key="image-commercial "
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  accept=".jpeg,.png,.jpg"
-                  listType="picture-card"
-                  fileList={imageCommercialList}
-                  onPreview={handlePreview}
-                  beforeUpload={(file) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '10');
-                    formData.append('file', file);
-                    uploadImage.mutate(formData);
-                    return false;
-                  }}
-                  onChange={(e: any) => setImageCommercialList(e.fileList)}
-                  maxCount={1}
-                >
-                  {imageCommercialList.length >= 1 ? null : uploadImageButton}
-                </Upload>
-                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                </Modal>
-              </Col>
-              <Col>
-                <Upload
-                  key="file-commercial "
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  accept=".Pdf"
-                  listType="picture-card"
-                  fileList={fileCommercialList}
-                  onPreview={handlePreview}
-                  beforeUpload={(file) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '10');
-                    formData.append('file', file);
-                    uploadImage.mutate(formData);
-                    return false;
-                  }}
-                  onChange={(e: any) => setFileCommercialList(e.fileList)}
-                  maxCount={1}
-                >
-                  {fileCommercialList.length >= 1 ? null : uploadFileButton}
-                </Upload>
-                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                </Modal>
-              </Col>
-            </Row>
-
-            <Text
-              style={{
-                color: '#01509A',
-                fontSize: FONT_SIZE.md,
-                marginBottom: '3rem',
-                paddingTop: '16px',
-                textAlign: 'center',
-              }}
-            >
-              {t('companies.Upload additional  files (3 maximum)')}
-            </Text>
-            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
-              <Col>
-                <Upload
-                  key="image-other"
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  accept=".jpeg,.png,.jpg"
-                  listType="picture-card"
-                  fileList={imageOtherList}
-                  onPreview={handlePreview}
-                  beforeUpload={(file) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '11');
-                    formData.append('file', file);
-                    uploadImage.mutate(formData);
-                    return false;
-                  }}
-                  onChange={(e: any) => setImageOtherList(e.fileList)}
-                  maxCount={3}
-                >
-                  {imageOtherList.length >= 3 ? null : uploadImageButton}
-                </Upload>
-                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                </Modal>
-              </Col>
-              <Col>
-                <Upload
-                  key="file-other"
-                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                  accept=".Pdf"
-                  listType="picture-card"
-                  fileList={fileOtherList}
-                  onPreview={handlePreview}
-                  beforeUpload={(file) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '11');
-                    formData.append('file', file);
-                    uploadImage.mutate(formData);
-                    return false;
-                  }}
-                  onChange={(e: any) => setFileOtherList(e.fileList)}
-                  maxCount={3}
-                >
-                  {fileOtherList.length >= 3 ? null : uploadFileButton}
-                </Upload>
-                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                </Modal>
-              </Col>
-            </Row>
-
-            <BaseForm.Item key={88} name="comment">
-              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
-            </BaseForm.Item>
+            ))} */}
           </>
         )}
       </BaseForm>

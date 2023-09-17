@@ -166,7 +166,7 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="companies/:branchId/AddBranch"
+            path="companies/:companyId/AddBranch"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddBranchesPage />

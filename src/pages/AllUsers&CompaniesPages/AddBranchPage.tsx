@@ -7,7 +7,7 @@ const AddBranchPage: React.FC = () => {
   const { t } = useTranslation();
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.AddBranchPage')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.AddBranch')}</PageTitle>
       <AddBranch />
     </>
   );

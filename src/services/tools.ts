@@ -20,6 +20,10 @@ const getAllTools = async (
   }
 };
 
+const getTools = async (subServiceId: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.tools}/GetAll?SubServiceId=${subServiceId}`);
+};
+
 const createTool = async (data: SourceTypeModel) => {
   return await httpApi.post(`${apiPrefix.tools}/Create`, data);
 };
@@ -32,4 +36,4 @@ const UpdateTool = async (data: any) => {
   return await httpApi.put(`${apiPrefix.tools}/Update`, data);
 };
 
-export { getAllTools, createTool, DeleteTool, UpdateTool };
+export { getAllTools, getTools, createTool, DeleteTool, UpdateTool };
