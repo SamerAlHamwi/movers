@@ -247,10 +247,8 @@
     "Adress": "العنوان",
     "Country name": "اسم البلد",
     "Companybioar": "وصف بالعربية",
-
     "name": "الاسم بالانكليزية",
     "Remove": "حذف",
-
     "bio": " وصف بالإنكليزية",
     "Add Service": "إضافة خدمة",
     "editeCompanyModalTitle": "تعديل الشركة",
@@ -263,13 +261,11 @@
     "Services": "الخدمات",
     "Company Branches": "فروع الشركة",
     "Company Information": "معلومات الشركة",
-
     "website": "الموقع الالكتروني",
     "selectService": "حدد خدمة",
     " Uploadfiles (copy of the company's ID)": "صورة هوية لمالك الشركة",
     "Upload files (Commercial Register)": "سجل الشركة التجاري",
     "Upload additional  files (3 maximum)": "ملفات إضافية عللى الاكثر 3 ملفات",
-
     "Regionname": "اسم المنطقة",
     " Profile": "صورة الشركة",
     "deleteCompanySuccessMessage": " تم حذف الشركة بنجاح",
@@ -278,7 +274,6 @@
     "PhoneNumber": "رقم الهاتف",
     "CompanydialCode": "الرمز الدولي",
     "Userinformation": "معلومات المستخدم",
-
     "password": "كلمة المرور",
     "activateManagerConfirm": "تفعيل الشركة",
     "deactivateManagerConfirm": "إلغاء تفعيل الشركة",

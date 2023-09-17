@@ -14,15 +14,13 @@ import {
   ClearOutlined,
   DeleteOutlined,
   FileAddOutlined,
-  FilePdfTwoTone,
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
   PlusOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
-import { Space, message, Alert } from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
@@ -38,7 +36,7 @@ import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
 import { tools } from '../Admin/Services/tools';
-import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm';
+import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
@@ -46,12 +44,12 @@ import { RcFile, UploadFile } from 'antd/es/upload';
 
 const { Step } = Steps;
 const steps = [
-  // {
-  //   title: 'Company Information',
-  // },
-  // {
-  //   title: 'Userinformation',
-  // },
+  {
+    title: 'Company Information',
+  },
+  {
+    title: 'Userinformation',
+  },
   {
     title: 'Services',
   },
@@ -581,7 +579,7 @@ export const AddCompany: React.FC = () => {
         ))}
       </Steps>
       <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
-        {current === 3 && (
+        {current === 0 && (
           <>
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
@@ -727,9 +725,36 @@ export const AddCompany: React.FC = () => {
 
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+                <BaseForm.Item
+                  label={<LableText>{t('companies.CompanyEmail')}</LableText>}
+                  name={['companyContact', 'emailAddress']}
+                  style={{ marginTop: '-1rem' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Input value={companyInfo?.companyContact?.emailAddress} />
+                </BaseForm.Item>
+              </Col>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+                <BaseForm.Item
+                  label={<LableText>{t('companies.website')}</LableText>}
+                  name={['companyContact', 'webSite']}
+                  style={{ marginTop: '-1rem' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Input value={companyInfo?.companyContact?.webSite} />
+                </BaseForm.Item>
+              </Col>
+            </Row>
+            <Row>
+              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseButtonsForm.Item
+                  key={current}
                   name={['companyContact', 'phoneNumber']}
-                  $successText={t('auth.phoneNumberVerified')}
+                  // $successText={t('auth.phoneNumberVerified')}
                   label={t('common.phoneNumber')}
                   rules={[
                     { required: true, message: t('common.requiredField') },
@@ -748,34 +773,8 @@ export const AddCompany: React.FC = () => {
                   ]}
                   style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
                 >
-                  <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+                  <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
                 </BaseButtonsForm.Item>
-              </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <BaseForm.Item
-                  label={<LableText>{t('companies.CompanyEmail')}</LableText>}
-                  name={['companyContact', 'emailAddress']}
-                  style={{ marginTop: '-1rem' }}
-                  rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                  ]}
-                >
-                  <Input value={companyInfo?.companyContact?.emailAddress} />
-                </BaseForm.Item>
-              </Col>
-            </Row>
-            <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <BaseForm.Item
-                  label={<LableText>{t('companies.website')}</LableText>}
-                  name={['companyContact', 'webSite']}
-                  style={{ marginTop: '-1rem' }}
-                  rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                  ]}
-                >
-                  <Input value={companyInfo?.companyContact?.webSite} />
-                </BaseForm.Item>
               </Col>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <UploadDragger
@@ -841,6 +840,7 @@ export const AddCompany: React.FC = () => {
               {t('companies.Userinformation')}
             </h2>
             <BaseButtonsForm.Item
+              key={current}
               name={['userDto', 'phoneNumber']}
               $successText={t('auth.phoneNumberVerified')}
               label={t('common.phoneNumber')}
@@ -873,7 +873,7 @@ export const AddCompany: React.FC = () => {
                     }
               }
             >
-              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+              <PhoneInput key={2} onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
 
             <Auth.FormItem
@@ -996,15 +996,13 @@ export const AddCompany: React.FC = () => {
                     onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
                   >
                     <PlusOutlined />
-                    {/* <CreateButtonText>
-                  </CreateButtonText> */}
                   </Button>
                 </div>
               </>
             ))}
           </>
         )}
-        {current === 0 && (
+        {current === 3 && (
           <>
             <Text
               style={{

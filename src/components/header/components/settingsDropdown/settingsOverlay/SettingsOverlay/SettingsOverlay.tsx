@@ -10,7 +10,7 @@ export const SettingsOverlay: React.FC = ({ ...props }) => {
 
   return (
     <S.SettingsOverlayMenu mode="inline" selectable={false} {...props}>
-      <DropdownCollapse bordered={false} expandIconPosition="right" ghost defaultActiveKey="themePicker">
+      <DropdownCollapse bordered={false} expandIconPosition="right" ghost>
         <DropdownCollapse.Panel header={t('header.changeLanguage')} key="languagePicker">
           <LanguagePicker />
         </DropdownCollapse.Panel>

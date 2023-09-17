@@ -234,7 +234,6 @@
     "CountryName": "Country Name",
     "CityName": "City Name",
     "addressA": " ArabicAdress",
-
     "address": "English Adress",
     "selectTool": "Select Tool",
     "Adress": "Address",
@@ -256,7 +255,6 @@
     "name": "English Name",
     "bio": " English Description",
     "City name": "City Name",
-
     "Contact Information": "Contact Information",
     "CompanyPhoneNumber": "Company PhoneNumber",
     "CompanyEmail": "Company Email",
@@ -264,13 +262,11 @@
     "Services": "Services",
     "Company Branches": "Company Branches",
     "Company Information": "Company Information",
-
     "website": "Website",
     "selectService": "Select Service",
     " Uploadfiles (copy of the company's ID)": "Companies, Upload Files, Owner ID",
     "Upload files (Commercial Register)": "Upload Files (Commercial License)",
     "Upload additional  files (3 maximum)": "Other Files",
-
     "Regionname": "Region Name",
     " Profile": "Company Profile",
     "deleteCompanySuccessMessage": " Delete  the Company Done",
