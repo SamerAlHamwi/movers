@@ -79,6 +79,11 @@ const getAllRegions = async (id: string | undefined, page: number, pageSize: num
     }SkipCount=${skip}&MaxResultCount=${pageSize}`,
   );
 };
+const getregions = async (id: string | undefined, countryStatus?: number) => {
+  return await httpApi.get(
+    `${apiPrefix.regions}/GetAll?CityId=${id}&${countryStatus ? `IsActive=${countryStatus}&` : ''}`,
+  );
+};
 
 const createRegion = async (data: RegionModel) => {
   return await httpApi.post(`${apiPrefix.regions}/Create`, data);
@@ -110,6 +115,7 @@ export {
   DeActivateCountry,
   getAllCities,
   getCities,
+  getregions,
   createCity,
   DeleteCity,
   UpdateCity,

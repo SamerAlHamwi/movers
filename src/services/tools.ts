@@ -19,6 +19,13 @@ const getAllTools = async (
     );
   }
 };
+const gettools = async (serviceId: string | undefined, subServiceId: string | undefined) => {
+  if (serviceId && !subServiceId) {
+    return await httpApi.get(`${apiPrefix.tools}/GetAll?ServiceId=${serviceId}`);
+  } else if (serviceId && subServiceId) {
+    return await httpApi.get(`${apiPrefix.tools}/GetAll?SubServiceId=${subServiceId}`);
+  }
+};
 
 const createTool = async (data: SourceTypeModel) => {
   return await httpApi.post(`${apiPrefix.tools}/Create`, data);
@@ -32,4 +39,4 @@ const UpdateTool = async (data: any) => {
   return await httpApi.put(`${apiPrefix.tools}/Update`, data);
 };
 
-export { getAllTools, createTool, DeleteTool, UpdateTool };
+export { getAllTools, gettools, createTool, DeleteTool, UpdateTool };
