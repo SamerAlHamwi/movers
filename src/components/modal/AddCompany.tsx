@@ -119,6 +119,8 @@ export const AddCompany: React.FC = () => {
   const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
   const [Contry_id, setContryId] = useState(0);
+  const [isCountrySelected, setIsCountrySelected] = useState(false);
+
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
   const [tool_id, settoolId] = useState(0);
@@ -138,6 +140,8 @@ export const AddCompany: React.FC = () => {
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
+  const [selectedCity, setSelectedCity] = useState(null);
+
   const [valueRadio, setValueRadio] = useState(1);
   const [logo, setLogo] = useState();
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
@@ -318,7 +322,8 @@ export const AddCompany: React.FC = () => {
 
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
-
+    setData([]);
+    setCityId(0);
     getAllCities(e, page, pageSize)
       .then((data) => {
         const result = data.data?.result?.items;
@@ -328,11 +333,6 @@ export const AddCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
-    // reset the city and region fields
-    reset({
-      cityId: null,
-      regionId: null,
-    }); // reset the city and region fields
   };
 
   const removeService = (index: any) => {
@@ -342,17 +342,19 @@ export const AddCompany: React.FC = () => {
   };
 
   const ChangeCityHandler = (e: any) => {
-    setCityId(e);
+    if (isCountrySelected) {
+      setCityId(e);
 
-    getAllRegions(e, page, pageSize)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
+      getAllRegions(e, page, pageSize)
+        .then((data) => {
+          const result = data.data?.result?.items;
+          setTotalCount(data.data?.result?.totalCount);
+          setData(result);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        });
+    }
   };
 
   const isServiceSelected = (serviceId: any) => {
@@ -663,8 +665,8 @@ export const AddCompany: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeCityHandler}>
-                {Data?.map((city) => (
+              <Select onChange={ChangeCityHandler} value={City_id}>
+                {Data?.map((city: any) => (
                   <Select key={city.name} value={city.id}>
                     {city?.name}
                   </Select>
