@@ -23,14 +23,14 @@ import {
 import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
+import { getCities, getCountries, getregions } from '@app/services/locations';
 import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
-import { getAllServices, getAllSubServices } from '@app/services/services';
-import { getAllTools } from '@app/services/tools';
+import { getServices, getSubServices } from '@app/services/services';
+import { getAllTools, getTools } from '@app/services/tools';
 import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
@@ -189,7 +189,7 @@ export const AddCompany: React.FC = () => {
   const country = useQuery(
     ['Countries'],
     () =>
-      getAllCountries(countryPage, countryPageSize)
+      getCountries()
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -204,9 +204,9 @@ export const AddCompany: React.FC = () => {
   );
 
   const ser = useQuery(
-    ['Services', page, pageSize],
+    ['Services'],
     () =>
-      getAllServices(page, pageSize)
+      getServices()
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -252,8 +252,10 @@ export const AddCompany: React.FC = () => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], serviceId: e };
     setServices(updatedServices);
+    form.setFieldValue(`services[${0}].toolId`, '');
+    form.setFieldValue(`services[${0}].subservieceId`, '');
 
-    getAllSubServices(e, page, pageSize)
+    getSubServices(e)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);
@@ -263,7 +265,7 @@ export const AddCompany: React.FC = () => {
         notificationController.error({ message: error.message || error.error?.message });
       });
 
-    getAllTools('', e, page, pageSize)
+    getTools(e)
       .then((data) => {
         const result = data?.data?.result?.items;
         setTotalCount(data?.data?.result?.totalCount);
@@ -278,7 +280,7 @@ export const AddCompany: React.FC = () => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], subserviceId: e };
     setServices(updatedServices);
-    getAllTools(e, e, page, pageSize)
+    getTools(e)
       .then((data) => {
         const result = data?.data?.result?.items;
         setTotalCount(data?.data?.result?.totalCount);
@@ -321,9 +323,8 @@ export const AddCompany: React.FC = () => {
 
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
-    setData([]);
-    setCityId(0);
-    getAllCities(e, page, pageSize)
+    form.setFieldValue('cityId', '');
+    getCities(e)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);
@@ -341,19 +342,18 @@ export const AddCompany: React.FC = () => {
   };
 
   const ChangeCityHandler = (e: any) => {
-    if (isCountrySelected) {
-      setCityId(e);
+    setCityId(e);
+    form.setFieldValue('regionId', '');
 
-      getAllRegions(e, page, pageSize)
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setData(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        });
-    }
+    getregions(e)
+      .then((data) => {
+        const result = data.data?.result?.items;
+        setTotalCount(data.data?.result?.totalCount);
+        setData(result);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      });
   };
 
   const isServiceSelected = (serviceId: any) => {
