@@ -480,6 +480,11 @@
     "sourceType": "Source Type"
   },
 
+  "_comment18": "*********************************** Branches ************************************************",
+  "branch": {
+    "addBranchModalTitle": ""
+  },
+
   "error404": {
     "comeBack": "Return to Home",
     "backToLogin": "Return to Login",

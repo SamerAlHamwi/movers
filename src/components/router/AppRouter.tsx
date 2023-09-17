@@ -1,7 +1,5 @@
 import React, { lazy } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-
-// no lazy loading for auth pages to avoid flickering
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import LoginPage from '@app/pages/AuthPages/LoginPage';
 import SecurityCodePage from '@app/pages/AuthPages/SecurityCodePage';
@@ -13,7 +11,6 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import { PrivateRoute } from '@app/hocs/withAuthorization';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { UserRole } from '@app/constants/userRole';
-//  //  //  //  //  AUTH  //  //  //  //  //
 
 const AuthLayout = lazy(() => import('@app/components/layouts/AuthLayout/AuthLayout'));
 const ServerErrorPage = lazy(() => import('@app/pages/ErrorsPages/ServerErrorPage'));
@@ -41,6 +38,7 @@ const Companiespage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/Comp
 const AddCompaniesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddCompanyPage'));
 const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
+const AddBranchPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddBranchPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
 const Brokerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/BrokerPage'));
 const Partnerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/PartnersPage'));
@@ -71,6 +69,7 @@ const CompanyPage = withLoading(Companiespage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
 const RequestsPage = withLoading(RequestPage);
 const AddRequestsPage = withLoading(AddRequestPage);
+const AddBranchesPage = withLoading(AddBranchPage);
 const RequestDetailsPage = withLoading(RequestDetailPage);
 const BrokerPage = withLoading(Brokerspage);
 const PartnerPage = withLoading(Partnerspage);
@@ -162,6 +161,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddCompanyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="companies/:branchId/AddBranch"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <AddBranchesPage />
               </PrivateRoute>
             }
           />

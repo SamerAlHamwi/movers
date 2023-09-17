@@ -16,4 +16,5 @@ export default {
   Mediator: '/api/services/app/Mediator',
   roles: '/api/services/app/Role',
   requests: '/api/services/app/RequestForQuotation',
+  branches: '/api/services/app/CompanyBranch',
 };
