@@ -389,7 +389,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   //     }),
   // );
 
-  const companyInfo: CompanyModal = {
+  const companyInfo: any = {
     translations: [
       {
         name: 'string',

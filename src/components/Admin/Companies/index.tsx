@@ -1,33 +1,31 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Popconfirm, Avatar } from 'antd';
+import { message, Row, Space, Avatar } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
-
-import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllUsers, Create, Update, Delete, Activate, DeActivate } from '@app/services/users';
-import { FONT_SIZE, FONT_WEIGHT, media } from '@app/styles/themes/constants';
+import { Activate, DeActivate } from '@app/services/users';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { defineColorBySeverity } from '@app/utils/utils';
-import { CompanyModal, UserModel } from '@app/interfaces/interfaces';
-import { Navigate, useNavigate } from 'react-router-dom';
+import { CompanyModal } from '@app/interfaces/interfaces';
+import { useNavigate } from 'react-router-dom';
 import { Deletce, Updatce, getAllCompanies } from '@app/services/company';
-import { LableText, Header, CreateButtonText, TableButton } from '../../GeneralStyles';
+import { Header, CreateButtonText, TableButton } from '../../GeneralStyles';
 import { EditCompany } from '@app/components/modal/EditCompany';
 
 export const Companies: React.FC = () => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+
   const [modalState, setModalState] = useState({
-    add: false,
     edit: false,
     delete: false,
   });
@@ -45,13 +43,11 @@ export const Companies: React.FC = () => {
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEmployee, setIsEmployee] = useState(false);
   const [attachmentData, setAttachmentData] = useState<CompanyModal>();
-
-  const [isHover, setIsHover] = useState(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
   const [managerType, setManagerType] = useState<number | string>('');
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
-  const navigate = useNavigate();
 
   const handleButtonClick = () => {
     // handle button click logic
@@ -200,6 +196,12 @@ export const Companies: React.FC = () => {
       }),
   );
 
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+    setRefetchOnAdd(false);
+  }, [refetchOnAdd, refetch]);
+
   const editManager = useMutation((data: CompanyModal) => Updatce(data));
 
   const handleEdit = (data: CompanyModal, id: number) => {
@@ -248,13 +250,21 @@ export const Companies: React.FC = () => {
     },
     { title: <Header>{t('companies.name')}</Header>, dataIndex: 'name' },
     { title: <Header>{t('companies.Adress')}</Header>, dataIndex: 'address' },
-    //{ title: <Header>{t('auth.dscription')}</Header>, dataIndex: 'bio' },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: CompanyModal) => {
         return (
           <Space>
+            <TableButton
+              severity="success"
+              onClick={() => {
+                navigate(`${record.id}/AddBranch`, { replace: false });
+              }}
+            >
+              <ApartmentOutlined />
+            </TableButton>
+
             <TableButton
               severity="info"
               onClick={() => {
@@ -274,92 +284,6 @@ export const Companies: React.FC = () => {
             >
               <DeleteOutlined />
             </TableButton>
-
-            {record.isActive === true ? (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('companies.deactivateManagerConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {deActivateManager.isLoading ? (
-                      <>
-                        {t(`common.deactivate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.deactivate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                // onConfirm={() => deActivateManager.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.deactivate')}</TableText>
-                </Button>
-              </Popconfirm>
-            ) : (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('companies.activateManagerConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {activateManager.isLoading ? (
-                      <>
-                        {t(`common.activate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.activate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                //  onConfirm={() => activateManager.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.activate')}</TableText>
-                </Button>
-              </Popconfirm>
-            )}
           </Space>
         );
       },
@@ -388,18 +312,6 @@ export const Companies: React.FC = () => {
           >
             <CreateButtonText>{t('companies.addCompany')}</CreateButtonText>
           </Button>
-
-          {/*    ADD    */}
-          {/* {modalState.add && (
-            <AddCompany
-              visible={modalState.add}
-              onCancel={() => handleModalClose('add')}
-              onCreateCompany={(CompanyInfo) => {
-                //addManager.mutateAsync(CompanyInfo);
-              }}
-              //isLoading={addManager.isLoading}
-            />
-          )} */}
 
           {/*    EDIT    */}
           {modalState.edit && (
