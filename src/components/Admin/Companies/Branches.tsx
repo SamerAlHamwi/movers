@@ -7,8 +7,7 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { createRole, DeleteRole, UpdateRole } from '@app/services/role';
-import { getAllBranches } from '@app/services/branches';
+import { DeleteBranch, getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -31,7 +30,7 @@ export const Branches: React.FC = () => {
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
-  const [dataSource, setDataSource] = useState<BranchModel[] | undefined>(undefined);
+  const [data, setData] = useState<BranchModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [editmodaldata, setEditmodaldata] = useState<BranchModel | undefined>(undefined);
@@ -54,7 +53,7 @@ export const Branches: React.FC = () => {
       getAllBranches(companyId, page, pageSize)
         .then((data) => {
           const result = data.data?.result?.items;
-          setDataSource(result);
+          setData(result);
           setTotalCount(data.data.result?.totalCount);
           setLoading(!data.data?.success);
         })
@@ -63,9 +62,38 @@ export const Branches: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined,
+      enabled: data === undefined,
     },
   );
+
+  const deleteBranch = useMutation((id: number) =>
+    DeleteBranch(id)
+      .then((data) => {
+        data.data?.success &&
+          (setIsDelete(data.data?.success),
+          message.open({
+            content: <Alert message={t('locations.deleteCountrySuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleDelete = (id: any) => {
+    if (page > 1 && data?.length === 1) {
+      deleteBranch.mutateAsync(id);
+      setPage(page - 1);
+    } else {
+      deleteBranch.mutateAsync(id);
+    }
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteBranch.isLoading }));
+  }, [deleteBranch.isLoading]);
 
   useEffect(() => {
     if (isRefetching) {
@@ -80,11 +108,11 @@ export const Branches: React.FC = () => {
     setIsDelete(false);
   }, [isDelete, isEdit, page, pageSize, refetch]);
 
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
+  //   useEffect(() => {
+  //     setLoading(true);
+  //     refetch();
+  //     setRefetchOnAdd(false);
+  //   }, [refetchOnAdd, refetch]);
 
   useEffect(() => {
     setLoading(true);
@@ -92,10 +120,10 @@ export const Branches: React.FC = () => {
   }, [refetch]);
 
   useEffect(() => {
-    if (page > 1 && dataSource?.length === 0) {
+    if (page > 1 && data?.length === 0) {
       setPage(1);
     }
-  }, [page, dataSource]);
+  }, [page, data]);
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -139,7 +167,7 @@ export const Branches: React.FC = () => {
       <Card
         title={t('branch.branchesList')}
         padding={
-          dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
+          data === undefined || data?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0'
         }
@@ -156,6 +184,39 @@ export const Branches: React.FC = () => {
           >
             <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
           </Button>
+
+          {/*    EDIT    */}
+          {/* {modalState.edit && (
+            <EditRole
+              values={editmodaldata}
+              visible={modalState.edit}
+              onCancel={() => handleModalClose('edit')}
+              onEdit={(info) => {
+                const displayName = info.name;
+                const values = { ...info, displayName };
+                editmodaldata !== undefined && handleEdit(values, editmodaldata.id);
+              }}
+              isLoading={editRole.isLoading}
+            />
+          )} */}
+
+          {/*    Delete    */}
+          {modalState.delete && (
+            <ActionModal
+              visible={modalState.delete}
+              onCancel={() => handleModalClose('delete')}
+              onOK={() => {
+                deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('branch.deleteBranchModalTitle')}
+              okText={t('common.delete')}
+              cancelText={t('common.cancel')}
+              description={t('branch.deleteBranchModalDescription')}
+              isDanger={true}
+              isLoading={deleteBranch.isLoading}
+            />
+          )}
         </Row>
 
         <Table
@@ -176,7 +237,7 @@ export const Branches: React.FC = () => {
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}
-          dataSource={dataSource}
+          dataSource={data}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
         />
       </Card>

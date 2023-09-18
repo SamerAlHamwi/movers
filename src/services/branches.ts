@@ -13,4 +13,8 @@ const createBranch = async (data: BranchModel) => {
   return await httpApi.post(`${apiPrefix.branches}/Create`, data);
 };
 
-export { getAllBranches, createBranch };
+const DeleteBranch = async (id: number) => {
+  return await httpApi.delete(`${apiPrefix.branches}/Delete?Id=${id}`);
+};
+
+export { getAllBranches, createBranch, DeleteBranch };

@@ -38,6 +38,7 @@ import { TextArea } from '../Admin/Translations';
 import { tools } from '../Admin/Services/tools';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';

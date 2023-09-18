@@ -249,6 +249,7 @@ export interface RoleModel {
 }
 
 export interface BranchModel {
+  id: number;
   companyId: number;
   regionId: number;
   companyContact: any;

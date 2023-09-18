@@ -10,7 +10,6 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
 import { BankOutlined, ClearOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
-import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -277,6 +276,8 @@ export const AddRequest: React.FC = () => {
   });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
+    console.log(expandedKeysValue);
+
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
@@ -866,7 +867,7 @@ export const AddRequest: React.FC = () => {
                       key={serviceIndex}
                       style={treeStyle}
                       checkable
-                      defaultExpandAll
+                      defaultExpandAll={true}
                       onExpand={onExpand}
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}

@@ -18,6 +18,7 @@ import { createBranch } from '@app/services/branches';
 import { Card } from '@app/components/common/Card/Card';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 
@@ -479,7 +480,7 @@ export const AddBranch: React.FC = () => {
                 </BaseForm.Item>
               </Col>
             </Row>
-            <Row>
+            <Row style={{ justifyContent: 'space-around' }}>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseButtonsForm.Item
                   key={current}
@@ -671,12 +672,12 @@ export const AddBranch: React.FC = () => {
                       style={
                         isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
                       }
-                      rules={[
-                        {
-                          required: true,
-                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                        },
-                      ]}
+                      // rules={[
+                      //   {
+                      //     required: true,
+                      //     message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      //   },
+                      // ]}
                     >
                       <Select
                         showSearch
