@@ -50,8 +50,7 @@ export const Companies: React.FC = () => {
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
 
   const handleButtonClick = () => {
-    // handle button click logic
-    navigate('/AddCompany', { replace: false });
+    navigate('/addCompany', { replace: false });
   };
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -125,21 +124,6 @@ export const Companies: React.FC = () => {
       setPage(1);
     }
   }, [page, dataSource]);
-
-  // const addManager = useMutation((data: CompanyModal) =>
-  //   Create(data)
-  //     .then((data) => {
-  //       notificationController.success({ message: t('managers.addManagerSuccessMessage') });
-  //       setRefetchOnAddManager(data.data?.success);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     }),
-  // );
-
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, add: addManager.isLoading }));
-  // }, [addManager.isLoading]);
 
   const deleteManager = useMutation((id: number) =>
     Deletce(id)
@@ -218,15 +202,6 @@ export const Companies: React.FC = () => {
       });
   };
 
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, delete: editManager.isLoading }));
-  // }, [editManager.isLoading]);
-
-  const TableText = styled.div`
-    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
-    font-weight: ${FONT_WEIGHT.regular};
-  `;
-
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -240,8 +215,6 @@ export const Companies: React.FC = () => {
               onClick={() => {
                 setIsOpenSliderImage(true);
                 setAttachmentData(record);
-
-                console.log(record);
               }}
             />
           </>
@@ -259,7 +232,8 @@ export const Companies: React.FC = () => {
             <TableButton
               severity="success"
               onClick={() => {
-                navigate(`${record.id}/AddBranch`, { replace: false });
+                // navigate(`${record.id}/addBranch`, { replace: false });
+                navigate(`${record.id}/branches`, { replace: false });
               }}
             >
               <ApartmentOutlined />

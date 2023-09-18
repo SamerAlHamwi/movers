@@ -5,24 +5,13 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
-import { useMutation, useQuery } from 'react-query';
+import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, DeleteOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Col, Input, Row, Steps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import {
-  getAllCities,
-  getAllCountries,
-  getAllRegions,
-  getCities,
-  getCountries,
-  getRegions,
-} from '@app/services/locations';
-import { useAtom } from 'jotai';
-import { countries } from '../Admin/Locations/Countries';
-import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
+import { getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
-import { cities } from '../Admin/Locations/Cities';
 import { getServices, getSubServices } from '@app/services/services';
 import { getTools } from '@app/services/tools';
 import { createBranch } from '@app/services/branches';
@@ -44,7 +33,7 @@ const steps = [
     title: 'Services',
   },
 ];
-let companyInfo: any = {
+let branchInfo: any = {
   translations: [
     {
       name: 'string',
@@ -68,8 +57,6 @@ let companyInfo: any = {
     webSite: 'string',
     isForBranchCompany: false,
   },
-  isActive: true,
-  comment: 'string',
   userDto: {
     dialCode: '963',
     phoneNumber: '0997829849',
@@ -82,29 +69,18 @@ export const AddBranch: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { companyId } = useParams();
+  const queryClient = useQueryClient();
 
-  const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
-  const [countryPageSize, setcountryPageSize] = useAtom(gamesPageSizeAtom);
-  const [Data, setData] = useState<cities[] | undefined>();
-  const [page, setPage] = useAtom(currentGamesPageAtom);
-  const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
-  const [countryData, setCountryData] = useState<countries[]>();
   const [serviceId, setServiceId] = useState<string>('0');
   const [subServiceId, setSubServiceId] = useState<string>('0');
   const [toolId, setToolId] = useState<string>('0');
-
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
-
-  //   const [Contry_id, setContryId] = useState(0);
-  //   const [City_id, setCityId] = useState(0);
-  //   const [Region_id, setRegionId] = useState(0);
   const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
-  const [totalCount, setTotalCount] = useState<number>(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
   const [current, setCurrent] = useState(0);
-  const [formData, setFormData] = useState<CompanyModal>(companyInfo);
+  const [formData, setFormData] = useState<CompanyModal>(branchInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
 
   const GetAllServices = useQuery('getAllServices', getServices);
@@ -217,6 +193,8 @@ export const AddBranch: React.FC = () => {
     createBranch(data)
       .then((data: any) => {
         notificationController.success({ message: t('branch.addBranchSuccessMessage') });
+        queryClient.invalidateQueries('getAllBranches');
+        navigate(`/companies/${companyId}/branches`);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -231,8 +209,8 @@ export const AddBranch: React.FC = () => {
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
     const updatedFormData = { ...formData };
-    companyInfo = {
-      ...companyInfo,
+    branchInfo = {
+      ...branchInfo,
       companyId: companyId,
       translations: [
         {
@@ -263,9 +241,8 @@ export const AddBranch: React.FC = () => {
       services: services,
       regionId: regionId,
     };
-    updatedFormData.translations = companyInfo.translations;
-    addBranch.mutate(companyInfo);
-    navigate('/companies');
+    updatedFormData.translations = branchInfo.translations;
+    addBranch.mutate(branchInfo);
   };
 
   return (
@@ -486,7 +463,7 @@ export const AddBranch: React.FC = () => {
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                   ]}
                 >
-                  <Input value={companyInfo?.companyContact?.emailAddress} />
+                  <Input value={branchInfo?.companyContact?.emailAddress} />
                 </BaseForm.Item>
               </Col>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
@@ -498,7 +475,7 @@ export const AddBranch: React.FC = () => {
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                   ]}
                 >
-                  <Input value={companyInfo?.companyContact?.webSite} />
+                  <Input value={branchInfo?.companyContact?.webSite} />
                 </BaseForm.Item>
               </Col>
             </Row>

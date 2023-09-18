@@ -8,7 +8,7 @@ const RegionPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('PrivacyPolicy.PrivacyPolicy')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.Locations')}</PageTitle>
       <Region />
     </>
   );

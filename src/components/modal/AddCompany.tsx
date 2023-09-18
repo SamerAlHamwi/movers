@@ -109,11 +109,8 @@ export const AddCompany: React.FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  let record: services | undefined;
+  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
 
-  const [attachments, setAttachments] = useState<any[]>([]);
-  const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
-  const [countryPageSize, setcountryPageSize] = useAtom(gamesPageSizeAtom);
   const [Data, setData] = useState<cities[] | undefined>();
   const [Dat, setDat] = useState<services[] | undefined>();
   const [Datr, setDatr] = useState<subservices[] | undefined>();
@@ -122,8 +119,6 @@ export const AddCompany: React.FC = () => {
   const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
   const [Contry_id, setContryId] = useState(0);
-  const [isCountrySelected, setIsCountrySelected] = useState(false);
-
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
   const [tool_id, settoolId] = useState(0);
@@ -137,13 +132,9 @@ export const AddCompany: React.FC = () => {
   const [uploadedPhotoidin, setUploadedPhotoidin] = useState('');
   const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
-  const [branches, setBranches] = useState<any[]>([]);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
-  const [selectedCity, setSelectedCity] = useState(null);
-
   const [valueRadio, setValueRadio] = useState(1);
   const [logo, setLogo] = useState();
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
@@ -160,31 +151,6 @@ export const AddCompany: React.FC = () => {
   const [imageCommercialList, setImageCommercialList] = useState([]);
   const [fileOtherList, setFileOtherList] = useState([]);
   const [imageOtherList, setImageOtherList] = useState([]);
-  const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
-
-  // const [activeTab, setActiveTab] = useState('1');
-  // const addBranch = () => {
-  //   const newBranch = {
-  //     phone: '',
-  //     email: '',
-  //     region: '',
-  //     city: '',
-  //     country: '',
-  //     website: '',
-  //   };
-  //   setBranches([...branches, newBranch]);
-  // };
-  // const removeBranch = (index: number) => {
-  //   const updatedBranches = [...branches];
-  //   updatedBranches.splice(index, 1);
-  //   setBranches(updatedBranches);
-  // };
-  // const handleBranchChange = (index: number, field: string, value: string) => {
-  //   const updatedBranches = [...branches];
-  //   updatedBranches[index][field] = value;
-  //   setBranches(updatedBranches);
-  // };
 
   const country = useQuery(
     ['Countries'],
@@ -309,19 +275,6 @@ export const AddCompany: React.FC = () => {
     setRegionId(e);
   };
 
-  // const ChangesubHandler = (index: any, e: any) => {
-  //   settoolId(e);
-  //   getAllTools('', e, page, pageSize)
-  //     .then((data) => {
-  //       const result = data?.data?.result?.items;
-  //       setTotalCount(data?.data?.result?.totalCount);
-  //       setData(result);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     });
-  // };
-
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
     form.setFieldValue('cityId', '');
@@ -387,11 +340,6 @@ export const AddCompany: React.FC = () => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-  // const handleChange = ({ fileList, imageList }: any) => {
-  //   setFileOwnerList(fileList);
-  //   setImageList(imageList);
-  // };
-
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
       .then((response) => {
@@ -449,6 +397,7 @@ export const AddCompany: React.FC = () => {
       .then((data: any) => {
         notificationController.success({ message: t('companies.addCompanySuccessMessage') });
         queryClient.invalidateQueries('AllCompanies');
+        navigate('/companies');
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -504,7 +453,6 @@ export const AddCompany: React.FC = () => {
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
     updatedFormData.isActive = true;
     addCompany.mutate(companyInfo);
-    navigate('/companies');
   };
 
   const uploadImageButton = (

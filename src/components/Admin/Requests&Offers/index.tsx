@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { message, Row, Space } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { AddRequest } from '@app/components/modal/AddRequest';
 import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -327,25 +326,10 @@ export const Requests: React.FC = () => {
               width: 'auto',
               height: 'auto',
             }}
-            // onClick={() => handleModalOpen('add')}
-            onClick={() => navigate('/AddRequest', { replace: false })}
+            onClick={() => navigate('/addRequest', { replace: false })}
           >
             <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
           </Button>
-
-          {/*    ADD    */}
-          {/* {modalState.add && (
-            <AddRequest
-              visible={modalState.add}
-              onCancel={() => handleModalClose('add')}
-              onCreate={(info) => {
-                const displayName = info.name;
-                const values = { ...info, displayName };
-                addRequest.mutateAsync(values);
-              }}
-              isLoading={addRequest.isLoading}
-            />
-          )} */}
 
           {/*    EDIT    */}
           {modalState.edit && (

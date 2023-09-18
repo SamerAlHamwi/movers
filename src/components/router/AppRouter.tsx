@@ -36,6 +36,7 @@ const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPa
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
 const Companiespage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/Companiespage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddCompanyPage'));
+const BranchesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/BranchPage'));
 const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
 const AddBranchPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddBranchPage'));
@@ -67,6 +68,7 @@ const PrivacyPolicyPage = withLoading(PrivacyPolicy);
 const RolesPage = withLoading(RolePage);
 const CompanyPage = withLoading(Companiespage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
+const BranchPage = withLoading(BranchesPage);
 const RequestsPage = withLoading(RequestPage);
 const AddRequestsPage = withLoading(AddRequestPage);
 const AddBranchesPage = withLoading(AddBranchPage);
@@ -130,7 +132,7 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="AddRequest"
+            path="addRequest"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddRequestsPage />
@@ -157,10 +159,19 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="AddCompany"
+            path="addCompany"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddCompanyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="companies/:companyId/branches"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <BranchPage />
               </PrivateRoute>
             }
           />
