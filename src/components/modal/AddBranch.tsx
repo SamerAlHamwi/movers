@@ -68,8 +68,6 @@ let companyInfo: any = {
     webSite: 'string',
     isForBranchCompany: false,
   },
-  isActive: true,
-  comment: 'string',
   userDto: {
     dialCode: '963',
     phoneNumber: '0997829849',
