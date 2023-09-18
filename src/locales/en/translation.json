@@ -6,9 +6,9 @@
     "title": "Title",
     "attachment": "Attachment",
     "icon": "Icon",
-    "name": "Name",
     "phoneNumber": "Phone Number",
-    "submit": "Submit",
+    "bio": "BIO",
+    "name": "Name",
     "name_ar": "Name AR",
     "name_en": "Name EN",
     "address": "Adress",
@@ -27,6 +27,7 @@
     "activate": "Activate",
     "apply": "Apply",
     "cancel": "Cancel",
+    "submit": "Submit",
     "Previous": "Previous",
     "delete": "Delete",
     "done": "Done",
@@ -485,7 +486,13 @@
   "branch": {
     "addBranchModalTitle": "Add Branch",
     "addBranch": "Add Branch",
-    "addBranchSuccessMessage": "The Branch has been Added Successfully"
+    "branchesList": "Branches List",
+    "addBranchSuccessMessage": "The Branch has been Added Successfully",
+    "deleteBranchSuccessMessage": "The Branch has been Deleted Successfully",
+    "editBranchSuccessMessage": "The Branch has been Edited Successfully",
+    "deleteBranchModalTitle": "Delete Branch",
+    "deleteBranchModalDescription": "Are You Sure To Delete This Branch?",
+    "region": "Region"
   },
 
   "error404": {
@@ -517,7 +524,8 @@
     "addRequest": "Add Request For Quotations",
     "addcompany": "Add Comapany",
     "companies": "Companies",
-    "AddBranch": "Add Branch"
+    "AddBranch": "Add Branch",
+    "branches": "Branches"
   },
   "header": {
     "changeLanguage": "Change language",

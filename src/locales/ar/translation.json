@@ -6,12 +6,12 @@
     "title": "العنوان",
     "attachment": "صورة",
     "icon": "الأيقونة",
-    "name": "الاسم",
     "phoneNumber": "رقم الهاتف",
+    "bio": "الوصف",
+    "name": "الاسم",
     "name_ar": "الاسم بالعربية",
     "name_en": "الاسم بالانكليزية",
     "address": "العنوان",
-    "submit": "تأكيد",
     "address_ar": "العنوان بالعربية",
     "address_en": "العنوان بالانكليزية",
     "description": "الوصف",
@@ -28,6 +28,7 @@
     "apply": "تطبيق",
     "cancel": "إلغاء",
     "Previous": "السابق",
+    "submit": "تأكيد",
     "delete": "حذف",
     "done": "إرسال",
     "edit": "تعديل",
@@ -480,7 +481,13 @@
   "branch": {
     "addBranchModalTitle": "إضافة فرع للشركة",
     "addBranch": "إضافة فرع للشركة",
-    "addBranchSuccessMessage": "تمت إضافة الفرع بنجاح"
+    "branchesList": "قائمة فروع الشركة",
+    "addBranchSuccessMessage": "تمت إضافة الفرع بنجاح",
+    "deleteBranchSuccessMessage": "ام حذ الفرع بنجاح",
+    "editBranchSuccessMessage": "تم تعديل معلومات الفرع بنجاح",
+    "deleteBranchModalTitle": "حذف الفرع",
+    "deleteBranchModalDescription": "هل أنت متأكد من حذف هذا الفرع",
+    "region": "المنطقة"
   },
 
   "error404": {
@@ -512,7 +519,8 @@
     "addRequest": "إضافة طلب نقل",
     "addcompany": "إضافة شركة",
     "companies": "الشركات",
-    "AddBranch": "إضافة فرع لشركة"
+    "AddBranch": "إضافة فرع لشركة",
+    "branches": "الفروع"
   },
   "header": {
     "changeLanguage": "تغيير اللغة",

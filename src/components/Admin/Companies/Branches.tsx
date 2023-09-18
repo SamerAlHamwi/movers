@@ -2,30 +2,30 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { message, Row, Space } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { EditRequest } from '@app/components/modal/EditRequest';
+import { AddRole } from '@app/components/modal/AddRole';
+import { EditRole } from '@app/components/modal/EditRole';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, RedoOutlined, FileSyncOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllRequests, createRequest, DeleteRequest, UpdateRequest } from '@app/services/requests';
+import { getAllRoles, createRole, DeleteRole, UpdateRole } from '@app/services/role';
+import { getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText } from '../../GeneralStyles';
-import { RequestModel } from '@app/interfaces/interfaces';
+import { RoleModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
-import { useLanguage } from '@app/hooks/useLanguage';
-import Tag from 'antd/es/tag';
-import { useNavigate } from 'react-router-dom';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { useParams, useNavigate } from 'react-router-dom';
 
-export const Requests: React.FC = () => {
+export const Branches: React.FC = () => {
   const { t } = useTranslation();
-  const navigate = useNavigate();
-  const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+  const navigate = useNavigate();
+  const { companyId } = useParams();
+
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
@@ -33,11 +33,11 @@ export const Requests: React.FC = () => {
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
-  const [dataSource, setDataSource] = useState<RequestModel[] | undefined>(undefined);
+  const [dataSource, setDataSource] = useState<RoleModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<RequestModel | undefined>(undefined);
-  const [deletemodaldata, setDeletemodaldata] = useState<RequestModel | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<RoleModel | undefined>(undefined);
+  const [deletemodaldata, setDeletemodaldata] = useState<RoleModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
@@ -51,12 +51,10 @@ export const Requests: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Requests', page, pageSize, refetchOnAdd, isDelete, isEdit],
+    ['getAllBranches', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
-      getAllRequests(page, pageSize)
+      getAllBranches(companyId, page, pageSize)
         .then((data) => {
-          console.log(data.data?.result?.items);
-
           const result = data.data?.result?.items;
           setDataSource(result);
           setTotalCount(data.data.result?.totalCount);
@@ -88,7 +86,7 @@ export const Requests: React.FC = () => {
     setLoading(true);
     refetch();
     setRefetchOnAdd(false);
-  }, [refetch, refetchOnAdd]);
+  }, [refetchOnAdd, refetch]);
 
   useEffect(() => {
     setLoading(true);
@@ -101,36 +99,28 @@ export const Requests: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [page, pageSize, language, refetch]);
-
-  const addRequest = useMutation(
-    (
-      data: any, // RequestModel
-    ) =>
-      createRequest(data)
-        .then((data) => {
-          notificationController.success({ message: t('requests.addRequestSuccessMessage') });
-          setRefetchOnAdd(data.data?.success);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
+  const addRole = useMutation((data: RoleModel) =>
+    createRole(data)
+      .then((data) => {
+        notificationController.success({ message: t('branch.addBranchSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
-  }, [addRequest.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, add: addRole.isLoading }));
+  }, [addRole.isLoading]);
 
-  const deleteRequest = useMutation((id: number) =>
-    DeleteRequest(id)
+  const deleteRole = useMutation((id: number) =>
+    DeleteRole(id)
       .then((data) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('requests.deleteRequestSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('branch.deleteBranchSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -142,26 +132,26 @@ export const Requests: React.FC = () => {
 
   const handleDelete = (id: any) => {
     if (page > 1 && dataSource?.length === 1) {
-      deleteRequest.mutateAsync(id);
+      deleteRole.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deleteRequest.mutateAsync(id);
+      deleteRole.mutateAsync(id);
     }
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRequest.isLoading }));
-  }, [deleteRequest.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRole.isLoading }));
+  }, [deleteRole.isLoading]);
 
-  const editRequest = useMutation((data: RequestModel) => UpdateRequest(data));
+  const editRole = useMutation((data: RoleModel) => UpdateRole(data));
 
-  const handleEdit = (data: RequestModel, id: number) => {
-    editRequest
+  const handleEdit = (data: RoleModel, id: number) => {
+    editRole
       .mutateAsync({ ...data, id })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`requests.editRequestSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`branch.editBranchSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -170,107 +160,19 @@ export const Requests: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editRequest.isLoading }));
-  }, [editRequest.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editRole.isLoading }));
+  }, [editRole.isLoading]);
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    {
-      title: <Header>{t('requests.sourceCity')}</Header>,
-      dataIndex: 'sourceCity',
-      render: (record: RequestModel) => {
-        return <>{record?.name}</>;
-      },
-    },
-    {
-      title: <Header>{t('requests.destinationCity')}</Header>,
-      dataIndex: 'destinationCity',
-      render: (record: RequestModel) => {
-        return <>{record?.name}</>;
-      },
-    },
-    {
-      title: <Header>{t('requests.serviceType')}</Header>,
-      dataIndex: 'serviceType',
-      render: (record: number) => {
-        return (
-          <>
-            {record == 1
-              ? t('requests.Internal')
-              : record == 2
-              ? t('requests.External')
-              : `${t('requests.Internal')} & ${t('requests.External')}`}
-          </>
-        );
-      },
-    },
-    {
-      title: <Header>{t('requests.services')}</Header>,
-      dataIndex: 'services',
-      render: (record: any) => (
-        <Space style={{ display: 'grid' }}>
-          {record?.map((service: any) => (
-            <Tag key={service?.id}>{service?.name}</Tag>
-          ))}
-        </Space>
-      ),
-    },
-    {
-      title: <Header>{t('requests.sourceType')}</Header>,
-      dataIndex: 'sourceType',
-      render: (record: any) => {
-        return <>{record?.name}</>;
-      },
-    },
-    // { title: <Header>{t('requests.status')}</Header>, dataIndex: 'status' },
-    {
-      title: <Header>{t('requests.details')}</Header>,
-      dataIndex: 'details',
-      render: (index: number, record: any) => {
-        return (
-          <Space>
-            <Button
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                navigate(`${record.id}/details`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
-                }}
-              >
-                {t('requests.details')}
-              </div>
-            </Button>
-          </Space>
-        );
-      },
-    },
-    {
-      title: <Header>{t('requests.comment')}</Header>,
-      dataIndex: 'comment',
-      render: (text: string) => (
-        <div
-          style={{
-            maxWidth: '150px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'break-spaces',
-            textAlign: 'center',
-          }}
-        >
-          {text}
-        </div>
-      ),
-    },
+    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
+    { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
+    { title: <Header>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, record: RequestModel) => {
+      render: (index: number, record: RoleModel) => {
         return (
           <Space>
             <TableButton
@@ -292,16 +194,6 @@ export const Requests: React.FC = () => {
             >
               <DeleteOutlined />
             </TableButton>
-
-            <TableButton
-              severity="warning"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('reject');
-              }}
-            >
-              <RedoOutlined />
-            </TableButton>
           </Space>
         );
       },
@@ -311,7 +203,7 @@ export const Requests: React.FC = () => {
   return (
     <>
       <Card
-        title={t('requests.requestsList')}
+        title={t('branch.branchesList')}
         padding={
           dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -326,24 +218,28 @@ export const Requests: React.FC = () => {
               width: 'auto',
               height: 'auto',
             }}
-            onClick={() => navigate('/addRequest', { replace: false })}
+            onClick={() => navigate(`/companies/${companyId}/addBranch`)}
           >
-            <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
+            <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
           </Button>
 
           {/*    EDIT    */}
-          {modalState.edit && (
-            <EditRequest
+          {/* {modalState.edit && (
+            <EditRole
               values={editmodaldata}
               visible={modalState.edit}
               onCancel={() => handleModalClose('edit')}
-              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
-              isLoading={editRequest.isLoading}
+              onEdit={(info) => {
+                const displayName = info.name;
+                const values = { ...info, displayName };
+                editmodaldata !== undefined && handleEdit(values, editmodaldata.id);
+              }}
+              isLoading={editRole.isLoading}
             />
-          )}
+          )} */}
 
           {/*    Delete    */}
-          {modalState.delete && (
+          {/* {modalState.delete && (
             <ActionModal
               visible={modalState.delete}
               onCancel={() => handleModalClose('delete')}
@@ -351,14 +247,14 @@ export const Requests: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('requests.deleteRequestModalTitle')}
+              title={t('branch.deleteBranchModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('requests.deleteRequestModalDescription')}
+              description={t('branch.deleteBranchModalDescription')}
               isDanger={true}
-              isLoading={deleteRequest.isLoading}
+              isLoading={deleteRole.isLoading}
             />
-          )}
+          )} */}
         </Row>
 
         <Table
