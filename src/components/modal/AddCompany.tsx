@@ -23,7 +23,7 @@ import {
 import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getCities, getCountries, getregions } from '@app/services/locations';
+import { getCities, getCountries, getRegions } from '@app/services/locations';
 import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
@@ -345,7 +345,7 @@ export const AddCompany: React.FC = () => {
     setCityId(e);
     form.setFieldValue('regionId', '');
 
-    getregions(e)
+    getRegions(e)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);

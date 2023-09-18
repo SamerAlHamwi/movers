@@ -3,14 +3,21 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { BranchModel, CompanyModal, subservices } from '@app/interfaces/interfaces';
+import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery } from 'react-query';
 import { BankOutlined, ClearOutlined, DeleteOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Col, Input, Row, Steps } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
+import {
+  getAllCities,
+  getAllCountries,
+  getAllRegions,
+  getCities,
+  getCountries,
+  getRegions,
+} from '@app/services/locations';
 import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
@@ -18,10 +25,8 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
 import { getServices, getSubServices } from '@app/services/services';
 import { getTools } from '@app/services/tools';
-import { services } from '../Admin/Services';
 import { createBranch } from '@app/services/branches';
 import { Card } from '@app/components/common/Card/Card';
-import { tools } from '../Admin/Services/tools';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'react-phone-number-input';
@@ -30,7 +35,7 @@ import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 const { Step } = Steps;
 const steps = [
   {
-    title: 'Company Information',
+    title: 'BranchInformation',
   },
   {
     title: 'Userinformation',
@@ -88,9 +93,13 @@ export const AddBranch: React.FC = () => {
   const [subServiceId, setSubServiceId] = useState<string>('0');
   const [toolId, setToolId] = useState<string>('0');
 
-  const [Contry_id, setContryId] = useState(0);
-  const [City_id, setCityId] = useState(0);
-  const [Region_id, setRegionId] = useState(0);
+  const [countryId, setCountryId] = useState<string>('0');
+  const [cityId, setCityId] = useState<string>('0');
+  const [regionId, setRegionId] = useState<string>('0');
+
+  //   const [Contry_id, setContryId] = useState(0);
+  //   const [City_id, setCityId] = useState(0);
+  //   const [Region_id, setRegionId] = useState(0);
   const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
@@ -110,8 +119,10 @@ export const AddBranch: React.FC = () => {
     enabled: subServiceId !== '0',
   });
   useEffect(() => {
-    subServicesRefetch();
-    toolsRefetch();
+    if (serviceId !== '0') {
+      subServicesRefetch();
+      toolsRefetch();
+    }
   }, [serviceId, subServiceId]);
 
   const ChangeServieceHandler = (e: any, index: number) => {
@@ -138,53 +149,38 @@ export const AddBranch: React.FC = () => {
     setServices(updatedServices);
   };
 
-  const country = useQuery(
-    ['Countries'],
-    () =>
-      getAllCountries(countryPage, countryPageSize)
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setCountryData(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: countryData === undefined,
-    },
-  );
-
-  const ChangeRegionHandler = (e: any) => {
-    setRegionId(e);
-  };
+  const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
+    enabled: countryId !== '0',
+  });
+  const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
+    enabled: cityId !== '0',
+  });
+  useEffect(() => {
+    if (countryId !== '0') {
+      citiesRefetch();
+      RegionsRefetch();
+    }
+  }, [countryId]);
+  useEffect(() => {
+    if (cityId !== '0') {
+      RegionsRefetch();
+    }
+  }, [cityId]);
 
   const ChangeCountryHandler = (e: any) => {
-    setContryId(e);
-
-    getAllCities(e, page, pageSize)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
+    setCountryId(e);
+    form.setFieldValue('cityId', '');
+    form.setFieldValue('regionId', '');
   };
 
   const ChangeCityHandler = (e: any) => {
     setCityId(e);
+    form.setFieldValue('regionId', '');
+  };
 
-    getAllRegions(e, page, pageSize)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
+  const ChangeRegionHandler = (e: any) => {
+    setRegionId(e);
   };
 
   const removeService = (index: any) => {
@@ -265,11 +261,9 @@ export const AddBranch: React.FC = () => {
         password: form.getFieldValue(['userDto', 'password']),
       },
       services: services,
-      regionId: Region_id,
+      regionId: regionId,
     };
     updatedFormData.translations = companyInfo.translations;
-    console.log(companyInfo);
-
     addBranch.mutate(companyInfo);
     navigate('/companies');
   };
@@ -419,6 +413,7 @@ export const AddBranch: React.FC = () => {
             </Row>
 
             <BaseForm.Item
+              name="countryId"
               label={<LableText>{t('companies.Country name')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
@@ -426,7 +421,7 @@ export const AddBranch: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeCountryHandler}>
-                {countryData?.map((country) => (
+                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
                   <Option key={country.id} value={country.id}>
                     {country?.name}
                   </Option>
@@ -435,7 +430,7 @@ export const AddBranch: React.FC = () => {
             </BaseForm.Item>
 
             <BaseForm.Item
-              name={['cityId']}
+              name="cityId"
               label={<LableText>{t('companies.City name')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
@@ -443,7 +438,7 @@ export const AddBranch: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeCityHandler}>
-                {Data?.map((city) => (
+                {citiesData?.data?.result?.items.map((city: any) => (
                   <Select key={city.name} value={city.id}>
                     {city?.name}
                   </Select>
@@ -452,7 +447,7 @@ export const AddBranch: React.FC = () => {
             </BaseForm.Item>
 
             <BaseForm.Item
-              name={['regionId']}
+              name="regionId"
               label={<LableText>{t('companies.Regionname')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
@@ -460,7 +455,7 @@ export const AddBranch: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeRegionHandler}>
-                {Data?.map((Region) => (
+                {RegionsData?.data?.result?.items.map((Region: any) => (
                   <Select key={Region?.name} value={Region?.id}>
                     {Region?.name}
                   </Select>
@@ -512,7 +507,7 @@ export const AddBranch: React.FC = () => {
                 <BaseButtonsForm.Item
                   key={current}
                   name={['companyContact', 'phoneNumber']}
-                  // $successText={t('auth.phoneNumberVerified')}
+                  $successText={t('auth.phoneNumberVerified')}
                   label={t('common.phoneNumber')}
                   rules={[
                     { required: true, message: t('common.requiredField') },
@@ -534,52 +529,6 @@ export const AddBranch: React.FC = () => {
                   <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
                 </BaseButtonsForm.Item>
               </Col>
-              {/* <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <UploadDragger
-                  maxCount={1}
-                  listType="text"
-                  accept=".jpeg,.png,.jpg"
-                  disabled={uploadImage.isLoading ? true : false}
-                  showUploadList={false}
-                  customRequest={({ file }) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '8');
-                    formData.append('File', file);
-                    uploadImage.mutateAsync(formData);
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    {uploadImage.isLoading ? (
-                      <LoadingOutlined
-                        style={{
-                          color: 'var(--primary-color)',
-                          fontSize: isDesktop || isTablet ? FONT_SIZE.xxxl : FONT_SIZE.xxl,
-                        }}
-                      />
-                    ) : urlAfterUpload ? (
-                      <img
-                        src={urlAfterUpload}
-                        style={{ width: 'auto', height: isDesktop || isTablet ? '42px' : '35px' }}
-                      />
-                    ) : (
-                      <InboxOutlined
-                        style={{
-                          color: 'var(--primary-color)',
-                          fontSize: isDesktop || isTablet ? FONT_SIZE.xxxl : FONT_SIZE.xxl,
-                        }}
-                      />
-                    )}
-                    <p
-                      style={{
-                        fontSize: isDesktop || isTablet ? FONT_SIZE.xm : FONT_SIZE.sm,
-                        color: 'var(--text-main-color)',
-                      }}
-                    >
-                      {uploadImage.isLoading ? t('common.uploading') : t('common.draggerUploadDescription')}
-                    </p>
-                  </div>
-                </UploadDragger>
-              </Col> */}
             </Row>
           </>
         )}

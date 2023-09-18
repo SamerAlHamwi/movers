@@ -278,7 +278,8 @@
     "deactivateManagerConfirm": "Deactive Company?",
     "activateManagerConfirm": "Active Company?",
     "deletecompanyModalDescription": "Are You Sure?",
-    "deletecompanyModalTitle": "Delete Company"
+    "deletecompanyModalTitle": "Delete Company",
+    "BranchInformation": "Branch Information"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
