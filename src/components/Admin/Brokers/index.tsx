@@ -30,12 +30,12 @@ import {
   DeletePartner,
   UpdatePartner,
   getAllPartner,
-} from '@app/services/partner';
+} from '@app/services/Partner';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/broker';
+import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/Broker';
 
 export const Brokers: React.FC = () => {
   const { t } = useTranslation();
