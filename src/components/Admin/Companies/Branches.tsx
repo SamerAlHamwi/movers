@@ -2,21 +2,19 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { message, Row, Space } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { AddRole } from '@app/components/modal/AddRole';
-import { EditRole } from '@app/components/modal/EditRole';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllRoles, createRole, DeleteRole, UpdateRole } from '@app/services/role';
+import { createRole, DeleteRole, UpdateRole } from '@app/services/role';
 import { getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText } from '../../GeneralStyles';
-import { RoleModel } from '@app/interfaces/interfaces';
+import { BranchModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useParams, useNavigate } from 'react-router-dom';
 
@@ -33,11 +31,11 @@ export const Branches: React.FC = () => {
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
-  const [dataSource, setDataSource] = useState<RoleModel[] | undefined>(undefined);
+  const [dataSource, setDataSource] = useState<BranchModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<RoleModel | undefined>(undefined);
-  const [deletemodaldata, setDeletemodaldata] = useState<RoleModel | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<BranchModel | undefined>(undefined);
+  const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
@@ -99,70 +97,6 @@ export const Branches: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addRole = useMutation((data: RoleModel) =>
-    createRole(data)
-      .then((data) => {
-        notificationController.success({ message: t('branch.addBranchSuccessMessage') });
-        setRefetchOnAdd(data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      }),
-  );
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addRole.isLoading }));
-  }, [addRole.isLoading]);
-
-  const deleteRole = useMutation((id: number) =>
-    DeleteRole(id)
-      .then((data) => {
-        data.data?.success &&
-          (setIsDelete(data.data?.success),
-          message.open({
-            content: <Alert message={t('branch.deleteBranchSuccessMessage')} type={`success`} showIcon />,
-          }));
-      })
-      .catch((error) => {
-        message.open({
-          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
-        });
-      }),
-  );
-
-  const handleDelete = (id: any) => {
-    if (page > 1 && dataSource?.length === 1) {
-      deleteRole.mutateAsync(id);
-      setPage(page - 1);
-    } else {
-      deleteRole.mutateAsync(id);
-    }
-  };
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRole.isLoading }));
-  }, [deleteRole.isLoading]);
-
-  const editRole = useMutation((data: RoleModel) => UpdateRole(data));
-
-  const handleEdit = (data: RoleModel, id: number) => {
-    editRole
-      .mutateAsync({ ...data, id })
-      .then((data) => {
-        setIsEdit(data.data?.success);
-        message.open({
-          content: <Alert message={t(`branch.editBranchSuccessMessage`)} type={`success`} showIcon />,
-        });
-      })
-      .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-      });
-  };
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editRole.isLoading }));
-  }, [editRole.isLoading]);
-
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
@@ -172,7 +106,7 @@ export const Branches: React.FC = () => {
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, record: RoleModel) => {
+      render: (index: number, record: BranchModel) => {
         return (
           <Space>
             <TableButton
@@ -222,39 +156,6 @@ export const Branches: React.FC = () => {
           >
             <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
           </Button>
-
-          {/*    EDIT    */}
-          {/* {modalState.edit && (
-            <EditRole
-              values={editmodaldata}
-              visible={modalState.edit}
-              onCancel={() => handleModalClose('edit')}
-              onEdit={(info) => {
-                const displayName = info.name;
-                const values = { ...info, displayName };
-                editmodaldata !== undefined && handleEdit(values, editmodaldata.id);
-              }}
-              isLoading={editRole.isLoading}
-            />
-          )} */}
-
-          {/*    Delete    */}
-          {/* {modalState.delete && (
-            <ActionModal
-              visible={modalState.delete}
-              onCancel={() => handleModalClose('delete')}
-              onOK={() => {
-                deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
-              }}
-              width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('branch.deleteBranchModalTitle')}
-              okText={t('common.delete')}
-              cancelText={t('common.cancel')}
-              description={t('branch.deleteBranchModalDescription')}
-              isDanger={true}
-              isLoading={deleteRole.isLoading}
-            />
-          )} */}
         </Row>
 
         <Table
