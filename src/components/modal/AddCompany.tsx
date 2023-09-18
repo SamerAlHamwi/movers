@@ -252,9 +252,9 @@ export const AddCompany: React.FC = () => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], serviceId: e };
     setServices(updatedServices);
-    form.setFieldValue(`services[${0}].toolId`, '');
-    form.setFieldValue(`services[${0}].subservieceId`, '');
 
+    form.setFieldValue(['services', index, 'subservieceId'], '');
+    form.setFieldValue(['services', index, 'toolId'], '');
     getSubServices(e)
       .then((data) => {
         const result = data.data?.result?.items;
@@ -280,6 +280,7 @@ export const AddCompany: React.FC = () => {
     const updatedServices = [...services];
     updatedServices[index] = { ...updatedServices[index], subserviceId: e };
     setServices(updatedServices);
+    form.setFieldValue(['services', index, 'toolId'], '');
     getTools(e)
       .then((data) => {
         const result = data?.data?.result?.items;
@@ -1045,6 +1046,7 @@ export const AddCompany: React.FC = () => {
                 </Upload>
                 <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                   <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                  
                 </Modal>
               </Col>
               <Col>
