@@ -28,7 +28,7 @@
     "apply": "Apply",
     "cancel": "Cancel",
     "submit": "Submit",
-    "Previous": "Previous",
+    "resend": "Resend",
     "delete": "Delete",
     "done": "Done",
     "edit": "Edit",
@@ -496,6 +496,40 @@
     "region": "Region"
   },
 
+  "_comment19": "*********************************** Notifications ************************************************",
+  "notifications": {
+    "notificationsList": "Notifications",
+    "deleteprivacyModalTitle": "Delete Privacy",
+    "deleteNprivacyModalDescription": "Are you sure ?",
+    "PrivacyList": "PrivacyPolicy",
+    "notices": "Notices",
+    "send": "Send Notification",
+    "sendp": "Create",
+    "englishMessage": "English messages",
+    "arabicMessage": "Arabic messages",
+    "arabictitle": "Arabic Title",
+    "englishtitle": "English Title",
+    "englishdescription": "English Description",
+    "arabicdiscription": "Arabic Description",
+    "deletepNotifactionsSuccessMessage": "The Privacy deleted Successfully",
+    "deleteNotifactionsSuccessMessage": "The Notification deleted Successfully",
+    "deleteNotficationModalTitle": "Delete Notifaction",
+    "deleteNotifactionModalDescription": "Are You Sure?",
+    "actions": "Actions",
+    "destination": {
+      "destination": "Destination",
+      "all": " To All",
+      "students": "Students, Players",
+      "managers": "Managers",
+      "companies": " To Compaines",
+      "Users": " To Users"
+    },
+    "sendSuccessMessage": "Notification Pushed Successfully!",
+    "resendNotficationModalTitle": "Resend Notification",
+    "resendNotifactionModalDescription": "Resend This Notification To The Same People",
+    "resendNotifactionsSuccessMessage": "The Notification resent Successfully"
+  },
+
   "error404": {
     "comeBack": "Return to Home",
     "backToLogin": "Return to Login",
@@ -694,39 +728,7 @@
     },
     "fixedValue": "Fixed value"
   },
-  "notifications": {
-    "notificationsList": "Notifications",
-    "deleteprivacyModalTitle": "Delete Privacy",
-    "deleteNprivacyModalDescription": "Are you sure ?",
-    "PrivacyList": "PrivacyPolicy",
 
-    "notices": "Notices",
-    "send": "Send Notification",
-    "sendp": "Create",
-
-    "englishMessage": "English messages",
-    "arabicMessage": "Arabic messages",
-    "arabictitle": "Arabic Title",
-    "englishtitle": "English Title",
-    "englishdescription": "English Description",
-    "arabicdiscription": "Arabic Description",
-
-    "deletepNotifactionsSuccessMessage": "The Privacy deleted Successfully",
-    "deleteNotifactionsSuccessMessage": "The Notification deleted Successfully",
-    "deleteNotficationModalTitle": "Delete Notifaction",
-    "deleteNotifactionModalDescription": "Are You Sure?",
-    "actions": "Actions",
-    "destination": {
-      "destination": "Destination",
-      "all": " To All",
-      "students": "Students, Players",
-      "managers": "Managers",
-      "companies": " To Compaines",
-      "Users": " To Users"
-    },
-    "sendSuccessMessage": "Notification Pushed Successfully!",
-    "sendpSuccessMessage": "privacyPolicy created Successfully!"
-  },
   "sliderImage": {
     "sliderImagesList": "Slider Image List",
     "create": "Create Slider",

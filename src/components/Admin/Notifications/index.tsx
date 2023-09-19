@@ -1,28 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import {
-  createNotification,
-  getAllNotification,
-  DeleteNotifaction,
-  UpdateNotification,
-} from '@app/services/notification';
+  getAllPushNotification,
+  DeletePushNotification,
+  sendPushNotification,
+  ResendPushNotification,
+} from '@app/services/pushNotifications';
 import { useMutation, useQuery } from 'react-query';
 import { Alert, Row, Space, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
-import { Table as T } from '@app/components/common/Table/Table';
 import { PushNotification } from '@app/components/modal/PushNotification';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import styled from 'styled-components';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppSelector } from '@app/hooks/reduxHooks';
-import { Modal, Table, CreateButtonText } from '../../GeneralStyles';
+import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, RedoOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { EditNotifaction } from '@app/components/modal/EditNotifaction';
 
 export type Translation = {
   message: string;
@@ -46,25 +43,25 @@ export const Notifications: React.FC = () => {
 
   const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
+  const [isOpenResendModalForm, setIsOpenResendModalForm] = useState(false);
+  const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [isDelete, setIsDelete] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
-  const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
-  const [editmodaldata, setEditmodaldata] = useState<Notification | undefined>(undefined);
-  const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
-  const [deletemodaldata, setDeletemodaldata] = useState<Notification | undefined>(undefined);
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const [isResend, setIsResend] = useState(false);
   const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [deletemodaldata, setDeletemodaldata] = useState<Notification | undefined>(undefined);
+  const [resendmodaldata, setResendmodaldata] = useState<Notification | undefined>(undefined);
+  const { isTablet, isMobile, isDesktop } = useResponsive();
 
   const user = useAppSelector((state) => state.user.user);
 
   const { refetch, isRefetching } = useQuery(
     ['Notifications messages', page, isDelete, pageSize, refetchOnAddNotification],
     () =>
-      getAllNotification(page, pageSize)
+      getAllPushNotification(page, pageSize)
         .then((data) => {
           const notifications = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -90,26 +87,12 @@ export const Notifications: React.FC = () => {
   );
 
   useEffect(() => {
-    isRefetching && setIsLoading(true);
-  }, [isRefetching]);
-
-  useEffect(() => {
     setIsLoading(true);
     refetch();
   }, [page, pageSize, refetch]);
 
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
-    setRefetchOnAddNotification(false);
-  }, [refetchOnAddNotification]);
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
-    setIsDelete(false);
-  }, [isDelete, , page, pageSize, refetch]);
   const pushNotification = useMutation((data: Notification) =>
-    createNotification(data)
+    sendPushNotification(data)
       .then((data) => {
         notificationController.success({ message: t('notifications.sendSuccessMessage') });
         setRefetchOnAddNotification(data.data?.success);
@@ -122,8 +105,9 @@ export const Notifications: React.FC = () => {
   useEffect(() => {
     setIsOpenPushModalForm(pushNotification.isLoading);
   }, [pushNotification.isLoading]);
+
   const deleteNotification = useMutation((id: number) =>
-    DeleteNotifaction(id)
+    DeletePushNotification(id)
       .then((data: any) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
@@ -137,6 +121,7 @@ export const Notifications: React.FC = () => {
         });
       }),
   );
+
   const handleDelete = (id: any) => {
     if (page > 1) {
       deleteNotification.mutateAsync(id);
@@ -145,27 +130,47 @@ export const Notifications: React.FC = () => {
       deleteNotification.mutateAsync(id);
     }
   };
+
   useEffect(() => {
     setIsOpenDeleteModalForm(deleteNotification.isLoading);
   }, [deleteNotification.isLoading]);
-  const editNoification = useMutation((data: Notification) => UpdateNotification(data));
 
-  const handleEdit = (data: Notification, id: number) => {
-    editNoification
-      .mutateAsync({ ...data, id })
-      .then((data) => {
-        setIsEdit(data.data?.success);
-        message.open({
-          content: <Alert message={t(`managers.editManagerSuccessMessage`)} type={`success`} showIcon />,
-        });
+  const resendNotification = useMutation((id: number) =>
+    ResendPushNotification(id)
+      .then((data: any) => {
+        data.data?.success &&
+          (setIsDelete(data.data?.success),
+          message.open({
+            content: <Alert message={t('notifications.resendNotifactionsSuccessMessage')} type={`success`} showIcon />,
+          }));
       })
-      .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-      });
+      .catch((error: any) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleResend = (id: any) => {
+    if (page > 1) {
+      resendNotification.mutateAsync(id);
+      setPage(page - 1);
+    } else {
+      resendNotification.mutateAsync(id);
+    }
   };
+
   useEffect(() => {
-    setIsOpenEditModalForm(editNoification.isLoading);
-  }, [editNoification.isLoading]);
+    setIsOpenResendModalForm(resendNotification.isLoading);
+  }, [resendNotification.isLoading]);
+
+  useEffect(() => {
+    setIsLoading(true);
+    refetch();
+    setIsDelete(false);
+    setIsResend(false);
+    setRefetchOnAddNotification(false);
+  }, [isDelete, isResend, refetchOnAddNotification, page, pageSize, refetch]);
 
   const notificationsColumns = [
     {
@@ -207,7 +212,6 @@ export const Notifications: React.FC = () => {
           <Trans i18nKey={'notifications.actions'} />
         </Header>
       ),
-
       dataIndex: 'actions',
       width: '30%',
       render: (index: number, Data: Notification) => {
@@ -221,6 +225,16 @@ export const Notifications: React.FC = () => {
               }}
             >
               <DeleteOutlined />
+            </TableButton>
+
+            <TableButton
+              severity="warning"
+              onClick={() => {
+                setResendmodaldata(Data);
+                setIsOpenResendModalForm(true);
+              }}
+            >
+              <RedoOutlined />
             </TableButton>
           </Space>
         );
@@ -250,15 +264,24 @@ export const Notifications: React.FC = () => {
           >
             <CreateButtonText>{t('notifications.send')}</CreateButtonText>
           </Button>
-          {/* {isOpenEditModalForm ? (
-            <EditNotifaction
-              Not_values={editmodaldata}
-              visible={isOpenEditModalForm}
-              onCancel={() => setIsOpenEditModalForm(false)}
-              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
-              isLoading={editNoification.isLoading}
+
+          {isOpenResendModalForm ? (
+            <ActionModal
+              visible={isOpenResendModalForm}
+              onCancel={() => setIsOpenResendModalForm(false)}
+              onOK={() => {
+                resendmodaldata !== undefined && handleResend(resendmodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('notifications.resendNotficationModalTitle')}
+              okText={t('common.resend')}
+              cancelText={t('common.cancel')}
+              description={t('notifications.resendNotifactionModalDescription')}
+              isDanger={true}
+              isLoading={resendNotification.isLoading}
             />
-          ) : null} */}
+          ) : null}
+
           {isOpenPushModalForm ? (
             <PushNotification
               isManager={user.userType === 0 ? false : true}
@@ -270,6 +293,7 @@ export const Notifications: React.FC = () => {
               isLoading={pushNotification.isLoading}
             />
           ) : null}
+
           {isOpenDeleteModalForm ? (
             <ActionModal
               visible={isOpenDeleteModalForm}
@@ -304,24 +328,9 @@ export const Notifications: React.FC = () => {
             hideOnSinglePage: true,
             responsive: true,
             showLessItems: true,
-            // showTotal: (total) => `Total ${total} notifications`,
             pageSizeOptions: [5, 10, 15, 20],
           }}
-          columns={
-            user.userType === 1
-              ? notificationsColumns
-              : [
-                  ...notificationsColumns,
-                  {
-                    title: <Header>{t('notifications.destination.destination')}</Header>,
-                    dataIndex: 'destination',
-                    width: '15%',
-                    render: (destination: number) => {
-                      return <>{t(Destination[destination])}</>;
-                    },
-                  },
-                ]
-          }
+          columns={notificationsColumns.map((col) => ({ ...col, width: 'auto' }))}
           loading={isLoading}
           scroll={{ x: isTablet ? 700 : isMobile ? 800 : 600 }}
         />

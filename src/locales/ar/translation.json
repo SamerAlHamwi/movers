@@ -27,6 +27,7 @@
     "activate": "تفعيل",
     "apply": "تطبيق",
     "cancel": "إلغاء",
+    "resend": "إعادة إرسال",
     "Previous": "السابق",
     "submit": "تأكيد",
     "delete": "حذف",
@@ -491,6 +492,40 @@
     "region": "المنطقة"
   },
 
+  "_comment19": "*********************************** Notifications ************************************************",
+  "notifications": {
+    "notificationsList": "قائمة الإشعارات",
+    "notices": "الإشعارات",
+    "send": "إرسال إشعار",
+    "sendp": "إضافة",
+    "englishdescription": "التوصيف بالإنكليزية",
+    "arabicdiscription": "التوصيف بالعربية",
+    "englishtitle": "العنوان بالإنكليزية",
+    "arabictitle": "العنوان بالعربية",
+    "PrivacyList": "سياسة الخصوصية",
+    "englishMessage": "باللغة الإنكليزية",
+    "arabicMessage": "باللغة العربية",
+    "actions": "الإجراء",
+    "deleteNotficationModalTitle": "حذف إشعار",
+    "deleteNotifactionModalDescription": "هل تريد حذف الإشعار بالتأكيد؟",
+    "deletepNotifactionsSuccessMessage": "تم حذف سياسة الخصوصية بنجاح",
+    "deleteNotifactionsSuccessMessage": "تم حذف الإشعار بنجاح ",
+    "deleteprivacyModalTitle": "حذف سياسة خصوصية",
+    "deleteNprivacyModalDescription": "هل تريد حذف سياسة الخصوصية  بالتأكيد؟",
+    "destination": {
+      "destination": "وجهة الرسالة",
+      "all": "إلى الجميع",
+      "students": "الطلاب، اللاعبين",
+      "managers": "المدراء",
+      "companies": " إلى الشركات",
+      "Users": " إلى المستخدمين"
+    },
+    "sendSuccessMessage": "تم إرسال الرسالة بنجاح!",
+    "resendNotficationModalTitle": "إعادة إرسال الإشعار",
+    "resendNotifactionModalDescription": "إعادة إرسال هذا الإشعار إلى نفس الأشخاص",
+    "resendNotifactionsSuccessMessage": "تم إعادة إرسال الإشعار"
+  },
+
   "error404": {
     "comeBack": "العودة إلى الصفحة الرئيسية",
     "backToLogin": "العودة إلى تسجيل الدخول",
@@ -688,39 +723,7 @@
     },
     "fixedValue": "قيمة مثبتة"
   },
-  "notifications": {
-    "notificationsList": "قائمة الإشعارات",
-    "notices": "الإشعارات",
-    "send": "إرسال إشعار",
-    "sendp": "إضافة",
 
-    "englishdescription": "التوصيف بالإنكليزية",
-    "arabicdiscription": "التوصيف بالعربية",
-    "englishtitle": "العنوان بالإنكليزية",
-    "arabictitle": "العنوان بالعربية",
-    "PrivacyList": "سياسة الخصوصية",
-
-    "englishMessage": "باللغة الإنكليزية",
-    "arabicMessage": "باللغة العربية",
-    "actions": "الإجراء",
-    "deleteNotficationModalTitle": "حذف إشعار",
-    "deleteNotifactionModalDescription": "هل تريد حذف الإشعار بالتأكيد؟",
-    "deletepNotifactionsSuccessMessage": "تم حذف سياسة الخصوصية بنجاح",
-    "deleteNotifactionsSuccessMessage": "تم حذف الإشعار بنجاح ",
-
-    "deleteprivacyModalTitle": "حذف سياسة خصوصية",
-    "deleteNprivacyModalDescription": "هل تريد حذف سياسة الخصوصية  بالتأكيد؟",
-
-    "destination": {
-      "destination": "وجهة الرسالة",
-      "all": "إلى الجميع",
-      "students": "الطلاب، اللاعبين",
-      "managers": "المدراء",
-      "companies": " إلى الشركات",
-      "Users": " إلى المستخدمين"
-    },
-    "sendSuccessMessage": "تم إرسال الرسالة بنجاح!"
-  },
   "sliderImage": {
     "sliderImagesList": "قائمة الصور",
     "create": "تحميل صورة",
