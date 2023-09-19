@@ -761,7 +761,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                 <div key={index}>
                   <BaseForm.Item
                     label={<LableText>{t('companies.selectService')}</LableText>}
-                    name={['services', index, 'serviceId']}
+                    name={['services', index, 'name']}
                     style={{ marginTop: '-1rem' }}
                   >
                     <Select onChange={(e) => ChangeServieceHandler(index, e)}>
@@ -774,7 +774,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                   </BaseForm.Item>
                   <BaseForm.Item
                     label={<LableText>{t('companies.selectSubService')}</LableText>}
-                    name={['services', index, 'subserviceId']}
+                    name={['services', index, 'subServices', index, 'name']}
                     style={{ marginTop: '-1rem' }}
                   >
                     <Select>
