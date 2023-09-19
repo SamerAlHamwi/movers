@@ -409,7 +409,6 @@ export const AddCompany: React.FC = () => {
       },
       serviceType: valueRadio,
       services: requestServices,
-      // services: services,
       companyProfilePhotoId: logo,
       additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
       companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,

@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText } from '../GeneralStyles';
+import { CreateButtonText, LableText, treeStyle } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { BankOutlined, ClearOutlined, DeleteOutlined, PlusOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Steps } from 'antd';
+import { BankOutlined, ClearOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Col, Input, Row, Steps, Image, Tree } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
@@ -21,8 +21,11 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
+import type { DataNode } from 'antd/es/tree';
 
 const { Step } = Steps;
+let requestServicesArray: any = [];
+const requestServices: any = [];
 const steps = [
   {
     title: 'BranchInformation',
@@ -72,9 +75,6 @@ export const AddBranch: React.FC = () => {
   const { companyId } = useParams();
   const queryClient = useQueryClient();
 
-  const [serviceId, setServiceId] = useState<string>('0');
-  const [subServiceId, setSubServiceId] = useState<string>('0');
-  const [toolId, setToolId] = useState<string>('0');
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
@@ -83,47 +83,61 @@ export const AddBranch: React.FC = () => {
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<CompanyModal>(branchInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
+  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   const GetAllServices = useQuery('getAllServices', getServices);
-  const { data: subServicesData, refetch: subServicesRefetch } = useQuery(
-    'getSubServices',
-    () => getSubServices(serviceId),
-    {
-      enabled: serviceId !== '0',
-    },
-  );
-  const { data: toolsData, refetch: toolsRefetch } = useQuery('getTools', () => getTools(subServiceId), {
-    enabled: subServiceId !== '0',
-  });
-  useEffect(() => {
-    if (serviceId !== '0') {
-      subServicesRefetch();
-      toolsRefetch();
+
+  const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+    const serviceNode: DataNode = {
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={16} height={16} />
+          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+        </span>
+      ),
+      key: `service${service?.id}`,
+      children: [],
+      disabled: service?.subServices?.length > 0 ? false : true,
+    };
+    if (service?.subServices?.length > 0) {
+      serviceNode.children = service.subServices.map((subService: any) => {
+        const subServiceNode = {
+          title: (
+            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <Image src={subService?.attachment?.url} width={16} height={16} />
+              {subService?.name}
+            </span>
+          ),
+          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          children: [],
+        };
+        if (subService?.tools?.length > 0) {
+          subServiceNode.children = subService.tools.map((tool: any) => ({
+            title: (
+              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <Image src={tool?.attachment?.url} width={16} height={16} />
+                {tool?.name}
+              </span>
+            ),
+            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+          }));
+        }
+        return subServiceNode;
+      });
     }
-  }, [serviceId, subServiceId]);
+    return serviceNode;
+  });
 
-  const ChangeServieceHandler = (e: any, index: number) => {
-    setServiceId(e);
-    form.setFieldValue(['services', index, 'subserviceId'], '');
-    form.setFieldValue(['services', index, 'toolId'], '');
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], serviceId: e };
-    setServices(updatedServices);
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
   };
 
-  const ChangeSubServiceHandler = (e: any, index: number) => {
-    setSubServiceId(e);
-    form.setFieldValue(['services', index, 'toolId'], '');
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], subserviceId: e };
-    setServices(updatedServices);
-  };
-
-  const ChangeToolsHandler = (e: any, index: number) => {
-    setToolId(e);
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], toolId: e };
-    setServices(updatedServices);
+  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
+    setSelectedKeys(selectedKeysValue);
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
@@ -160,15 +174,6 @@ export const AddBranch: React.FC = () => {
     setRegionId(e);
   };
 
-  const removeService = (index: any) => {
-    form.setFieldValue(['services', index, 'serviceId'], '');
-    form.setFieldValue(['services', index, 'subserviceId'], '');
-    form.setFieldValue(['services', index, 'toolId'], '');
-    const updatedServices = [...services];
-    updatedServices.splice(index, 1);
-    setServices(updatedServices);
-  };
-
   const next = () => {
     setCurrent(current + 1);
   };
@@ -196,9 +201,11 @@ export const AddBranch: React.FC = () => {
         notificationController.success({ message: t('branch.addBranchSuccessMessage') });
         queryClient.invalidateQueries('getAllBranches');
         navigate(`/companies/${companyId}/branches`);
+        requestServicesArray = [];
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
+        requestServicesArray = [];
       }),
   );
 
@@ -209,6 +216,29 @@ export const AddBranch: React.FC = () => {
     const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
+    function extractServicesIds(input: any) {
+      input.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          requestServices.push(result);
+        }
+        return result;
+      });
+    }
+    extractServicesIds(requestServicesArray);
     const updatedFormData = { ...formData };
     branchInfo = {
       ...branchInfo,
@@ -239,7 +269,7 @@ export const AddBranch: React.FC = () => {
         phoneNumber: phoneNumberU,
         password: form.getFieldValue(['userDto', 'password']),
       },
-      services: services,
+      services: requestServices,
       regionId: regionId,
     };
     updatedFormData.translations = branchInfo.translations;
@@ -308,7 +338,12 @@ export const AddBranch: React.FC = () => {
           />
         ))}
       </Steps>
-      <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
+      <BaseForm
+        form={form}
+        onFinish={onFinish}
+        name="AddBranchForm"
+        style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
+      >
         {current === 0 && (
           <>
             <Row>
@@ -578,146 +613,39 @@ export const AddBranch: React.FC = () => {
         )}
         {current === 2 && (
           <>
-            {services.map((service, index) => (
-              <>
-                <div key={index}>
-                  <Card padding="1.25rem 1.25rem 1.25rem" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
-                    {index !== 0 && (
-                      <Button
-                        type="primary"
-                        style={{
-                          width: '5rem',
-                          height: 'auto',
-                          display: 'flex',
-                          alignItems: 'center',
-                          textAlign: 'center',
-                          margin: '2rem auto 0',
-                          justifyContent: 'space-around',
-                        }}
-                        onClick={() => removeService(index)}
-                      >
-                        <DeleteOutlined />
-                      </Button>
-                    )}
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectService')}</LableText>}
-                      name={['services', index, 'serviceId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+            <BaseForm.Item key="100" name="services">
+              {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
+                const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
+                return (
+                  <Tree
+                    key={serviceIndex}
+                    style={treeStyle}
+                    checkable
+                    defaultExpandAll={true}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onCheck={(checkedKeysValue: any) => {
+                      for (const key of checkedKeysValue) {
+                        if (!requestServicesArray.includes(key)) {
+                          requestServicesArray.push(key);
+                        }
                       }
-                      rules={[
-                        {
-                          required: true,
-                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                        },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        optionFilterProp="children"
-                        filterOption={(input, option: any) =>
-                          option!.children?.toLowerCase().includes(input?.toLowerCase())
-                        }
-                        filterSort={(optionA: any, optionB: any) =>
-                          optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                        }
-                        onChange={(e) => ChangeServieceHandler(e, index)}
-                      >
-                        {GetAllServices?.data?.data?.result?.items?.map((ele: any) => {
-                          return (
-                            <Option value={ele.id} key={ele?.id}>
-                              {ele.name}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </BaseForm.Item>
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectSubService')}</LableText>}
-                      name={['services', index, 'subserviceId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
-                      }
-                      rules={[
-                        {
-                          required: true,
-                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                        },
-                      ]}
-                    >
-                      <Select
-                        showSearch
-                        optionFilterProp="children"
-                        filterOption={(input, option: any) =>
-                          option!.children?.toLowerCase().includes(input?.toLowerCase())
-                        }
-                        filterSort={(optionA: any, optionB: any) =>
-                          optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                        }
-                        onChange={(e) => ChangeSubServiceHandler(e, index)}
-                        value={subServiceId}
-                      >
-                        {subServicesData?.data?.result?.items?.map((ele: any) => {
-                          return (
-                            <Option value={ele.id} key={ele?.id}>
-                              {ele.name}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </BaseForm.Item>
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectTool')}</LableText>}
-                      name={['services', index, 'toolId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
-                      }
-                      // rules={[
-                      //   {
-                      //     required: true,
-                      //     message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      //   },
-                      // ]}
-                    >
-                      <Select
-                        showSearch
-                        optionFilterProp="children"
-                        filterOption={(input, option: any) =>
-                          option!.children?.toLowerCase().includes(input?.toLowerCase())
-                        }
-                        filterSort={(optionA: any, optionB: any) =>
-                          optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                        }
-                        onChange={(e) => ChangeToolsHandler(e, index)}
-                      >
-                        {toolsData?.data?.result?.items?.map((ele: any) => {
-                          return (
-                            <Option value={ele.id} key={ele?.id}>
-                              {ele.name}
-                            </Option>
-                          );
-                        })}
-                      </Select>
-                    </BaseForm.Item>
-                  </Card>
-                  <Button
-                    type="primary"
-                    style={{
-                      width: '8rem',
-                      height: 'auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                      textAlign: 'center',
-                      margin: '2rem auto',
-                      justifyContent: 'space-around',
+                      setSelectedServicesKeysMap((prevSelectedKeysMap) => {
+                        const updatedKeysMap = { ...prevSelectedKeysMap };
+                        updatedKeysMap[serviceIndex] = checkedKeysValue;
+                        return updatedKeysMap;
+                      });
                     }}
-                    onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
-                  >
-                    <PlusOutlined />
-                  </Button>
-                </div>
-              </>
-            ))}
+                    defaultCheckedKeys={serviceKeys}
+                    checkedKeys={serviceKeys}
+                    onSelect={onSelect}
+                    selectedKeys={selectedKeys}
+                    treeData={[serviceTreeData]}
+                  />
+                );
+              })}
+            </BaseForm.Item>
           </>
         )}
       </BaseForm>
