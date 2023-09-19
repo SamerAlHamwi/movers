@@ -15,7 +15,7 @@ import { Modal, Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '@app/services/Privacypolicy';
+import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '@app/services/privacypolicy';
 import { Pushprivacy } from '@app/components/modal/Pushprivacy';
 import { Editprivacy } from '@app/components/modal/Editprivacy';
 
