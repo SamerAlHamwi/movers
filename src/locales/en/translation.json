@@ -280,7 +280,8 @@
     "activateManagerConfirm": "Active Company?",
     "deletecompanyModalDescription": "Are You Sure?",
     "deletecompanyModalTitle": "Delete Company",
-    "BranchInformation": "Branch Information"
+    "BranchInformation": "Branch Information",
+    "logo": "Logo"
   },
 
   "_comment7": "*********************************** subServices ************************************************",

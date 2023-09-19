@@ -280,7 +280,8 @@
     "deactivateManagerConfirm": "إلغاء تفعيل الشركة",
     "deletecompanyModalDescription": "هل أنت متأكد؟",
     "deletecompanyModalTitle": "حذف الشركة؟",
-    "BranchInformation": "معلومات الفرع"
+    "BranchInformation": "معلومات الفرع",
+    "logo": "شعار الشركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",

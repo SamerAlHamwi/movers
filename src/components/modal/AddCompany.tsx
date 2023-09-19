@@ -1,49 +1,45 @@
 import React, { useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText } from '../GeneralStyles';
+import { CreateButtonText, LableText, treeStyle, Text } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CompanyModal, subservices } from '@app/interfaces/interfaces';
+import { CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
-import { Text } from '../GeneralStyles';
 import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
   BankOutlined,
   ClearOutlined,
-  DeleteOutlined,
   FileAddOutlined,
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
-  PlusOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload } from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
-import { useAtom } from 'jotai';
 import { countries } from '../Admin/Locations/Countries';
-import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
-import { getServices, getSubServices } from '@app/services/services';
-import { getAllTools, getTools } from '@app/services/tools';
+import { getServices } from '@app/services/services';
 import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
-import { tools } from '../Admin/Services/tools';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';
+import type { DataNode } from 'antd/es/tree';
 
 const { Step } = Steps;
+let requestServicesArray: any = [];
+const requestServices: any = [];
 const steps = [
   {
     title: 'Company Information',
@@ -82,7 +78,6 @@ let companyInfo: any = {
     webSite: 'string',
     isForBranchCompany: false,
   },
-  isActive: true,
   comment: 'string',
   serviceType: 1,
   userDto: {
@@ -90,7 +85,6 @@ let companyInfo: any = {
     phoneNumber: '0997829849',
     password: '865fghjk',
   },
-
   companyProfilePhotoId: 0,
   companyOwnerIdentityIds: [],
   companyCommercialRegisterIds: [],
@@ -114,24 +108,10 @@ export const AddCompany: React.FC = () => {
 
   const [Data, setData] = useState<cities[] | undefined>();
   const [Dat, setDat] = useState<services[] | undefined>();
-  const [Datr, setDatr] = useState<subservices[] | undefined>();
-  const [Datt, setDatt] = useState<tools[] | undefined>();
-  const [page, setPage] = useAtom(currentGamesPageAtom);
-  const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
   const [Contry_id, setContryId] = useState(0);
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
-  const [tool_id, settoolId] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [uploadSucces, setUploadSucces] = useState(false);
-  const [uploadSucce, setUploadSucce] = useState(false);
-  const [uploadSucc, setUploadSucc] = useState(false);
-  const [uploadedPhotoPR, setUploadedPhotoPR] = useState('');
-  const [uploadedPhotoid, setUploadedPhotoid] = useState('');
-  const [uploadedPhotoreg, setUploadedPhotoreg] = useState('');
-  const [uploadedPhotoidin, setUploadedPhotoidin] = useState('');
-  const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
@@ -146,12 +126,17 @@ export const AddCompany: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
+  const [imageLogoList, setImageLogoList] = useState([]);
   const [fileOwnerList, setFileOwnerList] = useState([]);
   const [imageOwnerList, setImageOwnerList] = useState([]);
   const [fileCommercialList, setFileCommercialList] = useState([]);
   const [imageCommercialList, setImageCommercialList] = useState([]);
   const [fileOtherList, setFileOtherList] = useState([]);
   const [imageOtherList, setImageOtherList] = useState([]);
+  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   const country = useQuery(
     ['Countries'],
@@ -187,6 +172,49 @@ export const AddCompany: React.FC = () => {
     },
   );
 
+  const GetAllServices = useQuery('getAllServices', getServices);
+
+  const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+    const serviceNode: DataNode = {
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={16} height={16} />
+          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+        </span>
+      ),
+      key: `service${service?.id}`,
+      children: [],
+      disabled: service?.subServices?.length > 0 ? false : true,
+    };
+    if (service?.subServices?.length > 0) {
+      serviceNode.children = service.subServices.map((subService: any) => {
+        const subServiceNode = {
+          title: (
+            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <Image src={subService?.attachment?.url} width={16} height={16} />
+              {subService?.name}
+            </span>
+          ),
+          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          children: [],
+        };
+        if (subService?.tools?.length > 0) {
+          subServiceNode.children = subService.tools.map((tool: any) => ({
+            title: (
+              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <Image src={tool?.attachment?.url} width={16} height={16} />
+                {tool?.name}
+              </span>
+            ),
+            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+          }));
+        }
+        return subServiceNode;
+      });
+    }
+    return serviceNode;
+  });
+
   const next = () => {
     setCurrent(current + 1);
   };
@@ -195,84 +223,13 @@ export const AddCompany: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleUploadSuccess = (photoUrl: any) => {
-    setUploadSuccess(true);
-    setUploadedPhotoPR(photoUrl);
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
   };
 
-  const handleUploadSucces = (photoUrl: any) => {
-    setUploadSucces(true);
-    setUploadedPhotoid(photoUrl);
-  };
-
-  const handleUploadSucce = (photoUrl: any) => {
-    setUploadSucce(true);
-    setUploadedPhotoreg(photoUrl);
-  };
-
-  const handleUploadSucc = (photoUrl: any) => {
-    setUploadSucc(true);
-    setUploadedPhotoidin(photoUrl);
-  };
-
-  const ChangeServieceHandler = (index: any, e: any) => {
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], serviceId: e };
-    setServices(updatedServices);
-    form.setFieldValue(`services[${0}].toolId`, '');
-    form.setFieldValue(`services[${0}].subservieceId`, '');
-
-    getSubServices(e)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setDatr(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-
-    getTools(e)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-
-  const ChangeSubServiceHandler = (index: number, e: any) => {
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], subserviceId: e };
-    setServices(updatedServices);
-    getTools(e)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-
-  const handleSubserviceSelection = (index: number, e: any) => {
-    ChangeSubServiceHandler(index, e);
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-
-  const ChangeRegionHandler = (e: any) => {
-    setRegionId(e);
+  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
+    setSelectedKeys(selectedKeysValue);
   };
 
   const ChangeCountryHandler = (e: any) => {
@@ -287,12 +244,6 @@ export const AddCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
-  };
-
-  const removeService = (index: any) => {
-    const updatedServices = [...services];
-    updatedServices.splice(index, 1);
-    setServices(updatedServices);
   };
 
   const ChangeCityHandler = (e: any) => {
@@ -310,8 +261,8 @@ export const AddCompany: React.FC = () => {
       });
   };
 
-  const isServiceSelected = (serviceId: any) => {
-    return services.some((service) => service.serviceId === serviceId);
+  const ChangeRegionHandler = (e: any) => {
+    setRegionId(e);
   };
 
   const handleFormattedValueChange = (value: string) => {
@@ -345,10 +296,8 @@ export const AddCompany: React.FC = () => {
       .then((response) => {
         response.data.success &&
           (setAttachmentId(response.data.result?.id), setUrlAfterUpload(response.data.result?.url));
-
         const photoId = response.data.result.id;
         const refType = response.data.result.refType;
-        const photoUrl = response.data.result.url;
         setFormData((prevFormData) => {
           let updatedFormData = { ...prevFormData };
           if (refType === 9) {
@@ -356,25 +305,19 @@ export const AddCompany: React.FC = () => {
               ...updatedFormData,
               companyOwnerIdentityIds: [...updatedFormData.companyOwnerIdentityIds, photoId],
             };
-            console.log(photoId);
-            console.log(updatedFormData);
-
             setOwnerIdentityIds(photoId);
-            handleUploadSucces(photoUrl);
           } else if (refType === 10) {
             updatedFormData = {
               ...updatedFormData,
               companyCommercialRegisterIds: [...updatedFormData.companyCommercialRegisterIds, photoId],
             };
             setCommercialRegisterIds(photoId);
-            handleUploadSucce(photoUrl);
           } else if (refType === 11) {
             updatedFormData = {
               ...updatedFormData,
               additionalAttachmentIds: [...updatedFormData.additionalAttachmentIds, photoId],
             };
             setAdditionalAttachmentIds(photoId);
-            handleUploadSucc(photoUrl);
           } else if (refType === 8) {
             updatedFormData = {
               ...updatedFormData,
@@ -382,7 +325,6 @@ export const AddCompany: React.FC = () => {
               companyProfilePhotoId: photoId,
             };
             setLogo(photoId);
-            handleUploadSuccess(photoUrl);
           }
           return updatedFormData;
         });
@@ -398,9 +340,11 @@ export const AddCompany: React.FC = () => {
         notificationController.success({ message: t('companies.addCompanySuccessMessage') });
         queryClient.invalidateQueries('AllCompanies');
         navigate('/companies');
+        requestServicesArray = [];
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
+        requestServicesArray = [];
       }),
   );
 
@@ -411,6 +355,29 @@ export const AddCompany: React.FC = () => {
     const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
+    function extractServicesIds(input: any) {
+      input.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          requestServices.push(result);
+        }
+        return result;
+      });
+    }
+    extractServicesIds(requestServicesArray);
     const updatedFormData = { ...formData };
     companyInfo = {
       ...companyInfo,
@@ -441,7 +408,8 @@ export const AddCompany: React.FC = () => {
         password: form.getFieldValue(['userDto', 'password']),
       },
       serviceType: valueRadio,
-      services: services,
+      services: requestServices,
+      // services: services,
       companyProfilePhotoId: logo,
       additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
       companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
@@ -451,7 +419,6 @@ export const AddCompany: React.FC = () => {
     };
     updatedFormData.translations = companyInfo.translations;
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
-    updatedFormData.isActive = true;
     addCompany.mutate(companyInfo);
   };
 
@@ -459,6 +426,13 @@ export const AddCompany: React.FC = () => {
     <div style={{ color: '#40aaff' }}>
       <PictureOutlined />
       <div className="ant-upload-text">Upload Image</div>
+    </div>
+  );
+
+  const uploadLogoButton = (
+    <div style={{ color: '#40aaff' }}>
+      <PictureOutlined />
+      <div className="ant-upload-text">Upload Logo</div>
     </div>
   );
 
@@ -534,11 +508,43 @@ export const AddCompany: React.FC = () => {
           />
         ))}
       </Steps>
-      <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
+      <BaseForm
+        form={form}
+        onFinish={onFinish}
+        name="AddCompanyForm"
+        style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
+      >
         {current === 0 && (
           <>
+            <Row style={{ display: 'flex', justifyContent: 'space-around', margin: '0 0 2rem' }}>
+              <Col>
+                <Upload
+                  maxCount={1}
+                  key="image-logo"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  listType="picture-card"
+                  accept=".jpeg,.png,.jpg"
+                  disabled={uploadImage.isLoading ? true : false}
+                  fileList={imageLogoList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '8');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageLogoList(e.fileList)}
+                >
+                  {imageLogoList.length >= 1 ? null : uploadLogoButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'name']}
                   label={<LableText>{t('companies.CompanyNamear')}</LableText>}
@@ -550,7 +556,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'name']}
                   label={<LableText>{t('companies.name')}</LableText>}
@@ -564,7 +570,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'bio']}
                   label={<LableText>{t('companies.Companybioar')}</LableText>}
@@ -576,7 +582,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'bio']}
                   label={<LableText>{t('companies.bio')}</LableText>}
@@ -590,7 +596,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'address']}
                   label={<LableText>{t('companies.addressA')}</LableText>}
@@ -602,7 +608,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'address']}
                   label={<LableText>{t('companies.address')}</LableText>}
@@ -680,7 +686,7 @@ export const AddCompany: React.FC = () => {
             </h2>
 
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.CompanyEmail')}</LableText>}
                   name={['companyContact', 'emailAddress']}
@@ -692,7 +698,7 @@ export const AddCompany: React.FC = () => {
                   <Input value={companyInfo?.companyContact?.emailAddress} />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.website')}</LableText>}
                   name={['companyContact', 'webSite']}
@@ -705,80 +711,31 @@ export const AddCompany: React.FC = () => {
                 </BaseForm.Item>
               </Col>
             </Row>
-            <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <BaseButtonsForm.Item
-                  key={current}
-                  name={['companyContact', 'phoneNumber']}
-                  // $successText={t('auth.phoneNumberVerified')}
-                  label={t('common.phoneNumber')}
-                  rules={[
-                    { required: true, message: t('common.requiredField') },
-                    () => ({
-                      validator(_, value) {
-                        if (!value || isValidPhoneNumber(value)) {
-                          return Promise.resolve();
-                        }
-                        if (formattedPhoneNumber.length > 12) {
-                          return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                        } else if (formattedPhoneNumber.length < 12) {
-                          return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                        }
-                      },
-                    }),
-                  ]}
-                  style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
-                >
-                  <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
-                </BaseButtonsForm.Item>
-              </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <UploadDragger
-                  maxCount={1}
-                  listType="text"
-                  accept=".jpeg,.png,.jpg"
-                  disabled={uploadImage.isLoading ? true : false}
-                  showUploadList={false}
-                  customRequest={({ file }) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '8');
-                    formData.append('File', file);
-                    uploadImage.mutateAsync(formData);
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    {uploadImage.isLoading ? (
-                      <LoadingOutlined
-                        style={{
-                          color: 'var(--primary-color)',
-                          fontSize: isDesktop || isTablet ? FONT_SIZE.xxxl : FONT_SIZE.xxl,
-                        }}
-                      />
-                    ) : urlAfterUpload ? (
-                      <img
-                        src={urlAfterUpload}
-                        style={{ width: 'auto', height: isDesktop || isTablet ? '42px' : '35px' }}
-                      />
-                    ) : (
-                      <InboxOutlined
-                        style={{
-                          color: 'var(--primary-color)',
-                          fontSize: isDesktop || isTablet ? FONT_SIZE.xxxl : FONT_SIZE.xxl,
-                        }}
-                      />
-                    )}
-                    <p
-                      style={{
-                        fontSize: isDesktop || isTablet ? FONT_SIZE.xm : FONT_SIZE.sm,
-                        color: 'var(--text-main-color)',
-                      }}
-                    >
-                      {uploadImage.isLoading ? t('common.uploading') : t('common.draggerUploadDescription')}
-                    </p>
-                  </div>
-                </UploadDragger>
-              </Col>
-            </Row>
+            <BaseButtonsForm.Item
+              key={current}
+              name={['companyContact', 'phoneNumber']}
+              label={t('common.phoneNumber')}
+              rules={[
+                { required: true, message: t('common.requiredField') },
+                () => ({
+                  validator(_, value) {
+                    if (!value || isValidPhoneNumber(value)) {
+                      return Promise.resolve();
+                    }
+                    if (formattedPhoneNumber.length > 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                    } else if (formattedPhoneNumber.length < 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                    }
+                  },
+                }),
+              ]}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+
+              // style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+            >
+              <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
+            </BaseButtonsForm.Item>
           </>
         )}
         {current === 1 && (
@@ -867,95 +824,39 @@ export const AddCompany: React.FC = () => {
                 </Radio>
               </Radio.Group>
             </BaseForm.Item>
-            {services.map((service, index) => (
-              <>
-                <div key={index}>
-                  <Card padding="1.25rem 1.25rem 1.25rem" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
-                    {index !== 0 && (
-                      <Button
-                        type="primary"
-                        style={{
-                          width: '5rem',
-                          height: 'auto',
-                          display: 'flex',
-                          alignItems: 'center',
-                          textAlign: 'center',
-                          margin: '2rem auto 0',
-                          justifyContent: 'space-around',
-                        }}
-                        onClick={() => removeService(index)}
-                      >
-                        <DeleteOutlined />
-                      </Button>
-                    )}
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectService')}</LableText>}
-                      name={['services', index, 'serviceId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+            <BaseForm.Item key="100" name="services">
+              {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
+                const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
+                return (
+                  <Tree
+                    key={serviceIndex}
+                    style={treeStyle}
+                    checkable
+                    defaultExpandAll={true}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onCheck={(checkedKeysValue: any) => {
+                      for (const key of checkedKeysValue) {
+                        if (!requestServicesArray.includes(key)) {
+                          requestServicesArray.push(key);
+                        }
                       }
-                      rules={[
-                        {
-                          required: true,
-                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                        },
-                      ]}
-                    >
-                      <Select onChange={(e) => ChangeServieceHandler(index, e)}>
-                        {Dat?.map((service) => (
-                          <Option key={service.id} value={service.id} disabled={isServiceSelected(service.id)}>
-                            {service.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </BaseForm.Item>
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectSubService')}</LableText>}
-                      name={['services', index, 'subserviceId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
-                      }
-                    >
-                      <Select onChange={(e) => handleSubserviceSelection(index, e)}>
-                        {Datr?.map((subservice) => (
-                          <Option key={subservice.id} value={subservice.id}>
-                            {subservice.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </BaseForm.Item>
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectTool')}</LableText>}
-                      name={['services', index, 'toolId']}
-                      style={{ width: '50%', margin: 'auto' }}
-                    >
-                      <Select>
-                        {Datt?.map((tool) => (
-                          <Option key={tool.id} value={tool.id}>
-                            {tool.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </BaseForm.Item>
-                  </Card>
-                  <Button
-                    type="primary"
-                    style={{
-                      width: '8rem',
-                      height: 'auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                      textAlign: 'center',
-                      margin: '2rem auto',
-                      justifyContent: 'space-around',
+                      setSelectedServicesKeysMap((prevSelectedKeysMap) => {
+                        const updatedKeysMap = { ...prevSelectedKeysMap };
+                        updatedKeysMap[serviceIndex] = checkedKeysValue;
+                        return updatedKeysMap;
+                      });
                     }}
-                    onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
-                  >
-                    <PlusOutlined />
-                  </Button>
-                </div>
-              </>
-            ))}
+                    defaultCheckedKeys={serviceKeys}
+                    checkedKeys={serviceKeys}
+                    onSelect={onSelect}
+                    selectedKeys={selectedKeys}
+                    treeData={[serviceTreeData]}
+                  />
+                );
+              })}
+            </BaseForm.Item>
           </>
         )}
         {current === 3 && (

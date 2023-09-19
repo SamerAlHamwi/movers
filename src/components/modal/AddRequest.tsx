@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText } from '../GeneralStyles';
@@ -19,7 +19,6 @@ import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
-import { Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
@@ -44,7 +43,6 @@ const getBase64 = (file: RcFile): Promise<string> =>
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
-const res: any = [];
 const lang = localStorage.getItem('movers&-lang');
 
 let requestData = {
