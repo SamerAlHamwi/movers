@@ -18,7 +18,7 @@ import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/broker';
+import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/Broker';
 
 export const Brokers: React.FC = () => {
   const { t } = useTranslation();
