@@ -1,41 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Popconfirm, Typography, Col } from 'antd';
+import { message, Row, Space } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { AddManager } from '@app/components/modal/AddManager';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { EditManager } from '@app/components/modal/EditManager';
-import { getAllUsers, Create, Update, Delete, Activate, DeActivate } from '@app/services/users';
-import { FONT_SIZE, FONT_WEIGHT, media } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { LableText } from '../../GeneralStyles';
-import { defineColorBySeverity } from '@app/utils/utils';
-import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
-import { Modal, Header, CreateButtonText } from '../../GeneralStyles';
-import { Broker, Partner, UserModel } from '@app/interfaces/interfaces';
-import { Dates } from '@app/constants/Dates';
+import { Header, CreateButtonText } from '../../GeneralStyles';
+import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
-import {
-  ActivatePartner,
-  CreatePartner,
-  DeActivatePartner,
-  DeletePartner,
-  UpdatePartner,
-  getAllPartner,
-} from '@app/services/Partner';
-import { AddPartner } from '@app/components/modal/AddPartner';
-import { EditPartner } from '@app/components/modal/EditPartner';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/Broker';
+import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/broker';
 
 export const Brokers: React.FC = () => {
   const { t } = useTranslation();
