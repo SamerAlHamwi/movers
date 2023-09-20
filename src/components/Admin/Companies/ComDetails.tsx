@@ -41,7 +41,7 @@ const ComDetails: React.FC = () => {
   const { id } = useParams();
 
   const { refetch, isRefetching } = useQuery(['getContactUs'], () =>
-    getcompany(92)
+    getcompany('')
       .then((data) => {
         console.log('QWERTYUIOP[');
         console.log('zxcvbnm', id);

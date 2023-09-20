@@ -91,18 +91,18 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
       }),
   );
 
-  const company = useQuery(['getCompany'], () =>
-    getcompany(Company_values?.id)
-      .then((data) => {
-        const result = data.data?.result;
-        setCompanyData(result);
-        setLoading(!data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-        setLoading(false);
-      }),
-  );
+  // const company = useQuery(['getCompany'], () =>
+  //   getcompany(Company_values?.id)
+  //     .then((data) => {
+  //       const result = data.data?.result;
+  //       setCompanyData(result);
+  //       setLoading(!data.data?.success);
+  //     })
+  //     .catch((error) => {
+  //       notificationController.error({ message: error.message || error.error?.message });
+  //       setLoading(false);
+  //     }),
+  // );
 
   useEffect(() => {
     const updateFormValues = async () => {
