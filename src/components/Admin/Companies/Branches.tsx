@@ -22,6 +22,7 @@ export const Branches: React.FC = () => {
   const { isTablet, isMobile, isDesktop } = useResponsive();
   const navigate = useNavigate();
   const { companyId } = useParams();
+  console.log('zxcvbnm,', companyId);
 
   const [modalState, setModalState] = useState({
     add: false,

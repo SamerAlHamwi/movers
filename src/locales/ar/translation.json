@@ -98,6 +98,7 @@
     "alreadyHaveAccount": "لديك حساب؟ قم بتسجيل الدخول من ",
     "privacyPolicy": "سياسة الخصوصية",
     "termOfUse": "شروط الاستخدام",
+    
     "agree": "أنا أوافق على",
     "resetPassword": "إعادة تعيين كلمة المرور",
     "resetPasswordDescription": "أدخل عنوان بريدك الإلكتروني وسنرسل رمز تحقق لإعادة تعيين كلمة مرورك",
@@ -254,6 +255,7 @@
     "bio": " وصف بالإنكليزية",
     "Add Service": "إضافة خدمة",
     "editeCompanyModalTitle": "تعديل الشركة",
+    "EditCompany":"تعديل الشركة",
     "editeCompanySuccessMessage": "تم تعديل معلومات الشركة بنجاح",
     "City name": "اسم المدينة",
     "Contact Information": "معلومات التواصل",

@@ -238,8 +238,17 @@ export const Companies: React.FC = () => {
             >
               <ApartmentOutlined />
             </TableButton>
-
             <TableButton
+              severity="success"
+              onClick={() => {
+                // navigate(`${record.id}/addBranch`, { replace: false });
+                navigate(`${record.id}/EditCom`, { replace: false });
+              }}
+            >
+              <EditOutlined />
+            </TableButton>
+
+            {/* <TableButton
               severity="info"
               onClick={() => {
                 setEditmodaldata(record);
@@ -247,7 +256,7 @@ export const Companies: React.FC = () => {
               }}
             >
               <EditOutlined />
-            </TableButton>
+            </TableButton> */}
 
             <TableButton
               severity="error"
