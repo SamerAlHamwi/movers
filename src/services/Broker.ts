@@ -1,5 +1,5 @@
 import { httpApi } from '@app/api/httpApi';
-import { Broker, Partner, UserModel } from '@app/interfaces/interfaces';
+import { Broker } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllM = async (page: number, pageSize: number, isActive?: boolean) => {
