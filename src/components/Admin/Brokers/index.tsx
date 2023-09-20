@@ -41,10 +41,7 @@ export const Brokers: React.FC = () => {
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEmployee, setIsEmployee] = useState(false);
-  const [isHover, setIsHover] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
-  const [temp, setTemp] = useState<any>();
-  const [temp1, setTemp1] = useState<any>();
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
   const [managerType, setManagerType] = useState<number | string>('');
 
