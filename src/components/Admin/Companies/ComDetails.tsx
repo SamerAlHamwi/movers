@@ -16,6 +16,8 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { EditOutlined } from '@ant-design/icons';
 import { EditContactUs } from '@app/components/modal/EditContactUs';
 import { Modal, Text, CreateButtonText } from '../../GeneralStyles';
+import { getcompany } from '@app/services/company';
+import { useParams } from 'react-router-dom';
 
 export type specifierType = {
   name: string;
@@ -36,10 +38,14 @@ const ComDetails: React.FC = () => {
   const [contactData, setContacData] = useState<any>();
   const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<any | undefined>(undefined);
+  const { id } = useParams();
 
   const { refetch, isRefetching } = useQuery(['getContactUs'], () =>
-    getRequestById(17)
+    getcompany(92)
       .then((data) => {
+        console.log('QWERTYUIOP[');
+        console.log('zxcvbnm', id);
+
         const result = data.data?.result;
         setContacData(result);
         setLoading(!data.data?.success);
