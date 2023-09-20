@@ -1,24 +1,22 @@
 import { httpApi } from '@app/api/httpApi';
-import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '@app/components/Admin/PrivacyPolicy';
+import apiPrefix from '@app/constants/apiPrefix';
 
-const baseURL = `/api/services/app/PrivacyPolicy`;
-// eslint-disable-next-line
 const createPrivacy = async (data: PrivacyPolicy) => {
-  return await httpApi.post(`${baseURL}/Create`, data);
-};
-// eslint-disable-next-line
-const Deleteprivacy = async (id: number) => {
-  return await httpApi.delete(`${baseURL}/Delete?Id=${id}`);
-};
-const Updateprivacy = async (data: PrivacyPolicy) => {
-  return await httpApi.put(`${baseURL}/Update`, data);
+  return await httpApi.post(`${apiPrefix.privacyPolicy}/Create`, data);
 };
 
-// eslint-disable-next-line
+const Deleteprivacy = async (id: number) => {
+  return await httpApi.delete(`${apiPrefix.privacyPolicy}/Delete?Id=${id}`);
+};
+
+const Updateprivacy = async (data: PrivacyPolicy) => {
+  return await httpApi.put(`${apiPrefix.privacyPolicy}/Update`, data);
+};
+
 const getAllprivacy = async (page: number, pageSize: number) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${baseURL}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
+  return await httpApi.get(`${apiPrefix.privacyPolicy}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
 };
 
 export { createPrivacy, getAllprivacy, Deleteprivacy, Updateprivacy };
