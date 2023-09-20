@@ -18,7 +18,7 @@ import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateM, DeleteM, Updatem, getAllM } from '@app/services/Broker';
+import { CreateM, DeleteM, Updatem, getAllM } from '../../../services/mediator';
 
 export const Brokers: React.FC = () => {
   const { t } = useTranslation();
@@ -41,10 +41,7 @@ export const Brokers: React.FC = () => {
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isEmployee, setIsEmployee] = useState(false);
-  const [isHover, setIsHover] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
-  const [temp, setTemp] = useState<any>();
-  const [temp1, setTemp1] = useState<any>();
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
   const [managerType, setManagerType] = useState<number | string>('');
 

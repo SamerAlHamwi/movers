@@ -19,4 +19,5 @@ export default {
   requests: '/api/services/app/RequestForQuotation',
   branches: '/api/services/app/CompanyBranch',
   pushNotifications: '/api/services/app/PushNotification',
+  privacyPolicy: '/api/services/app/PrivacyPolicy',
 };
