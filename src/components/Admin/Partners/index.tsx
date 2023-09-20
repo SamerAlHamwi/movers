@@ -16,7 +16,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { Header, CreateButtonText } from '../../GeneralStyles';
 import { Partner, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
-import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '@app/services/Partner';
+import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '@app/services/partner';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
 
