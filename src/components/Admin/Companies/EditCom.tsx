@@ -937,7 +937,7 @@ export const EditCom: React.FC = () => {
                   </Radio>
                 </Radio.Group>
               </BaseForm.Item>
-              <BaseForm.Item key="100" name="services">
+              <BaseForm.Item key="100" name={['services']}>
                 {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                   const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
                   return (
