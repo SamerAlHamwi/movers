@@ -559,7 +559,8 @@
     "addcompany": "إضافة شركة",
     "companies": "الشركات",
     "AddBranch": "إضافة فرع لشركة",
-    "branches": "الفروع"
+    "branches": "الفروع",
+    "EditBranch": "تعديل فرع الشركة"
   },
   "header": {
     "changeLanguage": "تغيير اللغة",

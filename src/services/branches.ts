@@ -9,12 +9,20 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
   );
 };
 
+const getBranch = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.branches}/Get?Id=${id}`);
+};
+
 const createBranch = async (data: BranchModel) => {
   return await httpApi.post(`${apiPrefix.branches}/Create`, data);
+};
+
+const UpdateBranch = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.branches}/Update`, data);
 };
 
 const DeleteBranch = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.branches}/Delete?Id=${id}`);
 };
 
-export { getAllBranches, createBranch, DeleteBranch };
+export { getAllBranches, getBranch, createBranch, UpdateBranch, DeleteBranch };

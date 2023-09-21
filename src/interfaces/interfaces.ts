@@ -251,9 +251,10 @@ export interface RoleModel {
 export interface BranchModel {
   id: number;
   companyId: number;
-  regionId: number;
+  regionId?: number;
+  region: any;
   companyContact: any;
-  services: Service[];
+  services: any[];
   translations: translation[];
   userDto?: UserDto;
 }

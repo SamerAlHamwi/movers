@@ -477,7 +477,7 @@ export const AddRequest: React.FC = () => {
             }}
             onClick={() => prev()}
           >
-            {t('common.Previous')}
+            {t('common.prev')}
           </Button>
         )}
         {current < steps.length - 1 && (

@@ -7,7 +7,7 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { DeleteBranch, getAllBranches } from '@app/services/branches';
+import { DeleteBranch, getAllBranches, getBranch } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -16,7 +16,17 @@ import { Header, CreateButtonText } from '../../GeneralStyles';
 import { BranchModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useParams, useNavigate } from 'react-router-dom';
+import { useAtom } from 'jotai';
 
+const branchModel = {
+  id: 0,
+  companyId: 0,
+  regionId: 0,
+  companyContact: [],
+  services: [],
+  translations: [],
+  userDto: {},
+};
 export const Branches: React.FC = () => {
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop } = useResponsive();
@@ -109,12 +119,6 @@ export const Branches: React.FC = () => {
     setIsDelete(false);
   }, [isDelete, isEdit, page, pageSize, refetch]);
 
-  //   useEffect(() => {
-  //     setLoading(true);
-  //     refetch();
-  //     setRefetchOnAdd(false);
-  //   }, [refetchOnAdd, refetch]);
-
   useEffect(() => {
     setLoading(true);
     refetch();
@@ -141,8 +145,7 @@ export const Branches: React.FC = () => {
             <TableButton
               severity="info"
               onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
+                navigate(`/companies/${companyId}/branches/${record.id}/EditBranch`);
               }}
             >
               <EditOutlined />
@@ -185,21 +188,6 @@ export const Branches: React.FC = () => {
           >
             <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
           </Button>
-
-          {/*    EDIT    */}
-          {/* {modalState.edit && (
-            <EditRole
-              values={editmodaldata}
-              visible={modalState.edit}
-              onCancel={() => handleModalClose('edit')}
-              onEdit={(info) => {
-                const displayName = info.name;
-                const values = { ...info, displayName };
-                editmodaldata !== undefined && handleEdit(values, editmodaldata.id);
-              }}
-              isLoading={editRole.isLoading}
-            />
-          )} */}
 
           {/*    Delete    */}
           {modalState.delete && (

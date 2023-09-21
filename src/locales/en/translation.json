@@ -562,7 +562,8 @@
     "addcompany": "Add Comapany",
     "companies": "Companies",
     "AddBranch": "Add Branch",
-    "branches": "Branches"
+    "branches": "Branches",
+    "EditBranch": "Edit Branch"
   },
   "header": {
     "changeLanguage": "Change language",
