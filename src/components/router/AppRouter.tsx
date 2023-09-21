@@ -40,9 +40,9 @@ const BranchesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/Branc
 const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
 const AddBranchPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddBranchPage'));
+const EditBranchPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/EditBranchPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
 const ComDetailPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/ComDetailsPage'));
-
 const Brokerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/BrokerPage'));
 const Partnerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/PartnersPage'));
 
@@ -74,6 +74,7 @@ const BranchPage = withLoading(BranchesPage);
 const RequestsPage = withLoading(RequestPage);
 const AddRequestsPage = withLoading(AddRequestPage);
 const AddBranchesPage = withLoading(AddBranchPage);
+const EditBranchesPage = withLoading(EditBranchPage);
 const RequestDetailsPage = withLoading(RequestDetailPage);
 const ComDetailsPage = withLoading(ComDetailPage);
 const BrokerPage = withLoading(Brokerspage);
@@ -187,6 +188,16 @@ export const AppRouter: React.FC = () => {
               </PrivateRoute>
             }
           />
+
+          <Route
+            path="companies/:companyId/branches/:branchId/EditBranch"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <EditBranchesPage />
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="companies/:requestId"
             element={
