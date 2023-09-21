@@ -20,7 +20,7 @@ import {
 import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getCities, getCountries, getRegions } from '@app/services/locations';
+import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
 import { countries } from '../Admin/Locations/Countries';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
@@ -109,6 +109,7 @@ export const AddCompany: React.FC = () => {
   const [Data, setData] = useState<cities[] | undefined>();
   const [Dat, setDat] = useState<services[] | undefined>();
   const [countryData, setCountryData] = useState<countries[]>();
+  const [CityData, setCityData] = useState<cities[]>();
   const [Contry_id, setContryId] = useState(0);
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
@@ -137,6 +138,22 @@ export const AddCompany: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const cities = useQuery(
+    ['City'],
+    () =>
+      getAllCity()
+        .then((data) => {
+          const result = data.data?.result.items;
+          setTotalCount(data.data?.result?.totalCount);
+          setCityData(result);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: CityData === undefined,
+    },
+  );
 
   const country = useQuery(
     ['Countries'],
@@ -415,6 +432,7 @@ export const AddCompany: React.FC = () => {
       companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
       comment: form.getFieldValue('comment'),
       regionId: Region_id,
+      availableCitiesIds: form.getFieldValue(['availableCitiesIds']),
     };
     updatedFormData.translations = companyInfo.translations;
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
@@ -666,6 +684,19 @@ export const AddCompany: React.FC = () => {
                 {Data?.map((Region) => (
                   <Select key={Region?.name} value={Region?.id}>
                     {Region?.name}
+                  </Select>
+                ))}
+              </Select>
+            </BaseForm.Item>
+            <BaseForm.Item
+              name={['availableCitiesIds']}
+              label={<LableText>{t('companies.available City name')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+            >
+              <Select mode="multiple" value={City_id}>
+                {CityData?.map((city: any) => (
+                  <Select key={city.name} value={city.id}>
+                    {city?.name}
                   </Select>
                 ))}
               </Select>

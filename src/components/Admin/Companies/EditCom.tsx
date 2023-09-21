@@ -20,7 +20,7 @@ import {
 import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getCities, getCountries, getRegions } from '@app/services/locations';
+import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
 import { countries } from '../Locations/Countries';
 import { useNavigate, useParams } from 'react-router-dom';
 import { cities } from '../Locations/Cities';
@@ -137,6 +137,7 @@ export const EditCom: React.FC = () => {
   const [imageCommercialList, setImageCommercialList] = useState([]);
   const [fileOtherList, setFileOtherList] = useState([]);
   const [imageOtherList, setImageOtherList] = useState([]);
+  const [CityData, setCityData] = useState<cities[]>();
   const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -156,6 +157,22 @@ export const EditCom: React.FC = () => {
       }),
   );
 
+  const cities = useQuery(
+    ['City'],
+    () =>
+      getAllCity()
+        .then((data) => {
+          const result = data.data?.result.items;
+          setTotalCount(data.data?.result?.totalCount);
+          setCityData(result);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: CityData === undefined,
+    },
+  );
   useEffect(() => {
     const updateFormValues = async () => {
       // Check if companyData is not an empty object
@@ -452,6 +469,7 @@ export const EditCom: React.FC = () => {
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: false,
       },
+      availableCitiesIds: form.getFieldValue(['availableCitiesIds']),
 
       serviceType: valueRadio,
       services: requestServices,
@@ -753,6 +771,19 @@ export const EditCom: React.FC = () => {
                   {Data?.map((Region) => (
                     <Select key={Region?.name} value={Region?.id}>
                       {Region?.name}
+                    </Select>
+                  ))}
+                </Select>
+              </BaseForm.Item>
+              <BaseForm.Item
+                name={['availableCitiesIds']}
+                label={<LableText>{t('companies.available City name')}</LableText>}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              >
+                <Select mode="multiple" value={City_id}>
+                  {CityData?.map((city: any) => (
+                    <Select key={city.name} value={city.id}>
+                      {city?.name}
                     </Select>
                   ))}
                 </Select>

@@ -45,6 +45,9 @@ const getAllCities = async (id: string | undefined, page: number, pageSize: numb
     }SkipCount=${skip}&MaxResultCount=${pageSize}`,
   );
 };
+const getAllCity = async () => {
+  return await httpApi.get(`${apiPrefix.cities}/GetAll`);
+};
 
 const getCities = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.cities}/GetAll?CountryId=${id}&IsActive=true`);
@@ -123,6 +126,7 @@ export {
   getAllRegions,
   createRegion,
   DeleteRegion,
+  getAllCity,
   UpdateRegion,
   ActivationRegion,
   DeActivateRegion,
