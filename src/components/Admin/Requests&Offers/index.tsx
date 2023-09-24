@@ -293,7 +293,7 @@ export const Requests: React.FC = () => {
               <DeleteOutlined />
             </TableButton>
 
-            <TableButton
+            {/* <TableButton
               severity="warning"
               onClick={() => {
                 setDeletemodaldata(record);
@@ -301,7 +301,7 @@ export const Requests: React.FC = () => {
               }}
             >
               <RedoOutlined />
-            </TableButton>
+            </TableButton> */}
           </Space>
         );
       },

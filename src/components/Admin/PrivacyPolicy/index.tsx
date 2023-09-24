@@ -170,7 +170,7 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: 'id',
-      width: '10%',
+      width: '5%',
     },
     {
       title: (
@@ -179,7 +179,6 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 0, 'title'],
-      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
@@ -191,19 +190,17 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 1, 'title'],
-      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
       },
     },
     {
       title: (
-        <Header>
+        <Header style={{ wordBreak: 'normal' }}>
           <Trans i18nKey={'notifications.englishdescription'} />
         </Header>
       ),
       dataIndex: ['translations', 0, 'description'],
-      width: '30%',
       render: (text: string) => {
         const firstSentence = text.split('.')[0]; // Get the first sentence
 
@@ -217,7 +214,6 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 1, 'description'],
-      width: '30%',
       render: (text: string) => {
         const firstSentence = text.split('.')[0]; // Get the first sentence
         return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
@@ -231,7 +227,6 @@ export const PrivacyPolicy: React.FC = () => {
       ),
 
       dataIndex: 'actions',
-      width: '30%',
       render: (index: number, Data: PrivacyPolicy) => {
         return (
           <Space>

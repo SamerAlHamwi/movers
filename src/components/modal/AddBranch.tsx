@@ -12,8 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getServices, getSubServices } from '@app/services/services';
-import { getTools } from '@app/services/tools';
+import { getServices } from '@app/services/services';
 import { createBranch } from '@app/services/branches';
 import { Card } from '@app/components/common/Card/Card';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -288,7 +287,7 @@ export const AddBranch: React.FC = () => {
             }}
             onClick={() => prev()}
           >
-            {t('common.Previous')}
+            {t('common.prev')}
           </Button>
         )}
         {current < steps.length - 1 && (
