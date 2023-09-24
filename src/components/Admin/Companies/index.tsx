@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Avatar, Tag } from 'antd';
+import { message, Row, Space, Tag } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -11,16 +11,17 @@ import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { CompanyModal } from '@app/interfaces/interfaces';
+import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
 import { useNavigate } from 'react-router-dom';
 import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@app/services/company';
-import { Header, CreateButtonText, TableButton } from '../../GeneralStyles';
 import { EditCompany } from '@app/components/modal/EditCompany';
+import { Image as AntdImage } from '@app/components/common/Image/Image';
+import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 
 export const Companies: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+  const { desktopOnly, isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
 
   const [modalState, setModalState] = useState({
     edit: false,
@@ -41,7 +42,7 @@ export const Companies: React.FC = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [attachmentData, setAttachmentData] = useState<CompanyModal>();
+  const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
@@ -212,11 +213,11 @@ export const Companies: React.FC = () => {
       render: (url: string, record: CompanyModal) => {
         return (
           <>
-            <Avatar
+            <Image
               src={url}
               onClick={() => {
                 setIsOpenSliderImage(true);
-                setAttachmentData(record);
+                setAttachmentData(record?.companyProfile);
               }}
             />
           </>
@@ -437,6 +438,25 @@ export const Companies: React.FC = () => {
               isLoading={approveCompany.isLoading}
             />
           )}
+
+          {/*    Image    */}
+          {isOpenSliderImage ? (
+            <Modal
+              size={isDesktop || isTablet ? 'medium' : 'small'}
+              open={isOpenSliderImage}
+              onCancel={() => setIsOpenSliderImage(false)}
+              footer={null}
+              closable={false}
+              destroyOnClose
+            >
+              <AntdImage
+                preview={false}
+                style={{ borderRadius: '.3rem' }}
+                src={attachmentData !== undefined ? attachmentData.url : ''}
+                size={isDesktop || isTablet ? 'small' : isMobile ? 'x_small' : mobileOnly ? 'xx_small' : 'x_small'}
+              />
+            </Modal>
+          ) : null}
         </Row>
 
         <Table

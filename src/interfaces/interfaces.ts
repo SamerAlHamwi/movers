@@ -111,6 +111,10 @@ export type CreateGameFormData = {
   gameType?: number;
 };
 
+export interface CompanyProfile {
+  id: number;
+  url: string;
+}
 export interface CompanyModal {
   id?: number;
   translations: translation[];
@@ -120,7 +124,8 @@ export interface CompanyModal {
   statues?: number;
   companyContact?: CompanyContact;
   companyProfilePhotoId?: number;
-
+  companyProfile: CompanyProfile;
+  attachment?: Attachment;
   companyBranches?: CompanyBranch[];
   companyOwnerIdentityIds?: any;
   companyCommercialRegisterIds?: any;
