@@ -117,7 +117,7 @@ export interface CompanyModal {
   services: Service;
   address?: string;
   regionId?: number;
-
+  statues?: number;
   companyContact?: CompanyContact;
   companyProfilePhotoId?: number;
 

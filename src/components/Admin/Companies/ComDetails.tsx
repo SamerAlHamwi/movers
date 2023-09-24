@@ -16,7 +16,7 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { EditOutlined } from '@ant-design/icons';
 import { EditContactUs } from '@app/components/modal/EditContactUs';
 import { Modal, Text, CreateButtonText } from '../../GeneralStyles';
-import { getcompany } from '@app/services/company';
+import { getCompanyById } from '@app/services/company';
 import { useParams } from 'react-router-dom';
 
 export type specifierType = {
@@ -41,7 +41,7 @@ const ComDetails: React.FC = () => {
   const { id } = useParams();
 
   const { refetch, isRefetching } = useQuery(['getContactUs'], () =>
-    getcompany('')
+    getCompanyById('')
       .then((data) => {
         console.log('QWERTYUIOP[');
         console.log('zxcvbnm', id);

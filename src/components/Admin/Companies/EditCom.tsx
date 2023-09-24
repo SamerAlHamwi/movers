@@ -26,7 +26,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { cities } from '../Locations/Cities';
 import { getServices } from '@app/services/services';
 import { services } from '../Services';
-import { Updatce, createCompany, getcompany } from '@app/services/company';
+import { updateCompany, createCompany, getCompanyById } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Translations';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -145,7 +145,7 @@ export const EditCom: React.FC = () => {
   const [companyData, setCompanyData] = useState<any | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const company = useQuery(['getCompany'], () =>
-    getcompany(companyId)
+    getCompanyById(companyId)
       .then((data) => {
         const result = data.data?.result;
         setCompanyData(result);
@@ -381,7 +381,7 @@ export const EditCom: React.FC = () => {
   );
 
   const UpdateCompany = useMutation((data: CompanyModal) =>
-    Updatce(data)
+    updateCompany(data)
       .then((data: any) => {
         notificationController.success({ message: t('companies.editeCompanySuccessMessage') });
         queryClient.invalidateQueries('AllCompanies');
