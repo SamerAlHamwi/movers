@@ -227,7 +227,7 @@ export const Companies: React.FC = () => {
     { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
     { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
     {
-      title: <Header>{t('requests.serviceType')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
       render: (record: number) => {
         return (
@@ -241,7 +241,10 @@ export const Companies: React.FC = () => {
         );
       },
     },
-    { title: <Header>{t('companies.numberOfTransfers')}</Header>, dataIndex: 'numberOfTransfers' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
+      dataIndex: 'numberOfTransfers',
+    },
     {
       title: <Header>{t('requests.services')}</Header>,
       dataIndex: 'services',
