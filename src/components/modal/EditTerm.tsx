@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Space, Modal } from 'antd';
-import { CreateNotificationModalProps, EditNotifactionprops } from './ModalProps';
+import { CreateNotificationModalProps, EditNotifactionprops, EditTermprops } from './ModalProps';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 import { Button } from '../common/buttons/Button/Button';
@@ -14,14 +14,10 @@ import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { Notification } from '@app/components/Admin/Notifications';
 import { LanguageType, NotModal } from '@app/interfaces/interfaces';
 import { useMutation } from 'react-query';
+import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { Term } from '../Admin/Term&condition';
 
-export const EditNotifaction: React.FC<EditNotifactionprops> = ({
-  visible,
-  onCancel,
-  onEdit,
-  Not_values,
-  isLoading,
-}) => {
+export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, Term_values, isLoading }) => {
   const { t } = useTranslation();
   const theme = useAppSelector((state) => state.theme.theme);
   const [form] = BaseForm.useForm();
@@ -30,16 +26,18 @@ export const EditNotifaction: React.FC<EditNotifactionprops> = ({
   const [attachments, setAttachments] = useState<any[]>([]);
 
   useEffect(() => {
-    isLoading ? '' : Not_values !== undefined && form.setFieldsValue(Not_values);
-  }, [Not_values, isLoading]);
+    isLoading ? '' : Term_values !== undefined && form.setFieldsValue(Term_values);
+  }, [Term_values, isLoading]);
 
   const onOk = () => {
     form.submit();
   };
 
-  const onFinish = (data: Notification) => {
+  const onFinish = (data: Term) => {
     const edited_data = {
-      destination: data.destination,
+      title: data.title,
+      description: data.description,
+
       id: data.id,
       translations: data.translations.map((_, i) => ({
         ...data.translations[i],
@@ -66,7 +64,7 @@ export const EditNotifaction: React.FC<EditNotifactionprops> = ({
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button style={buttonStyle} loading={isLoading} key="save" type="primary" onClick={onOk}>
-              <P1>{t('notifications.send')}</P1>
+              <P1>{t('Terms.add')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>
@@ -74,35 +72,33 @@ export const EditNotifaction: React.FC<EditNotifactionprops> = ({
     >
       <BaseForm form={form} layout="vertical" onFinish={onFinish} name="userForm">
         <BaseForm.Item
-          style={{ marginTop: '-1rem' }}
-          name={`destination`}
-          label={<LableText>{t(`notifications.destination.destination`)}</LableText>}
+          name={['translations', 0, 'title']}
+          label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
         >
-          <Select>
-            <Option value={0}>
-              <Text>{t('notifications.destination.all')}</Text>
-            </Option>
-            <Option value={1}>
-              <Text>{t('notifications.destination.Users')}</Text>
-            </Option>
-            <Option value={2}>
-              <Text>{t('notifications.destination.companies')}</Text>
-            </Option>
-          </Select>
+          <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 0, 'message']}
-          label={<LableText>{t(`notifications.englishMessage`)}</LableText>}
+          name={['translations', 0, 'description']}
+          label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'message']}
-          label={<LableText>{t(`notifications.arabicMessage`)}</LableText>}
+          name={['translations', 1, 'title']}
+          label={<LableText>{t(`notifications.arabictitle`)}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ margin: '-.5rem 0' }}
+        >
+          <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name={['translations', 1, 'description']}
+          label={<LableText>{t(`notifications.arabicdiscription`)}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ margin: '-.5rem 0' }}
         >

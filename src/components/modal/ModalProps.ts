@@ -13,10 +13,12 @@ import {
   RoleModel,
   Broker,
   RequestModel,
+  BranchModel,
 } from '@app/interfaces/interfaces';
 import { blog_article } from '@app/services/blog/blogArticles';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { Term } from '../Admin/Term&condition';
 
 export interface ModalProps {
   visible: boolean;
@@ -27,8 +29,8 @@ export interface ModalProps {
 export interface CreateUserModalProps extends ModalProps {
   onCreateManager: (managerInfo: UserModel) => void;
 }
-export interface CreateCompanyModalProps extends ModalProps {
-  onCreateCompany: (CompanyInfo: CompanyModal) => void;
+export interface CreateBranchModalProps extends ModalProps {
+  onCreate: (info: BranchModel) => void;
 }
 export interface CreatePartnerModalProps extends ModalProps {
   onCreatePartner: (PartnerInfo: Partner) => void;
@@ -81,6 +83,14 @@ export interface CreateNotificationModalProps extends ModalProps {
 export interface CreateprivacyModalProps extends ModalProps {
   onCreateprivacy: (PrivacyPolicy: PrivacyPolicy) => void;
   isManager: boolean;
+}
+export interface CreateTermModalProps extends ModalProps {
+  onCreateTerm: (Term: Term) => void;
+  isManager: boolean;
+}
+export interface EditTermprops extends ModalProps {
+  Term_values: Term | undefined;
+  onEdit: (data: Term) => void;
 }
 
 // export interface CreateVideoModalProps extends ModalProps {

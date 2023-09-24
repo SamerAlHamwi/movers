@@ -8,7 +8,7 @@ const PrivacyPolicyPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('PrivacyPolicy.PrivacyPolicy')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.PrivacyPolicy')}</PageTitle>
       <PrivacyPolicy />
     </>
   );

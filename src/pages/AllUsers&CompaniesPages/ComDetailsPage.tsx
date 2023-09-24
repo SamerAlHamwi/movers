@@ -1,17 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import { Companies } from '@app/components/Admin/Companies';
+import ComDetails from '@app/components/Admin/Companies/ComDetails';
 
-const Companiespage: React.FC = () => {
+const ComDetailsPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
     <>
       <PageTitle>{t('sidebarNavigation.companies')}</PageTitle>
-      <Companies />
+      <ComDetails />
     </>
   );
 };
 
-export default Companiespage;
+export default ComDetailsPage;

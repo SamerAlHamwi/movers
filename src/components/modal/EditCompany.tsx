@@ -40,7 +40,7 @@ import { countries } from '../Admin/Locations/Countries';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
 import { useNavigate } from 'react-router-dom';
-import { getAllCompanies, getcompany } from '@app/services/company';
+import { getAllCompanies, getCompanyById } from '@app/services/company';
 
 export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onEdit, Company_values, isLoading }) => {
   const { t } = useTranslation();
@@ -91,18 +91,18 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
       }),
   );
 
-  const company = useQuery(['getCompany'], () =>
-    getcompany(Company_values?.id)
-      .then((data) => {
-        const result = data.data?.result;
-        setCompanyData(result);
-        setLoading(!data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-        setLoading(false);
-      }),
-  );
+  // const company = useQuery(['getCompany'], () =>
+  //   getCompanyById(Company_values?.id)
+  //     .then((data) => {
+  //       const result = data.data?.result;
+  //       setCompanyData(result);
+  //       setLoading(!data.data?.success);
+  //     })
+  //     .catch((error) => {
+  //       notificationController.error({ message: error.message || error.error?.message });
+  //       setLoading(false);
+  //     }),
+  // );
 
   useEffect(() => {
     const updateFormValues = async () => {
@@ -389,7 +389,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   //     }),
   // );
 
-  const companyInfo: CompanyModal = {
+  const companyInfo: any = {
     translations: [
       {
         name: 'string',
@@ -761,7 +761,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                 <div key={index}>
                   <BaseForm.Item
                     label={<LableText>{t('companies.selectService')}</LableText>}
-                    name={['services', index, 'serviceId']}
+                    name={['services', index, 'name']}
                     style={{ marginTop: '-1rem' }}
                   >
                     <Select onChange={(e) => ChangeServieceHandler(index, e)}>
@@ -774,7 +774,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
                   </BaseForm.Item>
                   <BaseForm.Item
                     label={<LableText>{t('companies.selectSubService')}</LableText>}
-                    name={['services', index, 'subserviceId']}
+                    name={['services', index, 'subServices', index, 'name']}
                     style={{ marginTop: '-1rem' }}
                   >
                     <Select>

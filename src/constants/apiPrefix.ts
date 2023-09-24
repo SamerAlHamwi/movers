@@ -1,3 +1,4 @@
+import { PushNotification } from '@app/components/modal/PushNotification';
 export default {
   auth: '/api/TokenAuth',
   users: '/api/services/app/User',
@@ -16,4 +17,8 @@ export default {
   Mediator: '/api/services/app/Mediator',
   roles: '/api/services/app/Role',
   requests: '/api/services/app/RequestForQuotation',
+  branches: '/api/services/app/CompanyBranch',
+  pushNotifications: '/api/services/app/PushNotification',
+  privacyPolicy: '/api/services/app/PrivacyPolicy',
+  Term: '/api/services/app/Term',
 };

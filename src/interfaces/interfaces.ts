@@ -83,11 +83,10 @@ export type Translation = {
 export type subservices = {
   id: number;
   serviceId: string;
-  name:string;
+  name: string;
 
   attachment?: Attachment;
-  translations:Translation;
-
+  translations: Translation;
 };
 export type translation = {
   name?: string;
@@ -95,7 +94,6 @@ export type translation = {
   description?: string;
   language: LanguageType;
   address?: string;
-
 };
 
 export interface ProductInitalModeDto
@@ -113,19 +111,24 @@ export type CreateGameFormData = {
   gameType?: number;
 };
 
+export interface CompanyProfile {
+  id: number;
+  url: string;
+}
 export interface CompanyModal {
   id?: number;
   translations: translation[];
-  services: Service[];
+  services: Service;
   address?: string;
   regionId?: number;
-  
+  statues?: number;
   companyContact?: CompanyContact;
   companyProfilePhotoId?: number;
-
+  companyProfile: CompanyProfile;
+  attachment?: Attachment;
   companyBranches?: CompanyBranch[];
-  companyOwnerIdentityIds?:any;
-  companyCommercialRegisterIds?:any;
+  companyOwnerIdentityIds?: any;
+  companyCommercialRegisterIds?: any;
   additionalAttachmentIds?: any;
   availableCitiesIds?: any;
   userDto?: UserDto;
@@ -133,12 +136,9 @@ export interface CompanyModal {
   companyOwnerIdentity?: any;
   companyCommercialRegister?: any;
   additionalAttachment?: any;
-  comment?: "string",
-  serviceType?: 1
-
+  comment?: 'string';
+  serviceType?: 1;
 }
-
-
 
 export interface Services {
   numberOfBranch: number;
@@ -148,7 +148,6 @@ export interface Service {
   serviceId: number;
   subServiceId: number;
   toolId: number;
-
 }
 
 export interface CompanyContact {
@@ -174,7 +173,6 @@ export interface UserDto {
   password: string;
 }
 
-
 export interface UserModel {
   id: number;
   userName: string;
@@ -189,13 +187,10 @@ export interface UserModel {
   isActive: boolean | string;
 }
 
-
-
 export interface Services {
   numberOfBranch: number;
   services: Service[];
 }
-
 
 export interface CompanyContact {
   dialCode: string;
@@ -256,6 +251,17 @@ export interface RoleModel {
   normalizedName: string;
   description: string;
   grantedPermissions: string[];
+}
+
+export interface BranchModel {
+  id: number;
+  companyId: number;
+  regionId?: number;
+  region: any;
+  companyContact: any;
+  services: any[];
+  translations: translation[];
+  userDto?: UserDto;
 }
 export interface RequestModel {
   id: number;

@@ -1,5 +1,4 @@
 import { httpApi } from '@app/api/httpApi';
-import { RoleModel } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllRequests = async (page: number, pageSize: number) => {

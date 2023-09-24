@@ -1,51 +1,45 @@
 import React, { useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText } from '../GeneralStyles';
+import { CreateButtonText, LableText, treeStyle, Text } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CompanyModal, subservices } from '@app/interfaces/interfaces';
+import { CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
-import { Text } from '../GeneralStyles';
 import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
   BankOutlined,
   ClearOutlined,
-  DeleteOutlined,
-  FilePdfTwoTone,
+  FileAddOutlined,
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
-  PlusCircleOutlined,
-  PlusOutlined,
-  PushpinOutlined,
   UserAddOutlined,
-  UserOutlined,
 } from '@ant-design/icons';
-import { Button, Col, Input, Radio, Row, Steps, Tabs } from 'antd';
-import { Space, message, Alert } from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
-import { useAtom } from 'jotai';
+import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
 import { countries } from '../Admin/Locations/Countries';
-import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
-import { getAllServices, getAllSubServices } from '@app/services/services';
-import { getAllTools } from '@app/services/tools';
+import { getServices } from '@app/services/services';
 import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/company';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
-import { tools } from '../Admin/Services/tools';
-import { BaseButtonsForm } from '../common/forms/BaseButtonsForm/BaseButtonsForm';
+import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
+import { RcFile, UploadFile } from 'antd/es/upload';
+import type { DataNode } from 'antd/es/tree';
 
 const { Step } = Steps;
+let requestServicesArray: any = [];
+const requestServices: any = [];
 const steps = [
   {
     title: 'Company Information',
@@ -84,7 +78,6 @@ let companyInfo: any = {
     webSite: 'string',
     isForBranchCompany: false,
   },
-  isActive: true,
   comment: 'string',
   serviceType: 1,
   userDto: {
@@ -92,48 +85,35 @@ let companyInfo: any = {
     phoneNumber: '0997829849',
     password: '865fghjk',
   },
-
   companyProfilePhotoId: 0,
-  companyOwnerIdentityIds: [0],
-  companyCommercialRegisterIds: [0],
-  additionalAttachmentIds: [0],
+  companyOwnerIdentityIds: [],
+  companyCommercialRegisterIds: [],
+  additionalAttachmentIds: [],
   availableCitiesIds: [],
 };
+const getBase64 = (file: RcFile): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
 
 export const AddCompany: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
-  let record: services | undefined;
+  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
 
-  const [attachments, setAttachments] = useState<any[]>([]);
-  const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
-  const [countryPageSize, setcountryPageSize] = useAtom(gamesPageSizeAtom);
   const [Data, setData] = useState<cities[] | undefined>();
   const [Dat, setDat] = useState<services[] | undefined>();
-  const [Datr, setDatr] = useState<subservices[] | undefined>();
-  const [Datt, setDatt] = useState<tools[] | undefined>();
-  const [page, setPage] = useAtom(currentGamesPageAtom);
-  const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[]>();
+  const [CityData, setCityData] = useState<cities[]>();
   const [Contry_id, setContryId] = useState(0);
   const [City_id, setCityId] = useState(0);
   const [Region_id, setRegionId] = useState(0);
-  const [tool_id, settoolId] = useState(0);
-  const [Serviece_id, setServieceId] = useState(0);
-  const [uploadSuccess, setUploadSuccess] = useState(false);
-  const [uploadSucces, setUploadSucces] = useState(false);
-  const [uploadSucce, setUploadSucce] = useState(false);
-  const [uploadSucc, setUploadSucc] = useState(false);
-  const [uploadedPhotoPR, setUploadedPhotoPR] = useState('');
-  const [uploadedPhotoid, setUploadedPhotoid] = useState('');
-  const [uploadedPhotoreg, setUploadedPhotoreg] = useState('');
-  const [uploadedPhotoidin, setUploadedPhotoidin] = useState('');
-  const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
-  const [branches, setBranches] = useState<any[]>([]);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
@@ -144,34 +124,41 @@ export const AddCompany: React.FC = () => {
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-
-  // const [activeTab, setActiveTab] = useState('1');
-  // const addBranch = () => {
-  //   const newBranch = {
-  //     phone: '',
-  //     email: '',
-  //     region: '',
-  //     city: '',
-  //     country: '',
-  //     website: '',
-  //   };
-  //   setBranches([...branches, newBranch]);
-  // };
-  // const removeBranch = (index: number) => {
-  //   const updatedBranches = [...branches];
-  //   updatedBranches.splice(index, 1);
-  //   setBranches(updatedBranches);
-  // };
-  // const handleBranchChange = (index: number, field: string, value: string) => {
-  //   const updatedBranches = [...branches];
-  //   updatedBranches[index][field] = value;
-  //   setBranches(updatedBranches);
-  // };
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [imageLogoList, setImageLogoList] = useState([]);
+  const [fileOwnerList, setFileOwnerList] = useState([]);
+  const [imageOwnerList, setImageOwnerList] = useState([]);
+  const [fileCommercialList, setFileCommercialList] = useState([]);
+  const [imageCommercialList, setImageCommercialList] = useState([]);
+  const [fileOtherList, setFileOtherList] = useState([]);
+  const [imageOtherList, setImageOtherList] = useState([]);
+  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const cities = useQuery(
+    ['City'],
+    () =>
+      getAllCity()
+        .then((data) => {
+          const result = data.data?.result.items;
+          setTotalCount(data.data?.result?.totalCount);
+          setCityData(result);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: CityData === undefined,
+    },
+  );
 
   const country = useQuery(
     ['Countries'],
     () =>
-      getAllCountries(countryPage, countryPageSize)
+      getCountries()
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -186,9 +173,9 @@ export const AddCompany: React.FC = () => {
   );
 
   const ser = useQuery(
-    ['Services', page, pageSize],
+    ['Services'],
     () =>
-      getAllServices(page, pageSize)
+      getServices()
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -202,6 +189,92 @@ export const AddCompany: React.FC = () => {
     },
   );
 
+  const GetAllServices = useQuery('getAllServices', getServices);
+
+  const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+    const serviceNode: DataNode = {
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={16} height={16} />
+          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+        </span>
+      ),
+      key: `${service?.id}`,
+      children: [],
+      disabled: service?.subServices?.length > 0 ? false : true,
+    };
+    if (service?.subServices?.length > 0) {
+      serviceNode.children = service.subServices.map((subService: any) => {
+        const subServiceNode = {
+          title: (
+            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <Image src={subService?.attachment?.url} width={16} height={16} />
+              {subService?.name}
+            </span>
+          ),
+          key: subService?.id,
+          children: [],
+        };
+        if (subService?.tools?.length > 0) {
+          subServiceNode.children = subService.tools.map((tool: any) => ({
+            title: (
+              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <Image src={tool?.attachment?.url} width={16} height={16} />
+                {tool?.name}
+              </span>
+            ),
+            key: tool?.id,
+          }));
+        }
+        return subServiceNode;
+      });
+    }
+    return serviceNode;
+  });
+
+  // const GetAllServices = useQuery('getAllServices', getServices);
+
+  // const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+  //   const serviceNode: DataNode = {
+  //     title: (
+  //       <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //         <Image src={service?.attachment?.url} width={16} height={16} />
+  //         <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+  //       </span>
+  //     ),
+  //     key: `service${service?.id}`,
+  //     children: [],
+  //     disabled: service?.subServices?.length > 0 ? false : true,
+  //   };
+  //   if (service?.subServices?.length > 0) {
+  //     serviceNode.children = service.subServices.map((subService: any) => {
+  //       const subServiceNode = {
+  //         title: (
+  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //             <Image src={subService?.attachment?.url} width={16} height={16} />
+  //             {subService?.name}
+  //           </span>
+  //         ),
+  //         key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+  //         children: [],
+  //       };
+  //       if (subService?.tools?.length > 0) {
+  //         subServiceNode.children = subService.tools.map((tool: any) => ({
+  //           title: (
+  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //               <Image src={tool?.attachment?.url} width={16} height={16} />
+  //               {tool?.name}
+  //             </span>
+  //           ),
+  //           key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+  //         }));
+  //       }
+  //       return subServiceNode;
+  //     });
+  //   }
+  //   return serviceNode;
+  // });
+
   const next = () => {
     setCurrent(current + 1);
   };
@@ -210,113 +283,19 @@ export const AddCompany: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleUploadSuccess = (photoUrl: any) => {
-    setUploadSuccess(true);
-    setUploadedPhotoPR(photoUrl);
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
   };
 
-  const handleUploadSucces = (photoUrl: any) => {
-    setUploadSucces(true);
-    setUploadedPhotoid(photoUrl);
-  };
-
-  const handleUploadSucce = (photoUrl: any) => {
-    setUploadSucce(true);
-    setUploadedPhotoreg(photoUrl);
-  };
-
-  const handleUploadSucc = (photoUrl: any) => {
-    setUploadSucc(true);
-    setUploadedPhotoidin(photoUrl);
-  };
-
-  const ChangeServieceHandler = (index: any, e: any) => {
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], serviceId: e };
-    setServices(updatedServices);
-
-    getAllSubServices(e, page, pageSize)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setDatr(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-  const ChangeSubServiceHandler = (index: number, e: any) => {
-    const updatedServices = [...services];
-    updatedServices[index] = { ...updatedServices[index], subserviceId: e };
-    setServices(updatedServices);
-    console.log('sdzzzzzzzzzzzzfghjkl', e);
-    getAllTools(e, e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      }); /////////////
-  };
-  const handleSubserviceSelection = (index: number, e: any) => {
-    ChangeSubServiceHandler(index, e);
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setDatt(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
-  };
-  // const ChangeSubServieceHandler = (index: any, e: any) => {
-  //   const updatedServices = [...services];
-  //   updatedServices[index] = { ...updatedServices[index], subserviceId: e };
-  //   setServices(updatedServices);
-  //   getAllTools('', e, page, pageSize)
-  //     .then((data) => {
-  //       const result = data?.data?.result?.items;
-  //       setTotalCount(data?.data?.result?.totalCount);
-  //       setDatt(result);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     });
-  // };
-
-  const ChangeRegionHandler = (e: any) => {
-    setRegionId(e);
-  };
-  const ChangesubHandler = (index: any, e: any) => {
-    settoolId(e);
-    getAllTools('', e, page, pageSize)
-      .then((data) => {
-        const result = data?.data?.result?.items;
-        setTotalCount(data?.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
+  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
+    setSelectedKeys(selectedKeysValue);
   };
 
   const ChangeCountryHandler = (e: any) => {
     setContryId(e);
-
-    getAllCities(e, page, pageSize)
+    form.setFieldValue('cityId', '');
+    getCities(e)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);
@@ -325,18 +304,13 @@ export const AddCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
       });
-  };
-
-  const removeService = (index: any) => {
-    const updatedServices = [...services];
-    updatedServices.splice(index, 1);
-    setServices(updatedServices);
   };
 
   const ChangeCityHandler = (e: any) => {
     setCityId(e);
+    form.setFieldValue('regionId', '');
 
-    getAllRegions(e, page, pageSize)
+    getRegions(e)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);
@@ -347,8 +321,8 @@ export const AddCompany: React.FC = () => {
       });
   };
 
-  const isServiceSelected = (serviceId: any) => {
-    return services.some((service) => service.serviceId === serviceId);
+  const ChangeRegionHandler = (e: any) => {
+    setRegionId(e);
   };
 
   const handleFormattedValueChange = (value: string) => {
@@ -358,12 +332,23 @@ export const AddCompany: React.FC = () => {
   const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
     const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
     const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    console.log(dialCode);
-
     return {
       dialCode,
       phoneNumber,
     };
+  };
+
+  const handleCancel = () => {
+    setPreviewOpen(false);
+  };
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
   const uploadImage = useMutation((data: FormData) =>
@@ -371,10 +356,8 @@ export const AddCompany: React.FC = () => {
       .then((response) => {
         response.data.success &&
           (setAttachmentId(response.data.result?.id), setUrlAfterUpload(response.data.result?.url));
-
         const photoId = response.data.result.id;
         const refType = response.data.result.refType;
-        const photoUrl = response.data.result.url;
         setFormData((prevFormData) => {
           let updatedFormData = { ...prevFormData };
           if (refType === 9) {
@@ -383,21 +366,18 @@ export const AddCompany: React.FC = () => {
               companyOwnerIdentityIds: [...updatedFormData.companyOwnerIdentityIds, photoId],
             };
             setOwnerIdentityIds(photoId);
-            handleUploadSucces(photoUrl);
           } else if (refType === 10) {
             updatedFormData = {
               ...updatedFormData,
               companyCommercialRegisterIds: [...updatedFormData.companyCommercialRegisterIds, photoId],
             };
             setCommercialRegisterIds(photoId);
-            handleUploadSucce(photoUrl);
           } else if (refType === 11) {
             updatedFormData = {
               ...updatedFormData,
               additionalAttachmentIds: [...updatedFormData.additionalAttachmentIds, photoId],
             };
             setAdditionalAttachmentIds(photoId);
-            handleUploadSucc(photoUrl);
           } else if (refType === 8) {
             updatedFormData = {
               ...updatedFormData,
@@ -405,9 +385,6 @@ export const AddCompany: React.FC = () => {
               companyProfilePhotoId: photoId,
             };
             setLogo(photoId);
-            console.log(photoId);
-            console.log(updatedFormData);
-            handleUploadSuccess(photoUrl);
           }
           return updatedFormData;
         });
@@ -422,9 +399,12 @@ export const AddCompany: React.FC = () => {
       .then((data: any) => {
         notificationController.success({ message: t('companies.addCompanySuccessMessage') });
         queryClient.invalidateQueries('AllCompanies');
+        navigate('/companies');
+        requestServicesArray = [];
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
+        requestServicesArray = [];
       }),
   );
 
@@ -435,6 +415,21 @@ export const AddCompany: React.FC = () => {
     const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
+    function extractServicesIds(input: any) {
+      input.map((obj: any) => {
+        let result = {};
+
+        result = {
+          serviceId: '',
+          subServiceId: '',
+          toolId: '',
+        };
+        requestServices.push(result);
+        return result;
+      });
+    }
+    extractServicesIds(requestServicesArray);
+    const updatedFormData = { ...formData };
     companyInfo = {
       ...companyInfo,
       translations: [
@@ -464,27 +459,42 @@ export const AddCompany: React.FC = () => {
         password: form.getFieldValue(['userDto', 'password']),
       },
       serviceType: valueRadio,
-      services: services,
+      services: requestServices,
       companyProfilePhotoId: logo,
-      companyCommercialRegisterIds: [CommercialRegisterIds],
-      additionalAttachmentIds: [additionalAttachmentIds],
-      companyOwnerIdentityIds: [OwnerIdentityIds],
+      additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
+      companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
+      companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
       comment: form.getFieldValue('comment'),
       regionId: Region_id,
+      availableCitiesIds: form.getFieldValue(['availableCitiesIds']),
     };
-    const updatedFormData = { ...formData };
-
-    console.log(companyInfo);
     updatedFormData.translations = companyInfo.translations;
-    updatedFormData.companyOwnerIdentityIds = updatedFormData.companyOwnerIdentityIds.filter((id: any) => id !== 0);
-    updatedFormData.companyCommercialRegisterIds = updatedFormData.companyCommercialRegisterIds.filter(
-      (id: any) => id !== 0,
-    );
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
-    updatedFormData.isActive = true;
     addCompany.mutate(companyInfo);
-    navigate('/companies');
   };
+
+  const uploadImageButton = (
+    <div style={{ color: '#40aaff' }}>
+      <PictureOutlined />
+      <div className="ant-upload-text">Upload Image</div>
+    </div>
+  );
+
+  const uploadLogoButton = (
+    <div style={{ color: '#40aaff' }}>
+      <PictureOutlined />
+      <div className="ant-upload-text">Upload Logo</div>
+    </div>
+  );
+
+  const uploadFileButton = (
+    <div style={{ color: 'rgb(14 190 21)' }}>
+      <div>
+        <FileAddOutlined />
+      </div>
+      <div className="ant-upload-text">Upload File</div>
+    </div>
+  );
 
   return (
     <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
@@ -498,7 +508,7 @@ export const AddCompany: React.FC = () => {
             }}
             onClick={() => prev()}
           >
-            {t('common.Previous')}
+            {t('common.prev')}
           </Button>
         )}
         {current < steps.length - 1 && (
@@ -549,11 +559,43 @@ export const AddCompany: React.FC = () => {
           />
         ))}
       </Steps>
-      <BaseForm form={form} onFinish={onFinish} name="CompanyForm">
+      <BaseForm
+        form={form}
+        onFinish={onFinish}
+        name="AddCompanyForm"
+        style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
+      >
         {current === 0 && (
           <>
+            <Row style={{ display: 'flex', justifyContent: 'space-around', margin: '0 0 2rem' }}>
+              <Col>
+                <Upload
+                  maxCount={1}
+                  key="image-logo"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  listType="picture-card"
+                  accept=".jpeg,.png,.jpg"
+                  disabled={uploadImage.isLoading ? true : false}
+                  fileList={imageLogoList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '8');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageLogoList(e.fileList)}
+                >
+                  {imageLogoList.length >= 1 ? null : uploadLogoButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'name']}
                   label={<LableText>{t('companies.CompanyNamear')}</LableText>}
@@ -565,7 +607,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'name']}
                   label={<LableText>{t('companies.name')}</LableText>}
@@ -579,7 +621,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'bio']}
                   label={<LableText>{t('companies.Companybioar')}</LableText>}
@@ -591,7 +633,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'bio']}
                   label={<LableText>{t('companies.bio')}</LableText>}
@@ -605,7 +647,7 @@ export const AddCompany: React.FC = () => {
               </Col>
             </Row>
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'address']}
                   label={<LableText>{t('companies.addressA')}</LableText>}
@@ -617,7 +659,7 @@ export const AddCompany: React.FC = () => {
                   <Input />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'address']}
                   label={<LableText>{t('companies.address')}</LableText>}
@@ -655,8 +697,8 @@ export const AddCompany: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeCityHandler}>
-                {Data?.map((city) => (
+              <Select onChange={ChangeCityHandler} value={City_id}>
+                {Data?.map((city: any) => (
                   <Select key={city.name} value={city.id}>
                     {city?.name}
                   </Select>
@@ -680,6 +722,19 @@ export const AddCompany: React.FC = () => {
                 ))}
               </Select>
             </BaseForm.Item>
+            <BaseForm.Item
+              name={['availableCitiesIds']}
+              label={<LableText>{t('companies.available City name')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+            >
+              <Select mode="multiple" value={City_id}>
+                {CityData?.map((city: any) => (
+                  <Select key={city.name} value={city.id}>
+                    {city?.name}
+                  </Select>
+                ))}
+              </Select>
+            </BaseForm.Item>
 
             <h2
               style={{
@@ -695,32 +750,7 @@ export const AddCompany: React.FC = () => {
             </h2>
 
             <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <BaseButtonsForm.Item
-                  name={['companyContact', 'phoneNumber']}
-                  $successText={t('auth.phoneNumberVerified')}
-                  label={t('common.phoneNumber')}
-                  rules={[
-                    { required: true, message: t('common.requiredField') },
-                    () => ({
-                      validator(_, value) {
-                        if (!value || isValidPhoneNumber(value)) {
-                          return Promise.resolve();
-                        }
-                        if (formattedPhoneNumber.length > 12) {
-                          return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                        } else if (formattedPhoneNumber.length < 12) {
-                          return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                        }
-                      },
-                    }),
-                  ]}
-                  style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
-                >
-                  <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-                </BaseButtonsForm.Item>
-              </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.CompanyEmail')}</LableText>}
                   name={['companyContact', 'emailAddress']}
@@ -732,9 +762,7 @@ export const AddCompany: React.FC = () => {
                   <Input value={companyInfo?.companyContact?.emailAddress} />
                 </BaseForm.Item>
               </Col>
-            </Row>
-            <Row>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
+              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   label={<LableText>{t('companies.website')}</LableText>}
                   name={['companyContact', 'webSite']}
@@ -746,53 +774,32 @@ export const AddCompany: React.FC = () => {
                   <Input value={companyInfo?.companyContact?.webSite} />
                 </BaseForm.Item>
               </Col>
-              <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
-                <UploadDragger
-                  maxCount={1}
-                  listType="text"
-                  accept=".jpeg,.png,.jpg"
-                  disabled={uploadImage.isLoading ? true : false}
-                  showUploadList={false}
-                  customRequest={({ file }) => {
-                    const formData = new FormData();
-                    formData.append('RefType', '8');
-                    formData.append('File', file);
-                    uploadImage.mutateAsync(formData);
-                  }}
-                >
-                  <div style={{ display: 'flex', justifyContent: 'space-evenly', alignItems: 'center' }}>
-                    {uploadImage.isLoading ? (
-                      <LoadingOutlined
-                        style={{
-                          color: 'var(--primary-color)',
-                          fontSize: isDesktop || isTablet ? FONT_SIZE.xxxl : FONT_SIZE.xxl,
-                        }}
-                      />
-                    ) : urlAfterUpload ? (
-                      <img
-                        src={urlAfterUpload}
-                        style={{ width: 'auto', height: isDesktop || isTablet ? '42px' : '35px' }}
-                      />
-                    ) : (
-                      <InboxOutlined
-                        style={{
-                          color: 'var(--primary-color)',
-                          fontSize: isDesktop || isTablet ? FONT_SIZE.xxxl : FONT_SIZE.xxl,
-                        }}
-                      />
-                    )}
-                    <p
-                      style={{
-                        fontSize: isDesktop || isTablet ? FONT_SIZE.xm : FONT_SIZE.sm,
-                        color: 'var(--text-main-color)',
-                      }}
-                    >
-                      {uploadImage.isLoading ? t('common.uploading') : t('common.draggerUploadDescription')}
-                    </p>
-                  </div>
-                </UploadDragger>
-              </Col>
             </Row>
+            <BaseButtonsForm.Item
+              key={current}
+              name={['companyContact', 'phoneNumber']}
+              label={t('common.phoneNumber')}
+              rules={[
+                { required: true, message: t('common.requiredField') },
+                () => ({
+                  validator(_, value) {
+                    if (!value || isValidPhoneNumber(value)) {
+                      return Promise.resolve();
+                    }
+                    if (formattedPhoneNumber.length > 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                    } else if (formattedPhoneNumber.length < 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                    }
+                  },
+                }),
+              ]}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+
+              // style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+            >
+              <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
+            </BaseButtonsForm.Item>
           </>
         )}
         {current === 1 && (
@@ -810,6 +817,7 @@ export const AddCompany: React.FC = () => {
               {t('companies.Userinformation')}
             </h2>
             <BaseButtonsForm.Item
+              key={current}
               name={['userDto', 'phoneNumber']}
               $successText={t('auth.phoneNumberVerified')}
               label={t('common.phoneNumber')}
@@ -842,7 +850,7 @@ export const AddCompany: React.FC = () => {
                     }
               }
             >
-              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+              <PhoneInput key={2} onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
 
             <Auth.FormItem
@@ -880,97 +888,39 @@ export const AddCompany: React.FC = () => {
                 </Radio>
               </Radio.Group>
             </BaseForm.Item>
-            {services.map((service, index) => (
-              <>
-                <div key={index}>
-                  <Card padding="1.25rem 1.25rem 1.25rem" style={{ boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)' }}>
-                    {index !== 0 && (
-                      <Button
-                        type="primary"
-                        style={{
-                          width: '5rem',
-                          height: 'auto',
-                          display: 'flex',
-                          alignItems: 'center',
-                          textAlign: 'center',
-                          margin: '2rem auto 0',
-                          justifyContent: 'space-around',
-                        }}
-                        onClick={() => removeService(index)}
-                      >
-                        <DeleteOutlined />
-                      </Button>
-                    )}
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectService')}</LableText>}
-                      name={['services', index, 'serviceId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+            <BaseForm.Item key="100" name="services">
+              {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
+                const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
+                return (
+                  <Tree
+                    key={serviceIndex}
+                    style={treeStyle}
+                    checkable
+                    defaultExpandAll={true}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onCheck={(checkedKeysValue: any) => {
+                      for (const key of checkedKeysValue) {
+                        if (!requestServicesArray.includes(key)) {
+                          requestServicesArray.push(key);
+                        }
                       }
-                      rules={[
-                        {
-                          required: true,
-                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                        },
-                      ]}
-                    >
-                      <Select onChange={(e) => ChangeServieceHandler(index, e)}>
-                        {Dat?.map((service) => (
-                          <Option key={service.id} value={service.id} disabled={isServiceSelected(service.id)}>
-                            {service.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </BaseForm.Item>
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectSubService')}</LableText>}
-                      name={['services', index, 'subserviceId']}
-                      style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
-                      }
-                    >
-                      <Select onChange={(e) => handleSubserviceSelection(index, e)}>
-                        {Datr?.map((subservice) => (
-                          <Option key={subservice.id} value={subservice.id}>
-                            {subservice.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </BaseForm.Item>
-                    <BaseForm.Item
-                      label={<LableText>{t('companies.selectTool')}</LableText>}
-                      name={['services', index, 'toolId']}
-                      style={{ width: '50%', margin: 'auto' }}
-                    >
-                      <Select>
-                        {Datt?.map((tool) => (
-                          <Option key={tool.id} value={tool.id}>
-                            {tool.name}
-                          </Option>
-                        ))}
-                      </Select>
-                    </BaseForm.Item>
-                  </Card>
-                  <Button
-                    type="primary"
-                    style={{
-                      width: '8rem',
-                      height: 'auto',
-                      display: 'flex',
-                      alignItems: 'center',
-                      textAlign: 'center',
-                      margin: '2rem auto',
-                      justifyContent: 'space-around',
+                      setSelectedServicesKeysMap((prevSelectedKeysMap) => {
+                        const updatedKeysMap = { ...prevSelectedKeysMap };
+                        updatedKeysMap[serviceIndex] = checkedKeysValue;
+                        return updatedKeysMap;
+                      });
                     }}
-                    onClick={() => setServices([...services, { serviceId: '', subserviceId: '', toolId: '' }])}
-                  >
-                    <PlusOutlined />
-                    {/* <CreateButtonText>
-                  </CreateButtonText> */}
-                  </Button>
-                </div>
-              </>
-            ))}
+                    defaultCheckedKeys={serviceKeys}
+                    checkedKeys={serviceKeys}
+                    onSelect={onSelect}
+                    selectedKeys={selectedKeys}
+                    treeData={[serviceTreeData]}
+                  />
+                );
+              })}
+            </BaseForm.Item>
           </>
         )}
         {current === 3 && (
@@ -986,51 +936,56 @@ export const AddCompany: React.FC = () => {
             >
               {t("companies. Uploadfiles (copy of the company's ID)")}
             </Text>
-            <UploadDragger
-              style={
-                isDesktop || isTablet
-                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
-                  : { width: '80%', margin: '0 10%' }
-              }
-              beforeUpload={(file) => {
-                const formData = new FormData();
-                formData.append('RefType', '9');
-                formData.append('file', file);
-                uploadImage.mutate(formData);
-                return false;
-              }}
-              accept=".jpeg, .png, .jpg ,.Pdf"
-              multiple={false}
-              showUploadList={false}
-            >
-              {attachments.length > 0 ? (
-                <Space>
-                  <InboxOutlined />
-                  <a href={attachments[1]?.url} target="_blank" rel="noopener noreferrer">
-                    {attachments[1]?.name}
-                  </a>
-                  {attachments[1]?.reftype === '9' && (
-                    <img
-                      src={attachments[1]?.url}
-                      alt={attachments[1]?.name}
-                      style={{ width: '100px', height: '100px' }}
-                    />
-                  )}
-                </Space>
-              ) : (
-                <>
-                  {uploadSucces ? (
-                    <div>
-                      <img src={uploadedPhotoid} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
-                    </div>
-                  ) : (
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined /> <FilePdfTwoTone />
-                    </p>
-                  )}
-                </>
-              )}
-            </UploadDragger>
+            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Col>
+                <Upload
+                  key="image-owner"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={imageOwnerList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '9');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageOwnerList(e.fileList)}
+                  maxCount={1}
+                >
+                  {imageOwnerList.length >= 1 ? null : uploadImageButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+              <Col>
+                <Upload
+                  key="file-owner"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".Pdf"
+                  listType="picture-card"
+                  fileList={fileOwnerList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '9');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setFileOwnerList(e.fileList)}
+                  maxCount={1}
+                >
+                  {fileOwnerList.length >= 1 ? null : uploadFileButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
 
             <Text
               style={{
@@ -1043,44 +998,56 @@ export const AddCompany: React.FC = () => {
             >
               {t('companies.Upload files (Commercial Register)')}
             </Text>
-            <UploadDragger
-              style={
-                isDesktop || isTablet
-                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
-                  : { width: '80%', margin: '0 10%' }
-              }
-              beforeUpload={(file) => {
-                const formData = new FormData();
-                formData.append('RefType', '10');
-                formData.append('file', file);
-                uploadImage.mutate(formData);
-                return false;
-              }}
-              accept=".jpeg, .png, .jpg"
-              multiple={false}
-              showUploadList={false}
-            >
-              {attachments.length > 0 ? (
-                <Space>
-                  <InboxOutlined />
-                  <a href={attachments[2]?.url} target="_blank" rel="noopener noreferrer">
-                    {attachments[2]?.name}
-                  </a>
-                </Space>
-              ) : (
-                <>
-                  {uploadSucce ? (
-                    <div>
-                      <img src={uploadedPhotoreg} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
-                    </div>
-                  ) : (
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined /> <FilePdfTwoTone />
-                    </p>
-                  )}
-                </>
-              )}
-            </UploadDragger>
+            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Col>
+                <Upload
+                  key="image-commercial "
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={imageCommercialList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '10');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageCommercialList(e.fileList)}
+                  maxCount={1}
+                >
+                  {imageCommercialList.length >= 1 ? null : uploadImageButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+              <Col>
+                <Upload
+                  key="file-commercial "
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".Pdf"
+                  listType="picture-card"
+                  fileList={fileCommercialList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '10');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setFileCommercialList(e.fileList)}
+                  maxCount={1}
+                >
+                  {fileCommercialList.length >= 1 ? null : uploadFileButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
 
             <Text
               style={{
@@ -1093,49 +1060,56 @@ export const AddCompany: React.FC = () => {
             >
               {t('companies.Upload additional  files (3 maximum)')}
             </Text>
-            <UploadDragger
-              style={
-                isDesktop || isTablet
-                  ? { width: '50%', margin: 'auto', marginBottom: '2rem' }
-                  : { width: '80%', margin: '0 10%' }
-              }
-              beforeUpload={(file) => {
-                const formData = new FormData();
-                formData.append('RefType', '11');
-                formData.append('file', file);
-                uploadImage.mutate(formData);
-                return false;
-              }}
-              accept=".jpeg, .png, .jpg"
-              multiple={false}
-              showUploadList={false}
-            >
-              {attachments.length > 0 ? (
-                <Space>
-                  <InboxOutlined />
-                  <a href={attachments[3]?.url} target="_blank" rel="noopener noreferrer">
-                    {attachments[3]?.name}
-                  </a>
-                  <img
-                    src={attachments[3]?.url}
-                    alt={attachments[3]?.name}
-                    style={{ width: '100px', height: '100px' }}
-                  />
-                </Space>
-              ) : (
-                <>
-                  {uploadSucc ? (
-                    <div>
-                      <img src={uploadedPhotoidin} alt="Uploaded photo" style={{ width: '50px', height: '50px' }} />
-                    </div>
-                  ) : (
-                    <p className="ant-upload-drag-icon">
-                      <InboxOutlined /> <FilePdfTwoTone />
-                    </p>
-                  )}
-                </>
-              )}
-            </UploadDragger>
+            <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
+              <Col>
+                <Upload
+                  key="image-other"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={imageOtherList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '11');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setImageOtherList(e.fileList)}
+                  maxCount={3}
+                >
+                  {imageOtherList.length >= 3 ? null : uploadImageButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+              <Col>
+                <Upload
+                  key="file-other"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  accept=".Pdf"
+                  listType="picture-card"
+                  fileList={fileOtherList}
+                  onPreview={handlePreview}
+                  beforeUpload={(file) => {
+                    const formData = new FormData();
+                    formData.append('RefType', '11');
+                    formData.append('file', file);
+                    uploadImage.mutate(formData);
+                    return false;
+                  }}
+                  onChange={(e: any) => setFileOtherList(e.fileList)}
+                  maxCount={3}
+                >
+                  {fileOtherList.length >= 3 ? null : uploadFileButton}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Col>
+            </Row>
 
             <BaseForm.Item key={88} name="comment">
               <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />

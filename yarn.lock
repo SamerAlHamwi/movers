@@ -9109,6 +9109,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"husky@npm:^6.0.0":
+  version: 6.0.0
+  resolution: "husky@npm:6.0.0"
+  bin:
+    husky: lib/bin.js
+  checksum: db6da76a670b2cd1e967990decfd291e6f35a5aee4d362208a51771474d3b4896d526acb4bf0413c2d7154716e42a4d8b6cc19f2bb108e48d1f554624c723a00
+  languageName: node
+  linkType: hard
+
 "hyphenate-style-name@npm:^1.0.0":
   version: 1.0.4
   resolution: "hyphenate-style-name@npm:1.0.4"
@@ -16457,6 +16466,7 @@ __metadata:
     eslint-plugin-react: ^7.24.0
     eslint-plugin-react-hooks: ^4.3.0
     google-map-react: ^2.1.10
+    husky: ^6.0.0
     i18next: ^20.4.0
     jotai: ^2.0.2
     jwt-decode: ^3.1.2

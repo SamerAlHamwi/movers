@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText } from '../GeneralStyles';
@@ -10,7 +10,6 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
 import { BankOutlined, ClearOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
-import 'react-phone-input-2/lib/style.css';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -20,7 +19,6 @@ import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
-import { Tree } from 'antd';
 import type { DataNode } from 'antd/es/tree';
 import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
@@ -45,7 +43,6 @@ const getBase64 = (file: RcFile): Promise<string> =>
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
-const res: any = [];
 const lang = localStorage.getItem('movers&-lang');
 
 let requestData = {
@@ -128,6 +125,10 @@ export const AddRequest: React.FC = () => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
+  const handleChange = ({ fileList }: any) => {
+    setFileList(fileList);
+  };
+
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
     onSuccess: (data: any) => {
       if (data.data.success) {
@@ -143,10 +144,6 @@ export const AddRequest: React.FC = () => {
       message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
     },
   });
-
-  const handleChange = ({ fileList }: any) => {
-    setFileList(fileList);
-  };
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
@@ -277,6 +274,8 @@ export const AddRequest: React.FC = () => {
   });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
+    console.log(expandedKeysValue);
+
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
@@ -478,7 +477,7 @@ export const AddRequest: React.FC = () => {
             }}
             onClick={() => prev()}
           >
-            {t('common.Previous')}
+            {t('common.prev')}
           </Button>
         )}
         {current < steps.length - 1 && (
@@ -866,7 +865,7 @@ export const AddRequest: React.FC = () => {
                       key={serviceIndex}
                       style={treeStyle}
                       checkable
-                      defaultExpandAll
+                      defaultExpandAll={true}
                       onExpand={onExpand}
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}

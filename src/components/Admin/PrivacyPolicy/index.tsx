@@ -4,18 +4,16 @@ import { useMutation, useQuery } from 'react-query';
 import { Alert, Row, Space, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
-import { Table as T } from '@app/components/common/Table/Table';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import styled from 'styled-components';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Modal, Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '@app/services/Privacypolicy';
+import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
 import { Pushprivacy } from '@app/components/modal/Pushprivacy';
 import { Editprivacy } from '@app/components/modal/Editprivacy';
 
@@ -172,7 +170,7 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: 'id',
-      width: '10%',
+      width: '5%',
     },
     {
       title: (
@@ -181,7 +179,6 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 0, 'title'],
-      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
@@ -193,19 +190,17 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 1, 'title'],
-      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
       },
     },
     {
       title: (
-        <Header>
+        <Header style={{ wordBreak: 'normal' }}>
           <Trans i18nKey={'notifications.englishdescription'} />
         </Header>
       ),
       dataIndex: ['translations', 0, 'description'],
-      width: '30%',
       render: (text: string) => {
         const firstSentence = text.split('.')[0]; // Get the first sentence
 
@@ -219,7 +214,6 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 1, 'description'],
-      width: '30%',
       render: (text: string) => {
         const firstSentence = text.split('.')[0]; // Get the first sentence
         return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
@@ -233,7 +227,6 @@ export const PrivacyPolicy: React.FC = () => {
       ),
 
       dataIndex: 'actions',
-      width: '30%',
       render: (index: number, Data: PrivacyPolicy) => {
         return (
           <Space>

@@ -32,6 +32,10 @@ const getAllSubServices = async (id: string | undefined, page: number, pageSize:
   );
 };
 
+const getSubServices = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.subServices}/GetAll?ServiceId=${id}`);
+};
+
 const createSubService = async (data: ServiceModel) => {
   return await httpApi.post(`${apiPrefix.subServices}/Create`, data);
 };
@@ -51,6 +55,7 @@ export {
   DeleteService,
   UpdateService,
   getAllSubServices,
+  getSubServices,
   createSubService,
   DeleteSubService,
   UpdateSubService,

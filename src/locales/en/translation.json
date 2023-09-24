@@ -6,9 +6,9 @@
     "title": "Title",
     "attachment": "Attachment",
     "icon": "Icon",
-    "name": "Name",
     "phoneNumber": "Phone Number",
-    "submit": "Submit",
+    "bio": "BIO",
+    "name": "Name",
     "name_ar": "Name AR",
     "name_en": "Name EN",
     "address": "Adress",
@@ -27,7 +27,8 @@
     "activate": "Activate",
     "apply": "Apply",
     "cancel": "Cancel",
-    "Previous": "Previous",
+    "submit": "Submit",
+    "resend": "Resend",
     "delete": "Delete",
     "done": "Done",
     "edit": "Edit",
@@ -61,6 +62,7 @@
       "student": "Student"
     },
     "approve": "Approve",
+    "reject": "Reject",
     "prev": "Previous",
     "next": "Next",
     "none": "None",
@@ -232,10 +234,10 @@
   "companies": {
     "companiesList": "Companies List",
     "CountryName": "Country Name",
+    "available City name": "Availabe Cities",
+    "EditCompany": "Edit Company",
     "CityName": "City Name",
-    "addressA": " ArabicAdress",
-
-    "address": "English Adress",
+    "addressA": " Arabic Adress",
     "selectTool": "Select Tool",
     "Adress": "Address",
     "Add Service": "Add Service",
@@ -253,10 +255,7 @@
     "CompanyNamear": "Arabic Name",
     "Country name": "Country Name",
     "Companybioar": "Arabic Description",
-    "name": "English Name",
-    "bio": " English Description",
     "City name": "City Name",
-
     "Contact Information": "Contact Information",
     "CompanyPhoneNumber": "Company PhoneNumber",
     "CompanyEmail": "Company Email",
@@ -264,16 +263,14 @@
     "Services": "Services",
     "Company Branches": "Company Branches",
     "Company Information": "Company Information",
-
     "website": "Website",
     "selectService": "Select Service",
     " Uploadfiles (copy of the company's ID)": "Companies, Upload Files, Owner ID",
     "Upload files (Commercial Register)": "Upload Files (Commercial License)",
     "Upload additional  files (3 maximum)": "Other Files",
-
     "Regionname": "Region Name",
     " Profile": "Company Profile",
-    "deleteCompanySuccessMessage": " Delete  the Company Done",
+    "deleteCompanySuccessMessage": "Delete the Company Done",
     "addCompanySuccessMessage": "Add the Company Done",
     "selectSubService": "Select SubService",
     "CompanydialCode": "Dial-Code",
@@ -282,7 +279,17 @@
     "deactivateManagerConfirm": "Deactive Company?",
     "activateManagerConfirm": "Active Company?",
     "deletecompanyModalDescription": "Are You Sure?",
-    "deletecompanyModalTitle": "Delete Company"
+    "deletecompanyModalTitle": "Delete Company",
+    "BranchInformation": "Branch Information",
+    "logo": "Logo",
+    "status": "Status",
+    "approveCompanySuccessMessage": "The Company has been Approved Successfully",
+    "rejectCompanySuccessMessage": "The Company has been Rejected Successfully",
+    "approvecompanyModalTitle": "Approve Company",
+    "approvecompanyModalDescription": "Are You Sure To Approve on This Company?",
+    "rejectcompanyModalTitle": "Reject Company",
+    "rejectcompanyModalDescription": "Are You Sure To Reject This Company?",
+    "numberOfTransfers": "Number Of Transfers"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -484,15 +491,72 @@
     "sourceType": "Source Type"
   },
 
+  "_comment18": "*********************************** Branches ************************************************",
+  "branch": {
+    "addBranchModalTitle": "Add Branch",
+    "addBranch": "Add Branch",
+    "branchesList": "Branches List",
+    "addBranchSuccessMessage": "The Branch has been Added Successfully",
+    "deleteBranchSuccessMessage": "The Branch has been Deleted Successfully",
+    "editBranchSuccessMessage": "The Branch has been Edited Successfully",
+    "deleteBranchModalTitle": "Delete Branch",
+    "deleteBranchModalDescription": "Are You Sure To Delete This Branch?",
+    "region": "Region"
+  },
+
+  "_comment19": "*********************************** Notifications ************************************************",
+  "notifications": {
+    "notificationsList": "Notifications",
+    "deleteprivacyModalTitle": "Delete Privacy",
+    "deleteNprivacyModalDescription": "Are you sure ?",
+    "PrivacyList": "PrivacyPolicy",
+    "notices": "Notices",
+    "send": "Send Notification",
+    "sendp": "Create",
+    "englishMessage": "English messages",
+    "arabicMessage": "Arabic messages",
+    "arabictitle": "Arabic Title",
+    "englishtitle": "English Title",
+    "englishdescription": "English Description",
+    "arabicdiscription": "Arabic Description",
+    "deletepNotifactionsSuccessMessage": "The Privacy deleted Successfully",
+    "deleteNotifactionsSuccessMessage": "The Notification deleted Successfully",
+    "deleteNotficationModalTitle": "Delete Notifaction",
+    "deleteNotifactionModalDescription": "Are You Sure?",
+    "actions": "Actions",
+    "destination": {
+      "destination": "Destination",
+      "all": " To All",
+      "students": "Students, Players",
+      "managers": "Managers",
+      "companies": " To Compaines",
+      "Users": " To Users"
+    },
+    "sendSuccessMessage": "Notification Pushed Successfully!",
+    "resendNotficationModalTitle": "Resend Notification",
+    "resendNotifactionModalDescription": "Resend This Notification To The Same People",
+    "resendNotifactionsSuccessMessage": "The Notification resent Successfully"
+  },
+
   "error404": {
     "comeBack": "Return to Home",
     "backToLogin": "Return to Login",
     "notFound": "Sorry, page not found!"
   },
+  "_comment20": "*********************************** Terms ************************************************",
+  "Terms": {
+    "editTermSuccessMessage": "Terms Edit Successfully",
+    "deleteTermsSuccessMessage": "Terms delete Successfully",
+    "TermsList": "Terms List",
+    "sendSuccessMessage": "Terms Added Succesfuly",
+    "addterms": "Create",
+    "add": "Save Edit"
+  },
 
   "sidebarNavigation": {
     "Brand": "MOVERS&",
     "Statistics": "Statistics",
+    "Term": "Terms&Condition",
     "Users": "Users",
     "Managers": "Managers",
     "Partners": "Real State Management",
@@ -512,7 +576,10 @@
     "Requests": "Requests",
     "addRequest": "Add Request For Quotations",
     "addcompany": "Add Comapany",
-    "companies": "Companies"
+    "companies": "Companies",
+    "AddBranch": "Add Branch",
+    "branches": "Branches",
+    "EditBranch": "Edit Branch"
   },
   "header": {
     "changeLanguage": "Change language",
@@ -680,39 +747,7 @@
     },
     "fixedValue": "Fixed value"
   },
-  "notifications": {
-    "notificationsList": "Notifications",
-    "deleteprivacyModalTitle": "Delete Privacy",
-    "deleteNprivacyModalDescription": "Are you sure ?",
-    "PrivacyList": "PrivacyPolicy",
 
-    "notices": "Notices",
-    "send": "Send Notification",
-    "sendp": "Create",
-
-    "englishMessage": "English messages",
-    "arabicMessage": "Arabic messages",
-    "arabictitle": "Arabic Title",
-    "englishtitle": "English Title",
-    "englishdescription": "English Description",
-    "arabicdiscription": "Arabic Description",
-
-    "deletepNotifactionsSuccessMessage": "The Privacy deleted Successfully",
-    "deleteNotifactionsSuccessMessage": "The Notification deleted Successfully",
-    "deleteNotficationModalTitle": "Delete Notifaction",
-    "deleteNotifactionModalDescription": "Are You Sure?",
-    "actions": "Actions",
-    "destination": {
-      "destination": "Destination",
-      "all": " To All",
-      "students": "Students, Players",
-      "managers": "Managers",
-      "companies": " To Compaines",
-      "Users": " To Users"
-    },
-    "sendSuccessMessage": "Notification Pushed Successfully!",
-    "sendpSuccessMessage": "privacyPolicy created Successfully!"
-  },
   "sliderImage": {
     "sliderImagesList": "Slider Image List",
     "create": "Create Slider",

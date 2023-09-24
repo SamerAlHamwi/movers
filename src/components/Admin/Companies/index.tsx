@@ -1,35 +1,33 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Popconfirm, Avatar } from 'antd';
+import { message, Row, Space, Tag } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
-
-import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, ApartmentOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllUsers, Create, Update, Delete, Activate, DeActivate } from '@app/services/users';
-import { FONT_SIZE, FONT_WEIGHT, media } from '@app/styles/themes/constants';
-import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { defineColorBySeverity } from '@app/utils/utils';
-import { CompanyModal, UserModel } from '@app/interfaces/interfaces';
-import { Navigate, useNavigate } from 'react-router-dom';
-import { Deletce, Updatce, getAllCompanies } from '@app/services/company';
-import { LableText, Header, CreateButtonText, TableButton } from '../../GeneralStyles';
+import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
+import { useNavigate } from 'react-router-dom';
+import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@app/services/company';
 import { EditCompany } from '@app/components/modal/EditCompany';
+import { Image as AntdImage } from '@app/components/common/Image/Image';
+import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 
 export const Companies: React.FC = () => {
   const { t } = useTranslation();
-  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+  const navigate = useNavigate();
+  const { desktopOnly, isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
+
   const [modalState, setModalState] = useState({
-    add: false,
     edit: false,
     delete: false,
+    approve: false,
+    reject: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -38,28 +36,24 @@ export const Companies: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [editmodaldata, setEditmodaldata] = useState<CompanyModal | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CompanyModal | undefined>(undefined);
+  const [approvemodaldata, setApprovemodaldata] = useState<CompanyModal | undefined>(undefined);
+  const [rejectmodaldata, setRejectmodaldata] = useState<CompanyModal | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isEmployee, setIsEmployee] = useState(false);
-  const [attachmentData, setAttachmentData] = useState<CompanyModal>();
-
-  const [isHover, setIsHover] = useState(false);
+  const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
   const [managerType, setManagerType] = useState<number | string>('');
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
-  const navigate = useNavigate();
 
   const handleButtonClick = () => {
-    // handle button click logic
-    navigate('/AddCompany', { replace: false });
+    navigate('/addCompany', { replace: false });
   };
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -67,18 +61,7 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    [
-      'AllCompanies',
-      page,
-      pageSize,
-      refetchOnAddManager,
-      isDelete,
-      isEdit,
-      isActivate,
-      isDeActivate,
-      isAdmin,
-      isEmployee,
-    ],
+    ['AllCompanies', page, pageSize, refetchOnAddManager, isDelete, isEdit, isApproved, isRejected],
     () =>
       getAllCompanies(page, pageSize)
         .then((data) => {
@@ -107,7 +90,7 @@ export const Companies: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, managerStatus, managerType, page, pageSize, refetch]);
+  }, [isDelete, isEdit, isApproved, isRejected, managerStatus, managerType, page, pageSize, refetch]);
 
   useEffect(() => {
     setLoading(true);
@@ -116,37 +99,13 @@ export const Companies: React.FC = () => {
   }, [refetchOnAddManager, refetch]);
 
   useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-    setIsAdmin(false);
-    setIsEmployee(false);
-  }, [isActivate, isDeActivate, refetch]);
-
-  useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
       setPage(1);
     }
   }, [page, dataSource]);
 
-  // const addManager = useMutation((data: CompanyModal) =>
-  //   Create(data)
-  //     .then((data) => {
-  //       notificationController.success({ message: t('managers.addManagerSuccessMessage') });
-  //       setRefetchOnAddManager(data.data?.success);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     }),
-  // );
-
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, add: addManager.isLoading }));
-  // }, [addManager.isLoading]);
-
-  const deleteManager = useMutation((id: number) =>
-    Deletce(id)
+  const deleteCompany = useMutation((id: number) =>
+    DeleteCompany(id)
       .then((data) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
@@ -163,44 +122,74 @@ export const Companies: React.FC = () => {
 
   const handleDelete = (id: any) => {
     if (page > 1 && dataSource?.length === 1) {
-      deleteManager.mutateAsync(id);
+      deleteCompany.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deleteManager.mutateAsync(id);
+      deleteCompany.mutateAsync(id);
     }
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteManager.isLoading }));
-  }, [deleteManager.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteCompany.isLoading }));
+  }, [deleteCompany.isLoading]);
 
-  const activateManager = useMutation((id: number) =>
-    Activate(id)
+  const approveCompany = useMutation((data: any) =>
+    confirmCompany(data)
       .then((data) => {
-        message.open({
-          content: <Alert message={t('managers.activateManagerSuccessMessage')} type="success" showIcon />,
-        });
-        setIsActivate(data.data?.success);
+        data.data?.success &&
+          (setIsApproved(data.data?.success),
+          message.open({
+            content: <Alert message={t('companies.approveCompanySuccessMessage')} type={`success`} showIcon />,
+          }));
       })
       .catch((error) => {
-        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
       }),
   );
 
-  const deActivateManager = useMutation((id: number) =>
-    DeActivate(id)
+  const handleApprove = (id: any) => {
+    const data = { companyId: id, statues: 2 };
+    approveCompany.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, approve: approveCompany.isLoading }));
+  }, [approveCompany.isLoading]);
+
+  const rejectCompany = useMutation((data: any) =>
+    confirmCompany(data)
       .then((data) => {
-        message.open({
-          content: <Alert message={t('managers.deactivateManagerSuccessMessage')} type="success" showIcon />,
-        });
-        setIsDeActivate(data.data?.success);
+        data.data?.success &&
+          (setIsRejected(data.data?.success),
+          message.open({
+            content: <Alert message={t('companies.rejectCompanySuccessMessage')} type={`success`} showIcon />,
+          }));
       })
       .catch((error) => {
-        message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
       }),
   );
 
-  const editManager = useMutation((data: CompanyModal) => Updatce(data));
+  const handleReject = (id: any) => {
+    const data = { companyId: id, statues: 3 };
+    rejectCompany.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, reject: rejectCompany.isLoading }));
+  }, [rejectCompany.isLoading]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+    setRefetchOnAdd(false);
+  }, [refetchOnAdd, refetch]);
+
+  const editManager = useMutation((data: CompanyModal) => updateCompany(data));
 
   const handleEdit = (data: CompanyModal, id: number) => {
     editManager
@@ -216,15 +205,6 @@ export const Companies: React.FC = () => {
       });
   };
 
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, delete: editManager.isLoading }));
-  // }, [editManager.isLoading]);
-
-  const TableText = styled.div`
-    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
-    font-weight: ${FONT_WEIGHT.regular};
-  `;
-
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -233,22 +213,98 @@ export const Companies: React.FC = () => {
       render: (url: string, record: CompanyModal) => {
         return (
           <>
-            <Avatar
+            <Image
               src={url}
               onClick={() => {
                 setIsOpenSliderImage(true);
-                setAttachmentData(record);
-
-                console.log(record);
+                setAttachmentData(record?.companyProfile);
               }}
             />
           </>
         );
       },
     },
-    { title: <Header>{t('companies.name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('companies.Adress')}</Header>, dataIndex: 'address' },
-    //{ title: <Header>{t('auth.dscription')}</Header>, dataIndex: 'bio' },
+    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
+      dataIndex: 'serviceType',
+      render: (record: number) => {
+        return (
+          <>
+            {record == 1
+              ? t('requests.Internal')
+              : record == 2
+              ? t('requests.External')
+              : `${t('requests.Internal')} & ${t('requests.External')}`}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
+      dataIndex: 'numberOfTransfers',
+    },
+    {
+      title: <Header>{t('requests.services')}</Header>,
+      dataIndex: 'services',
+      render: (record: any) => (
+        <Space style={{ display: 'grid' }}>
+          {record?.map((service: any) => (
+            <Tag key={service?.id} style={{ padding: '4px' }}>
+              {service?.name}
+            </Tag>
+          ))}
+        </Space>
+      ),
+    },
+    {
+      title: <Header>{t('companies.status')}</Header>,
+      dataIndex: 'status',
+      render: (index: number, record: CompanyModal) => {
+        return (
+          <>
+            {record.statues === 0 && (
+              <Space>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    setApprovemodaldata(record);
+                    handleModalOpen('approve');
+                  }}
+                >
+                  <CheckOutlined />
+                </TableButton>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setRejectmodaldata(record);
+                    handleModalOpen('reject');
+                  }}
+                >
+                  <CloseOutlined />
+                </TableButton>
+              </Space>
+            )}
+            {record.statues === 1 && (
+              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
+                Checking
+              </Tag>
+            )}
+            {record.statues === 2 && (
+              <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
+                Approved
+              </Tag>
+            )}
+            {record.statues === 3 && (
+              <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
+                Rejected
+              </Tag>
+            )}
+          </>
+        );
+      },
+    },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
@@ -256,6 +312,24 @@ export const Companies: React.FC = () => {
         return (
           <Space>
             <TableButton
+              severity="success"
+              onClick={() => {
+                // navigate(`${record.id}/addBranch`, { replace: false });
+                navigate(`${record.id}/branches`, { replace: false });
+              }}
+            >
+              <ApartmentOutlined />
+            </TableButton>
+            <TableButton
+              severity="info"
+              onClick={() => {
+                navigate(`${record.id}/EditCom`, { replace: false });
+              }}
+            >
+              <EditOutlined />
+            </TableButton>
+
+            {/* <TableButton
               severity="info"
               onClick={() => {
                 setEditmodaldata(record);
@@ -263,7 +337,7 @@ export const Companies: React.FC = () => {
               }}
             >
               <EditOutlined />
-            </TableButton>
+            </TableButton> */}
 
             <TableButton
               severity="error"
@@ -274,92 +348,6 @@ export const Companies: React.FC = () => {
             >
               <DeleteOutlined />
             </TableButton>
-
-            {record.isActive === true ? (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('companies.deactivateManagerConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {deActivateManager.isLoading ? (
-                      <>
-                        {t(`common.deactivate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.deactivate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                // onConfirm={() => deActivateManager.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.deactivate')}</TableText>
-                </Button>
-              </Popconfirm>
-            ) : (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('companies.activateManagerConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {activateManager.isLoading ? (
-                      <>
-                        {t(`common.activate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.activate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                //  onConfirm={() => activateManager.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.activate')}</TableText>
-                </Button>
-              </Popconfirm>
-            )}
           </Space>
         );
       },
@@ -389,18 +377,6 @@ export const Companies: React.FC = () => {
             <CreateButtonText>{t('companies.addCompany')}</CreateButtonText>
           </Button>
 
-          {/*    ADD    */}
-          {/* {modalState.add && (
-            <AddCompany
-              visible={modalState.add}
-              onCancel={() => handleModalClose('add')}
-              onCreateCompany={(CompanyInfo) => {
-                //addManager.mutateAsync(CompanyInfo);
-              }}
-              //isLoading={addManager.isLoading}
-            />
-          )} */}
-
           {/*    EDIT    */}
           {modalState.edit && (
             <EditCompany
@@ -426,10 +402,66 @@ export const Companies: React.FC = () => {
               cancelText={t('common.cancel')}
               description={t('companies.deletecompanyModalDescription')}
               isDanger={true}
-              isLoading={deleteManager.isLoading}
+              isLoading={deleteCompany.isLoading}
             />
           )}
+
+          {/*    Approve    */}
+          {modalState.approve && (
+            <ActionModal
+              visible={modalState.approve}
+              onCancel={() => handleModalClose('approve')}
+              onOK={() => {
+                approvemodaldata !== undefined && handleApprove(approvemodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('companies.approvecompanyModalTitle')}
+              okText={t('common.approve')}
+              cancelText={t('common.cancel')}
+              description={t('companies.approvecompanyModalDescription')}
+              // isDanger={true}
+              isLoading={approveCompany.isLoading}
+            />
+          )}
+
+          {/*    Reject    */}
+          {modalState.reject && (
+            <ActionModal
+              visible={modalState.reject}
+              onCancel={() => handleModalClose('reject')}
+              onOK={() => {
+                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('companies.rejectcompanyModalTitle')}
+              okText={t('common.reject')}
+              cancelText={t('common.cancel')}
+              description={t('companies.rejectcompanyModalDescription')}
+              // isDanger={true}
+              isLoading={approveCompany.isLoading}
+            />
+          )}
+
+          {/*    Image    */}
+          {isOpenSliderImage ? (
+            <Modal
+              size={isDesktop || isTablet ? 'medium' : 'small'}
+              open={isOpenSliderImage}
+              onCancel={() => setIsOpenSliderImage(false)}
+              footer={null}
+              closable={false}
+              destroyOnClose
+            >
+              <AntdImage
+                preview={false}
+                style={{ borderRadius: '.3rem' }}
+                src={attachmentData !== undefined ? attachmentData.url : ''}
+                size={isDesktop || isTablet ? 'small' : isMobile ? 'x_small' : mobileOnly ? 'xx_small' : 'x_small'}
+              />
+            </Modal>
+          ) : null}
         </Row>
+
         <Table
           pagination={{
             showSizeChanger: true,
