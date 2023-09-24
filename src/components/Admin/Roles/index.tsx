@@ -17,10 +17,13 @@ import { notificationController } from '@app/controllers/notificationController'
 import { Header, CreateButtonText } from '../../GeneralStyles';
 import { RoleModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 export const Role: React.FC = () => {
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { language } = useLanguage();
+
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
@@ -87,6 +90,11 @@ export const Role: React.FC = () => {
     setLoading(true);
     refetch();
   }, [refetch]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+  }, [page, pageSize, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {

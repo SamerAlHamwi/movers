@@ -18,8 +18,9 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, EditOutlined, RedoOutlined } from '@ant-design/icons';
+import { DeleteOutlined, RedoOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 export type Translation = {
   message: string;
@@ -32,14 +33,9 @@ export type Notification = {
   translations: Translation[];
 };
 
-const Destination = [
-  'notifications.destination.all',
-  'notifications.destination.Users',
-  'notifications.destination.Companies',
-];
-
 export const Notifications: React.FC = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
@@ -89,7 +85,7 @@ export const Notifications: React.FC = () => {
   useEffect(() => {
     setIsLoading(true);
     refetch();
-  }, [page, pageSize, refetch]);
+  }, [page, pageSize, language, refetch]);
 
   const pushNotification = useMutation((data: Notification) =>
     sendPushNotification(data)

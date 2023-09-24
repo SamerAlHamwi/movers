@@ -19,9 +19,12 @@ import { TableButton } from '../../GeneralStyles';
 import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 export const Partners: React.FC = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const [modalState, setModalState] = useState({
     add: false,
@@ -87,7 +90,7 @@ export const Partners: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, managerStatus, managerType, page, pageSize, refetch]);
+  }, [isDelete, isEdit, managerStatus, managerType, page, pageSize, language, refetch]);
 
   useEffect(() => {
     setLoading(true);

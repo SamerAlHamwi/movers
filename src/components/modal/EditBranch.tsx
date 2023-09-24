@@ -498,14 +498,14 @@ export const EditBranch: React.FC = () => {
               </Row>
 
               <BaseForm.Item
-                name="countryId"
+                // name="countryId"
                 label={<LableText>{t('companies.Country name')}</LableText>}
                 style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
               >
-                <Select onChange={ChangeCountryHandler}>
+                <Select onChange={ChangeCountryHandler} defaultValue={branchData?.region?.city?.country?.name}>
                   {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
                     <Option key={country.id} value={country.id}>
                       {country?.name}
@@ -522,7 +522,7 @@ export const EditBranch: React.FC = () => {
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                 ]}
               >
-                <Select onChange={ChangeCityHandler}>
+                <Select onChange={ChangeCityHandler} defaultValue={branchData?.region?.city?.name}>
                   {citiesData?.data?.result?.items.map((city: any) => (
                     <Select key={city.name} value={city.id}>
                       {city?.name}
@@ -532,7 +532,7 @@ export const EditBranch: React.FC = () => {
               </BaseForm.Item>
 
               <BaseForm.Item
-                // name="regionId"
+                name="regionId"
                 label={<LableText>{t('companies.Regionname')}</LableText>}
                 style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                 rules={[

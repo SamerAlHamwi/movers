@@ -16,23 +16,14 @@ import { Header, CreateButtonText } from '../../GeneralStyles';
 import { BranchModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useLanguage } from '@app/hooks/useLanguage';
 
-const branchModel = {
-  id: 0,
-  companyId: 0,
-  regionId: 0,
-  companyContact: [],
-  services: [],
-  translations: [],
-  userDto: {},
-};
 export const Branches: React.FC = () => {
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const { companyId } = useParams();
-  console.log('zxcvbnm,', companyId);
 
   const [modalState, setModalState] = useState({
     add: false,
@@ -123,6 +114,11 @@ export const Branches: React.FC = () => {
     setLoading(true);
     refetch();
   }, [refetch]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+  }, [page, pageSize, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {

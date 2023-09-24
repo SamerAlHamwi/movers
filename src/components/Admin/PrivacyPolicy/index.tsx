@@ -16,6 +16,7 @@ import { ActionModal } from '@app/components/modal/ActionModal';
 import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
 import { Pushprivacy } from '@app/components/modal/Pushprivacy';
 import { Editprivacy } from '@app/components/modal/Editprivacy';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 export type Translation = {
   title: string;
@@ -38,6 +39,7 @@ const Destination = [
 
 export const PrivacyPolicy: React.FC = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
@@ -98,11 +100,13 @@ export const PrivacyPolicy: React.FC = () => {
     refetch();
     setRefetchOnAddNotification(false);
   }, [refetchOnAddNotification]);
+
   useEffect(() => {
     setIsLoading(true);
     refetch();
     setIsDelete(false);
-  }, [isDelete, , page, pageSize, refetch]);
+  }, [isDelete, , page, pageSize, language, refetch]);
+
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
     createPrivacy(data)
       .then((data) => {

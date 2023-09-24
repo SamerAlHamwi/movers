@@ -20,9 +20,12 @@ import { Dates } from '@app/constants/Dates';
 import { Header, TableButton } from '../../GeneralStyles';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { ActionModal } from '@app/components/modal/ActionModal';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 export const User: React.FC = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const [page, setPage] = useState<number>(1);
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -87,25 +90,15 @@ export const User: React.FC = () => {
   }, [isActivate, isDeActivate, userType, refetch]);
 
   useEffect(() => {
+    setLoading(true);
+    refetch();
+  }, [page, pageSize, language, refetch]);
+
+  useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
       setPage(1);
     }
   }, [page, dataSource]);
-
-  // const addUser = useMutation((data: UserModel) =>
-  //   Create(data)
-  //     .then((data) => {
-  //       notificationController.success({ message: t('users.addUserSuccessMessage') });
-  //       setRefetchOnAddUser(data.data?.success);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     }),
-  // );
-
-  // useEffect(() => {
-  //   setIsOpenAddModalForm(addUser.isLoading);
-  // }, [addUser.isLoading]);
 
   const deleteUser = useMutation((id: number) =>
     Delete(id)
@@ -161,26 +154,6 @@ export const User: React.FC = () => {
         message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
       }),
   );
-
-  // const editUser = useMutation((data: UserModel) => Update(data));
-
-  // const handleEdit = (data: UserModel, id: number) => {
-  //   editUser
-  //     .mutateAsync({ ...data, id })
-  //     .then((data) => {
-  //       setIsEdit(data.data?.success);
-  //       message.open({
-  //         content: <Alert message={t(`users.editUserSuccessMessage`)} type={`success`} showIcon />,
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   setIsOpenEditModalForm(editUser.isLoading);
-  // }, [editUser.isLoading]);
 
   const TableText = styled.div`
     font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
@@ -316,16 +289,6 @@ export const User: React.FC = () => {
       render: (index: number, record: UserModel) => {
         return (
           <Space>
-            {/* <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                setIsOpenEditModalForm(true);
-              }}
-            >
-              <EditOutlined />
-            </TableButton> */}
-
             <TableButton
               severity="error"
               onClick={() => {
@@ -438,41 +401,6 @@ export const User: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          {/* <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => setIsOpenAddModalForm(true)}
-          >
-            <CreateButtonText>{t('users.addUser')}</CreateButtonText>
-          </Button> */}
-
-          {/*    ADD    */}
-          {/* {isOpenAddModalForm && (
-            <AddUser
-              visible={isOpenAddModalForm}
-              onCancel={() => setIsOpenAddModalForm(false)}
-              onCreateUser={(userInfo) => {
-                addUser.mutateAsync(userInfo);
-              }}
-              isLoading={addUser.isLoading}
-            />
-          )} */}
-
-          {/*    EDIT    */}
-          {/* {isOpenEditModalForm && (
-            <EditUser
-              user_values={editmodaldata}
-              visible={isOpenEditModalForm}
-              onCancel={() => setIsOpenEditModalForm(false)}
-              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
-              isLoading={editUser.isLoading}
-            />
-          )} */}
-
           {/*    Delete    */}
           {isOpenDeleteModalForm && (
             <ActionModal

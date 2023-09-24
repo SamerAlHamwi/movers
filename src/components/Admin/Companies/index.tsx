@@ -17,10 +17,12 @@ import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@
 import { EditCompany } from '@app/components/modal/EditCompany';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 export const Companies: React.FC = () => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const { desktopOnly, isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
 
   const [modalState, setModalState] = useState({
@@ -45,8 +47,6 @@ export const Companies: React.FC = () => {
   const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
-  const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
-  const [managerType, setManagerType] = useState<number | string>('');
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
 
   const handleButtonClick = () => {
@@ -90,7 +90,7 @@ export const Companies: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isApproved, isRejected, managerStatus, managerType, page, pageSize, refetch]);
+  }, [isDelete, isEdit, isApproved, isRejected, page, pageSize, refetch]);
 
   useEffect(() => {
     setLoading(true);
@@ -103,6 +103,11 @@ export const Companies: React.FC = () => {
       setPage(1);
     }
   }, [page, dataSource]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+  }, [page, pageSize, language, refetch]);
 
   const deleteCompany = useMutation((id: number) =>
     DeleteCompany(id)
