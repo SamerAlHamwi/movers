@@ -537,10 +537,20 @@
     "backToLogin": "Return to Login",
     "notFound": "Sorry, page not found!"
   },
+  "_comment20": "*********************************** Terms ************************************************",
+  "Terms": {
+    "editTermSuccessMessage": "Terms Edit Successfully",
+    "deleteTermsSuccessMessage": "Terms delete Successfully",
+    "TermsList": "Terms List",
+    "sendSuccessMessage": "Terms Added Succesfuly",
+    "addterms": "Create",
+    "add": "Save Edit"
+  },
 
   "sidebarNavigation": {
     "Brand": "MOVERS&",
     "Statistics": "Statistics",
+    "Term": "Terms&Condition",
     "Users": "Users",
     "Managers": "Managers",
     "Partners": "Real State Management",

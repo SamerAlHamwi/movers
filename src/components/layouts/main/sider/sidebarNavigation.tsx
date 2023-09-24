@@ -114,6 +114,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     url: `/PrivacyPolicy`,
     icon: <SafetyCertificateOutlined />,
   },
+  {
+    title: 'sidebarNavigation.Term',
+    key: 'Term',
+    url: `/Terms`,
+    icon: <SafetyCertificateOutlined />,
+  },
 ];
 
 const ManagerSidebarNavigation: SidebarNavigationItem[] = [

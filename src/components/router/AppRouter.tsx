@@ -31,6 +31,7 @@ const CountryPage = lazy(() => import('@app/pages/LocationsPages/CountriesPage')
 const CityPage = lazy(() => import('@app/pages/LocationsPages/CitiesPage'));
 const RegionPage = lazy(() => import('@app/pages/LocationsPages/RegionPage'));
 const Notifications = lazy(() => import('@app/pages/RelatedPages/NotificationsPage'));
+const Terms = lazy(() => import('@app/pages/Term&Condition/TermPage'));
 const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
@@ -66,6 +67,7 @@ const CountriesPage = withLoading(CountryPage);
 const CitiesPage = withLoading(CityPage);
 const RegionsPage = withLoading(RegionPage);
 const NotificationsPage = withLoading(Notifications);
+const TermsPage = withLoading(Terms);
 const ContactUsPage = withLoading(ContactusPage);
 const PrivacyPolicyPage = withLoading(PrivacyPolicy);
 const RolesPage = withLoading(RolePage);
@@ -132,6 +134,14 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <RequestsPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="Terms"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <TermsPage />
               </PrivateRoute>
             }
           />
@@ -220,6 +230,14 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <PartnerPage />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="Terms"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <TermsPage />
               </PrivateRoute>
             }
           />
@@ -349,7 +367,14 @@ export const AppRouter: React.FC = () => {
               </PrivateRoute>
             }
           />
-
+          <Route
+            path="Terms"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <TermsPage />
+              </PrivateRoute>
+            }
+          />
           <Route
             path="PrivacyPolicy"
             element={
