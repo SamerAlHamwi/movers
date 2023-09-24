@@ -16,6 +16,9 @@ import { ActionModal } from '@app/components/modal/ActionModal';
 import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
 import { Pushprivacy } from '@app/components/modal/Pushprivacy';
 import { Editprivacy } from '@app/components/modal/Editprivacy';
+import { DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/Term&condition';
+import { EditTerm } from '@app/components/modal/EditTerm';
+import { PushTerm } from '@app/components/modal/PushTerm';
 
 export type Translation = {
   title: string;
@@ -23,23 +26,17 @@ export type Translation = {
   language: LanguageType;
 };
 
-export type PrivacyPolicy = {
+export type Term = {
   id?: number;
   description: string;
   title: string;
   translations: Translation[];
 };
 
-const Destination = [
-  'notifications.destination.all',
-  'notifications.destination.Users',
-  'notifications.destination.Companies',
-];
-
-export const PrivacyPolicy: React.FC = () => {
+export const Term: React.FC = () => {
   const { t } = useTranslation();
 
-  const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
+  const [TermsData, setTermsData] = useState<Term[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(1);
@@ -48,22 +45,22 @@ export const PrivacyPolicy: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
-  const [editmodaldata, setEditmodaldata] = useState<PrivacyPolicy | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<Term | undefined>(undefined);
   const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
-  const [deletemodaldata, setDeletemodaldata] = useState<PrivacyPolicy | undefined>(undefined);
+  const [deletemodaldata, setDeletemodaldata] = useState<Term | undefined>(undefined);
   const { isTablet, isMobile, isDesktop } = useResponsive();
   const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
 
   const user = useAppSelector((state) => state.user.user);
 
   const { refetch, isRefetching } = useQuery(
-    ['Privacyploicy messages', page, isDelete, pageSize, refetchOnAddNotification],
+    ['Term messages', page, isDelete, pageSize, refetchOnAddNotification],
     () =>
-      getAllprivacy(page, pageSize)
+      getAllTerm(page, pageSize)
         .then((data) => {
-          const notifications = data.data?.result?.items;
+          const Terms = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
-          notifications?.forEach((element: PrivacyPolicy) => {
+          Terms?.forEach((element: Term) => {
             const enTranslationIndex = element.translations?.findIndex(
               (translation: Translation) => translation.language === 'en',
             );
@@ -72,7 +69,7 @@ export const PrivacyPolicy: React.FC = () => {
               element.translations.unshift(enTranslation[0]);
             }
           });
-          setNotificationsData(notifications);
+          setTermsData(Terms);
           setIsLoading(!data.data?.success);
         })
         .catch((error) => {
@@ -80,7 +77,7 @@ export const PrivacyPolicy: React.FC = () => {
           setIsLoading(false);
         }),
     {
-      enabled: notificationsData === undefined,
+      enabled: TermsData === undefined,
     },
   );
 
@@ -103,10 +100,10 @@ export const PrivacyPolicy: React.FC = () => {
     refetch();
     setIsDelete(false);
   }, [isDelete, , page, pageSize, refetch]);
-  const pushprivacy = useMutation((data: PrivacyPolicy) =>
-    createPrivacy(data)
+  const pushTerm = useMutation((data: Term) =>
+    createTerm(data)
       .then((data) => {
-        notificationController.success({ message: t('notifications.sendSuccessMessage') });
+        notificationController.success({ message: t('Terms.sendSuccessMessage') });
         setRefetchOnAddNotification(data.data?.success);
       })
       .catch((error) => {
@@ -115,15 +112,15 @@ export const PrivacyPolicy: React.FC = () => {
   );
 
   useEffect(() => {
-    setIsOpenPushModalForm(pushprivacy.isLoading);
-  }, [pushprivacy.isLoading]);
-  const deleteprivacy = useMutation((id: number) =>
-    Deleteprivacy(id)
+    setIsOpenPushModalForm(pushTerm.isLoading);
+  }, [pushTerm.isLoading]);
+  const deleteTerm = useMutation((id: number) =>
+    DeleteTerm(id)
       .then((data: any) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('notifications.deletepNotifactionsSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('Terms.deleteTermsSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error: any) => {
@@ -134,24 +131,24 @@ export const PrivacyPolicy: React.FC = () => {
   );
   const handleDelete = (id: any) => {
     if (page > 1) {
-      deleteprivacy.mutateAsync(id);
+      deleteTerm.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deleteprivacy.mutateAsync(id);
+      deleteTerm.mutateAsync(id);
     }
   };
   useEffect(() => {
-    setIsOpenDeleteModalForm(deleteprivacy.isLoading);
-  }, [deleteprivacy.isLoading]);
-  const editprivacy = useMutation((data: PrivacyPolicy) => Updateprivacy(data));
+    setIsOpenDeleteModalForm(deleteTerm.isLoading);
+  }, [deleteTerm.isLoading]);
+  const editTerm = useMutation((data: Term) => UpdateTerm(data));
 
-  const handleEdit = (data: PrivacyPolicy, id: number) => {
-    editprivacy
+  const handleEdit = (data: Term, id: number) => {
+    editTerm
       .mutateAsync({ ...data, id })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`managers.editManagerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`Terms.editTermSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -159,8 +156,8 @@ export const PrivacyPolicy: React.FC = () => {
       });
   };
   useEffect(() => {
-    setIsOpenEditModalForm(editprivacy.isLoading);
-  }, [editprivacy.isLoading]);
+    setIsOpenEditModalForm(editTerm.isLoading);
+  }, [editTerm.isLoading]);
 
   const notificationsColumns = [
     {
@@ -170,7 +167,7 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: 'id',
-      width: '5%',
+      width: '10%',
     },
     {
       title: (
@@ -179,6 +176,7 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 0, 'title'],
+      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
@@ -190,35 +188,38 @@ export const PrivacyPolicy: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 1, 'title'],
+      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
       },
     },
     {
       title: (
-        <Header style={{ wordBreak: 'normal' }}>
+        <Header>
           <Trans i18nKey={'notifications.englishdescription'} />
         </Header>
       ),
       dataIndex: ['translations', 0, 'description'],
+      width: '30%',
       render: (text: string) => {
         const firstSentence = text.split('.')[0]; // Get the first sentence
 
         return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
       },
     },
-    {
-      title: (
-        <Header>
-          <Trans i18nKey={'notifications.arabicdiscription'} />
-        </Header>
-      ),
-      dataIndex: ['translations', 1, 'description'],
-      render: (text: string) => {
-        const firstSentence = text.split('.')[0]; // Get the first sentence
-        return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
-      },
-    },
+    // {
+    //   title: (
+    //     <Header>
+    //       <Trans i18nKey={'notifications.arabicdiscription'} />
+    //     </Header>
+    //   ),
+    //   dataIndex: ['translations', 1, 'description'],
+    //   width: '30%',
+    //   render: (text: string) => {
+    //     const firstSentence = text.split('.')[0]; // Get the first sentence
+    //     return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
+    //   },
+    // },
     {
       title: (
         <Header>
@@ -227,7 +228,8 @@ export const PrivacyPolicy: React.FC = () => {
       ),
 
       dataIndex: 'actions',
-      render: (index: number, Data: PrivacyPolicy) => {
+      width: '30%',
+      render: (index: number, Data: Term) => {
         return (
           <Space>
             <TableButton
@@ -258,9 +260,9 @@ export const PrivacyPolicy: React.FC = () => {
   return (
     <>
       <Card
-        title={t('notifications.PrivacyList')}
+        title={t('Terms.TermsList')}
         padding={
-          notificationsData?.length === 0 || notificationsData === undefined || (page === 1 && totalCount <= pageSize)
+          TermsData?.length === 0 || TermsData === undefined || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0rem'
         }
@@ -278,23 +280,23 @@ export const PrivacyPolicy: React.FC = () => {
             <CreateButtonText>{t('notifications.sendp')}</CreateButtonText>
           </Button>
           {isOpenEditModalForm ? (
-            <Editprivacy
-              Priv_values={editmodaldata}
+            <EditTerm
+              Term_values={editmodaldata}
               visible={isOpenEditModalForm}
               onCancel={() => setIsOpenEditModalForm(false)}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
-              isLoading={editprivacy.isLoading}
+              isLoading={editTerm.isLoading}
             />
           ) : null}{' '}
           {isOpenPushModalForm ? (
-            <Pushprivacy
+            <PushTerm
               isManager={user.userType === 0 ? false : true}
               visible={isOpenPushModalForm}
               onCancel={() => setIsOpenPushModalForm(false)}
-              onCreateprivacy={(data) => {
-                pushprivacy.mutateAsync(data);
+              onCreateTerm={(data) => {
+                pushTerm.mutateAsync(data);
               }}
-              isLoading={pushprivacy.isLoading}
+              isLoading={pushTerm.isLoading}
             />
           ) : null}
           {isOpenDeleteModalForm ? (
@@ -310,13 +312,13 @@ export const PrivacyPolicy: React.FC = () => {
               cancelText={t('common.cancel')}
               description={t('notifications.deleteNprivacyModalDescription')}
               isDanger={true}
-              isLoading={deleteprivacy.isLoading}
+              isLoading={deleteTerm.isLoading}
             />
           ) : null}
         </Row>
 
         <Table
-          dataSource={notificationsData}
+          dataSource={TermsData}
           pagination={{
             showSizeChanger: true,
             onChange: (page: number, pageSize: number) => {
@@ -334,21 +336,7 @@ export const PrivacyPolicy: React.FC = () => {
             // showTotal: (total) => `Total ${total} notifications`,
             pageSizeOptions: [5, 10, 15, 20],
           }}
-          columns={
-            user.userType === 1
-              ? notificationsColumns
-              : [
-                  ...notificationsColumns,
-                  {
-                    title: <Header>{t('notifications.destination.destination')}</Header>,
-                    dataIndex: 'destination',
-                    width: '15%',
-                    render: (destination: number) => {
-                      return <>{t(Destination[destination])}</>;
-                    },
-                  },
-                ]
-          }
+          columns={user.userType === 1 ? notificationsColumns : [...notificationsColumns]}
           loading={isLoading}
           scroll={{ x: isTablet ? 700 : isMobile ? 800 : 600 }}
         />

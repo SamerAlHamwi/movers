@@ -1,35 +1,30 @@
 import { httpApi } from '@app/api/httpApi';
-
-import { CompanyModal, UserModel } from '@app/interfaces/interfaces';
+import { CompanyModal } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
-// eslint-disable-next-line
 const getAllCompanies = async (page: number, pageSize: number) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(`${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
 };
-const getcompany = async (id?: string) => {
+
+const getCompanyById = async (id?: string) => {
   return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
 };
-// eslint-disable-next-line
-const Deletce = async (id: number) => {
+
+const DeleteCompany = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.companies}/Delete?Id=${id}`);
 };
-// eslint-disable-next-line
+
 const createCompany = async (data: CompanyModal) => {
   return await httpApi.post(`${apiPrefix.companies}/Create`, data);
 };
-// eslint-disable-next-line
-const Updatce = async (data: CompanyModal) => {
+
+const updateCompany = async (data: CompanyModal) => {
   return await httpApi.put(`${apiPrefix.companies}/Update`, data);
 };
-// eslint-disable-next-line
-const ActivatCe = async (id: number) => {
-  return await httpApi.post(`${apiPrefix.companies}/Activate`, { id });
-};
-// eslint-disable-next-line
-const DeActivatCCe = async (id: number) => {
-  return await httpApi.post(`${apiPrefix.companies}/DeActivate`, { id });
+
+const confirmCompany = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.companies}/ConfirmCompanyByAdmin`, data);
 };
 
-export { getAllCompanies, getcompany, createCompany, Updatce, Deletce, ActivatCe, DeActivatCCe };
+export { getAllCompanies, getCompanyById, createCompany, updateCompany, DeleteCompany, confirmCompany };

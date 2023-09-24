@@ -199,7 +199,7 @@ export const AddCompany: React.FC = () => {
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: `service${service?.id}`,
+      key: `${service?.id}`,
       children: [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
@@ -212,7 +212,7 @@ export const AddCompany: React.FC = () => {
               {subService?.name}
             </span>
           ),
-          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          key: subService?.id,
           children: [],
         };
         if (subService?.tools?.length > 0) {
@@ -223,7 +223,7 @@ export const AddCompany: React.FC = () => {
                 {tool?.name}
               </span>
             ),
-            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+            key: tool?.id,
           }));
         }
         return subServiceNode;
@@ -231,6 +231,49 @@ export const AddCompany: React.FC = () => {
     }
     return serviceNode;
   });
+
+  // const GetAllServices = useQuery('getAllServices', getServices);
+
+  // const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+  //   const serviceNode: DataNode = {
+  //     title: (
+  //       <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //         <Image src={service?.attachment?.url} width={16} height={16} />
+  //         <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+  //       </span>
+  //     ),
+  //     key: `service${service?.id}`,
+  //     children: [],
+  //     disabled: service?.subServices?.length > 0 ? false : true,
+  //   };
+  //   if (service?.subServices?.length > 0) {
+  //     serviceNode.children = service.subServices.map((subService: any) => {
+  //       const subServiceNode = {
+  //         title: (
+  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //             <Image src={subService?.attachment?.url} width={16} height={16} />
+  //             {subService?.name}
+  //           </span>
+  //         ),
+  //         key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+  //         children: [],
+  //       };
+  //       if (subService?.tools?.length > 0) {
+  //         subServiceNode.children = subService.tools.map((tool: any) => ({
+  //           title: (
+  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //               <Image src={tool?.attachment?.url} width={16} height={16} />
+  //               {tool?.name}
+  //             </span>
+  //           ),
+  //           key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+  //         }));
+  //       }
+  //       return subServiceNode;
+  //     });
+  //   }
+  //   return serviceNode;
+  // });
 
   const next = () => {
     setCurrent(current + 1);
@@ -374,23 +417,14 @@ export const AddCompany: React.FC = () => {
     );
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
-        const parts = obj.split(' ');
         let result = {};
-        if (parts[0] == 'withTool') {
-          result = {
-            serviceId: parseInt(parts[1].replace('service', '')),
-            subServiceId: parseInt(parts[2].replace('sub', '')),
-            toolId: parseInt(parts[3].replace('tool', '')),
-          };
-          requestServices.push(result);
-        } else if (parts[0] == 'onlySub') {
-          result = {
-            serviceId: parseInt(parts[1].replace('service', '')),
-            subServiceId: parseInt(parts[2].replace('sub', '')),
-            toolId: null,
-          };
-          requestServices.push(result);
-        }
+
+        result = {
+          serviceId: '',
+          subServiceId: '',
+          toolId: '',
+        };
+        requestServices.push(result);
         return result;
       });
     }
