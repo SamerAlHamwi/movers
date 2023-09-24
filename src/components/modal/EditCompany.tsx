@@ -40,7 +40,7 @@ import { countries } from '../Admin/Locations/Countries';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
 import { useNavigate } from 'react-router-dom';
-import { getAllCompanies, getcompany } from '@app/services/company';
+import { getAllCompanies, getCompanyById } from '@app/services/company';
 
 export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onEdit, Company_values, isLoading }) => {
   const { t } = useTranslation();
@@ -92,7 +92,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   );
 
   // const company = useQuery(['getCompany'], () =>
-  //   getcompany(Company_values?.id)
+  //   getCompanyById(Company_values?.id)
   //     .then((data) => {
   //       const result = data.data?.result;
   //       setCompanyData(result);

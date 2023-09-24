@@ -111,16 +111,21 @@ export type CreateGameFormData = {
   gameType?: number;
 };
 
+export interface CompanyProfile {
+  id: number;
+  url: string;
+}
 export interface CompanyModal {
   id?: number;
   translations: translation[];
   services: Service;
   address?: string;
   regionId?: number;
-
+  statues?: number;
   companyContact?: CompanyContact;
   companyProfilePhotoId?: number;
-
+  companyProfile: CompanyProfile;
+  attachment?: Attachment;
   companyBranches?: CompanyBranch[];
   companyOwnerIdentityIds?: any;
   companyCommercialRegisterIds?: any;
@@ -251,9 +256,10 @@ export interface RoleModel {
 export interface BranchModel {
   id: number;
   companyId: number;
-  regionId: number;
+  regionId?: number;
+  region: any;
   companyContact: any;
-  services: Service[];
+  services: any[];
   translations: translation[];
   userDto?: UserDto;
 }
