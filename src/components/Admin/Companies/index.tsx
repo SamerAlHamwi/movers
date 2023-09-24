@@ -247,7 +247,9 @@ export const Companies: React.FC = () => {
       render: (record: any) => (
         <Space style={{ display: 'grid' }}>
           {record?.map((service: any) => (
-            <Tag key={service?.id}>{service?.name}</Tag>
+            <Tag key={service?.id} style={{ padding: '4px' }}>
+              {service?.name}
+            </Tag>
           ))}
         </Space>
       ),
@@ -281,17 +283,17 @@ export const Companies: React.FC = () => {
               </Space>
             )}
             {record.statues === 1 && (
-              <Tag key={record?.id} color="#30af5b">
+              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
                 Checking
               </Tag>
             )}
             {record.statues === 2 && (
-              <Tag key={record?.id} color="#01509a">
+              <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
                 Approved
               </Tag>
             )}
             {record.statues === 3 && (
-              <Tag key={record?.id} color="#ff5252">
+              <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
                 Rejected
               </Tag>
             )}
