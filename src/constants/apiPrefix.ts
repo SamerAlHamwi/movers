@@ -20,4 +20,5 @@ export default {
   branches: '/api/services/app/CompanyBranch',
   pushNotifications: '/api/services/app/PushNotification',
   privacyPolicy: '/api/services/app/PrivacyPolicy',
+  Term: '/api/services/app/Term',
 };

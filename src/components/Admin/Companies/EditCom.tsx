@@ -156,7 +156,7 @@ export const EditCom: React.FC = () => {
         setLoading(false);
       }),
   );
-
+  const [test, setTest] = useState<any[]>([]);
   const cities = useQuery(
     ['City'],
     () =>
@@ -176,8 +176,19 @@ export const EditCom: React.FC = () => {
   useEffect(() => {
     const updateFormValues = async () => {
       // Check if companyData is not an empty object
+      const maher: any[] = [];
+      companyData?.services?.map((item: any) => {
+        item.subServices.map((subServices: any) => {
+          subServices.tools.map((tools: any) => {
+            maher.push(tools.id);
+            return;
+          });
+        });
+      });
+      setTest(maher);
+      console.log(';;;;;;;;;;;;;;;;;;;;;;;;;;;;', maher);
 
-      console.log('Updating form with new companyData:', companyData);
+      console.log('Updating form with new companyData:', companyData?.services);
       await form.setFieldsValue(companyData);
     };
 
@@ -228,7 +239,7 @@ export const EditCom: React.FC = () => {
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: `service${service?.id}`,
+      key: `${service?.id}`,
       children: [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
@@ -241,7 +252,7 @@ export const EditCom: React.FC = () => {
               {subService?.name}
             </span>
           ),
-          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          key: subService?.id,
           children: [],
         };
         if (subService?.tools?.length > 0) {
@@ -252,7 +263,7 @@ export const EditCom: React.FC = () => {
                 {tool?.name}
               </span>
             ),
-            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+            key: tool?.id,
           }));
         }
         return subServiceNode;
@@ -260,6 +271,8 @@ export const EditCom: React.FC = () => {
     }
     return serviceNode;
   });
+
+  console.log('asdasdasdssssssssssssss', treeData);
 
   const next = () => {
     setCurrent(current + 1);
@@ -962,7 +975,7 @@ export const EditCom: React.FC = () => {
                         });
                       }}
                       defaultCheckedKeys={serviceKeys}
-                      checkedKeys={serviceKeys}
+                      // checkedKeys={test}
                       onSelect={onSelect}
                       selectedKeys={selectedKeys}
                       treeData={[serviceTreeData]}
