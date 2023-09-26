@@ -7,7 +7,7 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { DeleteBranch, getAllBranches, getBranch } from '@app/services/branches';
+import { DeleteBranch, getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -16,23 +16,16 @@ import { Header, CreateButtonText } from '../../GeneralStyles';
 import { BranchModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useParams, useNavigate } from 'react-router-dom';
-import { useAtom } from 'jotai';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
-const branchModel = {
-  id: 0,
-  companyId: 0,
-  regionId: 0,
-  companyContact: [],
-  services: [],
-  translations: [],
-  userDto: {},
-};
 export const Branches: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { language } = useLanguage();
   const navigate = useNavigate();
   const { companyId } = useParams();
-  console.log('zxcvbnm,', companyId);
 
   const [modalState, setModalState] = useState({
     add: false,
@@ -44,11 +37,9 @@ export const Branches: React.FC = () => {
   const [data, setData] = useState<BranchModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<BranchModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -59,9 +50,9 @@ export const Branches: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['getAllBranches', page, pageSize, refetchOnAdd, isDelete, isEdit],
+    ['getAllBranches', page, pageSize, isDelete, isEdit],
     () =>
-      getAllBranches(companyId, page, pageSize)
+      getAllBranches(companyId, page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setData(result);
@@ -117,12 +108,7 @@ export const Branches: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [refetch]);
+  }, [isDelete, isEdit, page, pageSize, searchString, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {

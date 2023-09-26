@@ -9,13 +9,15 @@ import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppSelector } from '@app/hooks/reduxHooks';
-import { Modal, Table, CreateButtonText } from '../../GeneralStyles';
+import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
 import { Pushprivacy } from '@app/components/modal/Pushprivacy';
 import { Editprivacy } from '@app/components/modal/Editprivacy';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
 export type Translation = {
   title: string;
@@ -37,7 +39,9 @@ const Destination = [
 ];
 
 export const PrivacyPolicy: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
@@ -59,7 +63,7 @@ export const PrivacyPolicy: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Privacyploicy messages', page, isDelete, pageSize, refetchOnAddNotification],
     () =>
-      getAllprivacy(page, pageSize)
+      getAllprivacy(page, pageSize, searchString)
         .then((data) => {
           const notifications = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -85,24 +89,18 @@ export const PrivacyPolicy: React.FC = () => {
   );
 
   useEffect(() => {
-    isRefetching && setIsLoading(true);
+    if (isRefetching) setIsLoading(true);
+    else setIsLoading(false);
   }, [isRefetching]);
 
   useEffect(() => {
     setIsLoading(true);
     refetch();
-  }, [page, pageSize, refetch]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
-    setRefetchOnAddNotification(false);
-  }, [refetchOnAddNotification]);
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
     setIsDelete(false);
-  }, [isDelete, , page, pageSize, refetch]);
+    setIsEdit(false);
+    setRefetchOnAddNotification(false);
+  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, language, searchString, refetch]);
+
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
     createPrivacy(data)
       .then((data) => {

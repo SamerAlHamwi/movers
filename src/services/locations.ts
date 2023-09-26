@@ -3,12 +3,12 @@ import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
 // ------------ Countries
-const getAllCountries = async (page: number, pageSize: number, countryStatus?: number) => {
+const getAllCountries = async (page: number, pageSize: number, search: string, countryStatus?: number) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.countries}/GetAll?${
       countryStatus ? `IsActive=${countryStatus}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 
@@ -37,12 +37,18 @@ const DeActivateCountry = async (id: number) => {
 };
 
 // --------------- Cities
-const getAllCities = async (id: string | undefined, page: number, pageSize: number, countryStatus?: number) => {
+const getAllCities = async (
+  id: string | undefined,
+  page: number,
+  pageSize: number,
+  search: string,
+  countryStatus?: number,
+) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.cities}/GetAll?CountryId=${id}&${
       countryStatus ? `IsActive=${countryStatus}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 const getAllCity = async () => {
@@ -74,12 +80,18 @@ const DeActivateCity = async (id: number) => {
 };
 
 // --------------- Regions
-const getAllRegions = async (id: string | undefined, page: number, pageSize: number, countryStatus?: number) => {
+const getAllRegions = async (
+  id: string | undefined,
+  page: number,
+  pageSize: number,
+  search: string,
+  countryStatus?: number,
+) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.regions}/GetAll?CityId=${id}&${
       countryStatus ? `IsActive=${countryStatus}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 

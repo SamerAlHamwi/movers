@@ -7,8 +7,6 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -19,9 +17,14 @@ import { TableButton } from '../../GeneralStyles';
 import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
 export const Partners: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
+  const { language } = useLanguage();
+
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const [modalState, setModalState] = useState({
     add: false,
@@ -37,16 +40,7 @@ export const Partners: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<Partner | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isEmployee, setIsEmployee] = useState(false);
-  const [isHover, setIsHover] = useState(false);
   const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
-  const [temp, setTemp] = useState<any>();
-  const [temp1, setTemp1] = useState<any>();
-  const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
-  const [managerType, setManagerType] = useState<number | string>('');
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -58,9 +52,9 @@ export const Partners: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Partner', page, pageSize, refetchOnAddManager, isDelete, isEdit, isActivate, isDeActivate, isAdmin, isEmployee],
+    ['Partner', page, pageSize, refetchOnAddManager, isDelete, isEdit],
     () =>
-      getAllPartner(page, pageSize)
+      getAllPartner(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -87,22 +81,8 @@ export const Partners: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, managerStatus, managerType, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAddManager(false);
-  }, [refetchOnAddManager, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-    setIsAdmin(false);
-    setIsEmployee(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [isDelete, isEdit, refetchOnAddManager, page, pageSize, searchString, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -154,32 +134,6 @@ export const Partners: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deletePartner.isLoading }));
   }, [deletePartner.isLoading]);
 
-  // const activateManager = useMutation((id: number) =>
-  //   ActivatePartner(id)
-  //     .then((data) => {
-  //       message.open({
-  //         content: <Alert message={t('managers.activateManagerSuccessMessage')} type="success" showIcon />,
-  //       });
-  //       setIsActivate(data.data?.success);
-  //     })
-  //     .catch((error) => {
-  //       message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
-  //     }),
-  // );
-
-  // const deActivateManager = useMutation((id: number) =>
-  //   DeActivatePartner(id)
-  //     .then((data) => {
-  //       message.open({
-  //         content: <Alert message={t('managers.deactivatePartnerSuccessMessage')} type="success" showIcon />,
-  //       });
-  //       setIsDeActivate(data.data?.success);
-  //     })
-  //     .catch((error) => {
-  //       message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
-  //     }),
-  // );
-
   const editPartner = useMutation((data: Partner) => UpdatePartner(data));
 
   const handleEdit = (data: Partner, id: number) => {
@@ -200,71 +154,11 @@ export const Partners: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editPartner.isLoading }));
   }, [editPartner.isLoading]);
 
-  const TableText = styled.div`
-    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
-    font-weight: ${FONT_WEIGHT.regular};
-  `;
-
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header>{t('Partners.partnerPhoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
     { title: <Header>{t('Partners.partnercode')}</Header>, dataIndex: 'partnerCode' },
     { title: <Header>{t('Partners.partnerdiscountPercentage')}</Header>, dataIndex: 'discountPercentage' },
-    ,
-    // {
-    //   title: <Header>{t('Partners.PartnersStatus')}</Header>,
-    //   dataIndex: 'isActive',
-    //   render: (managerStatus: boolean) => {
-    //     return <>{(managerStatus = managerStatus ? t('common.active') : t('common.inactive'))}</>;
-    //   },
-    //   filterDropdown: () => {
-    //     const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
-    //     return (
-    //       <div style={{ padding: 8 }}>
-    //         <RadioGroup
-    //           size="small"
-    //           onChange={(e: RadioChangeEvent) => {
-    //             setTemp(e.target.value);
-    //           }}
-    //           value={temp}
-    //         >
-    //           <Radio style={{ display: 'block', fontSize }} value={true}>
-    //             {t('common.active')}
-    //           </Radio>
-    //           <Radio style={{ display: 'block', fontSize }} value={false}>
-    //             {t('common.inactive')}
-    //           </Radio>
-    //         </RadioGroup>
-    //         <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
-    //           <Col>
-    //             <Button
-    //               disabled={managerStatus === undefined ? true : false}
-    //               style={{ fontSize, fontWeight: '400' }}
-    //               size="small"
-    //               onClick={() => {
-    //                 setTemp(undefined); //true or false
-    //                 setManagerStatus(undefined); //Active or InActive
-    //               }}
-    //             >
-    //               {t('common.reset')}
-    //             </Button>
-    //           </Col>
-    //           <Col>
-    //             <Button
-    //               size="small"
-    //               type="primary"
-    //               style={{ fontSize, fontWeight: '400' }}
-    //               onClick={() => setManagerStatus(temp === false ? 'false' : temp)}
-    //             >
-    //               {t('common.apply')}
-    //             </Button>
-    //           </Col>
-    //         </Row>
-    //       </div>
-    //     );
-    //   },
-    // },
-
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
@@ -290,92 +184,6 @@ export const Partners: React.FC = () => {
             >
               <DeleteOutlined />
             </TableButton>
-
-            {/* {record.isActive === true ? (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('managers.deactivateManagerConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {deActivateManager.isLoading ? (
-                      <>
-                        {t(`common.deactivate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.deactivate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                onConfirm={() => deActivateManager.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.deactivate')}</TableText>
-                </Button>
-              </Popconfirm>
-            ) : (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('managers.activateManagerConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {activateManager.isLoading ? (
-                      <>
-                        {t(`common.activate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.activate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                onConfirm={() => activateManager.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.activate')}</TableText>
-                </Button>
-              </Popconfirm>
-            )} */}
           </Space>
         );
       },
@@ -437,7 +245,6 @@ export const Partners: React.FC = () => {
               title={t('Partners.deletePartnerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              // description={t('managers.deleteManagerModalDescription')}
               isDanger={true}
               isLoading={deletePartner.isLoading}
             />

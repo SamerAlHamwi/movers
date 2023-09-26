@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
-import styled from 'styled-components';
 import { Card } from '@app/components/common/Card/Card';
 import { Alert, Row, message } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import { useResponsive } from '@app/hooks/useResponsive';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
@@ -14,7 +12,8 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { EditOutlined } from '@ant-design/icons';
 import { EditContactUs } from '@app/components/modal/EditContactUs';
-import { Modal, Text, CreateButtonText } from '../../GeneralStyles';
+import { CreateButtonText } from '../../GeneralStyles';
+import styled from 'styled-components';
 
 export type specifierType = {
   name: string;
@@ -28,8 +27,8 @@ export type companyData = {
 
 const ContactUs: React.FC = () => {
   const { t } = useTranslation();
-  const { desktopOnly } = useResponsive();
   const { language } = useLanguage();
+
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [contactData, setContacData] = useState<any>();

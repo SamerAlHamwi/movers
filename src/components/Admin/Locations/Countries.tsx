@@ -31,6 +31,7 @@ import { Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { LableText } from '../../GeneralStyles';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { defineColorBySeverity } from '@app/utils/utils';
+import { useSelector } from 'react-redux';
 
 export type countries = {
   id: number;
@@ -40,13 +41,16 @@ export type countries = {
 };
 
 export const Country: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const { language } = useLanguage();
+  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+
   const [countryPage, setCountryPage] = useAtom(currentGamesPageAtom);
   const [countryPageSize, setcountryPageSize] = useAtom(gamesPageSizeAtom);
   const [countryData, setCountryData] = useState<countries[] | undefined>();
   const [totalCount, setTotalCount] = useState<number>(0);
-  const navigate = useNavigate();
   const [temp, setTemp] = useState<any>();
   const [countryStatus, setCountryStatus] = useAtom(gameStatusAtom);
   const [isHover, setIsHover] = useState(false);
@@ -62,12 +66,11 @@ export const Country: React.FC = () => {
   const [dataSource, setDataSource] = useState<CountryModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<CountryModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CountryModel | undefined>(undefined);
-  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
 
   const { refetch, isRefetching } = useQuery(
     ['Countries', countryPage, countryPageSize],
     () =>
-      getAllCountries(countryPage, countryPageSize, countryStatus)
+      getAllCountries(countryPage, countryPageSize, searchString, countryStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -94,20 +97,21 @@ export const Country: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, countryStatus, countryPage, countryPageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setIsActivate(false);
     setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [
+    isDelete,
+    isEdit,
+    refetchOnAdd,
+    isActivate,
+    isDeActivate,
+    countryStatus,
+    countryPage,
+    countryPageSize,
+    searchString,
+    refetch,
+  ]);
 
   useEffect(() => {
     if (countryPage > 1 && dataSource?.length === 0) {

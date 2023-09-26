@@ -9,16 +9,14 @@ import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppSelector } from '@app/hooks/reduxHooks';
-import { Modal, Table, CreateButtonText } from '../../GeneralStyles';
+import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
-import { Pushprivacy } from '@app/components/modal/Pushprivacy';
-import { Editprivacy } from '@app/components/modal/Editprivacy';
 import { DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/Term&condition';
 import { EditTerm } from '@app/components/modal/EditTerm';
 import { PushTerm } from '@app/components/modal/PushTerm';
+import { useSelector } from 'react-redux';
 
 export type Translation = {
   title: string;
@@ -34,6 +32,8 @@ export type Term = {
 };
 
 export const Term: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
+  const user = useAppSelector((state) => state.user.user);
   const { t } = useTranslation();
 
   const [TermsData, setTermsData] = useState<Term[] | undefined>(undefined);
@@ -51,12 +51,10 @@ export const Term: React.FC = () => {
   const { isTablet, isMobile, isDesktop } = useResponsive();
   const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
 
-  const user = useAppSelector((state) => state.user.user);
-
   const { refetch, isRefetching } = useQuery(
     ['Term messages', page, isDelete, pageSize, refetchOnAddNotification],
     () =>
-      getAllTerm(page, pageSize)
+      getAllTerm(page, pageSize, searchString)
         .then((data) => {
           const Terms = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -82,24 +80,18 @@ export const Term: React.FC = () => {
   );
 
   useEffect(() => {
-    isRefetching && setIsLoading(true);
-  }, [isRefetching]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
-  }, [page, pageSize, refetch]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
-    setRefetchOnAddNotification(false);
-  }, [refetchOnAddNotification]);
-  useEffect(() => {
     setIsLoading(true);
     refetch();
     setIsDelete(false);
-  }, [isDelete, , page, pageSize, refetch]);
+    setIsEdit(false);
+    setRefetchOnAddNotification(false);
+  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, searchString, refetch]);
+
+  useEffect(() => {
+    if (isRefetching) setIsLoading(true);
+    else setIsLoading(false);
+  }, [isRefetching]);
+
   const pushTerm = useMutation((data: Term) =>
     createTerm(data)
       .then((data) => {
@@ -114,6 +106,7 @@ export const Term: React.FC = () => {
   useEffect(() => {
     setIsOpenPushModalForm(pushTerm.isLoading);
   }, [pushTerm.isLoading]);
+
   const deleteTerm = useMutation((id: number) =>
     DeleteTerm(id)
       .then((data: any) => {
@@ -129,6 +122,7 @@ export const Term: React.FC = () => {
         });
       }),
   );
+
   const handleDelete = (id: any) => {
     if (page > 1) {
       deleteTerm.mutateAsync(id);
@@ -137,6 +131,7 @@ export const Term: React.FC = () => {
       deleteTerm.mutateAsync(id);
     }
   };
+
   useEffect(() => {
     setIsOpenDeleteModalForm(deleteTerm.isLoading);
   }, [deleteTerm.isLoading]);
@@ -155,6 +150,7 @@ export const Term: React.FC = () => {
         message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
       });
   };
+
   useEffect(() => {
     setIsOpenEditModalForm(editTerm.isLoading);
   }, [editTerm.isLoading]);
@@ -333,7 +329,6 @@ export const Term: React.FC = () => {
             hideOnSinglePage: true,
             responsive: true,
             showLessItems: true,
-            // showTotal: (total) => `Total ${total} notifications`,
             pageSizeOptions: [5, 10, 15, 20],
           }}
           columns={user.userType === 1 ? notificationsColumns : [...notificationsColumns]}
