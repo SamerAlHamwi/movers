@@ -7,8 +7,6 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -18,10 +16,12 @@ import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateM, DeleteM, Updatem, getAllM } from '../../../services/mediator';
+import { CreateMediator, DeleteMediator, UpdateMediator, getAllMediators } from '../../../services/mediator';
 import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
-export const Brokers: React.FC = () => {
+export const Mediators: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const { language } = useLanguage();
@@ -40,11 +40,7 @@ export const Brokers: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<Broker | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const [isEmployee, setIsEmployee] = useState(false);
-  const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
+  const [refetchOnAddMediator, setRefetchOnAddMediator] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -56,9 +52,9 @@ export const Brokers: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Partner', page, pageSize, refetchOnAddManager, isDelete, isEdit, isActivate, isDeActivate, isAdmin, isEmployee],
+    ['Mediators', page, pageSize, refetchOnAddMediator, isDelete, isEdit],
     () =>
-      getAllM(page, pageSize)
+      getAllMediators(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -85,22 +81,8 @@ export const Brokers: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, language, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setRefetchOnAddManager(false);
-  }, [refetchOnAddManager, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-    setIsAdmin(false);
-    setIsEmployee(false);
-  }, [isActivate, isDeActivate, refetch]);
+    setRefetchOnAddMediator(false);
+  }, [isDelete, isEdit, refetchOnAddMediator, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -108,11 +90,11 @@ export const Brokers: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addManager = useMutation((data: Broker) =>
-    CreateM(data)
+  const addMediator = useMutation((data: Broker) =>
+    CreateMediator(data)
       .then((data) => {
         notificationController.success({ message: t('Brokers.addPartnerSuccessMessage') });
-        setRefetchOnAddManager(data.data?.success);
+        setRefetchOnAddMediator(data.data?.success);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -120,11 +102,11 @@ export const Brokers: React.FC = () => {
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addManager.isLoading }));
-  }, [addManager.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, add: addMediator.isLoading }));
+  }, [addMediator.isLoading]);
 
-  const deletePartner = useMutation((id: number) =>
-    DeleteM(id)
+  const deleteMediator = useMutation((id: number) =>
+    DeleteMediator(id)
       .then((data) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
@@ -141,21 +123,21 @@ export const Brokers: React.FC = () => {
 
   const handleDelete = (id: any) => {
     if (page > 1 && dataSource?.length === 1) {
-      deletePartner.mutateAsync(id);
+      deleteMediator.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deletePartner.mutateAsync(id);
+      deleteMediator.mutateAsync(id);
     }
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deletePartner.isLoading }));
-  }, [deletePartner.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteMediator.isLoading }));
+  }, [deleteMediator.isLoading]);
 
-  const editPartner = useMutation((data: Broker) => Updatem(data));
+  const editMediator = useMutation((data: Broker) => UpdateMediator(data));
 
   const handleEdit = (data: Broker, id: number) => {
-    editPartner
+    editMediator
       .mutateAsync({ ...data, id })
       .then((data) => {
         setIsEdit(data.data?.success);
@@ -169,8 +151,8 @@ export const Brokers: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editPartner.isLoading }));
-  }, [editPartner.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editMediator.isLoading }));
+  }, [editMediator.isLoading]);
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -237,9 +219,9 @@ export const Brokers: React.FC = () => {
               visible={modalState.add}
               onCancel={() => handleModalClose('add')}
               onCreateBroker={(BrokerInfo) => {
-                addManager.mutateAsync(BrokerInfo);
+                addMediator.mutateAsync(BrokerInfo);
               }}
-              isLoading={addManager.isLoading}
+              isLoading={addMediator.isLoading}
             />
           )}
           {/*    EDIT    */}
@@ -249,7 +231,7 @@ export const Brokers: React.FC = () => {
               visible={modalState.edit}
               onCancel={() => handleModalClose('edit')}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
-              isLoading={editPartner.isLoading}
+              isLoading={editMediator.isLoading}
             />
           )}
           {/*    Delete    */}
@@ -264,9 +246,9 @@ export const Brokers: React.FC = () => {
               title={t('Brokers.deletePartnerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              // description={t('managers.deleteManagerModalDescription')}
+              // description={t('managers.deleteMediatorModalDescription')}
               isDanger={true}
-              isLoading={deletePartner.isLoading}
+              isLoading={deleteMediator.isLoading}
             />
           )}
         </Row>

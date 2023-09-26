@@ -24,6 +24,7 @@ import type { DataNode } from 'antd/es/tree';
 const { Step } = Steps;
 const requestServicesArray: any = [];
 let requestServices: any = [];
+const keeey: any = [];
 const steps = [
   {
     title: 'BranchInformation',
@@ -50,8 +51,8 @@ let branchInfo: any = {
   ],
   regionId: '0',
   companyContact: {
-    dialCode: 's7',
-    phoneNumber: 'string',
+    dialCode: '0',
+    phoneNumber: '0',
     emailAddress: 'string',
     webSite: 'string',
     isForBranchCompany: false,
@@ -79,18 +80,24 @@ export const EditBranch: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [GetBranch, setGetBranch] = useState<boolean>(true);
+  const [checkedKeys, setCheckedKeys] = useState<string[]>(keeey);
 
-  const GetBranch = useQuery('GetBranchById', () =>
-    getBranch(branchId)
-      .then((data) => {
-        const result = data.data?.result;
-        setbranchData(result);
-        // setLoading(!data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-        // setLoading(false);
-      }),
+  const { data, status, refetch, isRefetching } = useQuery(
+    ['GetBranchById'],
+    () =>
+      getBranch(branchId)
+        .then((data) => {
+          const result = data.data?.result;
+          setbranchData(result);
+          setGetBranch(false);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: GetBranch,
+    },
   );
 
   const GetAllServices = useQuery('getAllServices', getServices);
@@ -211,7 +218,7 @@ export const EditBranch: React.FC = () => {
       .then((data: any) => {
         notificationController.success({ message: t('branch.editBranchSuccessMessage') });
         queryClient.invalidateQueries('getAllBranches');
-        // navigate(`/companies/${companyId}/branches`);
+        navigate(`/companies/${companyId}/branches`);
         requestServices = [];
       })
       .catch((error) => {
@@ -222,28 +229,9 @@ export const EditBranch: React.FC = () => {
 
   const onFinish = (values: any) => {
     const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(formattedPhoneNumber);
-    console.log(requestServicesArray);
-
-    const q: any = [];
-    for (let i = requestServicesArray.length - 1; i >= 0; i--) {
-      const key = requestServicesArray[i];
-
-      // console.log(key);
-      // console.log(q.includes('withTool'));
-
-      if (q.includes('withTool')) {
-        q.push(key);
-      }
-      console.log(q);
-    }
-
     function extractServicesIds(input: any) {
-      // console.log(input);
-
       input.map((obj: any) => {
         const parts = obj.split(' ');
-        // console.log(parts);
-
         let result = {};
         if (parts[0] == 'withTool') {
           result = {
@@ -260,6 +248,7 @@ export const EditBranch: React.FC = () => {
           };
           requestServices.push(result);
         }
+        console.log(requestServices);
 
         return result;
       });
@@ -285,25 +274,23 @@ export const EditBranch: React.FC = () => {
         },
       ],
       companyContact: {
-        dialCode: '+' + dialCodeC,
-        phoneNumber: phoneNumberC,
+        dialCode: dialCodeC != '0' ? '+' + dialCodeC : branchData.companyContact.dialCode,
+        phoneNumber: phoneNumberC != '0' ? phoneNumberC : branchData.companyContact.phoneNumber,
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: true,
       },
       services: requestServices,
-      regionId: regionId,
+      regionId: regionId != '0' ? regionId : branchData?.region?.id,
     };
     updatedFormData.translations = branchInfo.translations;
     editBranch.mutate(branchInfo);
   };
 
-  const keeey: any = [];
-
   {
-    GetBranch.status === 'success' &&
+    status === 'success' &&
       branchData &&
-      branchData?.services.map((service: any, index) => {
+      branchData?.services.map((service: any) => {
         service?.subServices.map((subService: any) => {
           subService?.tools.map((tool: any) => {
             keeey.push(`withTool service${service.id} sub${subService?.id} tool${tool?.id}`);
@@ -311,7 +298,6 @@ export const EditBranch: React.FC = () => {
         });
       });
   }
-  // console.log(keeey);
 
   return (
     <Card title={t('branch.editBranch')} padding="1.25rem 1.25rem 1.25rem">
@@ -375,7 +361,7 @@ export const EditBranch: React.FC = () => {
           />
         ))}
       </Steps>
-      {GetBranch.status === 'success' && branchData && (
+      {status === 'success' && branchData && (
         <BaseForm
           form={form}
           onFinish={onFinish}
@@ -639,14 +625,8 @@ export const EditBranch: React.FC = () => {
             <>
               <BaseForm.Item key="100" name="services">
                 {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
-                  const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
-                  const kk = serviceKeys.concat(keeey);
-                  // console.log(kk);
-                  for (const key of kk) {
-                    if (!requestServicesArray.includes(key)) {
-                      requestServicesArray.push(key);
-                    }
-                  }
+                  const serviceKeys = selectedServicesKeysMap[serviceIndex] || keeey;
+
                   return (
                     <Tree
                       key={serviceIndex}
@@ -657,19 +637,36 @@ export const EditBranch: React.FC = () => {
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}
                       onCheck={(checkedKeysValue: any) => {
-                        for (const key of checkedKeysValue) {
-                          if (!requestServicesArray.includes(key)) {
-                            requestServicesArray.push(key);
-                          }
-                        }
+                        setCheckedKeys((prev) => ({ ...prev } + { ...checkedKeysValue }));
+
                         setSelectedServicesKeysMap((prevSelectedKeysMap) => {
                           const updatedKeysMap = { ...prevSelectedKeysMap };
                           updatedKeysMap[serviceIndex] = checkedKeysValue;
                           return updatedKeysMap;
                         });
+
+                        for (const key of checkedKeys) {
+                          if (!requestServicesArray.includes(key)) {
+                            requestServicesArray.push(key);
+                          }
+                        }
                       }}
-                      defaultCheckedKeys={serviceKeys}
-                      checkedKeys={serviceKeys.concat(keeey)}
+                      // onCheck={(checkedKeysValue: any) => {
+                      //   for (const key of checkedKeysValue) {
+                      //     if (!requestServicesArray.includes(key)) {
+                      //       requestServicesArray.push(key);
+                      //     }
+                      //   }
+                      //   setCheckedKeys(checkedKeysValue);
+
+                      //   setSelectedServicesKeysMap((prevSelectedKeysMap) => {
+                      //     const updatedKeysMap = { ...prevSelectedKeysMap };
+                      //     updatedKeysMap[serviceIndex] = checkedKeysValue;
+                      //     return updatedKeysMap;
+                      //   });
+                      // }}
+                      defaultCheckedKeys={keeey}
+                      checkedKeys={serviceKeys}
                       onSelect={onSelect}
                       selectedKeys={selectedKeys}
                       treeData={[serviceTreeData]}

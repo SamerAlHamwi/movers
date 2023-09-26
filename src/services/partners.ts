@@ -2,12 +2,12 @@ import { httpApi } from '@app/api/httpApi';
 import { Partner, UserModel } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllPartner = async (page: number, pageSize: number, isActive?: boolean) => {
+const getAllPartner = async (page: number, pageSize: number, search: string, isActive?: boolean) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.partner}/GetAll?${
       isActive ? `IsActive=${isActive}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 

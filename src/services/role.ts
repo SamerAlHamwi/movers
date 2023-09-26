@@ -2,9 +2,9 @@ import { httpApi } from '@app/api/httpApi';
 import { RoleModel } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllRoles = async (page: number, pageSize: number) => {
+const getAllRoles = async (page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${apiPrefix.roles}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
+  return await httpApi.get(`${apiPrefix.roles}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`);
 };
 
 const createRole = async (data: RoleModel) => {

@@ -1,4 +1,4 @@
-export type CategoryType = 'managers' | 'games' | 'notifications';
+export type CategoryType = 'services' | 'games' | 'notifications';
 
 interface Category {
   name: CategoryType;
@@ -7,8 +7,8 @@ interface Category {
 
 export const categoriesList: Category[] = [
   {
-    name: 'managers',
-    title: 'Managers',
+    name: 'services',
+    title: 'Services',
   },
   {
     name: 'games',

@@ -6,7 +6,7 @@ import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, RedoOutlined, FileSyncOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { getAllRequests, createRequest, DeleteRequest, UpdateRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
@@ -20,12 +20,15 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useNavigate } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { useSelector } from 'react-redux';
 
 export const Requests: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
@@ -53,7 +56,7 @@ export const Requests: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Requests', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
-      getAllRequests(page, pageSize)
+      getAllRequests(page, pageSize, searchString)
         .then((data) => {
           console.log(data.data?.result?.items);
 
@@ -72,28 +75,17 @@ export const Requests: React.FC = () => {
   );
 
   useEffect(() => {
-    if (isRefetching) {
-      setLoading(true);
-    } else setLoading(false);
-  }, [isRefetching, refetch]);
+    if (isRefetching) setLoading(true);
+    else setLoading(false);
+  }, [isRefetching]);
 
   useEffect(() => {
     setLoading(true);
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetch, refetchOnAdd]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [refetch]);
+  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -101,23 +93,15 @@ export const Requests: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [page, pageSize, language, refetch]);
-
-  const addRequest = useMutation(
-    (
-      data: any, // RequestModel
-    ) =>
-      createRequest(data)
-        .then((data) => {
-          notificationController.success({ message: t('requests.addRequestSuccessMessage') });
-          setRefetchOnAdd(data.data?.success);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
+  const addRequest = useMutation((data: any) =>
+    createRequest(data)
+      .then((data) => {
+        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
   );
 
   useEffect(() => {
