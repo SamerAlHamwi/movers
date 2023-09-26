@@ -14,7 +14,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
 import { useNavigate } from 'react-router-dom';
 import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@app/services/company';
-import { EditCompany } from '@app/components/modal/EditCompany';
+
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 
@@ -378,7 +378,7 @@ export const Companies: React.FC = () => {
           </Button>
 
           {/*    EDIT    */}
-          {modalState.edit && (
+          {/* {modalState.edit && (
             <EditCompany
               Company_values={editmodaldata}
               visible={modalState.edit}
@@ -386,7 +386,7 @@ export const Companies: React.FC = () => {
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id!)}
               isLoading={editManager.isLoading}
             />
-          )}
+          )} */}
 
           {/*    Delete    */}
           {modalState.delete && (
