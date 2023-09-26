@@ -540,10 +540,19 @@
     "backToLogin": "العودة إلى تسجيل الدخول",
     "notFound": "عذراً، الصفحة غير موجودة!"
   },
-
+  "_comment20": "*********************************** Terms ************************************************",
+  "Terms": {
+    "editTermSuccessMessage": "تم تعديل الشروط والأحكام بنجاح",
+    "deleteTermsSuccessMessage": "تم الحذف بنجاح",
+    "TermsList": "قائمة الشروط والأحكام",
+    "sendSuccessMessage": "تمت الإضافة بنجاح",
+    "addterms": "إنشاء",
+    "add": "حفظ التعديل"
+  },
   "sidebarNavigation": {
     "Brand": "&MOVERS",
     "Statistics": "الإحصائيات",
+    "Term": "الشروط والأحكام",
     "Users": "المستخدمين",
     "Managers": "المدراء",
     "Partners": "الشركاء",

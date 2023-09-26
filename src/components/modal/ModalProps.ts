@@ -18,6 +18,7 @@ import {
 import { blog_article } from '@app/services/blog/blogArticles';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { Term } from '../Admin/Term&condition';
 
 export interface ModalProps {
   visible: boolean;
@@ -82,6 +83,14 @@ export interface CreateNotificationModalProps extends ModalProps {
 export interface CreateprivacyModalProps extends ModalProps {
   onCreateprivacy: (PrivacyPolicy: PrivacyPolicy) => void;
   isManager: boolean;
+}
+export interface CreateTermModalProps extends ModalProps {
+  onCreateTerm: (Term: Term) => void;
+  isManager: boolean;
+}
+export interface EditTermprops extends ModalProps {
+  Term_values: Term | undefined;
+  onEdit: (data: Term) => void;
 }
 
 // export interface CreateVideoModalProps extends ModalProps {
