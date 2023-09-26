@@ -18,8 +18,10 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, EditOutlined, RedoOutlined } from '@ant-design/icons';
+import { DeleteOutlined, RedoOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
 export type Translation = {
   message: string;
@@ -32,14 +34,10 @@ export type Notification = {
   translations: Translation[];
 };
 
-const Destination = [
-  'notifications.destination.all',
-  'notifications.destination.Users',
-  'notifications.destination.Companies',
-];
-
 export const Notifications: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
@@ -61,7 +59,7 @@ export const Notifications: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Notifications messages', page, isDelete, pageSize, refetchOnAddNotification],
     () =>
-      getAllPushNotification(page, pageSize)
+      getAllPushNotification(page, pageSize, searchString)
         .then((data) => {
           const notifications = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -89,7 +87,15 @@ export const Notifications: React.FC = () => {
   useEffect(() => {
     setIsLoading(true);
     refetch();
-  }, [page, pageSize, refetch]);
+    setIsDelete(false);
+    setIsResend(false);
+    setRefetchOnAddNotification(false);
+  }, [isDelete, isResend, refetchOnAddNotification, page, pageSize, language, searchString, refetch]);
+
+  useEffect(() => {
+    if (isRefetching) setIsLoading(true);
+    else setIsLoading(false);
+  }, [isRefetching]);
 
   const pushNotification = useMutation((data: Notification) =>
     sendPushNotification(data)
@@ -163,14 +169,6 @@ export const Notifications: React.FC = () => {
   useEffect(() => {
     setIsOpenResendModalForm(resendNotification.isLoading);
   }, [resendNotification.isLoading]);
-
-  useEffect(() => {
-    setIsLoading(true);
-    refetch();
-    setIsDelete(false);
-    setIsResend(false);
-    setRefetchOnAddNotification(false);
-  }, [isDelete, isResend, refetchOnAddNotification, page, pageSize, refetch]);
 
   const notificationsColumns = [
     {

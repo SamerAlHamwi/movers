@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Popconfirm, Typography, Col } from 'antd';
+import { message, Row, Space, Popconfirm, Col } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { AddManager } from '@app/components/modal/AddManager';
 import { Card } from '@app/components/common/Card/Card';
@@ -10,7 +10,7 @@ import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { EditManager } from '@app/components/modal/EditManager';
 import { getAllUsers, Create, Update, Delete, Activate, DeActivate } from '@app/services/users';
-import { FONT_SIZE, FONT_WEIGHT, media } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
@@ -19,16 +19,19 @@ import { notificationController } from '@app/controllers/notificationController'
 import { LableText } from '../../GeneralStyles';
 import { defineColorBySeverity } from '@app/utils/utils';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
-import { Modal, Header, CreateButtonText } from '../../GeneralStyles';
+import { Header, CreateButtonText } from '../../GeneralStyles';
 import { UserModel } from '@app/interfaces/interfaces';
 import { Dates } from '@app/constants/Dates';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
 export const Manager: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
@@ -66,7 +69,7 @@ export const Manager: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Users', page, pageSize, refetchOnAddManager, isDelete, isEdit, isActivate, isDeActivate, isAdmin, isEmployee],
     () =>
-      getAllUsers(page, pageSize, true, false, managerType, managerStatus)
+      getAllUsers(page, pageSize, true, false, searchString, managerType, managerStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -93,22 +96,27 @@ export const Manager: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, managerStatus, managerType, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAddManager(false);
-  }, [refetchOnAddManager, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setIsActivate(false);
     setIsDeActivate(false);
     setIsAdmin(false);
     setIsEmployee(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [
+    isDelete,
+    isEdit,
+    refetchOnAddManager,
+    isActivate,
+    isDeActivate,
+    isAdmin,
+    isEmployee,
+    managerStatus,
+    managerType,
+    page,
+    pageSize,
+    language,
+    searchString,
+    refetch,
+  ]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -155,11 +163,6 @@ export const Manager: React.FC = () => {
       deleteManager.mutateAsync(id);
     }
   };
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [page, pageSize, language, refetch]);
 
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteManager.isLoading }));
@@ -218,8 +221,8 @@ export const Manager: React.FC = () => {
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('managers.managerName')}</Header>, dataIndex: 'name' },
     { title: <Header>{t('managers.managerFullName')}</Header>, dataIndex: 'fullName' },
+    { title: <Header>{t('users.userName')}</Header>, dataIndex: 'userName' },
     { title: <Header>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
     {
       title: <Header>{t('common.creationTime')}</Header>,

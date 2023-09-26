@@ -17,10 +17,14 @@ import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@
 
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
 export const Companies: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const { desktopOnly, isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
 
   const [modalState, setModalState] = useState({
@@ -43,10 +47,6 @@ export const Companies: React.FC = () => {
   const [isRejected, setIsRejected] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
-  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
-  const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
-  const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
-  const [managerType, setManagerType] = useState<number | string>('');
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
 
   const handleButtonClick = () => {
@@ -61,9 +61,9 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['AllCompanies', page, pageSize, refetchOnAddManager, isDelete, isEdit, isApproved, isRejected],
+    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isRejected],
     () =>
-      getAllCompanies(page, pageSize)
+      getAllCompanies(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -90,13 +90,7 @@ export const Companies: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isApproved, isRejected, managerStatus, managerType, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setRefetchOnAddManager(false);
-  }, [refetchOnAddManager, refetch]);
+  }, [isDelete, isEdit, isApproved, isRejected, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -182,12 +176,6 @@ export const Companies: React.FC = () => {
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, reject: rejectCompany.isLoading }));
   }, [rejectCompany.isLoading]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
 
   const editManager = useMutation((data: CompanyModal) => updateCompany(data));
 

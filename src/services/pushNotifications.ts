@@ -2,9 +2,11 @@ import { httpApi } from '@app/api/httpApi';
 import { Notification } from '@app/components/Admin/Notifications';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllPushNotification = async (page: number, pageSize: number) => {
+const getAllPushNotification = async (page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${apiPrefix.pushNotifications}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
+  return await httpApi.get(
+    `${apiPrefix.pushNotifications}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+  );
 };
 
 const sendPushNotification = async (data: Notification) => {
@@ -19,4 +21,4 @@ const ResendPushNotification = async (id: number) => {
   return await httpApi.post(`${apiPrefix.pushNotifications}/ResendPushNotification?pushNotificationId=${id}`);
 };
 
-export { sendPushNotification, getAllPushNotification, DeletePushNotification, ResendPushNotification };
+export { getAllPushNotification, sendPushNotification, DeletePushNotification, ResendPushNotification };

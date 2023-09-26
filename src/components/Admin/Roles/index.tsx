@@ -17,10 +17,15 @@ import { notificationController } from '@app/controllers/notificationController'
 import { Header, CreateButtonText } from '../../GeneralStyles';
 import { RoleModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { useSelector } from 'react-redux';
 
 export const Role: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { language } = useLanguage();
+
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
@@ -48,7 +53,7 @@ export const Role: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Users', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
-      getAllRoles(page, pageSize)
+      getAllRoles(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -75,18 +80,8 @@ export const Role: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
