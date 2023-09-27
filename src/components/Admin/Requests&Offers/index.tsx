@@ -58,8 +58,6 @@ export const Requests: React.FC = () => {
     () =>
       getAllRequests(page, pageSize, searchString)
         .then((data) => {
-          console.log(data.data?.result?.items);
-
           const result = data.data?.result?.items;
           setDataSource(result);
           setTotalCount(data.data.result?.totalCount);
@@ -207,33 +205,33 @@ export const Requests: React.FC = () => {
       },
     },
     // { title: <Header>{t('requests.status')}</Header>, dataIndex: 'status' },
-    {
-      title: <Header>{t('requests.details')}</Header>,
-      dataIndex: 'details',
-      render: (index: number, record: any) => {
-        return (
-          <Space>
-            <Button
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                navigate(`${record.id}/details`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
-                }}
-              >
-                {t('requests.details')}
-              </div>
-            </Button>
-          </Space>
-        );
-      },
-    },
+    // {
+    //   title: <Header>{t('requests.details')}</Header>,
+    //   dataIndex: 'details',
+    //   render: (index: number, record: any) => {
+    //     return (
+    //       <Space>
+    //         <Button
+    //           style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+    //           severity="info"
+    //           onClick={() => {
+    //             navigate(`${record.id}/details`, { state: record.name });
+    //           }}
+    //         >
+    //           <div
+    //             style={{
+    //               fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+    //               fontWeight: FONT_WEIGHT.regular,
+    //               width: 'auto',
+    //             }}
+    //           >
+    //             {t('requests.details')}
+    //           </div>
+    //         </Button>
+    //       </Space>
+    //     );
+    //   },
+    // },
     {
       title: <Header>{t('requests.comment')}</Header>,
       dataIndex: 'comment',

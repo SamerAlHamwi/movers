@@ -22,9 +22,9 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import type { DataNode } from 'antd/es/tree';
 
 const { Step } = Steps;
-const requestServicesArray: any = [];
-let requestServices: any = [];
-const keeey: any = [];
+const requestServicesArray: any[] = [];
+let requestServices: any[] = [];
+const keeey: any[] = [];
 const steps = [
   {
     title: 'BranchInformation',
@@ -81,7 +81,6 @@ export const EditBranch: React.FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [GetBranch, setGetBranch] = useState<boolean>(true);
-  const [checkedKeys, setCheckedKeys] = useState<string[]>(keeey);
 
   const { data, status, refetch, isRefetching } = useQuery(
     ['GetBranchById'],
@@ -637,34 +636,18 @@ export const EditBranch: React.FC = () => {
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}
                       onCheck={(checkedKeysValue: any) => {
-                        setCheckedKeys((prev) => ({ ...prev } + { ...checkedKeysValue }));
+                        for (const key of checkedKeysValue) {
+                          if (!requestServicesArray.includes(key)) {
+                            requestServicesArray.push(key);
+                          }
+                        }
 
                         setSelectedServicesKeysMap((prevSelectedKeysMap) => {
                           const updatedKeysMap = { ...prevSelectedKeysMap };
                           updatedKeysMap[serviceIndex] = checkedKeysValue;
                           return updatedKeysMap;
                         });
-
-                        for (const key of checkedKeys) {
-                          if (!requestServicesArray.includes(key)) {
-                            requestServicesArray.push(key);
-                          }
-                        }
                       }}
-                      // onCheck={(checkedKeysValue: any) => {
-                      //   for (const key of checkedKeysValue) {
-                      //     if (!requestServicesArray.includes(key)) {
-                      //       requestServicesArray.push(key);
-                      //     }
-                      //   }
-                      //   setCheckedKeys(checkedKeysValue);
-
-                      //   setSelectedServicesKeysMap((prevSelectedKeysMap) => {
-                      //     const updatedKeysMap = { ...prevSelectedKeysMap };
-                      //     updatedKeysMap[serviceIndex] = checkedKeysValue;
-                      //     return updatedKeysMap;
-                      //   });
-                      // }}
                       defaultCheckedKeys={keeey}
                       checkedKeys={serviceKeys}
                       onSelect={onSelect}
