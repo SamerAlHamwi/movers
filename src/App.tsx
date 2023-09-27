@@ -11,6 +11,7 @@ import { themeObject } from './styles/themes/themeVariables';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import '@fontsource/cairo';
 import '@fontsource/lato';
+import { CookiesProvider } from 'react-cookie';
 
 const App: React.FC = () => {
   const { language, direction } = useLanguage();
@@ -23,11 +24,13 @@ const App: React.FC = () => {
   return (
     <>
       <QueryClientProvider client={queryClient}>
-        <meta name="theme-color" content={themeObject[theme].primary} />
-        <GlobalStyle />
-        <ConfigProvider locale={language === 'en' ? enUS : arEg} direction={direction}>
-          <AppRouter />
-        </ConfigProvider>
+        <CookiesProvider>
+          <meta name="theme-color" content={themeObject[theme].primary} />
+          <GlobalStyle />
+          <ConfigProvider locale={language === 'en' ? enUS : arEg} direction={direction}>
+            <AppRouter />
+          </ConfigProvider>
+        </CookiesProvider>
       </QueryClientProvider>
     </>
   );
