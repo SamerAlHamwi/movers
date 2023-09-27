@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText, treeStyle, Text } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
@@ -36,6 +36,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import type { DataNode } from 'antd/es/tree';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -79,7 +80,7 @@ let companyInfo: any = {
     isForBranchCompany: false,
   },
   comment: 'string',
-  serviceType: 1,
+  // serviceType: 1,
   userDto: {
     dialCode: '963',
     phoneNumber: '0997829849',
@@ -104,20 +105,25 @@ export const AddCompany: React.FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
+
+  const [countryId, setCountryId] = useState<string>('0');
+  const [cityId, setCityId] = useState<string>('0');
+  const [regionId, setRegionId] = useState<string>('0');
 
   const [Data, setData] = useState<cities[] | undefined>();
   const [Dat, setDat] = useState<services[] | undefined>();
   const [countryData, setCountryData] = useState<countries[]>();
   const [CityData, setCityData] = useState<cities[]>();
-  const [Contry_id, setContryId] = useState(0);
-  const [City_id, setCityId] = useState(0);
-  const [Region_id, setRegionId] = useState(0);
+  // const [Country_id, setCountryId] = useState(0);
+  // const [City_id, setCityId] = useState(0);
+  // const [Region_id, setRegionId] = useState(0);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
-  const [valueRadio, setValueRadio] = useState(1);
+  // const [valueRadio, setValueRadio] = useState(1);
   const [logo, setLogo] = useState();
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
@@ -138,68 +144,42 @@ export const AddCompany: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-  const cities = useQuery(
-    ['City'],
-    () =>
-      getAllCity()
-        .then((data) => {
-          const result = data.data?.result.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setCityData(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: CityData === undefined,
-    },
-  );
 
-  const country = useQuery(
-    ['Countries'],
-    () =>
-      getCountries()
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setCountryData(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: countryData === undefined,
-    },
-  );
+  // const { data, refetch, isRefetching } = useQuery(
+  //   ['Services'],
+  //   () =>
+  //     getServices()
+  //       .then((data) => {
+  //         const result = data.data?.result?.items;
+  //         setTotalCount(data.data?.result?.totalCount);
+  //         setDat(result);
+  //       })
+  //       .catch((error) => {
+  //         notificationController.error({ message: error.message || error.error?.message });
+  //       }),
+  //   {
+  //     enabled: Dat === undefined,
+  //   },
+  // );
 
-  const ser = useQuery(
-    ['Services'],
-    () =>
-      getServices()
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setDat(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: Dat === undefined,
-    },
-  );
+  const { data, refetch, isRefetching } = useQuery('getAllServices', getServices);
 
-  const GetAllServices = useQuery('getAllServices', getServices);
+  useEffect(() => {
+    refetch();
+  }, [language, refetch]);
 
-  const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+  console.log(data);
+
+  const treeData: any = data?.data?.result?.items?.map((service: any) => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <p>{service.id}</p>
           <Image src={service?.attachment?.url} width={16} height={16} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: `${service?.id}`,
+      key: `service${service?.id}`,
       children: [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
@@ -208,22 +188,27 @@ export const AddCompany: React.FC = () => {
         const subServiceNode = {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <p>{subService.id}</p>
               <Image src={subService?.attachment?.url} width={16} height={16} />
               {subService?.name}
             </span>
           ),
-          key: subService?.id,
+          key:
+            subService?.tools?.length > 0
+              ? `service${service?.id} sub${subService?.id}`
+              : `onlySub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
           subServiceNode.children = subService.tools.map((tool: any) => ({
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <p>{tool.id}</p>
                 <Image src={tool?.attachment?.url} width={16} height={16} />
                 {tool?.name}
               </span>
             ),
-            key: tool?.id,
+            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
           }));
         }
         return subServiceNode;
@@ -231,49 +216,6 @@ export const AddCompany: React.FC = () => {
     }
     return serviceNode;
   });
-
-  // const GetAllServices = useQuery('getAllServices', getServices);
-
-  // const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
-  //   const serviceNode: DataNode = {
-  //     title: (
-  //       <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //         <Image src={service?.attachment?.url} width={16} height={16} />
-  //         <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
-  //       </span>
-  //     ),
-  //     key: `service${service?.id}`,
-  //     children: [],
-  //     disabled: service?.subServices?.length > 0 ? false : true,
-  //   };
-  //   if (service?.subServices?.length > 0) {
-  //     serviceNode.children = service.subServices.map((subService: any) => {
-  //       const subServiceNode = {
-  //         title: (
-  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //             <Image src={subService?.attachment?.url} width={16} height={16} />
-  //             {subService?.name}
-  //           </span>
-  //         ),
-  //         key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
-  //         children: [],
-  //       };
-  //       if (subService?.tools?.length > 0) {
-  //         subServiceNode.children = subService.tools.map((tool: any) => ({
-  //           title: (
-  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //               <Image src={tool?.attachment?.url} width={16} height={16} />
-  //               {tool?.name}
-  //             </span>
-  //           ),
-  //           key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
-  //         }));
-  //       }
-  //       return subServiceNode;
-  //     });
-  //   }
-  //   return serviceNode;
-  // });
 
   const next = () => {
     setCurrent(current + 1);
@@ -292,33 +234,34 @@ export const AddCompany: React.FC = () => {
     setSelectedKeys(selectedKeysValue);
   };
 
+  const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
+    enabled: countryId !== '0',
+  });
+  const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
+    enabled: cityId !== '0',
+  });
+  useEffect(() => {
+    if (countryId !== '0') {
+      citiesRefetch();
+      RegionsRefetch();
+    }
+  }, [countryId]);
+  useEffect(() => {
+    if (cityId !== '0') {
+      RegionsRefetch();
+    }
+  }, [cityId]);
+
   const ChangeCountryHandler = (e: any) => {
-    setContryId(e);
+    setCountryId(e);
     form.setFieldValue('cityId', '');
-    getCities(e)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
+    form.setFieldValue('regionId', '');
   };
 
   const ChangeCityHandler = (e: any) => {
     setCityId(e);
     form.setFieldValue('regionId', '');
-
-    getRegions(e)
-      .then((data) => {
-        const result = data.data?.result?.items;
-        setTotalCount(data.data?.result?.totalCount);
-        setData(result);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
   };
 
   const ChangeRegionHandler = (e: any) => {
@@ -417,14 +360,23 @@ export const AddCompany: React.FC = () => {
     );
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
+        const parts = obj.split(' ');
         let result = {};
-
-        result = {
-          serviceId: '',
-          subServiceId: '',
-          toolId: '',
-        };
-        requestServices.push(result);
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          requestServices.push(result);
+        }
         return result;
       });
     }
@@ -458,15 +410,15 @@ export const AddCompany: React.FC = () => {
         phoneNumber: phoneNumberU,
         password: form.getFieldValue(['userDto', 'password']),
       },
-      serviceType: valueRadio,
+      // serviceType: valueRadio,
       services: requestServices,
       companyProfilePhotoId: logo,
       additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
       companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
       companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
       comment: form.getFieldValue('comment'),
-      regionId: Region_id,
-      availableCitiesIds: form.getFieldValue(['availableCitiesIds']),
+      regionId: regionId,
+      // availableCitiesIds: form.getFieldValue(['availableCitiesIds']),
     };
     updatedFormData.translations = companyInfo.translations;
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
@@ -598,7 +550,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'name']}
-                  label={<LableText>{t('companies.CompanyNamear')}</LableText>}
+                  label={<LableText>{t('common.name_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -610,7 +562,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'name']}
-                  label={<LableText>{t('companies.name')}</LableText>}
+                  label={<LableText>{t('common.name_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -624,7 +576,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'bio']}
-                  label={<LableText>{t('companies.Companybioar')}</LableText>}
+                  label={<LableText>{t('common.bio_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -636,7 +588,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'bio']}
-                  label={<LableText>{t('companies.bio')}</LableText>}
+                  label={<LableText>{t('common.bio_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -650,7 +602,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'address']}
-                  label={<LableText>{t('companies.addressA')}</LableText>}
+                  label={<LableText>{t('common.address_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -662,7 +614,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'address']}
-                  label={<LableText>{t('companies.address')}</LableText>}
+                  label={<LableText>{t('common.address_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -674,6 +626,7 @@ export const AddCompany: React.FC = () => {
             </Row>
 
             <BaseForm.Item
+              name="countryId"
               label={<LableText>{t('companies.Country name')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
@@ -681,7 +634,7 @@ export const AddCompany: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeCountryHandler}>
-                {countryData?.map((country) => (
+                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
                   <Option key={country.id} value={country.id}>
                     {country?.name}
                   </Option>
@@ -690,15 +643,15 @@ export const AddCompany: React.FC = () => {
             </BaseForm.Item>
 
             <BaseForm.Item
-              name={['cityId']}
+              name="cityId"
               label={<LableText>{t('companies.City name')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <Select onChange={ChangeCityHandler} value={City_id}>
-                {Data?.map((city: any) => (
+              <Select onChange={ChangeCityHandler}>
+                {citiesData?.data?.result?.items.map((city: any) => (
                   <Select key={city.name} value={city.id}>
                     {city?.name}
                   </Select>
@@ -707,7 +660,7 @@ export const AddCompany: React.FC = () => {
             </BaseForm.Item>
 
             <BaseForm.Item
-              name={['regionId']}
+              name="regionId"
               label={<LableText>{t('companies.Regionname')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
@@ -715,26 +668,27 @@ export const AddCompany: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeRegionHandler}>
-                {Data?.map((Region) => (
+                {RegionsData?.data?.result?.items.map((Region: any) => (
                   <Select key={Region?.name} value={Region?.id}>
                     {Region?.name}
                   </Select>
                 ))}
               </Select>
             </BaseForm.Item>
-            <BaseForm.Item
+
+            {/* <BaseForm.Item
               name={['availableCitiesIds']}
               label={<LableText>{t('companies.available City name')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <Select mode="multiple" value={City_id}>
+              <Select mode="multiple">
                 {CityData?.map((city: any) => (
                   <Select key={city.name} value={city.id}>
                     {city?.name}
                   </Select>
                 ))}
               </Select>
-            </BaseForm.Item>
+            </BaseForm.Item> */}
 
             <h2
               style={{
@@ -870,7 +824,7 @@ export const AddCompany: React.FC = () => {
         )}
         {current === 2 && (
           <>
-            <BaseForm.Item key={10} name="serviceType">
+            {/* <BaseForm.Item key={10} name="serviceType">
               <Radio.Group
                 style={{ display: 'flex', width: '100%' }}
                 onChange={(event) => {
@@ -887,7 +841,7 @@ export const AddCompany: React.FC = () => {
                   Both
                 </Radio>
               </Radio.Group>
-            </BaseForm.Item>
+            </BaseForm.Item> */}
             <BaseForm.Item key="100" name="services">
               {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                 const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
@@ -912,7 +866,7 @@ export const AddCompany: React.FC = () => {
                         return updatedKeysMap;
                       });
                     }}
-                    defaultCheckedKeys={serviceKeys}
+                    // defaultCheckedKeys={serviceKeys}
                     checkedKeys={serviceKeys}
                     onSelect={onSelect}
                     selectedKeys={selectedKeys}

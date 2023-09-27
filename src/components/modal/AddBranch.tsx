@@ -93,6 +93,7 @@ export const AddBranch: React.FC = () => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <p>{service.id}</p>
           <Image src={service?.attachment?.url} width={16} height={16} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
@@ -106,17 +107,22 @@ export const AddBranch: React.FC = () => {
         const subServiceNode = {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <p>{subService.id}</p>
               <Image src={subService?.attachment?.url} width={16} height={16} />
               {subService?.name}
             </span>
           ),
-          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          key:
+            subService?.tools?.length > 0
+              ? `service${service?.id} sub${subService?.id}`
+              : `onlySub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
           subServiceNode.children = subService.tools.map((tool: any) => ({
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <p>{tool.id}</p>
                 <Image src={tool?.attachment?.url} width={16} height={16} />
                 {tool?.name}
               </span>
