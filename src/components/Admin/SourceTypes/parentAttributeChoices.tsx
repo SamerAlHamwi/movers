@@ -24,6 +24,7 @@ import { EditAttributeChoice } from '@app/components/modal/EditAttributeChoice';
 import { TableButton, Header, Modal, Image, TextBack, CreateButtonText } from '../../GeneralStyles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { useSelector } from 'react-redux';
 
 export type sourceTypes = {
   id: number;
@@ -33,6 +34,7 @@ export type sourceTypes = {
 };
 
 export const ParentAttributeChoices: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -50,14 +52,11 @@ export const ParentAttributeChoices: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [dataSource, setDataSource] = useState<SourceTypeModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<SourceTypeModel | undefined>(undefined);
-  const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -71,7 +70,7 @@ export const ParentAttributeChoices: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['AttributeChoices', page, pageSize],
     () =>
-      getAllAttributeChoices(attributeForSourceId, page, pageSize)
+      getAllAttributeChoices(attributeForSourceId, page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -98,20 +97,8 @@ export const ParentAttributeChoices: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {

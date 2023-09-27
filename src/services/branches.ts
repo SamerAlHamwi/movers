@@ -2,10 +2,10 @@ import { httpApi } from '@app/api/httpApi';
 import { BranchModel } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllBranches = async (CompanyId: string | undefined, page: number, pageSize: number) => {
+const getAllBranches = async (CompanyId: string | undefined, page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.branches}/GetAll?CompanyId=${CompanyId}&SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    `${apiPrefix.branches}/GetAll?CompanyId=${CompanyId}&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 

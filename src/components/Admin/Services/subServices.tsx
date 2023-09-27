@@ -21,6 +21,7 @@ import { Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { EditSubService } from '@app/components/modal/EditSubService';
 import { TextBack, Header, TableButton } from '../../GeneralStyles';
+import { useSelector } from 'react-redux';
 
 export type services = {
   id: number;
@@ -30,6 +31,7 @@ export type services = {
 };
 
 export const SubServices: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -48,8 +50,6 @@ export const SubServices: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refetchOnAddService, setRefetchOnAddService] = useState(false);
   const [dataSource, setDataSource] = useState<ServiceModel[] | undefined>(undefined);
@@ -73,7 +73,7 @@ export const SubServices: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Services', page, pageSize],
     () =>
-      getAllSubServices(serviceId, page, pageSize)
+      getAllSubServices(serviceId, page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -100,20 +100,8 @@ export const SubServices: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAddService(false);
-  }, [refetchOnAddService, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {

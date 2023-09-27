@@ -3,9 +3,11 @@ import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
 //SourceType
-const getAllSourceTypes = async (page: number, pageSize: number) => {
+const getAllSourceTypes = async (page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${apiPrefix.sourceType}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
+  return await httpApi.get(
+    `${apiPrefix.sourceType}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+  );
 };
 
 const getSourceTypes = async () => {
@@ -25,10 +27,15 @@ const UpdateSourceType = async (data: any) => {
 };
 
 //AttributeForSourceType
-const getAllAttributeForSourceTypes = async (id: string | undefined, page: number, pageSize: number) => {
+const getAllAttributeForSourceTypes = async (
+  id: string | undefined,
+  page: number,
+  pageSize: number,
+  search: string,
+) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.attributeForSourceType}/GetAll?SourceTypeId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    `${apiPrefix.attributeForSourceType}/GetAll?SourceTypeId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 
@@ -49,10 +56,10 @@ const UpdateAttributeForSourceType = async (data: any) => {
 };
 
 //AttributeChoices
-const getAllAttributeChoices = async (id: string | undefined, page: number, pageSize: number) => {
+const getAllAttributeChoices = async (id: string | undefined, page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.allAttributeChoices}/GetAll?AttributeId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}&IsParent=true`,
+    `${apiPrefix.allAttributeChoices}/GetAll?AttributeId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}&IsParent=true&KeyWord=${search}`,
   );
 };
 
@@ -69,10 +76,10 @@ const UpdateAttributeChoice = async (data: any) => {
 };
 
 //ChildAttributeChoices
-const getAllChildAttributeChoices = async (id: string | undefined, page: number, pageSize: number) => {
+const getAllChildAttributeChoices = async (id: string | undefined, page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.allAttributeChoices}/GetAll?ParentId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}&IsParent=false`,
+    `${apiPrefix.allAttributeChoices}/GetAll?ParentId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}&IsParent=false&KeyWord=${search}`,
   );
 };
 
