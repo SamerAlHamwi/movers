@@ -36,6 +36,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import type { DataNode } from 'antd/es/tree';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -104,6 +105,7 @@ export const AddCompany: React.FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const navigate = useNavigate();
+  const { language } = useLanguage();
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
 
   const [countryId, setCountryId] = useState<string>('0');
@@ -143,26 +145,32 @@ export const AddCompany: React.FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
-  const ser = useQuery(
-    ['Services'],
-    () =>
-      getServices()
-        .then((data) => {
-          const result = data.data?.result?.items;
-          setTotalCount(data.data?.result?.totalCount);
-          setDat(result);
-        })
-        .catch((error) => {
-          notificationController.error({ message: error.message || error.error?.message });
-        }),
-    {
-      enabled: Dat === undefined,
-    },
-  );
+  // const { data, refetch, isRefetching } = useQuery(
+  //   ['Services'],
+  //   () =>
+  //     getServices()
+  //       .then((data) => {
+  //         const result = data.data?.result?.items;
+  //         setTotalCount(data.data?.result?.totalCount);
+  //         setDat(result);
+  //       })
+  //       .catch((error) => {
+  //         notificationController.error({ message: error.message || error.error?.message });
+  //       }),
+  //   {
+  //     enabled: Dat === undefined,
+  //   },
+  // );
 
-  const GetAllServices = useQuery('getAllServices', getServices);
+  const { data, refetch, isRefetching } = useQuery('getAllServices', getServices);
 
-  const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+  useEffect(() => {
+    refetch();
+  }, [language, refetch]);
+
+  console.log(data);
+
+  const treeData: any = data?.data?.result?.items?.map((service: any) => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
@@ -542,7 +550,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'name']}
-                  label={<LableText>{t('companies.CompanyNamear')}</LableText>}
+                  label={<LableText>{t('common.name_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -554,7 +562,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'name']}
-                  label={<LableText>{t('companies.name')}</LableText>}
+                  label={<LableText>{t('common.name_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -568,7 +576,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'bio']}
-                  label={<LableText>{t('companies.Companybioar')}</LableText>}
+                  label={<LableText>{t('common.bio_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -580,7 +588,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'bio']}
-                  label={<LableText>{t('companies.bio')}</LableText>}
+                  label={<LableText>{t('common.bio_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -594,7 +602,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'address']}
-                  label={<LableText>{t('companies.addressA')}</LableText>}
+                  label={<LableText>{t('common.address_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -606,7 +614,7 @@ export const AddCompany: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'address']}
-                  label={<LableText>{t('companies.address')}</LableText>}
+                  label={<LableText>{t('common.address_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
