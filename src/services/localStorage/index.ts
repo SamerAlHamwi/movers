@@ -12,7 +12,6 @@ export const readToken = (): string => {
   return localStorage.getItem('accessToken') || 'bearerToken';
 };
 
-// eslint-disable-next-line
 export const persistUser = (user: userModel) => {
   localStorage.setItem(
     'user',
@@ -23,7 +22,6 @@ export const persistUser = (user: userModel) => {
   );
 };
 
-// eslint-disable-next-line
 export const readUser = (): any => {
   const userStr = localStorage.getItem('user');
   return userStr ? JSON.parse(userStr) : '';
