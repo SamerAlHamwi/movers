@@ -27,10 +27,11 @@ import styled from 'styled-components';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddRegion } from '@app/components/modal/AddRegion';
 import { EditRegion } from '@app/components/modal/EditRegion';
-import { Modal, TextBack, CreateButtonText } from '../../GeneralStyles';
+import { TextBack, CreateButtonText } from '../../GeneralStyles';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { defineColorBySeverity } from '@app/utils/utils';
 import { LableText } from '@app/components/GeneralStyles';
+import { useSelector } from 'react-redux';
 
 export type regions = {
   id: number;
@@ -40,6 +41,7 @@ export type regions = {
 };
 
 export const Region: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -69,7 +71,7 @@ export const Region: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['RegionsById', page, pageSize],
     () =>
-      getAllRegions(cityId, page, pageSize)
+      getAllRegions(cityId, page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -96,20 +98,10 @@ export const Region: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, regionStatus, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setIsActivate(false);
     setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, isActivate, isDeActivate, regionStatus, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {

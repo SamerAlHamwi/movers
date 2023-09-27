@@ -1,9 +1,11 @@
 import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllRequests = async (page: number, pageSize: number) => {
+const getAllRequests = async (page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${apiPrefix.requests}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
+  return await httpApi.get(
+    `${apiPrefix.requests}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+  );
 };
 
 const getRequestById = async (id: number) => {

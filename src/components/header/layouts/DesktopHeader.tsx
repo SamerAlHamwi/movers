@@ -8,8 +8,6 @@ import { HeaderFullscreen } from '../components/HeaderFullscreen/HeaderFullscree
 import * as S from '../Header.styles';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { UserRole } from '@app/constants/userRole';
-import { Brand } from '../components/Brand/Brand';
-import { useResponsive } from '@app/hooks/useResponsive';
 
 interface DesktopHeaderProps {
   isTwoColumnsLayout: boolean;
@@ -17,8 +15,6 @@ interface DesktopHeaderProps {
 }
 
 export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout, isStudent }) => {
-  const { isTablet } = useResponsive();
-
   const user = useAppSelector((state) => state.user.user);
   const userRole = UserRole[user.userType];
 
@@ -36,16 +32,6 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
         <HeaderSearch />
       </Col>
     </>
-  );
-
-  const studentLeftSide = isTwoColumnsLayout ? (
-    <S.SearchColumn xl={16} xxl={17}>
-      <Brand />
-    </S.SearchColumn>
-  ) : (
-    <Col lg={10} xxl={8}>
-      <Brand />
-    </Col>
   );
 
   return (

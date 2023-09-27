@@ -9,7 +9,7 @@ import { useNavigate } from 'react-router-dom';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
 import { useAtom } from 'jotai';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import { media, FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, ServiceModel, translation } from '@app/interfaces/interfaces';
@@ -20,6 +20,7 @@ import { AddService } from '@app/components/modal/AddService';
 import { EditService } from '@app/components/modal/EditService';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
+import { useSelector } from 'react-redux';
 
 export type services = {
   id: number;
@@ -31,6 +32,7 @@ export type services = {
 };
 
 export const Services: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -48,8 +50,6 @@ export const Services: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refetchOnAddService, setRefetchOnAddService] = useState(false);
   const [dataSource, setDataSource] = useState<ServiceModel[] | undefined>(undefined);
@@ -69,7 +69,7 @@ export const Services: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Services', page, pageSize],
     () =>
-      getAllServices(page, pageSize)
+      getAllServices(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -96,20 +96,8 @@ export const Services: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAddService(false);
-  }, [refetchOnAddService, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -245,34 +233,6 @@ export const Services: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header>{t('services.tools')}</Header>,
-    //   dataIndex: 'tools',
-    //   render: (index: number, record: services) => {
-    //     return (
-    //       <Space>
-    //         <Button
-    //           style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-    //           severity="info"
-    //           onClick={() => {
-    //             navigate(`${record.id}/tools`);
-    //           }}
-    //           disabled={record?.subServices.length > 0}
-    //         >
-    //           <div
-    //             style={{
-    //               fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-    //               fontWeight: FONT_WEIGHT.regular,
-    //               width: 'auto',
-    //             }}
-    //           >
-    //             {t('services.tools')}
-    //           </div>
-    //         </Button>
-    //       </Space>
-    //     );
-    //   },
-    // },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',

@@ -9,18 +9,12 @@ import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { CreateButtonText, LableText, Text } from '../GeneralStyles';
-
-// import { Steps } from './CreateSliderImage';
 import { UploadDragger } from '../common/Upload/Upload';
 import { uploadAttachment } from '@app/services/Attachment';
 import { useMutation, useQuery } from 'react-query';
 import { Alert } from '../common/Alert/Alert';
 import { Spinner } from '../common/Spinner/Spinner';
-// import { article_blog_category } from './CreateBlogArticle';
-import { blog_article } from '@app/services/blog/blogArticles';
-import { useAppSelector } from '@app/hooks/reduxHooks';
 import { CompanyModal, LanguageType } from '@app/interfaces/interfaces';
-// import { InfoLable } from './CreateBlogArticle';
 import {
   ClearOutlined,
   FilePdfTwoTone,
@@ -40,9 +34,11 @@ import { countries } from '../Admin/Locations/Countries';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
 import { useNavigate } from 'react-router-dom';
-import { getAllCompanies, getcompany } from '@app/services/company';
+import { getAllCompanies, getCompanyById } from '@app/services/company';
+import { useSelector } from 'react-redux';
 
 export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onEdit, Company_values, isLoading }) => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const [companyData, setCompanyData] = useState<any | undefined>(undefined);
   const [form] = BaseForm.useForm();
@@ -79,7 +75,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   };
 
   const { refetch, isRefetching } = useQuery(['User', page, pageSize, refetchOnAddManager], () =>
-    getAllCompanies(page, pageSize)
+    getAllCompanies(page, pageSize, searchString)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data.result?.totalCount);
@@ -92,7 +88,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   );
 
   // const company = useQuery(['getCompany'], () =>
-  //   getcompany(Company_values?.id)
+  //   getCompanyById(Company_values?.id)
   //     .then((data) => {
   //       const result = data.data?.result;
   //       setCompanyData(result);
@@ -143,7 +139,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   const ser = useQuery(
     ['Services', page, pageSize],
     () =>
-      getAllServices(page, pageSize)
+      getAllServices(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -167,7 +163,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   Alert;
   const Tool = useQuery(
     ['Tools', selectedSubService, page, pageSize],
-    () => (selectedSubService ? getAllTools('', '', page, pageSize) : null),
+    () => (selectedSubService ? getAllTools('', page, pageSize, searchString) : null),
     {
       enabled: selectedSubService !== null,
     },
@@ -176,7 +172,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   const country = useQuery(
     ['Countries'],
     () =>
-      getAllCountries(countryPage, countryPageSize)
+      getAllCountries(countryPage, countryPageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -213,7 +209,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
     updatedServices[index] = { ...updatedServices[index], name: e };
     setServices(updatedServices);
 
-    getAllSubServices(e, page, pageSize)
+    getAllSubServices(e, page, pageSize, searchString)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);
@@ -224,7 +220,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
       });
 
     if ((record?.tools ?? []).length > 0) {
-      getAllTools(e, '', page, pageSize)
+      getAllTools('', page, pageSize, searchString)
         .then((data) => {
           const result = data?.data?.result?.items;
           setTotalCount(data?.data?.result?.totalCount);
@@ -245,7 +241,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
     setContryId(e);
     console.log('sdfghjk', Contry_id);
 
-    getAllCities(e, page, pageSize)
+    getAllCities(e, page, pageSize, searchString)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);
@@ -259,7 +255,7 @@ export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onE
   const ChangeCityHandler = (e: any) => {
     setCityId(e);
 
-    getAllRegions(e, page, pageSize)
+    getAllRegions(e, page, pageSize, searchString)
       .then((data) => {
         const result = data.data?.result?.items;
         setTotalCount(data.data?.result?.totalCount);

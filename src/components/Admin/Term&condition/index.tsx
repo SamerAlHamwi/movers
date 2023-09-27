@@ -1,16 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
-import {
-  getAllPushNotification,
-  DeletePushNotification,
-  sendPushNotification,
-  ResendPushNotification,
-} from '@app/services/pushNotifications';
 import { useMutation, useQuery } from 'react-query';
 import { Alert, Row, Space, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
-import { PushNotification } from '@app/components/modal/PushNotification';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -18,52 +11,54 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, RedoOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { useLanguage } from '@app/hooks/useLanguage';
+import { DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/Term&condition';
+import { EditTerm } from '@app/components/modal/EditTerm';
+import { PushTerm } from '@app/components/modal/PushTerm';
 import { useSelector } from 'react-redux';
 
 export type Translation = {
-  message: string;
+  title: string;
+  description: string;
   language: LanguageType;
 };
 
-export type Notification = {
+export type Term = {
   id?: number;
-  destination: number;
+  description: string;
+  title: string;
   translations: Translation[];
 };
 
-export const Notifications: React.FC = () => {
+export const Term: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
+  const user = useAppSelector((state) => state.user.user);
   const { t } = useTranslation();
-  const { language } = useLanguage();
 
-  const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
+  const [TermsData, setTermsData] = useState<Term[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
-  const [isOpenResendModalForm, setIsOpenResendModalForm] = useState(false);
-  const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
   const [isDelete, setIsDelete] = useState(false);
-  const [isResend, setIsResend] = useState(false);
-  const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
+  const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [deletemodaldata, setDeletemodaldata] = useState<Notification | undefined>(undefined);
-  const [resendmodaldata, setResendmodaldata] = useState<Notification | undefined>(undefined);
+  const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
+  const [editmodaldata, setEditmodaldata] = useState<Term | undefined>(undefined);
+  const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
+  const [deletemodaldata, setDeletemodaldata] = useState<Term | undefined>(undefined);
   const { isTablet, isMobile, isDesktop } = useResponsive();
-
-  const user = useAppSelector((state) => state.user.user);
+  const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
 
   const { refetch, isRefetching } = useQuery(
-    ['Notifications messages', page, isDelete, pageSize, refetchOnAddNotification],
+    ['Term messages', page, isDelete, pageSize, refetchOnAddNotification],
     () =>
-      getAllPushNotification(page, pageSize, searchString)
+      getAllTerm(page, pageSize, searchString)
         .then((data) => {
-          const notifications = data.data?.result?.items;
+          const Terms = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
-          notifications?.forEach((element: Notification) => {
+          Terms?.forEach((element: Term) => {
             const enTranslationIndex = element.translations?.findIndex(
               (translation: Translation) => translation.language === 'en',
             );
@@ -72,7 +67,7 @@ export const Notifications: React.FC = () => {
               element.translations.unshift(enTranslation[0]);
             }
           });
-          setNotificationsData(notifications);
+          setTermsData(Terms);
           setIsLoading(!data.data?.success);
         })
         .catch((error) => {
@@ -80,7 +75,7 @@ export const Notifications: React.FC = () => {
           setIsLoading(false);
         }),
     {
-      enabled: notificationsData === undefined,
+      enabled: TermsData === undefined,
     },
   );
 
@@ -88,19 +83,19 @@ export const Notifications: React.FC = () => {
     setIsLoading(true);
     refetch();
     setIsDelete(false);
-    setIsResend(false);
+    setIsEdit(false);
     setRefetchOnAddNotification(false);
-  }, [isDelete, isResend, refetchOnAddNotification, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (isRefetching) setIsLoading(true);
     else setIsLoading(false);
   }, [isRefetching]);
 
-  const pushNotification = useMutation((data: Notification) =>
-    sendPushNotification(data)
+  const pushTerm = useMutation((data: Term) =>
+    createTerm(data)
       .then((data) => {
-        notificationController.success({ message: t('notifications.sendSuccessMessage') });
+        notificationController.success({ message: t('Terms.sendSuccessMessage') });
         setRefetchOnAddNotification(data.data?.success);
       })
       .catch((error) => {
@@ -109,16 +104,16 @@ export const Notifications: React.FC = () => {
   );
 
   useEffect(() => {
-    setIsOpenPushModalForm(pushNotification.isLoading);
-  }, [pushNotification.isLoading]);
+    setIsOpenPushModalForm(pushTerm.isLoading);
+  }, [pushTerm.isLoading]);
 
-  const deleteNotification = useMutation((id: number) =>
-    DeletePushNotification(id)
+  const deleteTerm = useMutation((id: number) =>
+    DeleteTerm(id)
       .then((data: any) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('notifications.deleteNotifactionsSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('Terms.deleteTermsSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error: any) => {
@@ -130,45 +125,35 @@ export const Notifications: React.FC = () => {
 
   const handleDelete = (id: any) => {
     if (page > 1) {
-      deleteNotification.mutateAsync(id);
+      deleteTerm.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deleteNotification.mutateAsync(id);
+      deleteTerm.mutateAsync(id);
     }
   };
 
   useEffect(() => {
-    setIsOpenDeleteModalForm(deleteNotification.isLoading);
-  }, [deleteNotification.isLoading]);
+    setIsOpenDeleteModalForm(deleteTerm.isLoading);
+  }, [deleteTerm.isLoading]);
+  const editTerm = useMutation((data: Term) => UpdateTerm(data));
 
-  const resendNotification = useMutation((id: number) =>
-    ResendPushNotification(id)
-      .then((data: any) => {
-        data.data?.success &&
-          (setIsDelete(data.data?.success),
-          message.open({
-            content: <Alert message={t('notifications.resendNotifactionsSuccessMessage')} type={`success`} showIcon />,
-          }));
-      })
-      .catch((error: any) => {
+  const handleEdit = (data: Term, id: number) => {
+    editTerm
+      .mutateAsync({ ...data, id })
+      .then((data) => {
+        setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+          content: <Alert message={t(`Terms.editTermSuccessMessage`)} type={`success`} showIcon />,
         });
-      }),
-  );
-
-  const handleResend = (id: any) => {
-    if (page > 1) {
-      resendNotification.mutateAsync(id);
-      setPage(page - 1);
-    } else {
-      resendNotification.mutateAsync(id);
-    }
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
+      });
   };
 
   useEffect(() => {
-    setIsOpenResendModalForm(resendNotification.isLoading);
-  }, [resendNotification.isLoading]);
+    setIsOpenEditModalForm(editTerm.isLoading);
+  }, [editTerm.isLoading]);
 
   const notificationsColumns = [
     {
@@ -183,10 +168,10 @@ export const Notifications: React.FC = () => {
     {
       title: (
         <Header>
-          <Trans i18nKey={'notifications.englishMessage'} />
+          <Trans i18nKey={'notifications.englishtitle'} />
         </Header>
       ),
-      dataIndex: ['translations', 0, 'message'],
+      dataIndex: ['translations', 0, 'title'],
       width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
@@ -195,10 +180,10 @@ export const Notifications: React.FC = () => {
     {
       title: (
         <Header>
-          <Trans i18nKey={'notifications.arabicMessage'} />
+          <Trans i18nKey={'notifications.arabictitle'} />
         </Header>
       ),
-      dataIndex: ['translations', 1, 'message'],
+      dataIndex: ['translations', 1, 'title'],
       width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
@@ -207,14 +192,52 @@ export const Notifications: React.FC = () => {
     {
       title: (
         <Header>
+          <Trans i18nKey={'notifications.englishdescription'} />
+        </Header>
+      ),
+      dataIndex: ['translations', 0, 'description'],
+      width: '30%',
+      render: (text: string) => {
+        const firstSentence = text.split('.')[0]; // Get the first sentence
+
+        return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
+      },
+    },
+    // {
+    //   title: (
+    //     <Header>
+    //       <Trans i18nKey={'notifications.arabicdiscription'} />
+    //     </Header>
+    //   ),
+    //   dataIndex: ['translations', 1, 'description'],
+    //   width: '30%',
+    //   render: (text: string) => {
+    //     const firstSentence = text.split('.')[0]; // Get the first sentence
+    //     return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
+    //   },
+    // },
+    {
+      title: (
+        <Header>
           <Trans i18nKey={'notifications.actions'} />
         </Header>
       ),
+
       dataIndex: 'actions',
       width: '30%',
-      render: (index: number, Data: Notification) => {
+      render: (index: number, Data: Term) => {
         return (
           <Space>
+            <TableButton
+              severity="info"
+              onClick={() => {
+                setEditmodaldata(Data);
+                setIsOpenEditModalForm(true);
+              }}
+            >
+              <EditOutlined />
+            </TableButton>
+
             <TableButton
               severity="error"
               onClick={() => {
@@ -223,16 +246,6 @@ export const Notifications: React.FC = () => {
               }}
             >
               <DeleteOutlined />
-            </TableButton>
-
-            <TableButton
-              severity="warning"
-              onClick={() => {
-                setResendmodaldata(Data);
-                setIsOpenResendModalForm(true);
-              }}
-            >
-              <RedoOutlined />
             </TableButton>
           </Space>
         );
@@ -243,9 +256,9 @@ export const Notifications: React.FC = () => {
   return (
     <>
       <Card
-        title={t('notifications.notificationsList')}
+        title={t('Terms.TermsList')}
         padding={
-          notificationsData?.length === 0 || notificationsData === undefined || (page === 1 && totalCount <= pageSize)
+          TermsData?.length === 0 || TermsData === undefined || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0rem'
         }
@@ -260,38 +273,28 @@ export const Notifications: React.FC = () => {
             }}
             onClick={() => setIsOpenPushModalForm(true)}
           >
-            <CreateButtonText>{t('notifications.send')}</CreateButtonText>
+            <CreateButtonText>{t('notifications.sendp')}</CreateButtonText>
           </Button>
-
-          {isOpenResendModalForm ? (
-            <ActionModal
-              visible={isOpenResendModalForm}
-              onCancel={() => setIsOpenResendModalForm(false)}
-              onOK={() => {
-                resendmodaldata !== undefined && handleResend(resendmodaldata.id);
-              }}
-              width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('notifications.resendNotficationModalTitle')}
-              okText={t('common.resend')}
-              cancelText={t('common.cancel')}
-              description={t('notifications.resendNotifactionModalDescription')}
-              isDanger={true}
-              isLoading={resendNotification.isLoading}
+          {isOpenEditModalForm ? (
+            <EditTerm
+              Term_values={editmodaldata}
+              visible={isOpenEditModalForm}
+              onCancel={() => setIsOpenEditModalForm(false)}
+              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
+              isLoading={editTerm.isLoading}
             />
-          ) : null}
-
+          ) : null}{' '}
           {isOpenPushModalForm ? (
-            <PushNotification
+            <PushTerm
               isManager={user.userType === 0 ? false : true}
               visible={isOpenPushModalForm}
               onCancel={() => setIsOpenPushModalForm(false)}
-              onCreateNotification={(data) => {
-                pushNotification.mutateAsync(data);
+              onCreateTerm={(data) => {
+                pushTerm.mutateAsync(data);
               }}
-              isLoading={pushNotification.isLoading}
+              isLoading={pushTerm.isLoading}
             />
           ) : null}
-
           {isOpenDeleteModalForm ? (
             <ActionModal
               visible={isOpenDeleteModalForm}
@@ -300,18 +303,18 @@ export const Notifications: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('notifications.deleteNotficationModalTitle')}
+              title={t('notifications.deleteprivacyModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('notifications.deleteNotifactionModalDescription')}
+              description={t('notifications.deleteNprivacyModalDescription')}
               isDanger={true}
-              isLoading={deleteNotification.isLoading}
+              isLoading={deleteTerm.isLoading}
             />
           ) : null}
         </Row>
 
         <Table
-          dataSource={notificationsData}
+          dataSource={TermsData}
           pagination={{
             showSizeChanger: true,
             onChange: (page: number, pageSize: number) => {
@@ -328,7 +331,7 @@ export const Notifications: React.FC = () => {
             showLessItems: true,
             pageSizeOptions: [5, 10, 15, 20],
           }}
-          columns={notificationsColumns.map((col) => ({ ...col, width: 'auto' }))}
+          columns={user.userType === 1 ? notificationsColumns : [...notificationsColumns]}
           loading={isLoading}
           scroll={{ x: isTablet ? 700 : isMobile ? 800 : 600 }}
         />

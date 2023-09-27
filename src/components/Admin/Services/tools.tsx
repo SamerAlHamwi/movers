@@ -20,7 +20,7 @@ import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { TableButton, Header, Modal, Image, TextBack, CreateButtonText } from '../../GeneralStyles';
-import { number } from 'echarts';
+import { useSelector } from 'react-redux';
 
 export type tools = {
   id: number;
@@ -31,6 +31,7 @@ export type tools = {
 };
 
 export const Tools: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
   const navigate = useNavigate();
@@ -49,8 +50,6 @@ export const Tools: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [isActivate, setIsActivate] = useState(false);
-  const [isDeActivate, setIsDeActivate] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [dataSource, setDataSource] = useState<SourceTypeModel[] | undefined>(undefined);
@@ -69,12 +68,7 @@ export const Tools: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Tools', page, pageSize],
     () =>
-      getAllTools(
-        serviceId != undefined ? serviceId : '',
-        subServiceId != undefined ? subServiceId : '',
-        page,
-        pageSize,
-      )
+      getAllTools(subServiceId != undefined ? subServiceId : '', page, pageSize, searchString)
         .then((data) => {
           const result = data?.data?.result?.items;
           setTotalCount(data?.data?.result?.totalCount);
@@ -91,30 +85,17 @@ export const Tools: React.FC = () => {
   );
 
   useEffect(() => {
-    if (isRefetching) {
-      setLoading(true);
-    } else setLoading(false);
-  }, [isRefetching, refetch]);
-
-  useEffect(() => {
     setLoading(true);
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, language, refetch]);
 
   useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsActivate(false);
-    setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+    if (isRefetching) setLoading(true);
+    else setLoading(false);
+  }, [isRefetching]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -185,16 +166,6 @@ export const Tools: React.FC = () => {
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editTool.isLoading }));
   }, [editTool.isLoading]);
-
-  useEffect(() => {
-    if (isRefetching) setLoading(true);
-    else setLoading(false);
-  }, [isRefetching]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [page, pageSize, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && Data?.length === 0) setPage(1);
