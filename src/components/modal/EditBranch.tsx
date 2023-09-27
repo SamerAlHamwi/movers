@@ -335,7 +335,6 @@ export const EditBranch: React.FC = () => {
               height: 'auto',
             }}
             htmlType="submit"
-            // disabled={editBranch.isLoading || uploadImage.isLoading}
             disabled={editBranch.isLoading}
             onClick={() => onFinish(form.getFieldsValue())}
           >
@@ -483,7 +482,6 @@ export const EditBranch: React.FC = () => {
               </Row>
 
               <BaseForm.Item
-                // name="countryId"
                 label={<LableText>{t('companies.Country name')}</LableText>}
                 style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                 rules={[
