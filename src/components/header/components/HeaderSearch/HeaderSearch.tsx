@@ -14,12 +14,10 @@ export interface CategoryComponents {
 
 export const HeaderSearch: React.FC = () => {
   const { mobileOnly, isTablet } = useResponsive();
-
   const { pathname } = useLocation();
 
   const [query, setQuery] = useState('');
   const [components] = useState<Component[]>(configComponents);
-
   const [isModalVisible, setModalVisible] = useState(false);
   const [isOverlayVisible, setOverlayVisible] = useState(false);
 

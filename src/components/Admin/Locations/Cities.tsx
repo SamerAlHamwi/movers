@@ -29,6 +29,7 @@ import { EditCity } from '@app/components/modal/EditCity';
 import { LableText, Header, CreateButtonText, TableButton, TextBack } from '../../GeneralStyles';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { defineColorBySeverity } from '@app/utils/utils';
+import { useSelector } from 'react-redux';
 
 export type cities = {
   id: number;
@@ -38,6 +39,7 @@ export type cities = {
 };
 
 export const City: React.FC = () => {
+  const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const navigate = useNavigate();
   const { language } = useLanguage();
@@ -67,9 +69,8 @@ export const City: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['CitiesById', page, pageSize],
     () =>
-      getAllCities(countryId, page, pageSize)
+      getAllCities(countryId, page, pageSize, searchString)
         .then((data) => {
-          console.log('zzzzzzzzzz', countryId);
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
           setData(result);
@@ -95,20 +96,10 @@ export const City: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, cityStatus, page, pageSize, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setRefetchOnAdd(false);
-  }, [refetchOnAdd, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
     setIsActivate(false);
     setIsDeActivate(false);
-  }, [isActivate, isDeActivate, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, isActivate, isDeActivate, cityStatus, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {

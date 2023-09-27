@@ -2,22 +2,11 @@ import { SourceTypeModel } from './../interfaces/interfaces';
 import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllTools = async (
-  serviceId: string | undefined,
-  subServiceId: string | undefined,
-  page: number,
-  pageSize: number,
-) => {
+const getAllTools = async (subServiceId: string | undefined, page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
-  if (serviceId && !subServiceId) {
-    return await httpApi.get(
-      `${apiPrefix.tools}/GetAll?ServiceId=${serviceId}&SkipCount=${skip}&MaxResultCount=${pageSize}`,
-    );
-  } else if (serviceId && subServiceId) {
-    return await httpApi.get(
-      `${apiPrefix.tools}/GetAll?SubServiceId=${subServiceId}&SkipCount=${skip}&MaxResultCount=${pageSize}`,
-    );
-  }
+  return await httpApi.get(
+    `${apiPrefix.tools}/GetAll?SubServiceId=${subServiceId}&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+  );
 };
 
 const getTools = async (subServiceId: string | undefined) => {

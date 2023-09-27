@@ -3,9 +3,11 @@ import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
 // Services
-const getAllServices = async (page: number, pageSize: number) => {
+const getAllServices = async (page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(`${apiPrefix.services}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}`);
+  return await httpApi.get(
+    `${apiPrefix.services}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+  );
 };
 
 const getServices = async () => {
@@ -25,10 +27,10 @@ const UpdateService = async (data: any) => {
 };
 
 // Sub Services
-const getAllSubServices = async (id: string | undefined, page: number, pageSize: number) => {
+const getAllSubServices = async (id: string | undefined, page: number, pageSize: number, search: string) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.subServices}/GetAll?ServiceId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}`,
+    `${apiPrefix.subServices}/GetAll?ServiceId=${id}&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 
