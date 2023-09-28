@@ -163,7 +163,6 @@ export const Term: React.FC = () => {
         </Header>
       ),
       dataIndex: 'id',
-      width: '10%',
     },
     {
       title: (
@@ -172,7 +171,6 @@ export const Term: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 0, 'title'],
-      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
@@ -184,7 +182,6 @@ export const Term: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 1, 'title'],
-      width: '30%',
       render: (text: string) => {
         return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
       },
@@ -196,26 +193,26 @@ export const Term: React.FC = () => {
         </Header>
       ),
       dataIndex: ['translations', 0, 'description'],
-      width: '30%',
+
       render: (text: string) => {
         const firstSentence = text.split('.')[0]; // Get the first sentence
 
         return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
       },
     },
-    // {
-    //   title: (
-    //     <Header>
-    //       <Trans i18nKey={'notifications.arabicdiscription'} />
-    //     </Header>
-    //   ),
-    //   dataIndex: ['translations', 1, 'description'],
-    //   width: '30%',
-    //   render: (text: string) => {
-    //     const firstSentence = text.split('.')[0]; // Get the first sentence
-    //     return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
-    //   },
-    // },
+    {
+      title: (
+        <Header>
+          <Trans i18nKey={'notifications.arabicdiscription'} />
+        </Header>
+      ),
+      dataIndex: ['translations', 1, 'description'],
+
+      render: (text: string) => {
+        const firstSentence = text.split('.')[0]; // Get the first sentence
+        return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
+      },
+    },
     {
       title: (
         <Header>
@@ -224,7 +221,6 @@ export const Term: React.FC = () => {
       ),
 
       dataIndex: 'actions',
-      width: '30%',
       render: (index: number, Data: Term) => {
         return (
           <Space>
