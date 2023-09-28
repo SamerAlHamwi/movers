@@ -41,6 +41,7 @@ import { Spinner } from '@app/components/common/Spinner/Spinner.styles';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
+
 const requestServices: any = [];
 
 const steps = [
@@ -121,7 +122,7 @@ export const EditCom: React.FC = () => {
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
   const [valueRadio, setValueRadio] = useState(1);
-  const [logo, setLogo] = useState();
+  const [logo, setLogo] = useState(0);
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
@@ -177,21 +178,6 @@ export const EditCom: React.FC = () => {
   const keeey: any = [];
   useEffect(() => {
     const updateFormValues = async () => {
-      // Check if companyData is not an empty object
-      // const maher: any[] = [];
-      // companyData?.services?.map((item: any) => {
-      //   item.subServices.map((subServices: any) => {
-      //     subServices.tools.map((tools: any) => {
-      //       maher.push(tools.id);
-      //       return;
-      //     });
-      //   });
-      // });
-      // setTest(maher);
-      // console.log(';;;;;;;;;;;;;;;;;;;;;;;;;;;;', maher);
-
-      // console.log('Updating form with new companyData:', companyData?.services);
-
       {
         companyData?.services.map((service: any, index: any) => {
           service?.subServices.map((subService: any) => {
@@ -199,7 +185,6 @@ export const EditCom: React.FC = () => {
               keeey.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
             });
           });
-          console.log('ze;', keeey);
         });
         setTest(keeey);
       }
@@ -246,50 +231,11 @@ export const EditCom: React.FC = () => {
 
   const GetAllServices = useQuery('getAllServices', getServices);
 
-  // const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
-  //   const serviceNode: DataNode = {
-  //     title: (
-  //       <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //         <Image src={service?.attachment?.url} width={16} height={16} />
-  //         <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
-  //       </span>
-  //     ),
-  //     key: `${service?.id}`,
-  //     children: [],
-  //     disabled: service?.subServices?.length > 0 ? false : true,
-  //   };
-  //   if (service?.subServices?.length > 0) {
-  //     serviceNode.children = service.subServices.map((subService: any) => {
-  //       const subServiceNode = {
-  //         title: (
-  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //             <Image src={subService?.attachment?.url} width={16} height={16} />
-  //             {subService?.name}
-  //           </span>
-  //         ),
-  //         key: subService?.id,
-  //         children: [],
-  //       };
-  //       if (subService?.tools?.length > 0) {
-  //         subServiceNode.children = subService.tools.map((tool: any) => ({
-  //           title: (
-  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //               <Image src={tool?.attachment?.url} width={16} height={16} />
-  //               {tool?.name}
-  //             </span>
-  //           ),
-  //           key: tool?.id,
-  //         }));
-  //       }
-  //       return subServiceNode;
-  //     });
-  //   }
-  //   return serviceNode;
-  // });
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <p>{service.id}</p>
           <Image src={service?.attachment?.url} width={16} height={16} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
@@ -303,17 +249,22 @@ export const EditCom: React.FC = () => {
         const subServiceNode = {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <p>{subService.id}</p>
               <Image src={subService?.attachment?.url} width={16} height={16} />
               {subService?.name}
             </span>
           ),
-          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          key:
+            subService?.tools?.length > 0
+              ? `service${service?.id} sub${subService?.id}`
+              : `onlySub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
           subServiceNode.children = subService.tools.map((tool: any) => ({
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <p>{tool.id}</p>
                 <Image src={tool?.attachment?.url} width={16} height={16} />
                 {tool?.name}
               </span>
@@ -326,8 +277,6 @@ export const EditCom: React.FC = () => {
     }
     return serviceNode;
   });
-
-  console.log('asdasdasdssssssssssssss', treeData);
 
   const next = () => {
     setCurrent(current + 1);
@@ -470,6 +419,27 @@ export const EditCom: React.FC = () => {
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
     function extractServicesIds(input: any) {
+      test?.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          requestServices.push(result);
+        }
+
+        return result;
+      });
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -488,30 +458,27 @@ export const EditCom: React.FC = () => {
           };
           requestServices.push(result);
         }
+
         return result;
       });
     }
+
     extractServicesIds(requestServicesArray);
     const updatedFormData: any = {
       ...formData,
-      companyProfilePhotoId: companyData?.companyProfile?.id,
+      // companyProfilePhotoId: companyData?.companyProfile?.id,
 
-      companyOwnerIdentityIds: [companyData?.companyOwnerIdentity[0]?.id],
+      // companyOwnerIdentityIds: [companyData?.companyOwnerIdentity[0]?.id],
 
-      companyCommercialRegisterIds: [companyData?.companyCommercialRegister[0]?.id],
+      // companyCommercialRegisterIds: [companyData?.companyCommercialRegister[0]?.id],
     };
-
-    console.log('zzaqsdxcfrfgvbhujm', companyData?.companyProfile?.id);
 
     companyInfo = {
       ...companyInfo,
 
       regionId: companyData?.region?.id !== 0 && companyData?.region?.id !== null ? companyData?.region?.id : Region_id,
       id: companyData?.id,
-      companyProfilePhotoId: companyData?.companyProfile?.id,
-      additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
-      companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
-      companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
+
       translations: [
         {
           name: form.getFieldValue(['translations', 0, 'name']),
@@ -537,6 +504,10 @@ export const EditCom: React.FC = () => {
 
       serviceType: valueRadio,
       services: requestServices,
+      companyProfilePhotoId: logo == 0 ? companyData?.companyProfile?.id : logo,
+      additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
+      companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
+      companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
     };
     updatedFormData.translations = companyInfo.translations;
     // updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
@@ -998,7 +969,7 @@ export const EditCom: React.FC = () => {
               <BaseForm.Item key="100" name={['services']}>
                 {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                   const serviceKeys = selectedServicesKeysMap[serviceIndex] || test;
-                  console.log('Tesssssssssst', serviceKeys);
+
                   return (
                     <Tree
                       key={serviceIndex}
@@ -1014,13 +985,14 @@ export const EditCom: React.FC = () => {
                             requestServicesArray.push(key);
                           }
                         }
+
                         setSelectedServicesKeysMap((prevSelectedKeysMap) => {
                           const updatedKeysMap = { ...prevSelectedKeysMap };
                           updatedKeysMap[serviceIndex] = checkedKeysValue;
                           return updatedKeysMap;
                         });
                       }}
-                      defaultCheckedKeys={serviceKeys}
+                      defaultCheckedKeys={test}
                       checkedKeys={serviceKeys}
                       onSelect={onSelect}
                       selectedKeys={selectedKeys}
