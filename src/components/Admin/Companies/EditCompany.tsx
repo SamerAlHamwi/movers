@@ -41,6 +41,7 @@ import { Spinner } from '@app/components/common/Spinner/Spinner.styles';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
+
 const requestServices: any = [];
 
 const steps = [
@@ -121,7 +122,7 @@ export const EditCom: React.FC = () => {
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
   const [valueRadio, setValueRadio] = useState(1);
-  const [logo, setLogo] = useState();
+  const [logo, setLogo] = useState(0);
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
@@ -133,6 +134,7 @@ export const EditCom: React.FC = () => {
   const [imageLogoList, setImageLogoList] = useState([]);
   const [fileOwnerList, setFileOwnerList] = useState([]);
   const [imageOwnerList, setImageOwnerList] = useState([]);
+
   const [fileCommercialList, setFileCommercialList] = useState([]);
   const [imageCommercialList, setImageCommercialList] = useState([]);
   const [fileOtherList, setFileOtherList] = useState([]);
@@ -173,22 +175,20 @@ export const EditCom: React.FC = () => {
       enabled: CityData === undefined,
     },
   );
+  const keeey: any = [];
   useEffect(() => {
     const updateFormValues = async () => {
-      // Check if companyData is not an empty object
-      const maher: any[] = [];
-      companyData?.services?.map((item: any) => {
-        item.subServices.map((subServices: any) => {
-          subServices.tools.map((tools: any) => {
-            maher.push(tools.id);
-            return;
+      {
+        companyData?.services.map((service: any, index: any) => {
+          service?.subServices.map((subService: any) => {
+            subService?.tools.map((tool: any) => {
+              keeey.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
+            });
           });
         });
-      });
-      setTest(maher);
-      console.log(';;;;;;;;;;;;;;;;;;;;;;;;;;;;', maher);
+        setTest(keeey);
+      }
 
-      console.log('Updating form with new companyData:', companyData?.services);
       await form.setFieldsValue(companyData);
     };
 
@@ -235,11 +235,12 @@ export const EditCom: React.FC = () => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <p>{service.id}</p>
           <Image src={service?.attachment?.url} width={16} height={16} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: `${service?.id}`,
+      key: `service${service?.id}`,
       children: [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
@@ -248,22 +249,27 @@ export const EditCom: React.FC = () => {
         const subServiceNode = {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <p>{subService.id}</p>
               <Image src={subService?.attachment?.url} width={16} height={16} />
               {subService?.name}
             </span>
           ),
-          key: subService?.id,
+          key:
+            subService?.tools?.length > 0
+              ? `service${service?.id} sub${subService?.id}`
+              : `onlySub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
           subServiceNode.children = subService.tools.map((tool: any) => ({
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <p>{tool.id}</p>
                 <Image src={tool?.attachment?.url} width={16} height={16} />
                 {tool?.name}
               </span>
             ),
-            key: tool?.id,
+            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
           }));
         }
         return subServiceNode;
@@ -271,8 +277,6 @@ export const EditCom: React.FC = () => {
     }
     return serviceNode;
   });
-
-  console.log('asdasdasdssssssssssssss', treeData);
 
   const next = () => {
     setCurrent(current + 1);
@@ -415,6 +419,27 @@ export const EditCom: React.FC = () => {
       form.getFieldValue(['userDto', 'phoneNumber']),
     );
     function extractServicesIds(input: any) {
+      test?.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          requestServices.push(result);
+        }
+
+        return result;
+      });
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -433,34 +458,27 @@ export const EditCom: React.FC = () => {
           };
           requestServices.push(result);
         }
+
         return result;
       });
     }
+
     extractServicesIds(requestServicesArray);
-    const updatedFormData = { ...formData };
-    console.log('zzaqsdxcfrfgvbhujm', updatedFormData.additionalAttachmentIds);
+    const updatedFormData: any = {
+      ...formData,
+      // companyProfilePhotoId: companyData?.companyProfile?.id,
+
+      // companyOwnerIdentityIds: [companyData?.companyOwnerIdentity[0]?.id],
+
+      // companyCommercialRegisterIds: [companyData?.companyCommercialRegister[0]?.id],
+    };
 
     companyInfo = {
       ...companyInfo,
-      companyProfilePhotoId:
-        companyData?.companyProfile?.id !== 0 && companyData?.companyProfile?.id !== null
-          ? companyData?.companyProfile?.id
-          : logo,
-      companyOwnerIdentityIds:
-        companyData?.companyOwnerIdentity[0]?.id !== 0 && companyData?.companyOwnerIdentity[0]?.id !== null
-          ? [companyData?.companyOwnerIdentity[0]?.id]
-          : updatedFormData.companyOwnerIdentityIds,
-      companyCommercialRegisterIds:
-        companyData?.companyCommercialRegister[0]?.id !== 0 && companyData?.companyCommercialRegister[0]?.id !== null
-          ? [companyData?.companyCommercialRegister[0]?.id]
-          : updatedFormData.companyCommercialRegisterIds,
-      additionalAttachmentIds:
-        companyData?.additionalAttachment[0]?.id !== 0 && companyData?.additionalAttachment[0]?.id !== null
-          ? [companyData?.additionalAttachment[0]?.id]
-          : updatedFormData.additionalAttachmentIds.filter((id: any) => id !== null && id !== 0),
 
       regionId: companyData?.region?.id !== 0 && companyData?.region?.id !== null ? companyData?.region?.id : Region_id,
       id: companyData?.id,
+
       translations: [
         {
           name: form.getFieldValue(['translations', 0, 'name']),
@@ -486,12 +504,10 @@ export const EditCom: React.FC = () => {
 
       serviceType: valueRadio,
       services: requestServices,
-      // // companyProfilePhotoId: logo,
-      // // additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
-      // // companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
-      // // companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
-      // comment: form.getFieldValue('comment'),
-      // regionId: Region_id,
+      companyProfilePhotoId: logo == 0 ? companyData?.companyProfile?.id : logo,
+      additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
+      companyOwnerIdentityIds: updatedFormData.companyOwnerIdentityIds,
+      companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
     };
     updatedFormData.translations = companyInfo.translations;
     // updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
@@ -952,7 +968,8 @@ export const EditCom: React.FC = () => {
               </BaseForm.Item>
               <BaseForm.Item key="100" name={['services']}>
                 {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
-                  const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
+                  const serviceKeys = selectedServicesKeysMap[serviceIndex] || test;
+
                   return (
                     <Tree
                       key={serviceIndex}
@@ -968,14 +985,15 @@ export const EditCom: React.FC = () => {
                             requestServicesArray.push(key);
                           }
                         }
+
                         setSelectedServicesKeysMap((prevSelectedKeysMap) => {
                           const updatedKeysMap = { ...prevSelectedKeysMap };
                           updatedKeysMap[serviceIndex] = checkedKeysValue;
                           return updatedKeysMap;
                         });
                       }}
-                      defaultCheckedKeys={serviceKeys}
-                      // checkedKeys={test}
+                      defaultCheckedKeys={test}
+                      checkedKeys={serviceKeys}
                       onSelect={onSelect}
                       selectedKeys={selectedKeys}
                       treeData={[serviceTreeData]}

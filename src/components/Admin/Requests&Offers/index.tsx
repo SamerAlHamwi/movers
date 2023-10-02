@@ -6,9 +6,9 @@ import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllRequests, createRequest, DeleteRequest, UpdateRequest } from '@app/services/requests';
+import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -33,6 +33,8 @@ export const Requests: React.FC = () => {
     add: false,
     edit: false,
     delete: false,
+    approve: false,
+    reject: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -41,8 +43,12 @@ export const Requests: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [editmodaldata, setEditmodaldata] = useState<RequestModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<RequestModel | undefined>(undefined);
+  const [approvemodaldata, setApprovemodaldata] = useState<RequestModel | undefined>(undefined);
+  const [rejectmodaldata, setRejectmodaldata] = useState<RequestModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [isApproved, setIsApproved] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
@@ -54,7 +60,7 @@ export const Requests: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Requests', page, pageSize, refetchOnAdd, isDelete, isEdit],
+    ['Requests', page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected],
     () =>
       getAllRequests(page, pageSize, searchString)
         .then((data) => {
@@ -83,7 +89,7 @@ export const Requests: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, refetchOnAdd, isEdit, isApproved, isRejected, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -155,6 +161,56 @@ export const Requests: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editRequest.isLoading }));
   }, [editRequest.isLoading]);
 
+  const approveRequest = useMutation((data: any) =>
+    confirmRequest(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsApproved(data.data?.success),
+          message.open({
+            content: <Alert message={t('requests.approveRequestSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleApprove = (id: any) => {
+    const data = { requestId: id, statues: 2 };
+    approveRequest.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, approve: approveRequest.isLoading }));
+  }, [approveRequest.isLoading]);
+
+  const rejectRequest = useMutation((data: any) =>
+    confirmRequest(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsRejected(data.data?.success),
+          message.open({
+            content: <Alert message={t('requests.rejectRequestSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReject = (id: any) => {
+    const data = { requestId: id, statues: 3 };
+    rejectRequest.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, reject: rejectRequest.isLoading }));
+  }, [rejectRequest.isLoading]);
+
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -204,34 +260,6 @@ export const Requests: React.FC = () => {
         return <>{record?.name}</>;
       },
     },
-    // { title: <Header>{t('requests.status')}</Header>, dataIndex: 'status' },
-    // {
-    //   title: <Header>{t('requests.details')}</Header>,
-    //   dataIndex: 'details',
-    //   render: (index: number, record: any) => {
-    //     return (
-    //       <Space>
-    //         <Button
-    //           style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-    //           severity="info"
-    //           onClick={() => {
-    //             navigate(`${record.id}/details`, { state: record.name });
-    //           }}
-    //         >
-    //           <div
-    //             style={{
-    //               fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-    //               fontWeight: FONT_WEIGHT.regular,
-    //               width: 'auto',
-    //             }}
-    //           >
-    //             {t('requests.details')}
-    //           </div>
-    //         </Button>
-    //       </Space>
-    //     );
-    //   },
-    // },
     {
       title: <Header>{t('requests.comment')}</Header>,
       dataIndex: 'comment',
@@ -248,6 +276,80 @@ export const Requests: React.FC = () => {
           {text}
         </div>
       ),
+    },
+    {
+      title: <Header>{t('requests.details')}</Header>,
+      dataIndex: 'details',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <Button
+              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              severity="info"
+              onClick={() => {
+                navigate(`${record.id}/details`, { state: record.name });
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                  fontWeight: FONT_WEIGHT.regular,
+                  width: 'auto',
+                }}
+              >
+                {t('requests.details')}
+              </div>
+            </Button>
+          </Space>
+        );
+      },
+    },
+    {
+      title: <Header>{t('requests.status')}</Header>,
+      dataIndex: 'status',
+      render: (index: number, record: RequestModel) => {
+        return (
+          <>
+            {record.statues === 1 && (
+              <Space>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    setApprovemodaldata(record);
+                    handleModalOpen('approve');
+                  }}
+                >
+                  <CheckOutlined />
+                </TableButton>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setRejectmodaldata(record);
+                    handleModalOpen('reject');
+                  }}
+                >
+                  <CloseOutlined />
+                </TableButton>
+              </Space>
+            )}
+            {/* {record.statues === 1 && (
+              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
+                Checking
+              </Tag>
+            )} */}
+            {record.statues === 2 && (
+              <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
+                Approved
+              </Tag>
+            )}
+            {record.statues === 3 && (
+              <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
+                Rejected
+              </Tag>
+            )}
+          </>
+        );
+      },
     },
     {
       title: <Header>{t('common.actions')}</Header>,
@@ -339,6 +441,42 @@ export const Requests: React.FC = () => {
               description={t('requests.deleteRequestModalDescription')}
               isDanger={true}
               isLoading={deleteRequest.isLoading}
+            />
+          )}
+
+          {/*    Approve    */}
+          {modalState.approve && (
+            <ActionModal
+              visible={modalState.approve}
+              onCancel={() => handleModalClose('approve')}
+              onOK={() => {
+                approvemodaldata !== undefined && handleApprove(approvemodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('requests.approveRequestModalTitle')}
+              okText={t('common.approve')}
+              cancelText={t('common.cancel')}
+              description={t('requests.approveRequestModalDescription')}
+              // isDanger={true}
+              isLoading={approveRequest.isLoading}
+            />
+          )}
+
+          {/*    Reject    */}
+          {modalState.reject && (
+            <ActionModal
+              visible={modalState.reject}
+              onCancel={() => handleModalClose('reject')}
+              onOK={() => {
+                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('requests.rejectRequestModalTitle')}
+              okText={t('common.reject')}
+              cancelText={t('common.cancel')}
+              description={t('requests.rejectRequestModalDescription')}
+              // isDanger={true}
+              isLoading={approveRequest.isLoading}
             />
           )}
         </Row>

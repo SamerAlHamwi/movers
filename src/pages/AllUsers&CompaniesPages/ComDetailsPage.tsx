@@ -1,7 +1,7 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import ComDetails from '@app/components/Admin/Companies/ComDetails';
+import ComDetails from '@app/components/Admin/Companies/CompanyDetails';
 
 const ComDetailsPage: React.FC = () => {
   const { t } = useTranslation();

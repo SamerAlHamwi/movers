@@ -268,6 +268,7 @@ export interface RequestModel {
   name: string;
   sourceCity: any;
   serviceType: number;
+  statues?: number;
 }
 
 export interface CountryModel {
