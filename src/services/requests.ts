@@ -8,7 +8,7 @@ const getAllRequests = async (page: number, pageSize: number, search: string) =>
   );
 };
 
-const getRequestById = async (id: number) => {
+const getRequestById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.requests}/Get?Id=${id}`);
 };
 
@@ -24,4 +24,8 @@ const UpdateRequest = async (data: any) => {
   return await httpApi.put(`${apiPrefix.requests}/Update`, data);
 };
 
-export { getAllRequests, getRequestById, createRequest, DeleteRequest, UpdateRequest };
+const confirmRequest = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.requests}/ChangeStatuesForRequest`, data);
+};
+
+export { getAllRequests, getRequestById, createRequest, DeleteRequest, UpdateRequest, confirmRequest };
