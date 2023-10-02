@@ -16,12 +16,15 @@ const RequireAuth: React.FC<WithChildrenProps> = ({ children }) => {
 
   const isTokenExpired = () => {
     const currentDate = new Date();
+    // console.log('currentDate', currentDate, 'expirationDate', expirationDate, 'kk', currentDate > expirationDate);
     return currentDate > expirationDate;
   };
 
   if (token === 'bearerToken' || isTokenExpired()) {
     return <Navigate to="/auth/login" replace />;
   }
+
+  // console.log('token', token);
 
   return <>{children}</>;
 };

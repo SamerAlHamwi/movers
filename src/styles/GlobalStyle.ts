@@ -246,7 +246,7 @@ export default createGlobalStyle`
   .ant-tree-switcher {
     top: 10px
   }
-  
+
   .react-tel-input .form-control {
     padding: 0 40px;
   }
@@ -258,4 +258,9 @@ export default createGlobalStyle`
   .react-tel-input .selected-flag .arrow {
     right: 20px;
   }
+
+  .ant-card-meta-description {
+    display: flex
+  }
+
 `;
