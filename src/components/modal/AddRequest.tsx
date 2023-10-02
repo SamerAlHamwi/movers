@@ -190,15 +190,13 @@ export const AddRequest: React.FC = () => {
       title: 'Contact',
       content: [
         'Source',
-        'firstNameContactSource',
-        'lastNameContactSource',
+        'fullNameContactSource',
         'phoneNumberSource',
         'isCallAvailableSource',
         'isWhatsAppAvailableSource',
         'isTelegramAvailableSource',
         'Destination',
-        'firstNameContactDestination',
-        'lastNameContactDestination',
+        'fullNameContactDestination',
         'phoneNumberDestination',
         'isCallAvailableDestination',
         'isWhatsAppAvailableDestination',
@@ -349,8 +347,7 @@ export const AddRequest: React.FC = () => {
     const sourceContact = {
       dailCode: '+' + dialCodeS,
       phoneNumber: phoneNumberS,
-      firstNameContact: form.getFieldValue('firstNameContactSource'),
-      lastNameContact: form.getFieldValue('lastNameContactSource'),
+      fullName: form.getFieldValue('fullNameContactSource'),
       isCallAvailable: form.getFieldValue('isCallAvailableSource') == undefined ? false : true,
       isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableSource') == undefined ? false : true,
       isTelegramAvailable: form.getFieldValue('isTelegramAvailableSource') == undefined ? false : true,
@@ -359,8 +356,7 @@ export const AddRequest: React.FC = () => {
     const destinationContact = {
       dailCode: '+' + dialCodeD,
       phoneNumber: phoneNumberD,
-      firstNameContact: form.getFieldValue('firstNameContactDestination'),
-      lastNameContact: form.getFieldValue('lastNameContactDestination'),
+      fullName: form.getFieldValue('fullNameContactDestination'),
       isCallAvailable: form.getFieldValue('isCallAvailableDestination') == undefined ? false : true,
       isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableDestination') == undefined ? false : true,
       isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
@@ -544,14 +540,8 @@ export const AddRequest: React.FC = () => {
           const isSelectCity = ['sourceCity', 'destinationCity'].includes(fieldName);
           const isSelectSourceType = fieldName === 'sourceTypeId';
           const isDatePicker = ['moveAtUtc', 'arrivalAtUtc'].includes(fieldName);
-          const isInput = [
-            'firstNameContactSource',
-            'lastNameContactSource',
-            'firstNameContactDestination',
-            'lastNameContactDestination',
-            'sourceAddress',
-            'destinationAddress',
-          ].includes(fieldName);
+          const isInput = ['fullNameContactSource', 'fullNameContactDestination'].includes(fieldName);
+          const isAdress = ['sourceAddress', 'destinationAddress'].includes(fieldName);
           const isCheckbox = [
             'isCallAvailableSource',
             'isWhatsAppAvailableSource',
@@ -677,7 +667,20 @@ export const AddRequest: React.FC = () => {
                     },
                   }),
                 ]}
-                style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+                style={
+                  isDesktop || isTablet
+                    ? {
+                        width: 'fit-content',
+                        margin: '2rem auto',
+                        direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                      }
+                    : {
+                        width: 'fit-content',
+                        margin: '2rem auto',
+                        direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                      }
+                }
+                // style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
               >
                 <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
               </BaseButtonsForm.Item>
@@ -711,6 +714,23 @@ export const AddRequest: React.FC = () => {
             );
           }
           if (isInput) {
+            return (
+              <>
+                <BaseForm.Item
+                  key={index}
+                  name={fieldName}
+                  label={<LableText>{label}</LableText>}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                  style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                >
+                  <Input />
+                </BaseForm.Item>
+              </>
+            );
+          }
+          if (isAdress) {
             return (
               <>
                 <BaseForm.Item
