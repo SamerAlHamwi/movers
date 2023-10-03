@@ -482,7 +482,10 @@
     "additionalInfo": "Additional Information",
     "attachments": "Attachments",
     "sourceCity": "Source City",
-    "destinationCity": "Destination City"
+    "destinationCity": "Destination City",
+    "checking": "Checking",
+    "approved": "Approved",
+    "rejected": "Rejected"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -563,11 +566,6 @@
     "resendNotifactionsSuccessMessage": "The Notification resent Successfully"
   },
 
-  "error404": {
-    "comeBack": "Return to Home",
-    "backToLogin": "Return to Login",
-    "notFound": "Sorry, page not found!"
-  },
   "_comment20": "*********************************** Terms ************************************************",
   "Terms": {
     "editTermSuccessMessage": "Terms Edit Successfully",
@@ -578,6 +576,7 @@
     "add": "Save Edit"
   },
 
+  "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "MOVERS&",
     "Statistics": "Statistics",
@@ -607,6 +606,7 @@
     "branches": "Branches",
     "EditBranch": "Edit Branch"
   },
+
   "header": {
     "changeLanguage": "Change language",
     "english": "English",
@@ -615,329 +615,14 @@
     "logout": "Logout",
     "search": "Search"
   },
+
+  "error404": {
+    "comeBack": "Return to Home",
+    "backToLogin": "Return to Login",
+    "notFound": "Sorry, page not found!"
+  },
+
   "footer": "2023 Movers&, All Rights Reserved",
-
-  "games": {
-    "gamesList": "Games List",
-    "info": "Info",
-    "gameCode": "Game code",
-    "qrCode": "Qr code",
-    "gameStatus": "Game status",
-    "creatorManager": "Creator manager",
-    "status": {
-      "waiting": "Waiting For Companies",
-      "finished": "Finished"
-    },
-    "playerStatus": {
-      "playerStatus": "Player Status",
-      "playersStatus": "Players Status",
-      "pending": "Pending",
-      "approved": "Aproved",
-      "joinedCompany": "Joined Company",
-      "approve?": "Approve Player?"
-    },
-    "activeGame": {
-      "activeGame": "Active Game",
-      "active": "Active",
-      "modalDescription": "Wanna Active This Game?",
-      "activeGameSuccessMessage": "Activate Game Successfully!",
-      "approvePlayerSuccessMessage": "Player Approved successfully!"
-    },
-    "gameInfo": {
-      "gameDetails": "Game Details",
-      "companyList": "Companies List",
-      "companyCode": "Company code",
-      "companyId": "Comapany Id",
-      "players": "Players",
-      "playerCompanyRole": {
-        "playerCompanyRole": "Player company role",
-        "fManager": "Financial Manager",
-        "gManager": "General Manager",
-        "mManager": "Marketing Manager",
-        "pManager": "Production Manager",
-        "withotRole": "Without Role"
-      },
-      "importGame": {
-        "index": "Repeat Game",
-        "modalDescription": "Wanna repeat this game to create new one?",
-        "modalPanel": "All specifiers in this game will be taken to create new game.",
-        "okBtn": "Repeat"
-      },
-      "playersInCompanyId": "Players In CompanyID"
-    },
-    "result": {
-      "result": "Result",
-      "gameResult": "Game Result",
-      "pEvaluation": "Performance Evaluation Index",
-      "overallScore": "Overall Score",
-      "competitiveness": "Competitiveness Assessment Index"
-    },
-    "rounds": {
-      "rounds": "Rounds"
-    }
-  },
-  "gameSettings": {
-    "generalSpecifiers": {
-      "generalSpecifiers": "General Specifiers",
-      "numberOfProductOffer": "Number Of Product Offer",
-      "numberOfCompetingFirms": "Number Of Competing Firms",
-      "legalPeriodForCalculatingDepreciation": "Legal Period For Calculating Depreciation",
-      "profitsTaxRate": {
-        "profitsTaxRate": "Profits Tax Rate",
-        "low": "Low, 0.20",
-        "moderate": "Moderate, 0.30",
-        "high": "High, 0.40"
-      },
-      "exposureInterestRate": {
-        "exposureInterestRate": "Exposure Interest Rate",
-        "low": "Low, 0.15",
-        "moderate": "Moderate, 0.20",
-        "high": "High, 0.25"
-      },
-      "exposureControlFactor": {
-        "exposureControlFactor": "Exposure Control Factor",
-        "slow": "Slow, 0.40",
-        "moderate": "Moderate, 0.50",
-        "fast": "Fast, 0.60"
-      },
-      "effectOfTheSharePriceOnRealizedProfit": {
-        "effectOfTheSharePriceOnRealizedProfit": "Effect Of The Share Price On Realized Profit",
-        "weak": "Weak, 0.20",
-        "moderate": "Moderate, 0.30",
-        "high": "High, 0.40"
-      },
-      "dividEndEffectOfSharePrice": {
-        "dividEndEffectOfSharePrice": "DividEnd Effect Of Share Price",
-        "weak": "Weak, 0.45",
-        "moderate": "Moderate, 0.60",
-        "high": "High, 0.75"
-      },
-      "reputationFactorForCurrentMarketingSpend": {
-        "reputationFactorForCurrentMarketingSpend": "Reputation Factor For Current Marketing Spend",
-        "weak": "Weak, 0.40",
-        "moderate": "Moderate, 0.50",
-        "high": "High, 0.60"
-      },
-      "expansionAndContractionFactor": "Expansion And Contraction Factor",
-      "performanceWeightingFactor": "Performance Weighting Factor",
-      "referencePricingFactor": "Reference Pricing Factor",
-      "demandRegressionThreshold": "Demand Regression Threshold",
-      "investmentEfficiencyCoefficient": "Investment Efficiency Coefficient",
-      "setGeneralSpecifiers": "Set General Specifiers",
-      "editMessageSuccess": "GeneralSpecifiers have been adjusted with success"
-    },
-    "initialModeSettings": {
-      "initialModeSettings": "Initial Mode Settings",
-      "balanceOfBankAccounts": "Balance Of Bank Accounts",
-      "generalFixedCosts": "General Fixed Costs",
-      "sharePrice": "Share Price",
-      "setInitMode": "Set Initial Settings",
-      "editMessageSuccess": "Values have successfully adjusted"
-    },
-    "productsAttributes": {
-      "productsAttributes": "Products Features Specifiers",
-      "recoveryRateOfProductSurplusValue": {
-        "recoveryRateOfProductSurplusValue": "Recovery Rate Of Product Surplus Value",
-        "noRefund": "No Refund, 0.00",
-        "simpleRefund": "Simple Refund, 0.25",
-        "importantRefund": "Important Refund, 0.50"
-      },
-      "productReputationEfficiencyFactor": {
-        "productReputationEfficiencyFactor": "Product Reputation Efficiency Factor",
-        "poor": "Poor Effective, 0.15",
-        "moderate": "Moderate Effective, 0.25",
-        "very": "Very Effective, 0.35"
-      },
-      "volatilityRateInDemandForProduct": {
-        "volatilityRateInDemandForProduct": "Volatility Rate In Demand For Product",
-        "simple": "Simple Oscillation, 0.01",
-        "moderate": "Moderate Oscillation, 0.02",
-        "important": "Important Oscillation, 0.03"
-      },
-      "initialAbsorptionCoefficientOfTheProduct": {
-        "initialAbsorptionCoefficientOfTheProduct": "Initial Absorption Coefficient Of The Product",
-        "weak": "Weak Competition, 0.90",
-        "moderate": "Moderate Competition, 0.75",
-        "strong": "Strong Competition, 0.60"
-      },
-      "growthRateOfTotalProductDemand": "Growth Rate Of Total Product Demand",
-      "theAverageElasticityOfDemandForProduct": "The Average Elasticity Of Demand For Product",
-      "setProduct": "Set Product Attributes",
-      "editMessageSuccess": "Product Attributes were successfully adjusted"
-    },
-
-    "common": {
-      "productProductionCapacity": "Product Production Capacity",
-      "singleVariableCost": "Single Variable Cost",
-      "reputationInTheProduct": "Reputation In The Product"
-    },
-    "fixedValue": "Fixed value"
-  },
-
-  "sliderImage": {
-    "sliderImagesList": "Slider Image List",
-    "create": "Create Slider",
-    "createNew": "Create New Slider",
-    "deleteModalTitle": "Delete Slider Image",
-    "deleteModalDescription": "Are You Sure To Delete This Slider?",
-    "deleteMessageSuccess": "Slider deleted Successfully!",
-    "createMessageSuccess": "Slider Created Successfully!",
-    "editMessageSuccess": "Slider edited Successfully!",
-    "editModalTitle": "Edit Slider Image"
-  },
-  "blog": {
-    "createBlog": "Create Blog",
-    "blogArticles": "Blog Articles",
-    "articles": "Articles",
-    "createMessageSuccess": "Blog created successfully!",
-    "deleteMessageSuccess": "Article deleted successfully",
-    "activateSuccessMessage": "Article activated successfully!",
-    "deactivateSuccessMessage": "Article deactivated successfully!",
-    "updateSuccessMessage": "Article updated successfully",
-    "deleteModalTitle": "Delete Article Blog",
-    "deleteModalDescription": "Wanna delete this article?",
-    "createModalTitle": "Create Blog Article",
-    "editModalTitle": "Edit Blog Article"
-  },
-  "video": {
-    "createVideo": "Upload Video",
-    "videos": "Videos",
-    "createMessageSuccess": "Video created successfully!",
-    "deleteMessageSuccess": "Video deleted successfully",
-    "activateSuccessMessage": "Video activated successfully!",
-    "deactivateSuccessMessage": "Video deactivated successfully!",
-    "updateSuccessMessage": "Video updated successfully",
-    "deleteModalTitle": "Delete Video",
-    "deleteModalDescription": "Wanna delete this video?",
-    "createModalTitle": "Upload New Video",
-    "editModalTitle": "Edit Video",
-    "requiredVideo": "You should upload video!",
-    "videoDraggerDescription": "Click or drag video to this area to upload"
-  },
-  "createGame": {
-    "createSuccessMessage": "Game has been Created!",
-    "createNewGame": "Create New Game",
-    "createGame": "Create Game",
-    "gameInfo": "Game Information",
-    "gameTitle": "Game Title",
-    "gameDescription": "Game Description"
-  },
-  "rounds": {
-    "index": "Round",
-    "companyRD": "Comapnies decisions in round",
-    "companyRR": "Comapnies results in round",
-    "marketIndicatorInRound": "Market indicator in round",
-    "GC": "Course of the game",
-    "rIG": "Rounds In Game",
-    "inR": "In Round",
-    "timeRunning": "Time running",
-    "DDE": "Decision Duration Ended",
-    "LDDE": "Last Decision Duration Ended",
-    "addedTS": "Added time start",
-    "dDFRS": "Decision duration for round has started",
-    "rUTWFSLDD": "Round Updated To Waiting For Start Last Decision Duration",
-    "rLDDS": "Round Last Decision Duration Started",
-    "marketSuccessMessage": "Market indicator calculated successfully!",
-    "companyResultSuccessMessage": "Company round result calculated successfully!",
-    "roundEnd": "Round Ended",
-    "createRound": "Cerate New Round",
-    "createR": "Create Round",
-    "createSuccessMessage": "Round Created Successfully!",
-    "roundsType": {
-      "active": "Active",
-      "finished": "Finished",
-      "pending": "Pending",
-      "wFLD": "WaitingForLastDecision",
-      "wFSLDD": "WaitingForStartLastDecionDuration"
-    },
-    "tableHeader": {
-      "id": "Id",
-      "sT": "Start time",
-      "eT": "End time",
-      "roundType": "Round type",
-      "roundSeq": "Round sequence",
-      "decisionST": "Decision startTime",
-      "decisionET": "Decision endTime",
-      "DD": "Decision duration",
-      "addDurationWF": "Added duration withFine",
-      "fFLM": "Fine for lateMinute"
-    },
-    "cardInfo": {
-      "cRound": "Current Round",
-      "timer": "Timer",
-      "action": "Action"
-    },
-    "lastDD": "Last Decision Duration",
-    "FFLM": "Fine For Late Minute",
-    "SDD": "Start Decision Duration",
-    "SSDModalDescription": "Wanna Start Decision Duration?",
-    "UTWFSLDButton": "Update to Waiting For Start Last Decision Duration",
-    "WTTE": "Waiting Timer To Expire",
-    "WATTE": "Waiting Added Timer To Expire",
-    "UTWFSLDModal": {
-      "title": "Update to Waiting For Start Last Decision",
-      "description": {
-        "index": "Wanna Update Round to Waiting For Start Last Decision Duration?",
-        "panel1": "Default decisions will be made in the case of companies that did not make a decision.",
-        "panel2": "Round results can be calculated."
-      }
-    },
-    "SRLDD": "Start Round Last Decision Duration",
-    "CCRAMI": "Calculate market indicator and comapany result",
-    "CMI": "Calculate market indicator",
-    "CCR": "Calculate comapany result",
-    "SLDD": "Start Last Decision Duration",
-    "SLDDModalDescription": "Wanna start last decision duration?",
-    "end": "End Round",
-    "endDescription": "Wanna end this round?",
-    "dT": {
-      "oT": "InOriginlTime",
-      "aT": "InAddedTime",
-      "default": "DecisionFromGame"
-    }
-  },
-  "tables": {
-    "CRD": {
-      "DT": "Decision Time",
-      "DeR": "Dividend Ratio",
-      "ETR": "Expected Total Revenue",
-      "ETS": "Expected Total Spending",
-      "Products": "Products",
-      "PQ": "Product Quantity",
-      "ISA": "Investment Spending Amount",
-      "MSA": "Marketing Spending Amount",
-      "PP": "Product Price"
-    },
-    "MI": {
-      "averagePriceTradedInTheMarket": "Average Price Traded In The Market",
-      "marketingSpendingCoefficient": "Marketing Spending Coefficient",
-      "totalActualDemand": "Total Actual Demand",
-      "totalInvestmentSpending": "Total Investment Spending",
-      "totalMarkitingSpending": "Total Marketing Spending",
-      "totalSupplay": "Total Supply",
-      "totalTheoreticalDemand": "Total Theoretical Demand"
-    },
-    "CRR": {
-      "da": "DA",
-      "ebit": "EBIT",
-      "fine": "Fine",
-      "exposureBenefits": "Exposure Benefits",
-      "netProfit": "Net Profit",
-      "newBalanceAccount": "New Balance Account",
-      "newFixedCosts": "New Fixed Costs",
-      "rev": "REV",
-      "sharePrice": "Share Price",
-      "tc": "TC",
-      "price": "Price",
-      "netProfitFromProduct_Rev_I": "Net Profit From Product Rev",
-      "productProductionCapacity": "Product Production Capacity",
-      "reputationForProduct": "Reputation For Product",
-      "soldQuantityOfProduct": "Sold Quantity Of Product",
-      "variableCostOfTheproduct": "Variable Cost Of The product"
-    }
-  },
-  "exportExcel": "Export To Excel",
-
   "networkError": "Network Error",
   "timeoutExceeded": "Timeout Exceeded",
   "noNotifications": "No notifications yet!"
