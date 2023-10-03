@@ -26,7 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
 import { getServices } from '@app/services/services';
 import { services } from '../Admin/Services';
-import { createCompany } from '@app/services/company';
+import { createCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Col, Row, Tree, Card, Image, Avatar, Upload, Modal, UploadFile, Divider, Tag } from 'antd';
+import { Col, Row, Tree, Card, Image, Tag } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -14,8 +14,7 @@ import { useParams } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
-import { CheckOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
-import { RcFile } from 'antd/es/upload';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
 const { Meta } = Card;
 
@@ -153,7 +152,6 @@ const RequestDetails: React.FC = () => {
   if (requestData && requestData?.attributeChoiceAndAttachments) {
     attributeChoiceAndAttachmentsData = requestData?.attributeChoiceAndAttachments.map(
       (attributeChoiceAndAttachmentsValue: any) => {
-        console.log(attributeChoiceAndAttachmentsValue?.attributeChoice?.name);
         attributeChoiceAndAttachmentsValue?.attachments.map((attachment: any) => {
           if (!attributeChoiceAttachments.includes(attachment)) {
             attributeChoiceAttachments.push(attachment);

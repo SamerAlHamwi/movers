@@ -34,7 +34,7 @@ import { countries } from '../Admin/Locations/Countries';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCities, getAllCountries, getAllRegions } from '@app/services/locations';
 import { useNavigate } from 'react-router-dom';
-import { getAllCompanies, getCompanyById } from '@app/services/company';
+import { getAllCompanies, getCompanyById } from '@app/services/companies';
 import { useSelector } from 'react-redux';
 
 export const EditCompany: React.FC<EditCompanyProps> = ({ visible, onCancel, onEdit, Company_values, isLoading }) => {

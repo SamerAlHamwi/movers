@@ -18,8 +18,8 @@ const Error404Page = lazy(() => import('@app/pages/ErrorsPages/Error404Page'));
 const Logout = lazy(() => import('./Logout'));
 const StatisticsAdmin = lazy(() => import('@app/pages/StatsticsPages/StatisticsPage'));
 const StatisticsManager = lazy(() => import('@app/pages/StatsticsPages/StatisticsManagerPage'));
-const UserPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/UsersPage'));
-const ManagerPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/ManagersPage'));
+const UserPage = lazy(() => import('@app/pages/UsersPages/UsersPage'));
+const ManagerPage = lazy(() => import('@app/pages/UsersPages/ManagersPage'));
 const ServicePage = lazy(() => import('@app/pages/ServicesPages/ServicesPage'));
 const SubServicePage = lazy(() => import('@app/pages/ServicesPages/SubServicesPage'));
 const ToolPage = lazy(() => import('@app/pages/ServicesPages/ToolsPage'));
@@ -35,18 +35,18 @@ const Terms = lazy(() => import('@app/pages/Term&Condition/TermPage'));
 const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
-const Companiespage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/Companiespage'));
-const AddCompaniesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddCompanyPage'));
-const BranchesPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/BranchPage'));
+const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
+const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
+const BranchesPage = lazy(() => import('@app/pages/CompaniesPages/BranchPage'));
 const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
-const AddBranchPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/AddBranchPage'));
-const EditComPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/EditComPage'));
-const EditBranchPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/EditBranchPage'));
+const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage'));
+// const EditComPage = lazy(() => import('@app/pages/CompaniesPages/EditComPage'));
+const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
-const ComDetailPage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/ComDetailsPage'));
-const Brokerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/BrokerPage'));
-const Partnerspage = lazy(() => import('@app/pages/AllUsers&CompaniesPages/PartnersPage'));
+const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
+const Brokerspage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
+const Partnerspage = lazy(() => import('@app/pages/UsersPages/PartnersPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -77,10 +77,10 @@ const BranchPage = withLoading(BranchesPage);
 const RequestsPage = withLoading(RequestPage);
 const AddRequestsPage = withLoading(AddRequestPage);
 const AddBranchesPage = withLoading(AddBranchPage);
-const EditCommPage = withLoading(EditComPage);
+// const EditCommPage = withLoading(EditComPage);
 const EditBranchesPage = withLoading(EditBranchPage);
 const RequestDetailsPage = withLoading(RequestDetailPage);
-const ComDetailsPage = withLoading(ComDetailPage);
+const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const BrokerPage = withLoading(Brokerspage);
 const PartnerPage = withLoading(Partnerspage);
 
@@ -130,19 +130,12 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          {/* Requests */}
           <Route
             path="requests"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <RequestsPage />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="Terms"
-            element={
-              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <TermsPage />
               </PrivateRoute>
             }
           />
@@ -165,6 +158,7 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          {/* Companies */}
           <Route
             path="companies"
             element={
@@ -183,6 +177,16 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          <Route
+            path="companies/:companyId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <CompanyDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Branches */}
           <Route
             path="companies/:companyId/branches"
             element={
@@ -210,6 +214,7 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          {/* 
           <Route
             path="companies/:companyId/EditCom"
             element={
@@ -217,15 +222,7 @@ export const AppRouter: React.FC = () => {
                 <EditCommPage />
               </PrivateRoute>
             }
-          />
-          <Route
-            path="companies/:requestId"
-            element={
-              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <ComDetailsPage />
-              </PrivateRoute>
-            }
-          />
+          /> */}
 
           <Route
             path="Brokers"
@@ -244,15 +241,8 @@ export const AppRouter: React.FC = () => {
               </PrivateRoute>
             }
           />
-          <Route
-            path="Terms"
-            element={
-              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <TermsPage />
-              </PrivateRoute>
-            }
-          />
 
+          {/* Services */}
           <Route
             path="services"
             element={
@@ -289,6 +279,7 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          {/* SourceType */}
           <Route
             path="sourceType"
             element={
@@ -325,6 +316,7 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          {/* Locations */}
           <Route
             path="locations/countries"
             element={
@@ -378,19 +370,21 @@ export const AppRouter: React.FC = () => {
               </PrivateRoute>
             }
           />
-          <Route
-            path="Terms"
-            element={
-              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <TermsPage />
-              </PrivateRoute>
-            }
-          />
+
           <Route
             path="PrivacyPolicy"
             element={
               <PrivateRoute allowedRoles={[UserRole[1]]}>
                 <PrivacyPolicyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="Terms"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <TermsPage />
               </PrivateRoute>
             }
           />

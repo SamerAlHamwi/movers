@@ -13,8 +13,8 @@ import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
 import { useNavigate } from 'react-router-dom';
-import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@app/services/company';
-
+import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@app/services/companies';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
@@ -245,6 +245,33 @@ export const Companies: React.FC = () => {
           ))}
         </Space>
       ),
+    },
+    {
+      title: <Header>{t('requests.details')}</Header>,
+      dataIndex: 'details',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <Button
+              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              severity="info"
+              onClick={() => {
+                navigate(`${record.id}/details`, { state: record.name });
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                  fontWeight: FONT_WEIGHT.regular,
+                  width: 'auto',
+                }}
+              >
+                {t('requests.details')}
+              </div>
+            </Button>
+          </Space>
+        );
+      },
     },
     {
       title: <Header>{t('companies.status')}</Header>,
