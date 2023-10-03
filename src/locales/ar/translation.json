@@ -375,6 +375,7 @@
     "addPartnerSuccessMessage": "تمت العملية بنجاح",
     "editPartnerSuccessMessage": "تمت العملية بنجاح"
   },
+
   "_comment11": "*********************************** Partners ************************************************",
   "Partners": {
     "addPartner": "إضافة الشريك",
@@ -544,7 +545,9 @@
     "editBranchSuccessMessage": "تم تعديل معلومات الفرع بنجاح",
     "deleteBranchModalTitle": "حذف الفرع",
     "deleteBranchModalDescription": "هل أنت متأكد من حذف هذا الفرع",
-    "region": "المنطقة"
+    "region": "المنطقة",
+    "branchInfo": "معلومات الفرع",
+    "branchProfile": "بروفايل لفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

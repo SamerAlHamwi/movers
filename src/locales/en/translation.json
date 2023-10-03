@@ -551,7 +551,9 @@
     "editBranchSuccessMessage": "The Branch has been Edited Successfully",
     "deleteBranchModalTitle": "Delete Branch",
     "deleteBranchModalDescription": "Are You Sure To Delete This Branch?",
-    "region": "Region"
+    "region": "Region",
+    "branchInfo": "Branch Informations",
+    "branchProfile": "Branch Profile"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

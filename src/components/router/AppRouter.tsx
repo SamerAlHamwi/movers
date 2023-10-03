@@ -35,15 +35,16 @@ const Terms = lazy(() => import('@app/pages/Term&Condition/TermPage'));
 const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
+const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
+const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
+const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
 const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
+const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
 const BranchesPage = lazy(() => import('@app/pages/CompaniesPages/BranchPage'));
-const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
-const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
+const BranchDetailPage = lazy(() => import('@app/pages/CompaniesPages/BranchDetailsPage'));
 const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage'));
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
-const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
-const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const Brokerspage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
 const Partnerspage = lazy(() => import('@app/pages/UsersPages/PartnersPage'));
 
@@ -70,15 +71,16 @@ const TermsPage = withLoading(Terms);
 const ContactUsPage = withLoading(ContactusPage);
 const PrivacyPolicyPage = withLoading(PrivacyPolicy);
 const RolesPage = withLoading(RolePage);
+const RequestsPage = withLoading(RequestPage);
+const RequestDetailsPage = withLoading(RequestDetailPage);
+const AddRequestsPage = withLoading(AddRequestPage);
 const CompanyPage = withLoading(Companiespage);
+const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
 const BranchPage = withLoading(BranchesPage);
-const RequestsPage = withLoading(RequestPage);
-const AddRequestsPage = withLoading(AddRequestPage);
+const BranchDetailsPage = withLoading(BranchDetailPage);
 const AddBranchesPage = withLoading(AddBranchPage);
 const EditBranchesPage = withLoading(EditBranchPage);
-const RequestDetailsPage = withLoading(RequestDetailPage);
-const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const BrokerPage = withLoading(Brokerspage);
 const PartnerPage = withLoading(Partnerspage);
 
@@ -199,6 +201,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddBranchesPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="companies/:companyId/branches/:branchId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <BranchDetailsPage />
               </PrivateRoute>
             }
           />
