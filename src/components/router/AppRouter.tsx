@@ -41,7 +41,6 @@ const BranchesPage = lazy(() => import('@app/pages/CompaniesPages/BranchPage'));
 const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
 const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage'));
-// const EditComPage = lazy(() => import('@app/pages/CompaniesPages/EditComPage'));
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
@@ -77,7 +76,6 @@ const BranchPage = withLoading(BranchesPage);
 const RequestsPage = withLoading(RequestPage);
 const AddRequestsPage = withLoading(AddRequestPage);
 const AddBranchesPage = withLoading(AddBranchPage);
-// const EditCommPage = withLoading(EditComPage);
 const EditBranchesPage = withLoading(EditBranchPage);
 const RequestDetailsPage = withLoading(RequestDetailPage);
 const CompanyDetailsPage = withLoading(CompanyDetailPage);
@@ -213,16 +211,6 @@ export const AppRouter: React.FC = () => {
               </PrivateRoute>
             }
           />
-
-          {/* 
-          <Route
-            path="companies/:companyId/EditCom"
-            element={
-              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <EditCommPage />
-              </PrivateRoute>
-            }
-          /> */}
 
           <Route
             path="Brokers"

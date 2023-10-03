@@ -338,7 +338,7 @@ export const Companies: React.FC = () => {
             <TableButton
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/EditCom`, { replace: false });
+                // navigate(`${record.id}/EditCom`, { replace: false });
               }}
             >
               <EditOutlined />
