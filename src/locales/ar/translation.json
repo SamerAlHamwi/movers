@@ -26,6 +26,7 @@
     "deactivate": "إلغاء التفعيل",
     "activate": "تفعيل",
     "apply": "تطبيق",
+    "confrim": "تأكيد",
     "cancel": "إلغاء",
     "resend": "إعادة إرسال",
     "Previous": "السابق",
@@ -240,9 +241,6 @@
     "available City name": "المدن المغطاة",
     "selectTool": "حدد أداة",
     "CityName": "اسم المدينة",
-    "addressA": " العنوان بالعربية ",
-    "address": "العنوان بالإنكليزية ",
-    "phoneNumber": "رقم الهاتف",
     "Website": "الموقع الالكتروني",
     "Email": "البريد الالكتروني",
     "addCompanyModalTitle": "أضافة شركة",
@@ -291,7 +289,34 @@
     "approvecompanyModalDescription": "هل أنت متأكد من الموافقة على طلب تسجيل هذه الشركة",
     "rejectcompanyModalTitle": "رفض الشركة",
     "rejectcompanyModalDescription": "هل أنت متأكد من رفض طلب تسجيل هذه الشركة",
-    "numberOfTransfers": "عدد عمليات التقل"
+    "companyInfo": "معلومات الشركة",
+    "companyProfile": "بروفايل الشركة",
+    "name": "الإسم",
+    "address": "العنوان",
+    "bio": "الوصف",
+    "country": "البلد",
+    "city": "المدينة",
+    "region": "المنطقة",
+    "availableCities": "المدن المُخدّمة",
+    "companyBranches": "أفرع الشركة",
+    "companyContact": "معلومات التواصل",
+    "phoneNumber": "رقم الموبايل",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "webSite": "موقع ويب الشركة",
+    "numberOfTransfers": "عدد عمليات النقل",
+    "companyUser": "معلومات المستخدم",
+    "fullName": "الإسم الكامل",
+    "userName": "إسم المستخدم",
+    "creationTime": "وقت الإنشاء",
+    "services": "الخدمات",
+    "attachments": "الصور المرفقة",
+    "companyOwnerIdentity": "صورة | ملف مالك الشركة",
+    "companyCommercialRegister": "صورة | ملف السجل التجاري",
+    "additionalAttachment": "صور | ملفات إضافية",
+    "statues": "حالة الشركة",
+    "checking": "قيد المعالجة",
+    "approved": "تم قبولها",
+    "rejected": "تم رفضها"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -355,6 +380,7 @@
     "addPartnerSuccessMessage": "تمت العملية بنجاح",
     "editPartnerSuccessMessage": "تمت العملية بنجاح"
   },
+
   "_comment11": "*********************************** Partners ************************************************",
   "Partners": {
     "addPartner": "إضافة الشريك",
@@ -400,7 +426,7 @@
     "deleteAttributeChoiceModalDescription": "هل أنت متأكد من حذف هذه تفصيل لمكان النقل"
   },
 
-  "_comment14": "***********************************childAttributeChoices ************************************************",
+  "_comment14": "*********************************** childAttributeChoices ************************************************",
   "childAttributeChoices": {
     "childAttributeChoicesList": "قائمة التفاصيل الإضافية للأماكن المنقولة",
     "subChildAttributeChoice": "خيارات إضافية",
@@ -477,7 +503,10 @@
     "additionalInfo": "معلومات إضافية",
     "attachments": "الصور المرفقة",
     "sourceCity": "مدينة المصدر",
-    "destinationCity": "مدينة الوجهة"
+    "destinationCity": "مدينة الوجهة",
+    "checking": "قيد المعالجة",
+    "approved": "تم قبوله",
+    "rejected": "تم رفضه"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -521,7 +550,9 @@
     "editBranchSuccessMessage": "تم تعديل معلومات الفرع بنجاح",
     "deleteBranchModalTitle": "حذف الفرع",
     "deleteBranchModalDescription": "هل أنت متأكد من حذف هذا الفرع",
-    "region": "المنطقة"
+    "region": "المنطقة",
+    "branchInfo": "معلومات الفرع",
+    "branchProfile": "بروفايل الفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -558,11 +589,6 @@
     "resendNotifactionsSuccessMessage": "تم إعادة إرسال الإشعار"
   },
 
-  "error404": {
-    "comeBack": "العودة إلى الصفحة الرئيسية",
-    "backToLogin": "العودة إلى تسجيل الدخول",
-    "notFound": "عذراً، الصفحة غير موجودة!"
-  },
   "_comment20": "*********************************** Terms ************************************************",
   "Terms": {
     "editTermSuccessMessage": "تم تعديل الشروط والأحكام بنجاح",
@@ -572,8 +598,26 @@
     "addterms": "إنشاء",
     "add": "حفظ التعديل"
   },
+
+  "_comment21": "*********************************** asks ************************************************",
+  "asks": {
+    "asksList": "قائمة طلبات المساعدة",
+    "fullName": "الإسم الكامل",
+    "phoneNumber": "رقم الموبايل",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "creationTime": "وقت الإنشاء",
+    "type": "نوع المستخدم",
+    "status": "حالة الطلب",
+    "waiting": "قيد المراجعة",
+    "followed": "تم إنجازه",
+    "confirmAskSuccessMessage": "تمت المساعدة لهذا الطلب بنجاح",
+    "confirmAskModalTitle": "تأكيد طلب المساعدة",
+    "confirmAskModalDescription": "هل أنت متأكد من التأكيد على هذا الطلب؟"
+  },
+
+  "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
-    "Brand": "&MOVERS",
+    "Brand": "غو موفارو",
     "Statistics": "الإحصائيات",
     "Term": "الشروط والأحكام",
     "Users": "المستخدمين",
@@ -598,8 +642,10 @@
     "companies": "الشركات",
     "AddBranch": "إضافة فرع لشركة",
     "branches": "الفروع",
-    "EditBranch": "تعديل فرع الشركة"
+    "EditBranch": "تعديل فرع الشركة",
+    "AskForHelp": "طلبات المساعدة"
   },
+
   "header": {
     "changeLanguage": "تغيير اللغة",
     "english": "الإنكليزية",
@@ -608,328 +654,14 @@
     "logout": "تسجيل الخروج",
     "search": "بحث"
   },
-  "footer": "Movers& 2023، جميع الحقوق محفوظة",
 
-  "games": {
-    "gamesList": "قائمة الألعاب",
-    "info": "معلومات اللعبة",
-    "gameCode": "رمز اللعبة",
-    "qrCode": "رمز الاستجابة السريعة",
-    "gameStatus": "حالة اللعبة",
-    "creatorManager": "مدير اللعبة",
-    "status": {
-      "waiting": "بانتظار الشركات",
-      "finished": "منتهية"
-    },
-    "playerStatus": {
-      "playerStatus": "حالة اللاعب",
-      "playersStatus": "حالة اللاعبين",
-      "pending": "بانتظار القبول",
-      "approved": "تم قبوله",
-      "joinedCompany": "منضم إلى شركة",
-      "approve?": "قبول طلب انضمام اللاعب؟"
-    },
-    "activeGame": {
-      "activeGame": "تنشيط اللعبة",
-      "active": "تنشيط",
-      "modalDescription": "هل تريد تنشيط هذه اللعبة؟",
-      "activeGameSuccessMessage": "تم تنشيط اللعبة بنجاح!",
-      "approvePlayerSuccessMessage": "تم قبول اللاعب بنجاح!"
-    },
-    "gameInfo": {
-      "gameDetails": "تفاصيل اللعبة",
-      "companyList": "قائمة الشركات",
-      "companyCode": "رمز الشركة",
-      "companyId": "رقم الشركة",
-      "players": "اللاعبين",
-      "playerCompanyRole": {
-        "playerCompanyRole": "دور اللاعب في الشركة",
-        "fManager": "مدير مالي",
-        "gManager": "مدير عام",
-        "mManager": "مدير تسويقي",
-        "pManager": "مدير الانتاج",
-        "withotRole": "بدون دور"
-      },
-      "importGame": {
-        "index": "تكرار اللعبة",
-        "modalDescription": "هل تريد تكرار هذه اللعبة لإنشاء لعبة جديدة؟",
-        "modalPanel": "سيتم أخذ جميع المحددات في هذه اللعبة لإنشاء لعبة جديدة.",
-        "okBtn": "تكرار"
-      },
-      "playersInCompanyId": "اللاعبين في الشركة ذات الرقم"
-    },
-    "result": {
-      "result": "النتيجة",
-      "gameResult": "نتيجة اللعبة",
-      "pEvaluation": "مؤشر تقييم الأداء",
-      "overallScore": "النتيجة الإجمالية",
-      "competitiveness": "مؤشر تقييم التنافسية"
-    },
-    "rounds": {
-      "rounds": "الجولات"
-    }
-  },
-  "gameSettings": {
-    "generalSpecifiers": {
-      "generalSpecifiers": "المحددات العامة",
-      "numberOfProductOffer": "عدد المنتجات المطروحة",
-      "numberOfCompetingFirms": "عدد المنشآت المتنافسة ",
-      "legalPeriodForCalculatingDepreciation": "المدّة القانونيّة لاحتساب الاهتلاك",
-      "profitsTaxRate": {
-        "profitsTaxRate": "معدّل الضريبة على الأرباح",
-        "low": "منخفض، 0.20",
-        "moderate": "معتدل، 0.30",
-        "high": "مرتفع، 0.40"
-      },
-      "exposureInterestRate": {
-        "exposureInterestRate": "معدّل الفائدة على الانكشاف ",
-        "low": "منخفض، 0.15",
-        "moderate": "معتدل، 0.20",
-        "high": "مرتفع، 0.25"
-      },
-      "exposureControlFactor": {
-        "exposureControlFactor": "معامل ضبط الانكشاف",
-        "slow": "تحصيل بطيء، 0.40",
-        "moderate": "تحصيل معتدل السرعة، 0.50",
-        "fast": "تحصيل سريع، 0.60"
-      },
-      "effectOfTheSharePriceOnRealizedProfit": {
-        "effectOfTheSharePriceOnRealizedProfit": "معامل تأثّر سعر السهم بالربح المحقّق  ",
-        "weak": "تأثر ضعيف، 0.20",
-        "moderate": "تأثر معتدل، 0.30",
-        "high": "تأثر شديد، 0.40"
-      },
-      "dividEndEffectOfSharePrice": {
-        "dividEndEffectOfSharePrice": "معامل تأثّر سعر السهم بالربح الموزّع",
-        "weak": "تأثر ضعيف، 0.45",
-        "moderate": "تأثر معتدل، 0.60",
-        "high": "تأثر شديد، 0.75"
-      },
-      "reputationFactorForCurrentMarketingSpend": {
-        "reputationFactorForCurrentMarketingSpend": "معامل تأثّر السمعة بالإنفاق التسويقي الجاري",
-        "weak": "تأثر ضعيف، 0.40",
-        "moderate": "تأثر معتدل، 0.50",
-        "high": "تأثر شديد، 0.60"
-      },
-      "expansionAndContractionFactor": "معامل التوسّع والانكماش",
-      "performanceWeightingFactor": "معامل تثقيل الأداء",
-      "referencePricingFactor": "معامل التسعير المرجعي",
-      "demandRegressionThreshold": "عتبة انكفاء الطلب",
-      "investmentEfficiencyCoefficient": "معامل فاعليّة الاستثمار",
-      "setGeneralSpecifiers": "ضبط المحددات العامة",
-      "editMessageSuccess": "تم تعديل المحددات العامة بنجاح"
-    },
-    "initialModeSettings": {
-      "initialModeSettings": "محددات الوضع الابتدائي",
-      "balanceOfBankAccounts": "رصيد الحسابات المصرفيّة",
-      "generalFixedCosts": "التكاليف الثابتة العامّة",
-      "sharePrice": "سعر السهم",
-      "setInitMode": "ضبط محددات الوضع الابتدائي",
-      "editMessageSuccess": "تم تعديل محددات الوضع الابتدائي بنجاح"
-    },
-    "productsAttributes": {
-      "productsAttributes": "محددات سمات المنتجات",
-      "recoveryRateOfProductSurplusValue": {
-        "recoveryRateOfProductSurplusValue": "معدّل الاسترداد من قيمة فائض المنتج",
-        "noRefund": "استرداد معدوم، 0.00",
-        "simpleRefund": "استرداد بسيط، 0.25",
-        "importantRefund": "استرداد مهمّ، 0.50"
-      },
-      "productReputationEfficiencyFactor": {
-        "productReputationEfficiencyFactor": "معامل فاعليّة السمعة في المنتج",
-        "poor": "فاعليّة ضعيفة، 0.15",
-        "moderate": "فاعليّة معتدلة، 0.25",
-        "very": "فاعليّة شديدة، 0.35"
-      },
-      "volatilityRateInDemandForProduct": {
-        "volatilityRateInDemandForProduct": "معدّل التذبذب في الطلب على المنتج",
-        "simple": "تذبذب بسيط، 0.01",
-        "moderate": "تذبذب معتدل، 0.02",
-        "important": "تذبذب مهمّ، 0.03"
-      },
-      "initialAbsorptionCoefficientOfTheProduct": {
-        "initialAbsorptionCoefficientOfTheProduct": "معامل الاستيعاب الابتدائي للمنتج",
-        "weak": "منافسة ضعيفة، 0.90",
-        "moderate": "منافسة معتدلة، 0.75",
-        "strong": "منافسة شديدة، 0.60"
-      },
-      "growthRateOfTotalProductDemand": "معدّل نموّ الطلب الإجمالي للمنتج",
-      "theAverageElasticityOfDemandForProduct": "مرونة الطلب الوسطيّة للمنتج",
-      "setProduct": "ضبط محددات سمات المنتجات",
-      "editMessageSuccess": "تم تعديل محددات سمات المنتجات بنجاح"
-    },
-    "common": {
-      "productProductionCapacity": "الطاقة الإنتاجيّة في المنتج",
-      "singleVariableCost": "التكلفة الإفراديّة المتغيّرة للمنتج",
-      "reputationInTheProduct": "السمعة في المنتج"
-    },
-    "fixedValue": "قيمة مثبتة"
+  "error404": {
+    "comeBack": "العودة إلى الصفحة الرئيسية",
+    "backToLogin": "العودة إلى تسجيل الدخول",
+    "notFound": "عذراً، الصفحة غير موجودة!"
   },
 
-  "sliderImage": {
-    "sliderImagesList": "قائمة الصور",
-    "create": "تحميل صورة",
-    "createNew": "تحميل صورة جديدة",
-    "deleteModalTitle": "حذف الصورة",
-    "deleteModalDescription": "هل متأكد من رغبتك في حذف هذه الصورة؟",
-    "deleteMessageSuccess": "تم حذف الصورة بنجاح!",
-    "createMessageSuccess": "تم تحميل الصورة بنجاح!",
-    "editMessageSuccess": "تم تعديل الصورة بنجاح!",
-    "editModalTitle": "تعديل الصورة"
-  },
-  "blog": {
-    "createBlog": "إنشاء مقالة",
-    "blogArticles": "المقالات",
-    "articles": "المقالات",
-    "createMessageSuccess": "تم إنشاء المقالة بنجاح!",
-    "deleteMessageSuccess": "تم حذف المقالة بنجاح!",
-    "activateSuccessMessage": "تم تنشيط المقالة!",
-    "deactivateSuccessMessage": "تم إلغاء تنشيط المقالة!",
-    "updateSuccessMessage": "تم تحديث المقالة بنجاح!",
-    "deleteModalTitle": "حذف مقالة",
-    "deleteModalDescription": "هل تريد حذف هذه المقالة؟",
-    "createModalTitle": "إنشاء مقالة جديدة",
-    "editModalTitle": "تعديل مقالة"
-  },
-  "video": {
-    "createVideo": "تحميل فيديو",
-    "videos": "الفيديوهات",
-    "createMessageSuccess": "تم تحميل الفيديو بنجاح!",
-    "deleteMessageSuccess": "تم حذف الفيديو بنجاح!",
-    "activateSuccessMessage": "تم تنشيط الفيديو",
-    "deactivateSuccessMessage": "تم إلغاء تنشيط الفيديو!",
-    "updateSuccessMessage": "تم تحديث الفيديو بنجاح!",
-    "deleteModalTitle": "حذف الفيديو",
-    "deleteModalDescription": "هل تريد حذف هذا الفيديو؟",
-    "createModalTitle": "تحميل فيديو جديد",
-    "editModalTitle": "تعديل الفيديو",
-    "requiredVideo": "يجب تحميل فيديو!",
-    "videoDraggerDescription": "انقر أو اسحب فيديو لتحميله"
-  },
-  "createGame": {
-    "createSuccessMessage": "تم إنشاء اللعبة بنجاح!",
-    "createNewGame": "إنشاء لعبة جديدة",
-    "createGame": "إنشاء لعبة",
-    "gameInfo": "معلومات اللعبة",
-    "gameTitle": "عنوان اللعبة",
-    "gameDescription": "توصيف اللعبة"
-  },
-  "rounds": {
-    "index": "الجولة",
-    "companyRD": "قرارات الشركات في الجولة",
-    "companyRR": "نتائج الشركات في الجولة",
-    "marketIndicatorInRound": "مؤشرات السوق في الجولة",
-    "GC": "مجريات اللعبة",
-    "rIG": "الجولات في لعبة",
-    "inR": "في الجولة",
-    "timeRunning": "الوقت يمضي",
-    "DDE": "انتهت فترة اتخاذ القرار",
-    "LDDE": "انتهت فترة اتخاذ القرار النهائي",
-    "addedTS": "بدأ الوقت المضاف",
-    "dDFRS": "وقت اتخاذ القرار للجولة قد بدأ",
-    "rUTWFSLDD": "تم تحديث الجولة لانتظار بدء فترة اتخاذ القرار النهائي",
-    "rLDDS": "بدأت مدة اتخاذ القرار النهائي في الجولة",
-    "marketSuccessMessage": "تم حساب مؤشرات السوق بنجاح!",
-    "companyResultSuccessMessage": "تم حساب نتائج الشركات في الجولة بنجاح!",
-    "roundEnd": "انتهت الجولة",
-    "createRound": "إنشاء جولة جديدة",
-    "createR": "إنشاء جولة",
-    "createSuccessMessage": "تم إنشاء الجولة بنجاح!",
-    "roundsType": {
-      "active": "نشط",
-      "finished": "منتهية",
-      "pending": "في الانتظار",
-      "wFLD": "في انتظار القرار النهائي",
-      "wFSLDD": "في انتظار بدء فترة اتخاذ القرار النهائي"
-    },
-    "tableHeader": {
-      "id": "رقم الجولة",
-      "sT": "وقت البدء",
-      "eT": "وقت الانتهاء",
-      "roundType": "وضع الجولة",
-      "roundSeq": "تسلسل الجولة",
-      "decisionST": "وقت بدء القرار",
-      "decisionET": "وقت انتهاء القرار",
-      "DD": "وقت اتخاذ القرار",
-      "addDurationWF": "الوقت المضاف مع غرامة",
-      "fFLM": "الغرامة على التأخير"
-    },
-    "cardInfo": {
-      "cRound": "الجولة الحالية",
-      "timer": "الوقت المتبقي",
-      "action": "الإجراء"
-    },
-    "lastDD": "وقت اتخاذ القرار النهائي",
-    "FFLM": "الغرامة على التأخير",
-    "SDD": "بدء وقت اتخاذ القرار",
-    "SSDModalDescription": "هل تريد بدء فترة اتخاذ القرار؟",
-    "UTWFSLDButton": "تغيير إلى انتظار بدء فترة اتخاذ القرار النهائي",
-    "WTTE": "بانتظار انقضاء الوقت",
-    "WATTE": "بانتظار انقضاء الوقت الإضافي",
-    "UTWFSLDModal": {
-      "title": "تغيير وضع الجولة",
-      "description": {
-        "index": "هل تريد تغيير وضع الجولة إلى انتظار بدء فترة اتخاذ القرار النهائي؟",
-        "panel1": "سيتم اتخاذ القرارات الافتراضية في حالة الشركات التي لم تتخذ قراراً.",
-        "panel2": "يمكن حساب نتائج الجولة."
-      }
-    },
-    "SRLDD": "بدء فترة اتخاذ القرار النهائي",
-    "CCRAMI": "حساب مؤشرات السوق ونتائج الشركات",
-    "CMI": "حساب مؤشرات السوق",
-    "CCR": "حساب نتائج الشركات",
-    "SLDD": "بدء فترة اتخاذ القرار النهائي",
-    "SLDDModalDescription": "هل تريد بدء فترة اتخاذ القرار النهائي؟",
-    "end": "إنهاء الجولة",
-    "endDescription": "هل تريد إنهاء الجولة؟",
-    "dT": {
-      "oT": "في الوقت الأصلي",
-      "aT": "في الوقت الإضافي",
-      "default": "من اللعبة"
-    }
-  },
-  "tables": {
-    "CRD": {
-      "DT": "وقت اتخاذ القرار",
-      "DeR": "نسبة الأرباح",
-      "ETR": " إجمالي الإيرادات المتوقعة",
-      "ETS": "إجمالي الإنفاق المتوقع",
-      "Products": "المنتجات",
-      "PQ": "كمية المنتج",
-      "ISA": "مبلغ الإنفاق الاستثماري",
-      "MSA": "مبلغ الإنفاق على التسويق",
-      "PP": "سعر المنتج"
-    },
-    "MI": {
-      "averagePriceTradedInTheMarket": "متوسط السعر المتداول في السوق",
-      "marketingSpendingCoefficient": "معدل الإنفاق التسويقي",
-      "totalActualDemand": "إجمالي الطلب الفعلي",
-      "totalInvestmentSpending": "إجمالي الإنفاق الاستثماري",
-      "totalMarkitingSpending": "إجمالي الإنفاق التسويقي",
-      "totalSupplay": "إجمالي العرض",
-      "totalTheoreticalDemand": "إجمالي الطلب النظري"
-    },
-    "CRR": {
-      "da": "أقساط الاهتلاك",
-      "ebit": "ربح المنشأة",
-      "fine": "الغرامة",
-      "exposureBenefits": "الفائدة على الانكشاف",
-      "netProfit": "صافي الربح",
-      "newBalanceAccount": "حساب الرصيد الجديد",
-      "newFixedCosts": "التكاليف الثابتة الجديدة",
-      "rev": "إيرادات المنشأة",
-      "sharePrice": "سعر السهم",
-      "tc": "تكاليف المنشأة",
-      "price": "السعر",
-      "netProfitFromProduct_Rev_I": "صافي الربح من إيرادات المنشأة",
-      "productProductionCapacity": "الطاقة الإنتاجية",
-      "reputationForProduct": "السمعة للمنتج",
-      "soldQuantityOfProduct": "الكمية المباعة",
-      "variableCostOfTheproduct": "التكلفة المتغيرة"
-    }
-  },
-  "exportExcel": "تصدير إلى اكسل",
-
+  "footer": "Go Movaro 2023، جميع الحقوق محفوظة",
   "networkError": "خطأ في الشبكة",
   "timeoutExceeded": "تجاوزت المهلة للاتصال",
   "noNotifications": "لا يوجد إشعارات بعد!"

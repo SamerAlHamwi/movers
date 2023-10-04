@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { message, Row, Space, Tag } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -18,6 +18,7 @@ import { TableButton } from '../../GeneralStyles';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 
 export const Branches: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -122,6 +123,46 @@ export const Branches: React.FC = () => {
     { title: <Header>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
     { title: <Header>{t('common.bio')}</Header>, dataIndex: 'bio' },
+    {
+      title: <Header>{t('requests.services')}</Header>,
+      dataIndex: 'services',
+      render: (record: any) => (
+        <Space style={{ display: 'grid' }}>
+          {record?.map((service: any) => (
+            <Tag key={service?.id} style={{ padding: '4px' }}>
+              {service?.name}
+            </Tag>
+          ))}
+        </Space>
+      ),
+    },
+    {
+      title: <Header>{t('requests.details')}</Header>,
+      dataIndex: 'details',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <Button
+              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              severity="info"
+              onClick={() => {
+                navigate(`${record.id}/details`, { state: record.name });
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                  fontWeight: FONT_WEIGHT.regular,
+                  width: 'auto',
+                }}
+              >
+                {t('requests.details')}
+              </div>
+            </Button>
+          </Space>
+        );
+      },
+    },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',

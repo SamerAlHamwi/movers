@@ -604,7 +604,7 @@ export const EditBranch: React.FC = () => {
                         },
                       }),
                     ]}
-                    style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+                    style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
                   >
                     <PhoneInput
                       value={branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber}

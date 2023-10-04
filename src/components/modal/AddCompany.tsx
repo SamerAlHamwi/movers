@@ -26,7 +26,7 @@ import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
 import { getServices } from '@app/services/services';
 import { services } from '../Admin/Services';
-import { createCompany } from '@app/services/company';
+import { createCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -750,7 +750,7 @@ export const AddCompany: React.FC = () => {
               ]}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
 
-              // style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+              // style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
             >
               <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
@@ -795,12 +795,12 @@ export const AddCompany: React.FC = () => {
                   ? {
                       width: '50%',
                       margin: 'auto',
-                      direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                     }
                   : {
                       width: '80%',
                       margin: '0 10%',
-                      direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                     }
               }
             >

@@ -15,6 +15,10 @@ import {
   PlusCircleOutlined,
   AuditOutlined,
   HomeOutlined,
+  QuestionOutlined,
+  FormatPainterOutlined,
+  SoundOutlined,
+  SafetyOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -61,10 +65,16 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     icon: <BankOutlined />,
   },
   {
+    title: 'sidebarNavigation.AskForHelp',
+    key: 'AskForHelp',
+    url: `/AskForHelp`,
+    icon: <QuestionOutlined />,
+  },
+  {
     title: 'sidebarNavigation.Services',
     key: 'services',
     url: `/services`,
-    icon: <ClearOutlined />,
+    icon: <FormatPainterOutlined />,
   },
   {
     title: 'sidebarNavigation.SourceType',
@@ -82,7 +92,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.Notifications',
     key: 'notices',
     url: `/notices`,
-    icon: <NotificationOutlined />,
+    icon: <SoundOutlined />,
   },
   {
     title: 'sidebarNavigation.Roles',
@@ -118,7 +128,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.Term',
     key: 'Term',
     url: `/Terms`,
-    icon: <SafetyCertificateOutlined />,
+    icon: <SafetyOutlined />,
   },
 ];
 
