@@ -9,7 +9,7 @@ const getAllCompanies = async (page: number, pageSize: number, search: string) =
   );
 };
 
-const getCompanyById = async (id?: string) => {
+const getCompanyById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
 };
 

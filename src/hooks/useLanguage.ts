@@ -12,12 +12,12 @@ export const useLanguage = (): {
 } => {
   const { i18n } = useTranslation();
   const [localLanguage, setLocalLanguage] = useState<LanguageType>(
-    (localStorage.getItem('movers&-lang') as LanguageType) || 'en',
+    (localStorage.getItem('Go Movaro-lang') as LanguageType) || 'en',
   );
   const handleChangeLanguage = useCallback(
     async (locale: LanguageType) => {
       Dates.setLocale(locale);
-      localStorage.setItem('movers&-lang', locale);
+      localStorage.setItem('Go Movaro-lang', locale);
       await i18n.changeLanguage(locale);
       setLocalLanguage(locale);
     },

@@ -8,7 +8,7 @@ import {
   antOverrideCssVariables,
 } from './themes/themeVariables';
 
-const isArabic = localStorage.getItem('movers&-lang') === 'ar';
+const isArabic = localStorage.getItem('Go Movaro-lang') === 'ar';
 
 export default createGlobalStyle`
 

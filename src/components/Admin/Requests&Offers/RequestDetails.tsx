@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Col, Row, Tree, Card, Image, Avatar, Upload, Modal, UploadFile, Divider, Tag } from 'antd';
+import { Col, Row, Tree, Card, Image, Tag } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -14,8 +14,7 @@ import { useParams } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
-import { CheckOutlined, CloseOutlined, SettingOutlined } from '@ant-design/icons';
-import { RcFile } from 'antd/es/upload';
+import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
 
 const { Meta } = Card;
 
@@ -121,6 +120,17 @@ const RequestDetails: React.FC = () => {
     margin-bottom: 1rem;
   `;
 
+  const ColStyle =
+    isDesktop || isTablet
+      ? styled.div`
+          width: 46%;
+          margin: 0 2%;
+        `
+      : styled.div`
+          width: 80%;
+          margin: 0 10%;
+        `;
+
   const Details = styled.div`
     display: flex;
     flex-direction: column;
@@ -142,7 +152,6 @@ const RequestDetails: React.FC = () => {
   if (requestData && requestData?.attributeChoiceAndAttachments) {
     attributeChoiceAndAttachmentsData = requestData?.attributeChoiceAndAttachments.map(
       (attributeChoiceAndAttachmentsValue: any) => {
-        console.log(attributeChoiceAndAttachmentsValue?.attributeChoice?.name);
         attributeChoiceAndAttachmentsValue?.attachments.map((attachment: any) => {
           if (!attributeChoiceAttachments.includes(attachment)) {
             attributeChoiceAttachments.push(attachment);
@@ -163,37 +172,30 @@ const RequestDetails: React.FC = () => {
         >
           <Spinner spinning={loading}>
             <Row style={{ margin: '2rem 0' }}>
-              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
+              <ColStyle>
                 <h3> {t('requests.source')} :</h3>
-              </Col>
-              <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
+              </ColStyle>
+              <ColStyle>
                 <h3> {t('requests.destination')} :</h3>
-              </Col>
+              </ColStyle>
             </Row>
+
             <Details>
               <DetailsRow>
                 {requestData?.requestForQuotationContacts.map((request: any) => {
                   return (
                     <>
                       {request?.requestForQuotationContactType == '1' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('common.name')}</DetailsTitle>
                           <DetailsValue>{request?.fullName}</DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                       {request?.requestForQuotationContactType == '2' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('common.name')}</DetailsTitle>
                           <DetailsValue>{request?.fullName}</DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                     </>
                   );
@@ -205,24 +207,16 @@ const RequestDetails: React.FC = () => {
                   return (
                     <>
                       {request?.requestForQuotationContactType == '1' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
                           <DetailsValue>{request?.dailCode + '  ' + request?.phoneNumber}</DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                       {request?.requestForQuotationContactType == '2' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
                           <DetailsValue>{request?.dailCode + '  ' + request?.phoneNumber}</DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                     </>
                   );
@@ -234,11 +228,7 @@ const RequestDetails: React.FC = () => {
                   return (
                     <>
                       {request?.requestForQuotationContactType == '1' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('requests.isCallAvailable')}</DetailsTitle>
                           <DetailsValue style={{ padding: '0.5rem' }}>
                             {request?.isCallAvailable === true ? (
@@ -251,14 +241,10 @@ const RequestDetails: React.FC = () => {
                               </TableButton>
                             )}
                           </DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                       {request?.requestForQuotationContactType == '2' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('requests.isCallAvailable')}</DetailsTitle>
                           <DetailsValue style={{ padding: '0.5rem' }}>
                             {request?.isCallAvailable === true ? (
@@ -271,7 +257,7 @@ const RequestDetails: React.FC = () => {
                               </TableButton>
                             )}
                           </DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                     </>
                   );
@@ -283,11 +269,7 @@ const RequestDetails: React.FC = () => {
                   return (
                     <>
                       {request?.requestForQuotationContactType == '1' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('requests.isTelegramAvailable')}</DetailsTitle>
                           <DetailsValue style={{ padding: '0.5rem' }}>
                             {request?.isTelegramAvailable === true ? (
@@ -300,14 +282,10 @@ const RequestDetails: React.FC = () => {
                               </TableButton>
                             )}
                           </DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                       {request?.requestForQuotationContactType == '2' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('requests.isTelegramAvailable')}</DetailsTitle>
                           <DetailsValue style={{ padding: '0.5rem' }}>
                             {request?.isTelegramAvailable === true ? (
@@ -320,7 +298,7 @@ const RequestDetails: React.FC = () => {
                               </TableButton>
                             )}
                           </DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                     </>
                   );
@@ -332,11 +310,7 @@ const RequestDetails: React.FC = () => {
                   return (
                     <>
                       {request?.requestForQuotationContactType == '1' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('requests.isWhatsAppAvailable')}</DetailsTitle>
                           <DetailsValue style={{ padding: '0.5rem' }}>
                             {request?.isWhatsAppAvailable === true ? (
@@ -349,14 +323,10 @@ const RequestDetails: React.FC = () => {
                               </TableButton>
                             )}
                           </DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                       {request?.requestForQuotationContactType == '2' && (
-                        <Col
-                          style={
-                            isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
-                          }
-                        >
+                        <ColStyle>
                           <DetailsTitle>{t('requests.isWhatsAppAvailable')}</DetailsTitle>
                           <DetailsValue style={{ padding: '0.5rem' }}>
                             {request?.isWhatsAppAvailable === true ? (
@@ -369,7 +339,7 @@ const RequestDetails: React.FC = () => {
                               </TableButton>
                             )}
                           </DetailsValue>
-                        </Col>
+                        </ColStyle>
                       )}
                     </>
                   );
@@ -377,63 +347,47 @@ const RequestDetails: React.FC = () => {
               </DetailsRow>
 
               <DetailsRow>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                <ColStyle>
                   <DetailsTitle> {t('requests.country')} </DetailsTitle>
                   <DetailsValue>{requestData?.sourceCity?.country?.name}</DetailsValue>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                </ColStyle>
+                <ColStyle>
                   <DetailsTitle> {t('requests.country')} </DetailsTitle>
                   <DetailsValue>{requestData?.destinationCity?.country?.name}</DetailsValue>
-                </Col>
+                </ColStyle>
               </DetailsRow>
 
               <DetailsRow>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                <ColStyle>
                   <DetailsTitle> {t('requests.city')} </DetailsTitle>
                   <DetailsValue>{requestData?.sourceCity?.name}</DetailsValue>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                </ColStyle>
+                <ColStyle>
                   <DetailsTitle> {t('requests.city')} </DetailsTitle>
                   <DetailsValue>{requestData?.destinationCity?.name}</DetailsValue>
-                </Col>
+                </ColStyle>
               </DetailsRow>
 
               <DetailsRow>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                <ColStyle>
                   <DetailsTitle> {t('requests.address')} </DetailsTitle>
                   <DetailsValue>{requestData?.sourceAddress}</DetailsValue>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                </ColStyle>
+                <ColStyle>
                   <DetailsTitle> {t('requests.address')} </DetailsTitle>
                   <DetailsValue>{requestData?.destinationAddress}</DetailsValue>
-                </Col>
+                </ColStyle>
               </DetailsRow>
 
               <DetailsRow>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                <ColStyle>
                   <DetailsTitle> {t('requests.moveAtUtc')} </DetailsTitle>
                   <DetailsValue>{requestData?.moveAtUtc} </DetailsValue>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
+                </ColStyle>
+                <ColStyle>
                   <DetailsTitle> {t('requests.arrivalAtUtc')} </DetailsTitle>
                   <DetailsValue>{requestData?.arrivalAtUtc}</DetailsValue>
-                </Col>
+                </ColStyle>
               </DetailsRow>
 
               <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.services')}</DetailsTitle>
@@ -538,15 +492,15 @@ const RequestDetails: React.FC = () => {
                 >
                   {requestData?.statues === 1 ? (
                     <Tag color="#30af5b" style={{ padding: '4px' }}>
-                      Checking
+                      {t('requests.checking')}
                     </Tag>
                   ) : requestData?.statues === 2 ? (
                     <Tag color="#01509a" style={{ padding: '4px' }}>
-                      Approved
+                      {t('requests.approved')}
                     </Tag>
                   ) : requestData?.statues === 3 ? (
                     <Tag color="#ff5252" style={{ padding: '4px' }}>
-                      Rejected
+                      {t('requests.rejected')}
                     </Tag>
                   ) : (
                     '_'

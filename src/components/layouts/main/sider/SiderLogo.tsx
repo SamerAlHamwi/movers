@@ -2,10 +2,8 @@ import React from 'react';
 import * as S from './MainSider/MainSider.styles';
 import { RightOutlined } from '@ant-design/icons';
 import { useResponsive } from 'hooks/useResponsive';
-import { useAppSelector } from '@app/hooks/reduxHooks';
-import { useTranslation } from 'react-i18next';
-import logoLight from '@app/assets/logo/3.png';
-import logoDark from '@app/assets/logo/2.png';
+import NameLogoAR from '@app/assets/svg/NameAR';
+import NameLogoEN from '@app/assets/svg/NameEN';
 
 interface SiderLogoProps {
   isSiderCollapsed: boolean;
@@ -13,16 +11,11 @@ interface SiderLogoProps {
 }
 export const SiderLogo: React.FC<SiderLogoProps> = ({ isSiderCollapsed, toggleSider }) => {
   const { tabletOnly } = useResponsive();
-  const { t } = useTranslation();
-  const theme = useAppSelector((state) => state.theme.theme);
-
-  const img = theme === 'dark' ? logoDark : logoLight;
 
   return (
     <S.SiderLogoDiv>
       <S.SiderLogoLink to="/">
-        {/* <img src={img} alt="MOVERS&" width={40} height={40} /> */}
-        <S.BrandSpan>{t('sidebarNavigation.Brand')}</S.BrandSpan>
+        {localStorage.getItem('Go Movaro-lang') == 'en' ? <NameLogoEN /> : <NameLogoAR />}
       </S.SiderLogoLink>
       {tabletOnly && (
         <S.CollapseButton

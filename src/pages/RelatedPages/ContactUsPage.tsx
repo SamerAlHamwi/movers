@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import ContactUs from '@app/components/Admin/ContactUs';
 
-const CitiesPage: React.FC = () => {
+const ContactUsPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
@@ -14,4 +14,4 @@ const CitiesPage: React.FC = () => {
   );
 };
 
-export default CitiesPage;
+export default ContactUsPage;

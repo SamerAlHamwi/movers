@@ -334,17 +334,17 @@ export const Requests: React.FC = () => {
             )}
             {/* {record.statues === 1 && (
               <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-                Checking
+                {t('requests.checking')}
               </Tag>
             )} */}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
-                Approved
+                {t('requests.approved')}
               </Tag>
             )}
             {record.statues === 3 && (
               <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
-                Rejected
+                {t('requests.rejected')}
               </Tag>
             )}
           </>
