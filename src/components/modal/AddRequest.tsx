@@ -43,7 +43,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
-const lang = localStorage.getItem('movers&-lang');
+const lang = localStorage.getItem('Go Movaro-lang');
 
 let requestData = {
   sourceCityId: '',
@@ -672,15 +672,15 @@ export const AddRequest: React.FC = () => {
                     ? {
                         width: 'fit-content',
                         margin: '2rem auto',
-                        direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                       }
                     : {
                         width: 'fit-content',
                         margin: '2rem auto',
-                        direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                       }
                 }
-                // style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+                // style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
               >
                 <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
               </BaseButtonsForm.Item>

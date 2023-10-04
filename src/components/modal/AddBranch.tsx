@@ -542,7 +542,7 @@ export const AddBranch: React.FC = () => {
                       },
                     }),
                   ]}
-                  style={{ margin: '2%', direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl' }}
+                  style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
                 >
                   <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
                 </BaseButtonsForm.Item>
@@ -589,12 +589,12 @@ export const AddBranch: React.FC = () => {
                   ? {
                       width: '50%',
                       margin: 'auto',
-                      direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                     }
                   : {
                       width: '80%',
                       margin: '0 10%',
-                      direction: localStorage.getItem('movers&-lang') == 'en' ? 'ltr' : 'rtl',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                     }
               }
             >
