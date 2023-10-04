@@ -31,7 +31,7 @@ const CountryPage = lazy(() => import('@app/pages/LocationsPages/CountriesPage')
 const CityPage = lazy(() => import('@app/pages/LocationsPages/CitiesPage'));
 const RegionPage = lazy(() => import('@app/pages/LocationsPages/RegionPage'));
 const Notifications = lazy(() => import('@app/pages/RelatedPages/NotificationsPage'));
-const Terms = lazy(() => import('@app/pages/Term&Condition/TermPage'));
+const Terms = lazy(() => import('@app/pages/RelatedPages/TermPage'));
 const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
@@ -47,6 +47,7 @@ const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
 const Brokerspage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
 const Partnerspage = lazy(() => import('@app/pages/UsersPages/PartnersPage'));
+const AskForHelpPage = lazy(() => import('@app/pages/RelatedPages/AskForHelpPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -83,6 +84,7 @@ const AddBranchesPage = withLoading(AddBranchPage);
 const EditBranchesPage = withLoading(EditBranchPage);
 const BrokerPage = withLoading(Brokerspage);
 const PartnerPage = withLoading(Partnerspage);
+const AskForHelpsPage = withLoading(AskForHelpPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -384,6 +386,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <TermsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="AskForHelp"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <AskForHelpsPage />
               </PrivateRoute>
             }
           />

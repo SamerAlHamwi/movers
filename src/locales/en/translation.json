@@ -27,6 +27,7 @@
     "creationTime": "Creation time",
     "deactivate": "Deactivate",
     "activate": "Activate",
+    "confrim": "Confirm",
     "apply": "Apply",
     "cancel": "Cancel",
     "submit": "Submit",
@@ -313,7 +314,10 @@
     "attachments": "Attachments",
     "companyOwnerIdentity": "Company Owner Identity",
     "companyCommercialRegister": "Company Commercial Register",
-    "additionalAttachment": "Additional Attachments"
+    "additionalAttachment": "Additional Attachments",
+    "checking": "Checking",
+    "approved": "Approved",
+    "rejected": "Rejected"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -600,6 +604,22 @@
     "add": "Save Edit"
   },
 
+  "_comment21": "*********************************** asks ************************************************",
+  "asks": {
+    "asksList": "Help Requests List",
+    "fullName": "Full Name",
+    "phoneNumber": "Phone Number",
+    "emailAddress": "Email Address",
+    "creationTime": "Creation time",
+    "type": "Type Of User",
+    "status": "Status",
+    "waiting": "Waiting",
+    "followed": "Finished",
+    "confirmAskSuccessMessage": "The Asking For Help has been Confirmed Successfully",
+    "confirmAskModalTitle": "Confirm Asking For Help",
+    "confirmAskModalDescription": "Are You Sure To Confirm This Asking For Help?"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -628,7 +648,8 @@
     "companies": "Companies",
     "AddBranch": "Add Branch",
     "branches": "Branches",
-    "EditBranch": "Edit Branch"
+    "EditBranch": "Edit Branch",
+    "AskForHelp": "Help Requests"
   },
 
   "header": {

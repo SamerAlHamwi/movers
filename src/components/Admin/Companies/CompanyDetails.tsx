@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image } from 'antd';
+import { Row, Tree, Image, Tag } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -253,6 +253,31 @@ const CompanyDetails: React.FC = () => {
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{companyData?.numberOfTransfers}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.statues')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {companyData?.statues === 1 ? (
+                      <Tag color="#30af5b" style={{ padding: '4px' }}>
+                        {t('companies.checking')}
+                      </Tag>
+                    ) : companyData?.statues === 2 ? (
+                      <Tag color="#01509a" style={{ padding: '4px' }}>
+                        {t('companies.approved')}
+                      </Tag>
+                    ) : companyData?.statues === 3 ? (
+                      <Tag color="#ff5252" style={{ padding: '4px' }}>
+                        {t('companies.rejected')}
+                      </Tag>
+                    ) : (
+                      '_'
+                    )}
+                  </DetailsValue>
                 </ColStyle>
               </DetailsRow>
 

@@ -26,6 +26,7 @@
     "deactivate": "إلغاء التفعيل",
     "activate": "تفعيل",
     "apply": "تطبيق",
+    "confrim": "تأكيد",
     "cancel": "إلغاء",
     "resend": "إعادة إرسال",
     "Previous": "السابق",
@@ -311,7 +312,11 @@
     "attachments": "الصور المرفقة",
     "companyOwnerIdentity": "صورة | ملف مالك الشركة",
     "companyCommercialRegister": "صورة | ملف السجل التجاري",
-    "additionalAttachment": "صور | ملفات إضافية"
+    "additionalAttachment": "صور | ملفات إضافية",
+    "statues": "حالة الشركة",
+    "checking": "قيد المعالجة",
+    "approved": "تم قبولها",
+    "rejected": "تم رفضها"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -421,7 +426,7 @@
     "deleteAttributeChoiceModalDescription": "هل أنت متأكد من حذف هذه تفصيل لمكان النقل"
   },
 
-  "_comment14": "***********************************childAttributeChoices ************************************************",
+  "_comment14": "*********************************** childAttributeChoices ************************************************",
   "childAttributeChoices": {
     "childAttributeChoicesList": "قائمة التفاصيل الإضافية للأماكن المنقولة",
     "subChildAttributeChoice": "خيارات إضافية",
@@ -594,6 +599,22 @@
     "add": "حفظ التعديل"
   },
 
+  "_comment21": "*********************************** asks ************************************************",
+  "asks": {
+    "asksList": "قائمة طلبات المساعدة",
+    "fullName": "الإسم الكامل",
+    "phoneNumber": "رقم الموبايل",
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "creationTime": "وقت الإنشاء",
+    "type": "نوع المستخدم",
+    "status": "حالة الطلب",
+    "waiting": "قيد المراجعة",
+    "followed": "تم إنجازه",
+    "confirmAskSuccessMessage": "تمت المساعدة لهذا الطلب بنجاح",
+    "confirmAskModalTitle": "تأكيد طلب المساعدة",
+    "confirmAskModalDescription": "هل أنت متأكد من التأكيد على هذا الطلب؟"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -621,7 +642,8 @@
     "companies": "الشركات",
     "AddBranch": "إضافة فرع لشركة",
     "branches": "الفروع",
-    "EditBranch": "تعديل فرع الشركة"
+    "EditBranch": "تعديل فرع الشركة",
+    "AskForHelp": "طلبات المساعدة"
   },
 
   "header": {

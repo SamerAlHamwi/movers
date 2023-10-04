@@ -223,14 +223,14 @@ const BranchDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
-              {/* <DetailsRow>
+              <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.numberOfTransfers')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{branchData?.numberOfTransfers}</DetailsValue>
                 </ColStyle>
-              </DetailsRow> */}
+              </DetailsRow>
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.companyContact')} :

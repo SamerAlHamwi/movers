@@ -303,17 +303,17 @@ export const Companies: React.FC = () => {
             )}
             {record.statues === 1 && (
               <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-                {t('requests.checking')}
+                {t('companies.checking')}
               </Tag>
             )}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
-                {t('requests.approved')}
+                {t('companies.approved')}
               </Tag>
             )}
             {record.statues === 3 && (
               <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
-                {t('requests.rejected')}
+                {t('companies.rejected')}
               </Tag>
             )}
           </>
