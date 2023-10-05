@@ -35,9 +35,9 @@ const Terms = lazy(() => import('@app/pages/RelatedPages/TermPage'));
 const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
 const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
-const RequestPage = lazy(() => import('@app/pages/Requests&Offers/RequestsPage'));
-const RequestDetailPage = lazy(() => import('@app/pages/Requests&Offers/RequestDetailsPage'));
-const AddRequestPage = lazy(() => import('@app/pages/Requests&Offers/AddRequestPage'));
+const RequestPage = lazy(() => import('@app/pages/RequestsPages/RequestsPage'));
+const RequestDetailPage = lazy(() => import('@app/pages/RequestsPages/RequestDetailsPage'));
+const AddRequestPage = lazy(() => import('@app/pages/RequestsPages/AddRequestPage'));
 const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
@@ -47,7 +47,8 @@ const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
 const Brokerspage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
 const Partnerspage = lazy(() => import('@app/pages/UsersPages/PartnersPage'));
-const AskForHelpPage = lazy(() => import('@app/pages/RelatedPages/AskForHelpPage'));
+const AskForHelpPage = lazy(() => import('@app/pages/RelatedPages/HelpRequestsPage'));
+const FrequentlyQuestionPage = lazy(() => import('@app/pages/RelatedPages/FrequentlyQuestionsPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -85,6 +86,7 @@ const EditBranchesPage = withLoading(EditBranchPage);
 const BrokerPage = withLoading(Brokerspage);
 const PartnerPage = withLoading(Partnerspage);
 const AskForHelpsPage = withLoading(AskForHelpPage);
+const FrequentlyQuestionsPage = withLoading(FrequentlyQuestionPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -382,7 +384,7 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="Terms"
+            path="terms"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <TermsPage />
@@ -391,10 +393,19 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="AskForHelp"
+            path="askForHelp"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AskForHelpsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="frequentlyQuestions"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <FrequentlyQuestionsPage />
               </PrivateRoute>
             }
           />

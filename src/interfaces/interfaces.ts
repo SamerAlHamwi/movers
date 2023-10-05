@@ -78,6 +78,8 @@ export type Translation = {
   language: LanguageType;
   name?: string;
   address?: string;
+  question?: string;
+  answer?: string;
 };
 
 export type subservices = {
@@ -231,6 +233,11 @@ export interface ServiceModel {
   attachmentId: number;
   attachment?: any;
   serviceId?: string | undefined;
+}
+
+export interface faqModel {
+  id: number;
+  translations: Translation[];
 }
 
 export interface SourceTypeModel {

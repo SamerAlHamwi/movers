@@ -620,6 +620,25 @@
     "confirmAskModalDescription": "Are You Sure To Confirm This Asking For Help?"
   },
 
+  "_comment22": "*********************************** FAQ ************************************************",
+  "faq": {
+    "faqList": "FAQ List",
+    "addFAQ": "Add Frequently asked question",
+    "question": "Question",
+    "answer": "Answer",
+    "addFAQModalTitle": "Add Frequently asked question",
+    "addFAQSuccessMessage": "The Frequently asked question has been Added Successfully",
+    "editFAQModalTitle": "Edit Frequently asked question",
+    "editFAQSuccessMessage": "The Frequently asked question has been Edited Successfully",
+    "deleteFAQModalTitle": "Delete Frequently asked question",
+    "deleteFAQSuccessMessage": "The Frequently asked question has been Deleted Successfully",
+    "deleteFAQModalDescription": "Are You Sure To Delete This Frequently asked question?",
+    "question_ar": "Arabic Question",
+    "question_en": "English Question",
+    "answer_ar": "Arabic Answer",
+    "answer_en": "English Answer"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -649,7 +668,8 @@
     "AddBranch": "Add Branch",
     "branches": "Branches",
     "EditBranch": "Edit Branch",
-    "AskForHelp": "Help Requests"
+    "AskForHelp": "Help Requests",
+    "FrequentlyQuestions": "Frequently Questions"
   },
 
   "header": {

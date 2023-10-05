@@ -615,6 +615,25 @@
     "confirmAskModalDescription": "هل أنت متأكد من التأكيد على هذا الطلب؟"
   },
 
+  "_comment22": "*********************************** FAQ ************************************************",
+  "faq": {
+    "faqList": "قائمة الأسئلة المتكررة",
+    "addFAQ": "إضافة سؤال متكرر",
+    "question": "السؤال",
+    "answer": "الجواب",
+    "addFAQModalTitle": "إضافة سؤال متكرر",
+    "addFAQSuccessMessage": "تمت إضافة السؤال بنجاح",
+    "editFAQModalTitle": "تعديل معلومات السؤال المتكرر",
+    "editFAQSuccessMessage": "تم تعديل معلومات السؤال المتكرر بنجاح",
+    "deleteFAQModalTitle": "حذف السؤال المتكرر",
+    "deleteFAQSuccessMessage": "تم حذف السؤال المتكرر بنجاح",
+    "deleteFAQModalDescription": "هل أنت متأكد من حذف هذه السؤال المتكرر",
+    "question_ar": "السؤال بالعربية",
+    "question_en": "السؤال بالإنكليزية",
+    "answer_ar": "الجواب بالعربية",
+    "answer_en": "الجواب بالإنكليزية"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -643,7 +662,8 @@
     "AddBranch": "إضافة فرع لشركة",
     "branches": "الفروع",
     "EditBranch": "تعديل فرع الشركة",
-    "AskForHelp": "طلبات المساعدة"
+    "AskForHelp": "طلبات المساعدة",
+    "FrequentlyQuestions": "الأسئلة المتكررة"
   },
 
   "header": {

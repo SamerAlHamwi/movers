@@ -1,17 +1,17 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
-import ContactUs from '@app/components/Admin/ContactUs';
+import { Requests } from '@app/components/Admin/Requests/index';
 
-const CitiesPage: React.FC = () => {
+const RequestsPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.ContactUs')}</PageTitle>
-      <ContactUs />
+      <PageTitle>{t('sidebarNavigation.Requests')}</PageTitle>
+      <Requests />
     </>
   );
 };
 
-export default CitiesPage;
+export default RequestsPage;
