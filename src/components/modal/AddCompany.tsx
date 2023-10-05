@@ -111,19 +111,9 @@ export const AddCompany: React.FC = () => {
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
-
-  const [Data, setData] = useState<cities[] | undefined>();
-  const [Dat, setDat] = useState<services[] | undefined>();
-  const [countryData, setCountryData] = useState<countries[]>();
-  const [CityData, setCityData] = useState<cities[]>();
-  // const [Country_id, setCountryId] = useState(0);
-  // const [City_id, setCityId] = useState(0);
-  // const [Region_id, setRegionId] = useState(0);
-  const [totalCount, setTotalCount] = useState<number>(0);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
-  // const [valueRadio, setValueRadio] = useState(1);
   const [logo, setLogo] = useState();
   const [OwnerIdentityIds, setOwnerIdentityIds] = useState();
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
@@ -145,30 +135,11 @@ export const AddCompany: React.FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
-  // const { data, refetch, isRefetching } = useQuery(
-  //   ['Services'],
-  //   () =>
-  //     getServices()
-  //       .then((data) => {
-  //         const result = data.data?.result?.items;
-  //         setTotalCount(data.data?.result?.totalCount);
-  //         setDat(result);
-  //       })
-  //       .catch((error) => {
-  //         notificationController.error({ message: error.message || error.error?.message });
-  //       }),
-  //   {
-  //     enabled: Dat === undefined,
-  //   },
-  // );
-
   const { data, refetch, isRefetching } = useQuery('getAllServices', getServices);
 
   useEffect(() => {
     refetch();
   }, [language, refetch]);
-
-  console.log(data);
 
   const treeData: any = data?.data?.result?.items?.map((service: any) => {
     const serviceNode: DataNode = {
