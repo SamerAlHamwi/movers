@@ -607,6 +607,7 @@
   "_comment21": "*********************************** asks ************************************************",
   "asks": {
     "asksList": "Help Requests List",
+    "message": "Message",
     "fullName": "Full Name",
     "phoneNumber": "Phone Number",
     "emailAddress": "Email Address",
