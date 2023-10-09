@@ -163,6 +163,7 @@ const ContactUs: React.FC = () => {
           onClick={() => {
             setIsOpenEditModalForm(true);
             setEditmodaldata(contactData);
+            console.log(contactData);
           }}
           icon={<EditOutlined />}
         >
@@ -176,7 +177,9 @@ const ContactUs: React.FC = () => {
           visible={isOpenEditModalForm}
           onCancel={() => setIsOpenEditModalForm(false)}
           onEdit={(data: any) => {
+            console.log(editmodaldata);
             const id = editmodaldata.id;
+            console.log(id);
             const values = { ...data, id };
             editmodaldata !== undefined && handleEdit(values);
           }}

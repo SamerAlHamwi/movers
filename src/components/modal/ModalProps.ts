@@ -14,11 +14,12 @@ import {
   Broker,
   RequestModel,
   BranchModel,
+  faqModel,
 } from '@app/interfaces/interfaces';
 import { blog_article } from '@app/services/blog/blogArticles';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
-import { Term } from '../Admin/Term&condition';
+import { Term } from '../Admin/Terms';
 
 export interface ModalProps {
   visible: boolean;
@@ -41,6 +42,10 @@ export interface CreateRoleModalProps extends ModalProps {
 
 export interface CreateServiceModalProps extends ModalProps {
   onCreateService: (info: ServiceModel) => void;
+}
+
+export interface CreateFAQModalProps extends ModalProps {
+  onCreateFAQ: (info: faqModel) => void;
 }
 export interface CreateBrokrModalProps extends ModalProps {
   onCreateBroker: (info: Broker) => void;
@@ -107,6 +112,11 @@ export interface EditServiceProps extends ModalProps {
   values: ServiceModel | undefined;
   onEdit: (data: ServiceModel) => void;
   AttachmentId: number;
+}
+
+export interface EditFAQProps extends ModalProps {
+  values: faqModel | undefined;
+  onEdit: (data: faqModel) => void;
 }
 export interface EditPartnerProps extends ModalProps {
   Partner_values: Partner | undefined;

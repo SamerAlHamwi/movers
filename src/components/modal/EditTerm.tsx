@@ -15,7 +15,7 @@ import { Notification } from '@app/components/Admin/Notifications';
 import { LanguageType, NotModal } from '@app/interfaces/interfaces';
 import { useMutation } from 'react-query';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
-import { Term } from '../Admin/Term&condition';
+import { Term } from '../Admin/Terms';
 
 export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, Term_values, isLoading }) => {
   const { t } = useTranslation();

@@ -21,6 +21,7 @@ import { ActionModal } from '@app/components/modal/ActionModal';
 type User = {
   id: number;
   statues: number;
+  message: string;
   user: {
     id: number;
     fullName: string;
@@ -172,6 +173,23 @@ export const AskForHelp: React.FC = () => {
           }}
         >
           {record?.creationTime}
+        </div>
+      ),
+    },
+    {
+      title: <Header>{t('asks.message')}</Header>,
+      dataIndex: 'message',
+      render: (record: User) => (
+        <div
+          style={{
+            maxWidth: '150px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'break-spaces',
+            textAlign: 'center',
+          }}
+        >
+          {record === null ? '___' : record}
         </div>
       ),
     },

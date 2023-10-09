@@ -19,6 +19,10 @@ import {
   FormatPainterOutlined,
   SoundOutlined,
   SafetyOutlined,
+  TeamOutlined,
+  EnvironmentOutlined,
+  FileProtectOutlined,
+  FileUnknownOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -68,7 +72,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.AskForHelp',
     key: 'AskForHelp',
     url: `/AskForHelp`,
-    icon: <QuestionOutlined />,
+    icon: <FileUnknownOutlined />,
   },
   {
     title: 'sidebarNavigation.Services',
@@ -86,7 +90,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.Locations',
     key: 'locations',
     url: `/locations/countries`,
-    icon: <PushpinOutlined />,
+    icon: <EnvironmentOutlined />,
   },
   {
     title: 'sidebarNavigation.Notifications',
@@ -104,13 +108,13 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.Partners',
     key: 'Partners',
     url: `/Partners`,
-    icon: <UsergroupAddOutlined />,
+    icon: <TeamOutlined />,
   },
   {
     title: 'sidebarNavigation.Brokers',
     key: 'Brokers',
     url: `/Brokers`,
-    icon: <UsergroupAddOutlined />,
+    icon: <TeamOutlined />,
   },
   {
     title: 'sidebarNavigation.ContactUs',
@@ -122,13 +126,19 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.PrivacyPolicy',
     key: 'PrivacyPolicy',
     url: `/PrivacyPolicy`,
-    icon: <SafetyCertificateOutlined />,
+    icon: <FileProtectOutlined />,
   },
   {
     title: 'sidebarNavigation.Term',
     key: 'Term',
     url: `/Terms`,
-    icon: <SafetyOutlined />,
+    icon: <SafetyCertificateOutlined />,
+  },
+  {
+    title: 'sidebarNavigation.FrequentlyQuestions',
+    key: 'FrequentlyQuestions',
+    url: `/FrequentlyQuestions`,
+    icon: <QuestionOutlined />,
   },
 ];
 
