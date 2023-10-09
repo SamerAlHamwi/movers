@@ -2,7 +2,7 @@
   "name": "simo",
   "version": "1.0.0",
   "license": "MIT",
-  "description": "Go Movaro , MoversAnd , moving furniture",
+  "description": "Go Movaro  , moving furniture",
   "dependencies": {
     "@ant-design/icons": "^4.6.2",
     "@craco/craco": "^6.1.2",

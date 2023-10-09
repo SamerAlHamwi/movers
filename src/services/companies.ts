@@ -9,6 +9,13 @@ const getAllCompanies = async (page: number, pageSize: number, search: string) =
   );
 };
 
+const getSuitableCompanies = async (page: number, pageSize: number, search: string, requestId: string | undefined) => {
+  const skip = (page - 1) * pageSize;
+  return await httpApi.get(
+    `${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
+  );
+};
+
 const getCompanyById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
 };
@@ -29,4 +36,12 @@ const confirmCompany = async (data: any) => {
   return await httpApi.post(`${apiPrefix.companies}/ConfirmCompanyByAdmin`, data);
 };
 
-export { getAllCompanies, getCompanyById, createCompany, updateCompany, DeleteCompany, confirmCompany };
+export {
+  getAllCompanies,
+  getSuitableCompanies,
+  getCompanyById,
+  createCompany,
+  updateCompany,
+  DeleteCompany,
+  confirmCompany,
+};

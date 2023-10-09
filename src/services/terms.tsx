@@ -1,5 +1,5 @@
 import { httpApi } from '@app/api/httpApi';
-import { Term } from '@app/components/Admin/Term&condition';
+import { Term } from '@app/components/Admin/Terms';
 import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllTerm = async (page: number, pageSize: number, search: string) => {

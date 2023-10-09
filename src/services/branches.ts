@@ -9,6 +9,13 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
   );
 };
 
+const getSuitableBranches = async (page: number, pageSize: number, search: string, requestId: string | undefined) => {
+  const skip = (page - 1) * pageSize;
+  return await httpApi.get(
+    `${apiPrefix.branches}/GetAll?&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
+  );
+};
+
 const getBranch = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.branches}/Get?Id=${id}`);
 };
@@ -25,4 +32,4 @@ const DeleteBranch = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.branches}/Delete?Id=${id}`);
 };
 
-export { getAllBranches, getBranch, createBranch, UpdateBranch, DeleteBranch };
+export { getAllBranches, getSuitableBranches, getBranch, createBranch, UpdateBranch, DeleteBranch };

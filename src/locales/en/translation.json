@@ -511,7 +511,10 @@
     "destinationCity": "Destination City",
     "checking": "Checking",
     "approved": "Approved",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "suitableCompanies&Branches": "Suitable Companies & Branches",
+    "suitableCompanies": "Suitable Companies",
+    "suitableBranches": "Suitable Branches"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -607,6 +610,7 @@
   "_comment21": "*********************************** asks ************************************************",
   "asks": {
     "asksList": "Help Requests List",
+    "message": "Message",
     "fullName": "Full Name",
     "phoneNumber": "Phone Number",
     "emailAddress": "Email Address",
@@ -618,6 +622,25 @@
     "confirmAskSuccessMessage": "The Asking For Help has been Confirmed Successfully",
     "confirmAskModalTitle": "Confirm Asking For Help",
     "confirmAskModalDescription": "Are You Sure To Confirm This Asking For Help?"
+  },
+
+  "_comment22": "*********************************** FAQ ************************************************",
+  "faq": {
+    "faqList": "FAQ List",
+    "addFAQ": "Add Frequently asked question",
+    "question": "Question",
+    "answer": "Answer",
+    "addFAQModalTitle": "Add Frequently asked question",
+    "addFAQSuccessMessage": "The Frequently asked question has been Added Successfully",
+    "editFAQModalTitle": "Edit Frequently asked question",
+    "editFAQSuccessMessage": "The Frequently asked question has been Edited Successfully",
+    "deleteFAQModalTitle": "Delete Frequently asked question",
+    "deleteFAQSuccessMessage": "The Frequently asked question has been Deleted Successfully",
+    "deleteFAQModalDescription": "Are You Sure To Delete This Frequently asked question?",
+    "question_ar": "Arabic Question",
+    "question_en": "English Question",
+    "answer_ar": "Arabic Answer",
+    "answer_en": "English Answer"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
@@ -649,7 +672,9 @@
     "AddBranch": "Add Branch",
     "branches": "Branches",
     "EditBranch": "Edit Branch",
-    "AskForHelp": "Help Requests"
+    "AskForHelp": "Help Requests",
+    "FrequentlyQuestions": "Frequently Questions",
+    "suitableCompanies&Branches": "Suitable Companies & Branches"
   },
 
   "header": {

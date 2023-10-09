@@ -186,44 +186,44 @@ export const AddRequest: React.FC = () => {
   };
 
   const steps = [
-    {
-      title: 'Contact',
-      content: [
-        'Source',
-        'fullNameContactSource',
-        'phoneNumberSource',
-        'isCallAvailableSource',
-        'isWhatsAppAvailableSource',
-        'isTelegramAvailableSource',
-        'Destination',
-        'fullNameContactDestination',
-        'phoneNumberDestination',
-        'isCallAvailableDestination',
-        'isWhatsAppAvailableDestination',
-        'isTelegramAvailableDestination',
-      ],
-    },
-    {
-      title: 'Location',
-      content: [
-        'Source',
-        'sourceCountry',
-        'sourceCity',
-        'sourceAddress',
-        'moveAtUtc',
-        'sourceLocation',
-        'Destination',
-        'destinationCountry',
-        'destinationCity',
-        'destinationAddress',
-        'arrivalAtUtc',
-        'destinationLocation',
-      ],
-    },
-    {
-      title: 'Services',
-      content: ['serviceType', 'services', 'comment'],
-    },
+    // {
+    //   title: 'Contact',
+    //   content: [
+    //     'Source',
+    //     'fullNameContactSource',
+    //     'phoneNumberSource',
+    //     'isCallAvailableSource',
+    //     'isWhatsAppAvailableSource',
+    //     'isTelegramAvailableSource',
+    //     'Destination',
+    //     'fullNameContactDestination',
+    //     'phoneNumberDestination',
+    //     'isCallAvailableDestination',
+    //     'isWhatsAppAvailableDestination',
+    //     'isTelegramAvailableDestination',
+    //   ],
+    // },
+    // {
+    //   title: 'Location',
+    //   content: [
+    //     'Source',
+    //     'sourceCountry',
+    //     'sourceCity',
+    //     'sourceAddress',
+    //     'moveAtUtc',
+    //     'sourceLocation',
+    //     'Destination',
+    //     'destinationCountry',
+    //     'destinationCity',
+    //     'destinationAddress',
+    //     'arrivalAtUtc',
+    //     'destinationLocation',
+    //   ],
+    // },
+    // {
+    //   title: 'Services',
+    //   content: ['serviceType', 'services', 'comment'],
+    // },
     {
       title: 'SourceType',
       content: ['sourceTypeId', 'attributeForSourceTypeValues', 'attributeChoiceAndAttachments'],
@@ -251,7 +251,8 @@ export const AddRequest: React.FC = () => {
               {subService?.name}
             </span>
           ),
-          key: subService?.tools?.length > 0 ? `` : `onlySub service${service?.id} sub${subService?.id}`,
+          key:
+            subService?.tools?.length > 0 ? `${subService?.id}` : `onlySub service${service?.id} sub${subService?.id}`,
           children: [],
         };
         if (subService?.tools?.length > 0) {
@@ -460,6 +461,19 @@ export const AddRequest: React.FC = () => {
       <div className="ant-upload-text">Upload</div>
     </div>
   );
+
+  interface DisabledState {
+    [key: string]: boolean;
+  }
+
+  const [disabledState, setDisabledState] = useState<DisabledState>({});
+
+  const toggleDisable = (sourceTypeId: string) => {
+    setDisabledState((prevState) => ({
+      ...prevState,
+      [sourceTypeId]: prevState[sourceTypeId] === undefined ? true : !prevState[sourceTypeId],
+    }));
+  };
 
   return (
     <Card title={t('addRequest.addRequest')} padding="1.25rem 1.25rem 1.25rem">
@@ -924,7 +938,9 @@ export const AddRequest: React.FC = () => {
                     {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
                       <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
                         <div style={{ margin: '1rem' }}>
-                          <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>{sourceTypeItem.name}</p>
+                          <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>
+                            <Checkbox onClick={() => toggleDisable(sourceTypeItem.id)}>{sourceTypeItem.name}</Checkbox>
+                          </p>
                           <Radio.Group
                             style={{ display: 'flex', justifyContent: 'space-around' }}
                             onChange={(e) => {
@@ -958,8 +974,10 @@ export const AddRequest: React.FC = () => {
                             }}
                             value={selectedChoices[sourceTypeItem.id]}
                           >
+                            {console.log('disabledState', disabledState[sourceTypeItem.id])}
                             {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
                               <Radio
+                                disabled={!disabledState[sourceTypeItem.id]}
                                 key={parentAttributeChoice.id}
                                 value={`sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${parentAttributeChoice.id}`}
                               >

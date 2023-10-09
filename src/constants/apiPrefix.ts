@@ -22,4 +22,5 @@ export default {
   privacyPolicy: '/api/services/app/PrivacyPolicy',
   term: '/api/services/app/Term',
   ask: '/api/services/app/User',
+  frequentlyQuestions: '/api/services/app/FrequentlyQuestion',
 };
