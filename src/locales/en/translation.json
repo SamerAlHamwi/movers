@@ -511,7 +511,10 @@
     "destinationCity": "Destination City",
     "checking": "Checking",
     "approved": "Approved",
-    "rejected": "Rejected"
+    "rejected": "Rejected",
+    "suitableCompanies&Branches": "Suitable Companies & Branches",
+    "suitableCompanies": "Suitable Companies",
+    "suitableBranches": "Suitable Branches"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -670,7 +673,8 @@
     "branches": "Branches",
     "EditBranch": "Edit Branch",
     "AskForHelp": "Help Requests",
-    "FrequentlyQuestions": "Frequently Questions"
+    "FrequentlyQuestions": "Frequently Questions",
+    "suitableCompanies&Branches": "Suitable Companies & Branches"
   },
 
   "header": {

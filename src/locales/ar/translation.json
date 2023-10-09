@@ -506,7 +506,10 @@
     "destinationCity": "مدينة الوجهة",
     "checking": "قيد المعالجة",
     "approved": "تم قبوله",
-    "rejected": "تم رفضه"
+    "rejected": "تم رفضه",
+    "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
+    "suitableCompanies": "الشركات المناسبة",
+    "suitableBranches": "الأفرع المناسبة"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -664,7 +667,8 @@
     "branches": "الفروع",
     "EditBranch": "تعديل فرع الشركة",
     "AskForHelp": "طلبات المساعدة",
-    "FrequentlyQuestions": "الأسئلة المتكررة"
+    "FrequentlyQuestions": "الأسئلة المتكررة",
+    "suitableCompanies&Branches": "الشركات والأفرع المناسبة"
   },
 
   "header": {

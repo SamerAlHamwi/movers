@@ -278,6 +278,31 @@ export const Requests: React.FC = () => {
       ),
     },
     {
+      title: <Header>{t('requests.suitableCompanies&Branches')}</Header>,
+      dataIndex: 'suitableCompanies&Branches',
+      render: (index: number, record: any) => (
+        <Space>
+          <Button
+            style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+            severity="info"
+            onClick={() => {
+              navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
+            }}
+          >
+            <div
+              style={{
+                fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                fontWeight: FONT_WEIGHT.regular,
+                width: 'auto',
+              }}
+            >
+              {t('requests.suitableCompanies&Branches')}
+            </div>
+          </Button>
+        </Space>
+      ),
+    },
+    {
       title: <Header>{t('requests.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
