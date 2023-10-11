@@ -328,6 +328,7 @@ export const SuitableCompanies: React.FC = () => {
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0'
         }
+        style={{ height: 'auto', marginBottom: '70px' }}
       >
         <Table
           pagination={{
@@ -361,6 +362,7 @@ export const SuitableCompanies: React.FC = () => {
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0'
         }
+        style={{ height: 'auto', marginBottom: '70px' }}
       >
         <Table
           pagination={{

@@ -23,54 +23,22 @@ export const LoginForm: React.FC = () => {
   const { t } = useTranslation();
   const [isLoading, setLoading] = useState(false);
 
-  const { persistToken, readToken, deleteToken } = useAccessTokenCookie();
-
-  const handleSubmit = async (values: LoginRequest) => {
+  const handleSubmit = (values: LoginRequest) => {
     setLoading(true);
 
-    try {
-      // Perform the login request here and get the access token
-      const response = await dispatch(doLogin(values)); // Replace with your actual login function
-      console.log(response.payload);
-
-      // Assuming the login request was successful and you received an access token
-      // const accessToken = response.accessToken;
-
-      // Use the persistToken function from the custom hook to store the access token in a cookie
-      // persistToken(accessToken);
-
-      // Dispatch the action to update the user state or perform any other necessary tasks
-      // dispatch(setUser(response.result));
-
-      // Navigate to the desired page (e.g., the dashboard) after successful login
-      navigate('/');
-    } catch (error: any) {
-      // Handle login failure and display an error message
-      notificationController.error({
-        message: t('common.error'),
-        description: error.message || error.error?.message,
+    dispatch(doLogin(values))
+      .unwrap()
+      .then(() => {
+        navigate('/');
+      })
+      .catch((error) => {
+        notificationController.error({
+          message: t('common.error'),
+          description: error.message || error.error?.message,
+        });
+        setLoading(false);
       });
-    } finally {
-      setLoading(false);
-    }
   };
-
-  // const handleSubmit = (values: LoginRequest) => {
-  //   setLoading(true);
-
-  //   dispatch(doLogin(values))
-  //     .unwrap()
-  //     .then(() => {
-  //       navigate('/');
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({
-  //         message: t('common.error'),
-  //         description: error.message || error.error?.message,
-  //       });
-  //       setLoading(false);
-  //     });
-  // };
 
   return (
     <Auth.FormWrapper>
