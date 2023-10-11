@@ -1,24 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, Row, Space } from 'antd';
+import { Row, Space } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
-import { Button } from '@app/components/common/buttons/Button/Button';
-import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
+import { useQuery } from 'react-query';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
-import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { RequestModel } from '@app/interfaces/interfaces';
-import { TableButton, Header, Image, Modal } from '../../GeneralStyles';
+import { Header, Image, Modal } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
-import { useNavigate } from 'react-router-dom';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getSuitableCompanies } from '@app/services/companies';
@@ -67,7 +59,7 @@ export const SuitableCompanies: React.FC = () => {
         .then((data) => {
           const result = data.data?.result?.items;
           setDataCompany(result);
-          setTotalCountCompany(data.data.result?.totalCountCompany);
+          setTotalCountCompany(data.data.result?.totalCount);
           setLoadingCompany(!data.data?.success);
         })
         .catch((err) => {
@@ -86,7 +78,7 @@ export const SuitableCompanies: React.FC = () => {
         .then((data) => {
           const result = data.data?.result?.items;
           setDataBranch(result);
-          setTotalCountBranch(data.data.result?.totalCountBranch);
+          setTotalCountBranch(data.data.result?.totalCount);
           setLoadingBranch(!data.data?.success);
         })
         .catch((err) => {
@@ -351,6 +343,14 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataCompany}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
         />
+        {console.log(
+          'pageCompany',
+          pageCompany,
+          'pageSizeCompany',
+          pageSizeCompany,
+          'totalCountCompany',
+          totalCountCompany,
+        )}
       </Card>
 
       <Card
