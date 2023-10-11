@@ -261,23 +261,6 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.comment')}</Header>,
-      dataIndex: 'comment',
-      render: (text: string) => (
-        <div
-          style={{
-            maxWidth: '150px',
-            overflow: 'hidden',
-            textOverflow: 'ellipsis',
-            whiteSpace: 'break-spaces',
-            textAlign: 'center',
-          }}
-        >
-          {text}
-        </div>
-      ),
-    },
-    {
       title: <Header>{t('requests.suitableCompanies&Branches')}</Header>,
       dataIndex: 'suitableCompanies&Branches',
       render: (index: number, record: any) => (
