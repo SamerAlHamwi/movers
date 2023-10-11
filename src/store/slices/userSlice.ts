@@ -1,10 +1,10 @@
 import { createAction, createSlice, PrepareAction } from '@reduxjs/toolkit';
 import { persistUser, readUser } from '@app/services/localStorage';
-// eslint-disable-next-line
+
 const initialState: any = {
   user: readUser(),
 };
-// eslint-disable-next-line
+
 export const setUser = createAction<PrepareAction<any>>('user/setUser', (newUser) => {
   persistUser(newUser);
   return {
