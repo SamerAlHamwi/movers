@@ -390,18 +390,35 @@ const RequestDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
-              <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.services')}</DetailsTitle>
-              <Tree
-                className="specialTree"
-                key={100}
-                style={treeStyle}
-                defaultExpandAll
-                defaultExpandParent
-                expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
-                onExpand={onExpand}
-                treeData={treeData as DataNode[]}
-              />
+              {treeData.length > 0 ? (
+                <>
+                  <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.services')}</DetailsTitle>
+                  <Tree
+                    className="specialTree"
+                    key={100}
+                    style={treeStyle}
+                    defaultExpandAll
+                    defaultExpandParent
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onExpand={onExpand}
+                    treeData={treeData as DataNode[]}
+                  />
+                </>
+              ) : (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.services')}
+                  </DetailsTitle>
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    ___
+                  </DetailsValue>
+                </DetailsRow>
+              )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.additionalInfo')} :

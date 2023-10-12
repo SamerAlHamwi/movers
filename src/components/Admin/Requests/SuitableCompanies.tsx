@@ -148,14 +148,14 @@ export const SuitableCompanies: React.FC = () => {
   };
 
   const columnsCompany = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('common.selected')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       dataIndex: 'id',
       render: (id: any) => (
         <Checkbox onChange={() => handleCheckboxChangeForCompanies(id)} checked={selectedCompanies.includes(id)} />
       ),
     },
+    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
@@ -220,14 +220,14 @@ export const SuitableCompanies: React.FC = () => {
   ];
 
   const columnsBranch = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('common.selected')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       dataIndex: 'id',
       render: (id: any) => (
         <Checkbox onChange={() => handleCheckboxChangeForBranches(id)} checked={selectedBranches.includes(id)} />
       ),
     },
+    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],

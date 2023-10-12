@@ -515,7 +515,8 @@
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "suitableCompanies": "Suitable Companies",
     "suitableBranches": "Suitable Branches",
-    "offers": "Offers"
+    "offers": "Offers",
+    "selected": "Select"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",

@@ -220,7 +220,7 @@ export const Manager: React.FC = () => {
   `;
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header>{t('managers.managerFullName')}</Header>, dataIndex: 'fullName' },
     { title: <Header>{t('users.userName')}</Header>, dataIndex: 'userName' },
     { title: <Header>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
