@@ -258,7 +258,7 @@ const CompanyDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.statues')}</DetailsTitle>
+                  <DetailsTitle>{t('companies.status')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>
