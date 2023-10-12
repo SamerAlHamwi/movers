@@ -509,7 +509,8 @@
     "rejected": "تم رفضه",
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "suitableCompanies": "الشركات المناسبة",
-    "suitableBranches": "الأفرع المناسبة"
+    "suitableBranches": "الأفرع المناسبة",
+    "offers": "عروض الأسعار"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -668,7 +669,8 @@
     "EditBranch": "تعديل فرع الشركة",
     "AskForHelp": "طلبات المساعدة",
     "FrequentlyQuestions": "الأسئلة المتكررة",
-    "suitableCompanies&Branches": "الشركات والأفرع المناسبة"
+    "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
+    "offers": "عروض الأسعار"
   },
 
   "header": {

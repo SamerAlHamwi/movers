@@ -514,7 +514,8 @@
     "rejected": "Rejected",
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "suitableCompanies": "Suitable Companies",
-    "suitableBranches": "Suitable Branches"
+    "suitableBranches": "Suitable Branches",
+    "offers": "Offers"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -674,7 +675,8 @@
     "EditBranch": "Edit Branch",
     "AskForHelp": "Help Requests",
     "FrequentlyQuestions": "Frequently Questions",
-    "suitableCompanies&Branches": "Suitable Companies & Branches"
+    "suitableCompanies&Branches": "Suitable Companies & Branches",
+    "offers": "Offers"
   },
 
   "header": {

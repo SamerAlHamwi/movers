@@ -1,21 +1,32 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Space } from 'antd';
+import { Alert, Row, Space, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
-import { useQuery } from 'react-query';
+import { useQuery, useMutation } from 'react-query';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { notificationController } from '@app/controllers/notificationController';
 import { RequestModel } from '@app/interfaces/interfaces';
-import { Header, Image, Modal } from '../../GeneralStyles';
+import { CreateButtonText, Header, Image, Modal } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useSelector } from 'react-redux';
 import { useParams } from 'react-router-dom';
 import { getSuitableCompanies } from '@app/services/companies';
 import { getSuitableBranches } from '@app/services/branches';
+import { suitableForRequest } from '@app/services/requests';
+import { Checkbox } from '@app/components/common/Checkbox/Checkbox';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
+import Button from 'antd/es/button/button';
+
+interface ForRequest {
+  id: string | undefined;
+  request: {
+    companyIds: number[];
+    companyBranchIds: number[];
+  };
+}
 
 export const SuitableCompanies: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -24,13 +35,6 @@ export const SuitableCompanies: React.FC = () => {
   const { isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
   const { requestId } = useParams();
 
-  const [modalState, setModalState] = useState({
-    add: false,
-    edit: false,
-    delete: false,
-    approve: false,
-    reject: false,
-  });
   const [pageCompany, setPageCompany] = useState<number>(1);
   const [pageBranch, setPageBranch] = useState<number>(1);
   const [pageSizeCompany, setPageSizeCompany] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -43,14 +47,8 @@ export const SuitableCompanies: React.FC = () => {
   const [loadingBranch, setLoadingBranch] = useState(true);
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
   const [attachmentData, setAttachmentData] = useState<any>();
-
-  const handleModalOpen = (modalType: any) => {
-    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-  };
-
-  const handleModalClose = (modalType: any) => {
-    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
-  };
+  const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
+  const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
 
   const { refetch: refetchCompanies, isRefetching: isRefetchingCompanies } = useQuery(
     ['SuitableCompanies', pageCompany, pageSizeCompany],
@@ -122,8 +120,42 @@ export const SuitableCompanies: React.FC = () => {
     }
   }, [pageBranch, dataBranch]);
 
+  const suitableForRequestMutation = useMutation((data: ForRequest) =>
+    suitableForRequest(data)
+      .then((res) => {
+        res.data?.success &&
+          message.open({ content: <Alert message={t('asks.confirmAskSuccessMessage')} type={`success`} showIcon /> });
+      })
+      .catch((error) =>
+        message.open({ content: <Alert message={error.message || error.error?.message} type={`error`} showIcon /> }),
+      ),
+  );
+
+  const handleCheckboxChangeForCompanies = (id: number) => {
+    if (selectedCompanies.includes(id)) {
+      setSelectedCompanies(selectedCompanies.filter((item) => item !== id));
+    } else {
+      setSelectedCompanies([...selectedCompanies, id]);
+    }
+  };
+
+  const handleCheckboxChangeForBranches = (id: number) => {
+    if (selectedBranches.includes(id)) {
+      setSelectedBranches(selectedBranches.filter((item) => item !== id));
+    } else {
+      setSelectedBranches([...selectedBranches, id]);
+    }
+  };
+
   const columnsCompany = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    {
+      title: <Header>{t('common.selected')}</Header>,
+      dataIndex: 'id',
+      render: (id: any) => (
+        <Checkbox onChange={() => handleCheckboxChangeForCompanies(id)} checked={selectedCompanies.includes(id)} />
+      ),
+    },
     {
       title: <Header>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
@@ -185,29 +217,18 @@ export const SuitableCompanies: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header>{t('common.actions')}</Header>,
-    //   dataIndex: 'actions',
-    //   render: (index: number, record: RequestModel) => {
-    //     return (
-    //       <Space>
-    //         <TableButton
-    //           severity="info"
-    //           onClick={() => {
-    //             handleModalOpen('edit');
-    //           }}
-    //         >
-    //           <EditOutlined />
-    //         </TableButton>
-    //       </Space>
-    //     );
-    //   },
-    // },
   ];
 
   const columnsBranch = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
+      title: <Header>{t('common.selected')}</Header>,
+      dataIndex: 'id',
+      render: (id: any) => (
+        <Checkbox onChange={() => handleCheckboxChangeForBranches(id)} checked={selectedBranches.includes(id)} />
+      ),
+    },
+    {
       title: <Header>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
       render: (url: string, record: any) => {
@@ -268,24 +289,6 @@ export const SuitableCompanies: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header>{t('common.actions')}</Header>,
-    //   dataIndex: 'actions',
-    //   render: (index: number, record: RequestModel) => {
-    //     return (
-    //       <Space>
-    //         <TableButton
-    //           severity="info"
-    //           onClick={() => {
-    //             handleModalOpen('edit');
-    //           }}
-    //         >
-    //           <EditOutlined />
-    //         </TableButton>
-    //       </Space>
-    //     );
-    //   },
-    // },
   ];
 
   return (
@@ -343,14 +346,6 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataCompany}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
         />
-        {console.log(
-          'pageCompany',
-          pageCompany,
-          'pageSizeCompany',
-          pageSizeCompany,
-          'totalCountCompany',
-          totalCountCompany,
-        )}
       </Card>
 
       <Card
@@ -386,6 +381,26 @@ export const SuitableCompanies: React.FC = () => {
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
         />
       </Card>
+
+      <Button
+        type="primary"
+        style={{
+          marginBottom: '.5rem',
+          width: 'auto',
+          height: 'auto',
+        }}
+        onClick={() =>
+          suitableForRequestMutation.mutateAsync({
+            id: requestId,
+            request: {
+              companyIds: selectedCompanies,
+              companyBranchIds: selectedBranches,
+            },
+          })
+        }
+      >
+        <CreateButtonText>{t('common.done')}</CreateButtonText>
+      </Button>
     </>
   );
 };
