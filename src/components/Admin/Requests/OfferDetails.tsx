@@ -84,8 +84,7 @@ const OfferDetails: React.FC = () => {
         children: subService?.tools.map((tool: any) => ({
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <Image src={tool?.attachment?.url} width={16} height={16} />
-              {tool?.name}
+              <Image src={tool?.attachment?.url} width={16} height={16} />( {tool?.amount} ) {tool?.name}
             </span>
           ),
           key: tool?.id,
