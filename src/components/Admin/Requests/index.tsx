@@ -269,7 +269,7 @@ export const Requests: React.FC = () => {
         <Space>
           <Button
             disabled={record.statues !== 2}
-            style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+            style={{ height: '2.4rem' }}
             severity="info"
             onClick={() => {
               navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });

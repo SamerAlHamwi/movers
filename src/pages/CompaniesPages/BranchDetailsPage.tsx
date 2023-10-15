@@ -8,7 +8,7 @@ const BranchDetailsPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.branches')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.branchDetails')}</PageTitle>
       <BranchDetails />
     </>
   );

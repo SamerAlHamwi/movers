@@ -8,13 +8,6 @@ const getAllRequests = async (page: number, pageSize: number, search: string) =>
   );
 };
 
-const getAllOffers = async (page: number, pageSize: number, search: string, id: string | undefined) => {
-  const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${id}`,
-  );
-};
-
 const getRequestById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.requests}/Get?Id=${id}`);
 };
@@ -39,18 +32,31 @@ const suitableForRequest = async (data: any) => {
   return await httpApi.post(`${apiPrefix.requests}/InsertAndNoticFilteredCompanies?requestId=${data.id}`, data.request);
 };
 
+// Offers
+const getAllOffers = async (page: number, pageSize: number, search: string, id: string | undefined) => {
+  const skip = (page - 1) * pageSize;
+  return await httpApi.get(
+    `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${id}`,
+  );
+};
+
+const getOfferById = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.offers}/Get?Id=${id}`);
+};
+
 const sendForUser = async (data: any) => {
   return await httpApi.post(`${apiPrefix.offers}/ApproveOfferToSendItToUser`, data);
 };
 
 export {
   getAllRequests,
-  getAllOffers,
   getRequestById,
   createRequest,
   DeleteRequest,
   UpdateRequest,
   confirmRequest,
   suitableForRequest,
+  getAllOffers,
+  getOfferById,
   sendForUser,
 };
