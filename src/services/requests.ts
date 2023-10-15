@@ -32,22 +32,6 @@ const suitableForRequest = async (data: any) => {
   return await httpApi.post(`${apiPrefix.requests}/InsertAndNoticFilteredCompanies?requestId=${data.id}`, data.request);
 };
 
-// Offers
-const getAllOffers = async (page: number, pageSize: number, search: string, id: string | undefined) => {
-  const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${id}`,
-  );
-};
-
-const getOfferById = async (id: string | undefined) => {
-  return await httpApi.get(`${apiPrefix.offers}/Get?Id=${id}`);
-};
-
-const sendForUser = async (data: any) => {
-  return await httpApi.post(`${apiPrefix.offers}/ApproveOfferToSendItToUser`, data);
-};
-
 export {
   getAllRequests,
   getRequestById,
@@ -56,7 +40,4 @@ export {
   UpdateRequest,
   confirmRequest,
   suitableForRequest,
-  getAllOffers,
-  getOfferById,
-  sendForUser,
 };

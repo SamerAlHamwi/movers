@@ -8,7 +8,7 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { getOfferById } from '@app/services/requests';
+import { getOfferById } from '@app/services/offers';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';

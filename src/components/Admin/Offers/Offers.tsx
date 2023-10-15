@@ -6,7 +6,7 @@ import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
 import { Button as ButtonCol } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { getAllOffers, sendForUser } from '@app/services/requests';
+import { getAllOffers, sendForUser } from '@app/services/offers';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -29,7 +29,7 @@ export const Offers: React.FC = () => {
   const Navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
-  const { requestId } = useParams();
+  const { requestId, companyId, branchId } = useParams();
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -41,7 +41,14 @@ export const Offers: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Offers', page, pageSize],
     () =>
-      getAllOffers(page, pageSize, searchString, requestId)
+      getAllOffers(
+        page,
+        pageSize,
+        searchString,
+        requestId != undefined ? requestId : '',
+        companyId != undefined ? companyId : '',
+        branchId != undefined ? branchId : '',
+      )
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);

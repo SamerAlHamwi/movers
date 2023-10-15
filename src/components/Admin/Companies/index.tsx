@@ -247,6 +247,34 @@ export const Companies: React.FC = () => {
       ),
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
+      dataIndex: 'offers',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <Button
+              disabled={record.statues !== 2}
+              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              severity="info"
+              onClick={() => {
+                navigate(`${record.id}/offers`, { state: record.name });
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                  fontWeight: FONT_WEIGHT.regular,
+                  width: 'auto',
+                }}
+              >
+                {t('requests.offers')}
+              </div>
+            </Button>
+          </Space>
+        );
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
