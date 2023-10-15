@@ -36,9 +36,11 @@ const confirmRequest = async (data: any) => {
 };
 
 const suitableForRequest = async (data: any) => {
-  console.log('data', data);
-
   return await httpApi.post(`${apiPrefix.requests}/InsertAndNoticFilteredCompanies?requestId=${data.id}`, data.request);
+};
+
+const sendForUser = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.offers}/ApproveOfferToSendItToUser`, data);
 };
 
 export {
@@ -50,4 +52,5 @@ export {
   UpdateRequest,
   confirmRequest,
   suitableForRequest,
+  sendForUser,
 };

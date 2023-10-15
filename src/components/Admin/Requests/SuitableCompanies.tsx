@@ -12,7 +12,7 @@ import { CreateButtonText, Header, Image, Modal } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getSuitableCompanies } from '@app/services/companies';
 import { getSuitableBranches } from '@app/services/branches';
 import { suitableForRequest } from '@app/services/requests';
@@ -34,6 +34,7 @@ export const SuitableCompanies: React.FC = () => {
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
   const { requestId } = useParams();
+  const Navigate = useNavigate();
 
   const [pageCompany, setPageCompany] = useState<number>(1);
   const [pageBranch, setPageBranch] = useState<number>(1);
@@ -124,7 +125,10 @@ export const SuitableCompanies: React.FC = () => {
     suitableForRequest(data)
       .then((res) => {
         res.data?.success &&
-          message.open({ content: <Alert message={t('asks.confirmAskSuccessMessage')} type={`success`} showIcon /> });
+          message.open({
+            content: <Alert message={t('requests.confirmSuitableSuccessMessage')} type={`success`} showIcon />,
+          });
+        Navigate('/requests', { replace: false });
       })
       .catch((error) =>
         message.open({ content: <Alert message={error.message || error.error?.message} type={`error`} showIcon /> }),

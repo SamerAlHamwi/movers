@@ -516,7 +516,8 @@
     "suitableCompanies": "Suitable Companies",
     "suitableBranches": "Suitable Branches",
     "offers": "Offers",
-    "selected": "Select"
+    "selected": "Select",
+    "confirmSuitableSuccessMessage": "The Companies and Branches have been Approved Successfully"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -643,6 +644,17 @@
     "question_en": "English Question",
     "answer_ar": "Arabic Answer",
     "answer_en": "English Answer"
+  },
+
+  "_comment23": "*********************************** Offers ************************************************",
+  "offers": {
+    "offersList": "Offers List",
+    "price": "Price",
+    "provider": "Offer Provider",
+    "selectedByUser": "Selected By User",
+    "company": "Company",
+    "branch": "Branch",
+    "sendToUserSuccessMessage": "Those Offers Will Send To User"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

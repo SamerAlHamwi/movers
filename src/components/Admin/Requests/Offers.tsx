@@ -1,67 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { Space, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
-import { Button } from '@app/components/common/buttons/Button/Button';
+import Button from 'antd/es/button/button';
+import { Button as ButtonCol } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
-import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllOffers, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
+import { getAllOffers, sendForUser } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText } from '../../GeneralStyles';
 import { RequestModel } from '@app/interfaces/interfaces';
-import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
+import Checkbox from 'antd/lib/checkbox/Checkbox';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 
 export const Offers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
   const { requestId } = useParams();
 
-  const [modalState, setModalState] = useState({
-    add: false,
-    edit: false,
-    delete: false,
-    approve: false,
-    reject: false,
-  });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [dataSource, setDataSource] = useState<RequestModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<RequestModel | undefined>(undefined);
-  const [deletemodaldata, setDeletemodaldata] = useState<RequestModel | undefined>(undefined);
-  const [approvemodaldata, setApprovemodaldata] = useState<RequestModel | undefined>(undefined);
-  const [rejectmodaldata, setRejectmodaldata] = useState<RequestModel | undefined>(undefined);
-  const [isDelete, setIsDelete] = useState(false);
-  const [isEdit, setIsEdit] = useState(false);
-  const [isApproved, setIsApproved] = useState(false);
-  const [isRejected, setIsRejected] = useState(false);
-  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
-
-  const handleModalOpen = (modalType: any) => {
-    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-  };
-
-  const handleModalClose = (modalType: any) => {
-    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
-  };
+  const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
 
   const { refetch, isRefetching } = useQuery(
-    ['Offers', page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected],
+    ['Offers', page, pageSize],
     () =>
       getAllOffers(page, pageSize, searchString, requestId)
         .then((data) => {
@@ -87,10 +62,7 @@ export const Offers: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-    setIsEdit(false);
-    setIsDelete(false);
-    setRefetchOnAdd(false);
-  }, [isDelete, refetchOnAdd, isEdit, isApproved, isRejected, page, pageSize, language, searchString, refetch]);
+  }, [page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -98,121 +70,36 @@ export const Offers: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addRequest = useMutation((data: any) =>
-    createRequest(data)
-      .then((data) => {
-        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
-        setRefetchOnAdd(data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      }),
-  );
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
-  }, [addRequest.isLoading]);
-
-  const deleteRequest = useMutation((id: number) =>
-    DeleteRequest(id)
-      .then((data) => {
-        data.data?.success &&
-          (setIsDelete(data.data?.success),
+  const sendForUserMutation = useMutation((data: string[]) =>
+    sendForUser(data)
+      .then((res) => {
+        res.data?.success &&
           message.open({
-            content: <Alert message={t('requests.deleteRequestSuccessMessage')} type={`success`} showIcon />,
-          }));
+            content: <Alert message={t('offers.sendToUserSuccessMessage')} type={`success`} showIcon />,
+          });
+        Navigate('/requests', { replace: false });
       })
-      .catch((error) => {
-        message.open({
-          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
-        });
-      }),
+      .catch((error) =>
+        message.open({ content: <Alert message={error.message || error.error?.message} type={`error`} showIcon /> }),
+      ),
   );
 
-  const handleDelete = (id: any) => {
-    if (page > 1 && dataSource?.length === 1) {
-      deleteRequest.mutateAsync(id);
-      setPage(page - 1);
+  const handleCheckboxChangeForSendToUser = (id: string) => {
+    if (selectedOffers.includes(id)) {
+      setSelectedOffers(selectedOffers.filter((item) => item !== id));
     } else {
-      deleteRequest.mutateAsync(id);
+      setSelectedOffers([...selectedOffers, id]);
     }
   };
 
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRequest.isLoading }));
-  }, [deleteRequest.isLoading]);
-
-  const editRequest = useMutation((data: RequestModel) => UpdateRequest(data));
-
-  const handleEdit = (data: RequestModel, id: number) => {
-    editRequest
-      .mutateAsync({ ...data, id })
-      .then((data) => {
-        setIsEdit(data.data?.success);
-        message.open({
-          content: <Alert message={t(`requests.editRequestSuccessMessage`)} type={`success`} showIcon />,
-        });
-      })
-      .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-      });
-  };
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editRequest.isLoading }));
-  }, [editRequest.isLoading]);
-
-  const approveRequest = useMutation((data: any) =>
-    confirmRequest(data)
-      .then((data) => {
-        data.data?.success &&
-          (setIsApproved(data.data?.success),
-          message.open({
-            content: <Alert message={t('requests.approveRequestSuccessMessage')} type={`success`} showIcon />,
-          }));
-      })
-      .catch((error) => {
-        message.open({
-          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
-        });
-      }),
-  );
-
-  const handleApprove = (id: any) => {
-    const data = { requestId: id, statues: 2 };
-    approveRequest.mutateAsync(data);
-  };
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, approve: approveRequest.isLoading }));
-  }, [approveRequest.isLoading]);
-
-  const rejectRequest = useMutation((data: any) =>
-    confirmRequest(data)
-      .then((data) => {
-        data.data?.success &&
-          (setIsRejected(data.data?.success),
-          message.open({
-            content: <Alert message={t('requests.rejectRequestSuccessMessage')} type={`success`} showIcon />,
-          }));
-      })
-      .catch((error) => {
-        message.open({
-          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
-        });
-      }),
-  );
-
-  const handleReject = (id: any) => {
-    const data = { requestId: id, statues: 3 };
-    rejectRequest.mutateAsync(data);
-  };
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, reject: rejectRequest.isLoading }));
-  }, [rejectRequest.isLoading]);
-
   const columns = [
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
+      dataIndex: 'id',
+      render: (id: any) => (
+        <Checkbox onChange={() => handleCheckboxChangeForSendToUser(id)} checked={selectedOffers.includes(id)} />
+      ),
+    },
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header>{t('offers.price')}</Header>, dataIndex: 'price' },
     {
@@ -236,32 +123,42 @@ export const Offers: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
+      dataIndex: 'details',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <ButtonCol
+              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              severity="info"
+              onClick={() => {
+                Navigate(`${record.id}/details`, { state: record.name });
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                  fontWeight: FONT_WEIGHT.regular,
+                  width: 'auto',
+                }}
+              >
+                {t('requests.details')}
+              </div>
+            </ButtonCol>
+          </Space>
+        );
+      },
+    },
+    {
       title: <Header>{t('requests.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: RequestModel) => {
         return (
           <>
             {record.statues === 1 && (
-              <Space>
-                <TableButton
-                  severity="info"
-                  onClick={() => {
-                    setApprovemodaldata(record);
-                    handleModalOpen('approve');
-                  }}
-                >
-                  <CheckOutlined />
-                </TableButton>
-                <TableButton
-                  severity="error"
-                  onClick={() => {
-                    setRejectmodaldata(record);
-                    handleModalOpen('reject');
-                  }}
-                >
-                  <CloseOutlined />
-                </TableButton>
-              </Space>
+              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
+                {t('requests.checking')}
+              </Tag>
             )}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
@@ -271,6 +168,11 @@ export const Offers: React.FC = () => {
             {record.statues === 3 && (
               <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
                 {t('requests.rejected')}
+              </Tag>
+            )}
+            {record.statues === 4 && (
+              <Tag key={record?.id} color="#d98b3d" style={{ padding: '4px' }}>
+                {t('offers.selectedByUser')}
               </Tag>
             )}
           </>
@@ -288,6 +190,7 @@ export const Offers: React.FC = () => {
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0'
         }
+        style={{ height: 'auto', marginBottom: '70px' }}
       >
         <Table
           pagination={{
@@ -311,6 +214,18 @@ export const Offers: React.FC = () => {
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
         />
       </Card>
+
+      <Button
+        type="primary"
+        style={{
+          marginBottom: '.5rem',
+          width: 'auto',
+          height: 'auto',
+        }}
+        onClick={() => sendForUserMutation.mutateAsync(selectedOffers)}
+      >
+        <CreateButtonText>{t('common.done')}</CreateButtonText>
+      </Button>
     </>
   );
 };

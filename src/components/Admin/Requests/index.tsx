@@ -214,7 +214,7 @@ export const Requests: React.FC = () => {
   }, [rejectRequest.isLoading]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.sourceCity')}</Header>,
       dataIndex: 'sourceCity',
@@ -230,7 +230,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.serviceType')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
       render: (record: number) => {
         return (
@@ -263,7 +263,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.suitableCompanies&Branches')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.suitableCompanies&Branches')}</Header>,
       dataIndex: 'suitableCompanies&Branches',
       render: (index: number, record: any) => (
         <Space>
@@ -289,7 +289,7 @@ export const Requests: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('requests.offers')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
       render: (index: number, record: any) => {
         return (
@@ -317,7 +317,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -344,7 +344,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: RequestModel) => {
         return (
@@ -391,7 +391,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: RequestModel) => {
         return (

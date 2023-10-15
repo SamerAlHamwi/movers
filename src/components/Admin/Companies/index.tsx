@@ -194,9 +194,9 @@ export const Companies: React.FC = () => {
   };
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('common.image')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
       render: (url: string, record: CompanyModal) => {
         return (
@@ -212,8 +212,8 @@ export const Companies: React.FC = () => {
         );
       },
     },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
@@ -234,7 +234,7 @@ export const Companies: React.FC = () => {
       dataIndex: 'numberOfTransfers',
     },
     {
-      title: <Header>{t('requests.services')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
         <Space style={{ display: 'grid' }}>
@@ -247,7 +247,7 @@ export const Companies: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -274,7 +274,7 @@ export const Companies: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('companies.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: CompanyModal) => {
         return (
@@ -321,7 +321,7 @@ export const Companies: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: CompanyModal) => {
         return (
