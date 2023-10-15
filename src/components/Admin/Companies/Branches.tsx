@@ -19,11 +19,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
 
 export const Branches: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { companyId } = useParams();
@@ -204,17 +207,31 @@ export const Branches: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => navigate(`/companies/${companyId}/addBranch`)}
-          >
-            <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
-          </Button>
+          <>
+            <Btn
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => navigate(`/companies/${companyId}/addBranch`)}
+            >
+              <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
+            </Btn>
+            <Btn
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              type="ghost"
+              onClick={() => navigate(-1)}
+              icon={<LeftOutlined />}
+            >
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+          </>
 
           {/*    Delete    */}
           {modalState.delete && (

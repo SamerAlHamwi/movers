@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Space, message } from 'antd';
+import { Row, Space, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
@@ -19,13 +19,16 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
 
 export const Offers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const Navigate = useNavigate();
   const { language } = useLanguage();
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { requestId } = useParams();
 
   const [page, setPage] = useState<number>(1);
@@ -192,6 +195,20 @@ export const Offers: React.FC = () => {
         }
         style={{ height: 'auto', marginBottom: '70px' }}
       >
+        <Row justify={'end'}>
+          <Btn
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            type="ghost"
+            onClick={() => Navigate(-1)}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Btn>
+        </Row>
         <Table
           pagination={{
             showSizeChanger: true,

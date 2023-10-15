@@ -10,9 +10,12 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useLanguage } from '@app/hooks/useLanguage';
 import { getOfferById } from '@app/services/requests';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
+import { Button } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
   name: string;
@@ -39,7 +42,8 @@ const OfferDetails: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { offerId } = useParams();
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
+  const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
+  const Navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [offerData, setOfferData] = useState<any>();
@@ -145,6 +149,20 @@ const OfferDetails: React.FC = () => {
   return (
     <>
       <PageTitle>{t('offers.offerInfo')}</PageTitle>
+      <Row justify={'end'}>
+        <Button
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Button>
+      </Row>
       <Row>
         <Cardd title={t('offers.offerInfo')} padding="0 1.25rem 1rem 1.25rem" style={{ width: '100%', height: 'auto' }}>
           <Spinner spinning={loading}>
