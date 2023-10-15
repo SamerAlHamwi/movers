@@ -10,9 +10,12 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useLanguage } from '@app/hooks/useLanguage';
 import { getBranch } from '@app/services/branches';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
   name: string;
@@ -39,7 +42,8 @@ const BranchDetails: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { branchId } = useParams();
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
+  const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
+  const Navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [branchData, setBranchData] = useState<any>();
@@ -146,6 +150,20 @@ const BranchDetails: React.FC = () => {
   return (
     <>
       <PageTitle>{t('branch.branchInfo')}</PageTitle>
+      <Row justify={'end'}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+      </Row>
       <Row>
         <Cardd
           title={t('branch.branchInfo')}

@@ -89,7 +89,9 @@ export const Requests: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, refetchOnAdd, isEdit, isApproved, isRejected, page, pageSize, language, searchString, refetch]);
+    setIsApproved(false);
+    setIsRejected(false);
+  }, [isDelete, refetchOnAdd, isEdit, isApproved, isRejected, page, pageSize, language, searchString]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -212,23 +214,23 @@ export const Requests: React.FC = () => {
   }, [rejectRequest.isLoading]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('requests.sourceCity')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.sourceCity')}</Header>,
       dataIndex: 'sourceCity',
       render: (record: RequestModel) => {
         return <>{record?.name}</>;
       },
     },
     {
-      title: <Header>{t('requests.destinationCity')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.destinationCity')}</Header>,
       dataIndex: 'destinationCity',
       render: (record: RequestModel) => {
         return <>{record?.name}</>;
       },
     },
     {
-      title: <Header>{t('requests.serviceType')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
       render: (record: number) => {
         return (
@@ -243,7 +245,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.services')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
         <Space style={{ display: 'grid' }}>
@@ -254,19 +256,20 @@ export const Requests: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('requests.sourceType')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.sourceType')}</Header>,
       dataIndex: 'sourceType',
       render: (record: any) => {
         return <>{record?.name}</>;
       },
     },
     {
-      title: <Header>{t('requests.suitableCompanies&Branches')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.suitableCompanies&Branches')}</Header>,
       dataIndex: 'suitableCompanies&Branches',
       render: (index: number, record: any) => (
         <Space>
           <Button
-            style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+            disabled={record.statues !== 2}
+            style={{ height: '2.4rem' }}
             severity="info"
             onClick={() => {
               navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
@@ -286,12 +289,13 @@ export const Requests: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('requests.offers')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
       render: (index: number, record: any) => {
         return (
           <Space>
             <Button
+              disabled={record.statues !== 2}
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
@@ -313,7 +317,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -340,7 +344,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('requests.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: RequestModel) => {
         return (
@@ -387,7 +391,7 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: RequestModel) => {
         return (
@@ -511,7 +515,7 @@ export const Requests: React.FC = () => {
               cancelText={t('common.cancel')}
               description={t('requests.rejectRequestModalDescription')}
               // isDanger={true}
-              isLoading={approveRequest.isLoading}
+              isLoading={rejectRequest.isLoading}
             />
           )}
         </Row>

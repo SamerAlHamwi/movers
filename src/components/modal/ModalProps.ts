@@ -1,5 +1,4 @@
 import { ModalProps as AntdModalProps } from 'antd';
-// import { Sliders } from '../game-admin/SliderImage';
 import {
   ServiceModel,
   UserModel,
@@ -16,7 +15,6 @@ import {
   BranchModel,
   faqModel,
 } from '@app/interfaces/interfaces';
-import { blog_article } from '@app/services/blog/blogArticles';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
 import { Term } from '../Admin/Terms';
@@ -67,20 +65,6 @@ export interface CreateRegionModalProps extends ModalProps {
   onCreate: (Info: RegionModel) => void;
 }
 
-// export interface CreateSliderImageModalProps extends ModalProps {
-//   onCreateSliderImage: (SliderData: CreateSlider) => void;
-//   createSlider_isLoading: boolean;
-// }
-
-export interface CreateBlogArticleModalProps extends ModalProps {
-  onCreateBlogArticle: (data: blog_article) => void;
-  createBlog_isLoading: boolean;
-}
-
-// export interface CreateRoundModalProps extends ModalProps {
-//   onCreateRoundModal: (Round: createRound) => void;
-// }
-
 export interface CreateNotificationModalProps extends ModalProps {
   onCreateNotification: (Notification: Notification) => void;
   isManager: boolean;
@@ -97,11 +81,6 @@ export interface EditTermprops extends ModalProps {
   Term_values: Term | undefined;
   onEdit: (data: Term) => void;
 }
-
-// export interface CreateVideoModalProps extends ModalProps {
-//   onCreateVideo: (Video: video) => void;
-//   createVideo_isLoading: boolean;
-// }
 
 export interface EditManagerProps extends ModalProps {
   manager_values: UserModel | undefined;
@@ -166,25 +145,10 @@ export interface Editprivacyprops extends ModalProps {
   onEdit: (data: PrivacyPolicy) => void;
 }
 
-export interface EditBlogArticleProps extends ModalProps {
-  blogArticle_values: blog_article | undefined;
-  onEdit: (data: blog_article) => void;
-  id: number;
-  attachment_id: number;
-  is_Loading_data: boolean;
-}
-
 export interface EditCompanyProps extends ModalProps {
   Company_values: CompanyModal | undefined;
   onEdit: (data: CompanyModal) => void;
 }
-
-// export interface EditVideoProps extends ModalProps {
-//   video_values: video | undefined;
-//   onEdit: (data: video) => void;
-//   id: number;
-//   is_Loading_data: boolean;
-// }
 
 export interface ActionModalProps extends AntdModalProps {
   visible: boolean;

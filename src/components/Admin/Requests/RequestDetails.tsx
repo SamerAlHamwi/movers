@@ -10,11 +10,14 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useLanguage } from '@app/hooks/useLanguage';
 import { getRequestById } from '@app/services/requests';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
 import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
 
 const { Meta } = Card;
 
@@ -45,7 +48,8 @@ const RequestDetails: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { requestId } = useParams();
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
+  const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
+  const Navigate = useNavigate();
 
   const [loading, setLoading] = useState(true);
   const [requestData, setRequestData] = useState<any>();
@@ -164,6 +168,20 @@ const RequestDetails: React.FC = () => {
   return (
     <>
       <PageTitle>{t('requests.requestInfo')}</PageTitle>
+      <Row justify={'end'}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+      </Row>
       <Row>
         <Cardd
           title={t('requests.requestInfo')}
@@ -390,18 +408,35 @@ const RequestDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
-              <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.services')}</DetailsTitle>
-              <Tree
-                className="specialTree"
-                key={100}
-                style={treeStyle}
-                defaultExpandAll
-                defaultExpandParent
-                expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
-                onExpand={onExpand}
-                treeData={treeData as DataNode[]}
-              />
+              {treeData.length > 0 ? (
+                <>
+                  <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.services')}</DetailsTitle>
+                  <Tree
+                    className="specialTree"
+                    key={100}
+                    style={treeStyle}
+                    defaultExpandAll
+                    defaultExpandParent
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onExpand={onExpand}
+                    treeData={treeData as DataNode[]}
+                  />
+                </>
+              ) : (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.services')}
+                  </DetailsTitle>
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    ___
+                  </DetailsValue>
+                </DetailsRow>
+              )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.additionalInfo')} :

@@ -100,16 +100,12 @@ export const AskForHelp: React.FC = () => {
 
   const columns = [
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'common.id'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>,
       dataIndex: 'id',
       width: '5%',
     },
     {
-      title: <Header>{t('asks.fullName')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.fullName')}</Header>,
       dataIndex: 'user',
       render: (record: User['user']) => (
         <div
@@ -126,7 +122,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.phoneNumber')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.phoneNumber')}</Header>,
       dataIndex: 'user',
       render: (record: User['user']) => (
         <div
@@ -259,7 +255,7 @@ export const AskForHelp: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       render: (record: User) => {
         return (
           <>

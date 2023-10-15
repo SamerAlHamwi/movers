@@ -19,11 +19,14 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
 
 export const Branches: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { language } = useLanguage();
   const navigate = useNavigate();
   const { companyId } = useParams();
@@ -118,13 +121,13 @@ export const Branches: React.FC = () => {
   }, [page, data]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
-    { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
-    { title: <Header>{t('common.bio')}</Header>, dataIndex: 'bio' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
-      title: <Header>{t('requests.services')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
         <Space style={{ display: 'grid' }}>
@@ -137,7 +140,35 @@ export const Branches: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
+      dataIndex: 'offers',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <Button
+              // disabled={record.statues !== 2}
+              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              severity="info"
+              onClick={() => {
+                navigate(`${record.id}/offers`, { state: record.name });
+              }}
+            >
+              <div
+                style={{
+                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                  fontWeight: FONT_WEIGHT.regular,
+                  width: 'auto',
+                }}
+              >
+                {t('requests.offers')}
+              </div>
+            </Button>
+          </Space>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -164,7 +195,7 @@ export const Branches: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: BranchModel) => {
         return (
@@ -204,17 +235,31 @@ export const Branches: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => navigate(`/companies/${companyId}/addBranch`)}
-          >
-            <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
-          </Button>
+          <>
+            <Btn
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => navigate(`/companies/${companyId}/addBranch`)}
+            >
+              <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
+            </Btn>
+            <Btn
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              type="ghost"
+              onClick={() => navigate(-1)}
+              icon={<LeftOutlined />}
+            >
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+          </>
 
           {/*    Delete    */}
           {modalState.delete && (

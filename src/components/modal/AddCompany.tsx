@@ -37,22 +37,24 @@ import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import type { DataNode } from 'antd/es/tree';
 import { useLanguage } from '@app/hooks/useLanguage';
+import CreatableSelect from 'react-select/creatable';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
+let cityValues: any[] = [];
 const steps = [
   {
-    title: 'Company Information',
+    title: 'companyInfo',
   },
   {
-    title: 'Userinformation',
+    title: 'companyUser',
   },
   {
-    title: 'Services',
+    title: 'services',
   },
   {
-    title: 'Attachment',
+    title: 'attachments',
   },
 ];
 let companyInfo: any = {
@@ -108,6 +110,8 @@ export const AddCompany: React.FC = () => {
   const { language } = useLanguage();
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
 
+  const [countryIdForCities, setCountryIdForCities] = useState<string>('0');
+  const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
@@ -206,12 +210,24 @@ export const AddCompany: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const { data: availableCitiesData, refetch: availableCitiesRefetch } = useQuery(
+    'getCities',
+    () => getCities(countryIdForCities),
+    {
+      enabled: countryIdForCities !== '0',
+    },
+  );
   const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
     enabled: countryId !== '0',
   });
   const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
     enabled: cityId !== '0',
   });
+  useEffect(() => {
+    if (countryIdForCities !== '0') {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForCities]);
   useEffect(() => {
     if (countryId !== '0') {
       citiesRefetch();
@@ -223,6 +239,17 @@ export const AddCompany: React.FC = () => {
       RegionsRefetch();
     }
   }, [cityId]);
+
+  const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
+    const value = ele.id;
+    const label = ele.name;
+    const option = { value, label };
+    return option;
+  });
+
+  const SelectCountryForAvilableCities = (e: any) => {
+    setCountryIdForCities(e);
+  };
 
   const ChangeCountryHandler = (e: any) => {
     setCountryId(e);
@@ -389,8 +416,9 @@ export const AddCompany: React.FC = () => {
       companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
       comment: form.getFieldValue('comment'),
       regionId: regionId,
-      // availableCitiesIds: form.getFieldValue(['availableCitiesIds']),
+      availableCitiesIds: selectedCityValues,
     };
+
     updatedFormData.translations = companyInfo.translations;
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
     addCompany.mutate(companyInfo);
@@ -418,6 +446,11 @@ export const AddCompany: React.FC = () => {
       <div className="ant-upload-text">Upload File</div>
     </div>
   );
+
+  const selectCities = (cities: any) => {
+    cityValues = cities.map((city: any) => city.value);
+    setSelectedCityValues(cityValues);
+  };
 
   return (
     <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
@@ -598,7 +631,7 @@ export const AddCompany: React.FC = () => {
 
             <BaseForm.Item
               name="countryId"
-              label={<LableText>{t('companies.Country name')}</LableText>}
+              label={<LableText>{t('companies.country')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -615,7 +648,7 @@ export const AddCompany: React.FC = () => {
 
             <BaseForm.Item
               name="cityId"
-              label={<LableText>{t('companies.City name')}</LableText>}
+              label={<LableText>{t('companies.city')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -632,7 +665,7 @@ export const AddCompany: React.FC = () => {
 
             <BaseForm.Item
               name="regionId"
-              label={<LableText>{t('companies.Regionname')}</LableText>}
+              label={<LableText>{t('companies.region')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -647,19 +680,46 @@ export const AddCompany: React.FC = () => {
               </Select>
             </BaseForm.Item>
 
-            {/* <BaseForm.Item
-              name={['availableCitiesIds']}
-              label={<LableText>{t('companies.available City name')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+            <h2
+              style={{
+                color: 'black',
+                paddingTop: '7px',
+                paddingBottom: '15px',
+                fontSize: FONT_SIZE.xxl,
+                fontWeight: 'Bold',
+                margin: '3rem 5% 2rem',
+              }}
             >
-              <Select mode="multiple">
-                {CityData?.map((city: any) => (
-                  <Select key={city.name} value={city.id}>
-                    {city?.name}
-                  </Select>
+              {t('companies.availableCities')}
+            </h2>
+
+            <BaseForm.Item
+              name="availableCountriesIds"
+              label={<LableText>{t('companies.country')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Select onChange={SelectCountryForAvilableCities}>
+                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                  <Option key={country.id} value={country.id}>
+                    {country?.name}
+                  </Option>
                 ))}
               </Select>
-            </BaseForm.Item> */}
+            </BaseForm.Item>
+
+            <BaseForm.Item
+              name="availableCitiesIds"
+              label={<LableText>{t('companies.availableCities')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <CreatableSelect onChange={selectCities} isMulti options={options} />
+            </BaseForm.Item>
 
             <h2
               style={{
@@ -671,13 +731,13 @@ export const AddCompany: React.FC = () => {
                 margin: '3rem 5% 2rem',
               }}
             >
-              {t('companies.Contact Information')}
+              {t('companies.companyContact')}
             </h2>
 
             <Row>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.CompanyEmail')}</LableText>}
+                  label={<LableText>{t('companies.emailAddress')}</LableText>}
                   name={['companyContact', 'emailAddress']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -689,7 +749,7 @@ export const AddCompany: React.FC = () => {
               </Col>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.website')}</LableText>}
+                  label={<LableText>{t('companies.webSite')}</LableText>}
                   name={['companyContact', 'webSite']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -739,7 +799,7 @@ export const AddCompany: React.FC = () => {
                 margin: '3rem 5% 2rem',
               }}
             >
-              {t('companies.Userinformation')}
+              {t('companies.companyUser')}
             </h2>
             <BaseButtonsForm.Item
               key={current}
@@ -859,7 +919,7 @@ export const AddCompany: React.FC = () => {
                 textAlign: 'center',
               }}
             >
-              {t("companies. Uploadfiles (copy of the company's ID)")}
+              {t('companies.companyOwnerIdentity')}
             </Text>
             <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Col>
@@ -921,7 +981,7 @@ export const AddCompany: React.FC = () => {
                 textAlign: 'center',
               }}
             >
-              {t('companies.Upload files (Commercial Register)')}
+              {t('companies.companyCommercialRegister')}
             </Text>
             <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Col>
@@ -983,7 +1043,7 @@ export const AddCompany: React.FC = () => {
                 textAlign: 'center',
               }}
             >
-              {t('companies.Upload additional  files (3 maximum)')}
+              {t('companies.additionalAttachment')}
             </Text>
             <Row style={{ display: 'flex', justifyContent: 'space-around' }}>
               <Col>
