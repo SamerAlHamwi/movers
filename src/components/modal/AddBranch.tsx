@@ -21,19 +21,21 @@ import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import type { DataNode } from 'antd/es/tree';
+import CreatableSelect from 'react-select/creatable';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
+let cityValues: any[] = [];
 const steps = [
   {
-    title: 'BranchInformation',
+    title: 'branchInfo',
   },
   {
-    title: 'Userinformation',
+    title: 'companyUser',
   },
   {
-    title: 'Services',
+    title: 'services',
   },
 ];
 let branchInfo: any = {
@@ -74,6 +76,8 @@ export const AddBranch: React.FC = () => {
   const { companyId } = useParams();
   const queryClient = useQueryClient();
 
+  const [countryIdForCities, setCountryIdForCities] = useState<string>('0');
+  const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
@@ -146,12 +150,24 @@ export const AddBranch: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const { data: availableCitiesData, refetch: availableCitiesRefetch } = useQuery(
+    'getCities',
+    () => getCities(countryIdForCities),
+    {
+      enabled: countryIdForCities !== '0',
+    },
+  );
   const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
     enabled: countryId !== '0',
   });
   const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
     enabled: cityId !== '0',
   });
+  useEffect(() => {
+    if (countryIdForCities !== '0') {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForCities]);
   useEffect(() => {
     if (countryId !== '0') {
       citiesRefetch();
@@ -163,6 +179,17 @@ export const AddBranch: React.FC = () => {
       RegionsRefetch();
     }
   }, [cityId]);
+
+  const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
+    const value = ele.id;
+    const label = ele.name;
+    const option = { value, label };
+    return option;
+  });
+
+  const SelectCountryForAvilableCities = (e: any) => {
+    setCountryIdForCities(e);
+  };
 
   const ChangeCountryHandler = (e: any) => {
     setCountryId(e);
@@ -276,9 +303,15 @@ export const AddBranch: React.FC = () => {
       },
       services: requestServices,
       regionId: regionId,
+      availableCitiesIds: selectedCityValues,
     };
     updatedFormData.translations = branchInfo.translations;
     addBranch.mutate(branchInfo);
+  };
+
+  const selectCities = (cities: any) => {
+    cityValues = cities.map((city: any) => city.value);
+    setSelectedCityValues(cityValues);
   };
 
   return (
@@ -355,7 +388,7 @@ export const AddBranch: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'name']}
-                  label={<LableText>{t('companies.CompanyNamear')}</LableText>}
+                  label={<LableText>{t('common.name_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -367,7 +400,7 @@ export const AddBranch: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'name']}
-                  label={<LableText>{t('companies.name')}</LableText>}
+                  label={<LableText>{t('common.name_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -381,7 +414,7 @@ export const AddBranch: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'bio']}
-                  label={<LableText>{t('companies.Companybioar')}</LableText>}
+                  label={<LableText>{t('common.bio_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -393,7 +426,7 @@ export const AddBranch: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'bio']}
-                  label={<LableText>{t('companies.bio')}</LableText>}
+                  label={<LableText>{t('common.bio_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -407,7 +440,7 @@ export const AddBranch: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 0, 'address']}
-                  label={<LableText>{t('companies.addressA')}</LableText>}
+                  label={<LableText>{t('address_ar')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -419,7 +452,7 @@ export const AddBranch: React.FC = () => {
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
                   name={['translations', 1, 'address']}
-                  label={<LableText>{t('companies.address')}</LableText>}
+                  label={<LableText>{t('address_en')}</LableText>}
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -432,7 +465,7 @@ export const AddBranch: React.FC = () => {
 
             <BaseForm.Item
               name="countryId"
-              label={<LableText>{t('companies.Country name')}</LableText>}
+              label={<LableText>{t('companies.country')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -449,7 +482,7 @@ export const AddBranch: React.FC = () => {
 
             <BaseForm.Item
               name="cityId"
-              label={<LableText>{t('companies.City name')}</LableText>}
+              label={<LableText>{t('companies.city')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -466,7 +499,7 @@ export const AddBranch: React.FC = () => {
 
             <BaseForm.Item
               name="regionId"
-              label={<LableText>{t('companies.Regionname')}</LableText>}
+              label={<LableText>{t('companies.region')}</LableText>}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -491,13 +524,54 @@ export const AddBranch: React.FC = () => {
                 margin: '3rem 5% 2rem',
               }}
             >
-              {t('companies.Contact Information')}
+              {t('companies.availableCities')}
+            </h2>
+
+            <BaseForm.Item
+              name="availableCountriesIds"
+              label={<LableText>{t('companies.country')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Select onChange={SelectCountryForAvilableCities}>
+                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                  <Option key={country.id} value={country.id}>
+                    {country?.name}
+                  </Option>
+                ))}
+              </Select>
+            </BaseForm.Item>
+
+            <BaseForm.Item
+              name="availableCitiesIds"
+              label={<LableText>{t('companies.availableCities')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <CreatableSelect onChange={selectCities} isMulti options={options} />
+            </BaseForm.Item>
+
+            <h2
+              style={{
+                color: 'black',
+                paddingTop: '7px',
+                paddingBottom: '15px',
+                fontSize: FONT_SIZE.xxl,
+                fontWeight: 'Bold',
+                margin: '3rem 5% 2rem',
+              }}
+            >
+              {t('companies.companyContact')}
             </h2>
 
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.CompanyEmail')}</LableText>}
+                  label={<LableText>{t('companies.emailAddress')}</LableText>}
                   name={['companyContact', 'emailAddress']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -509,7 +583,7 @@ export const AddBranch: React.FC = () => {
               </Col>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.website')}</LableText>}
+                  label={<LableText>{t('companies.webSite')}</LableText>}
                   name={['companyContact', 'webSite']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -562,7 +636,7 @@ export const AddBranch: React.FC = () => {
                 margin: '3rem 5% 2rem',
               }}
             >
-              {t('companies.Userinformation')}
+              {t('companies.companyUser')}
             </h2>
             <BaseButtonsForm.Item
               key={current}
