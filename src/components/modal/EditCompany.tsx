@@ -4,7 +4,7 @@ import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input, TextArea } from '../Admin/Translations';
-import { EditBlogArticleProps, EditCompanyProps } from './ModalProps';
+import { EditCompanyProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
@@ -14,15 +14,8 @@ import { uploadAttachment } from '@app/services/Attachment';
 import { useMutation, useQuery } from 'react-query';
 import { Alert } from '../common/Alert/Alert';
 import { Spinner } from '../common/Spinner/Spinner';
-import { CompanyModal, LanguageType } from '@app/interfaces/interfaces';
-import {
-  ClearOutlined,
-  FilePdfTwoTone,
-  FundTwoTone,
-  InboxOutlined,
-  InfoCircleTwoTone,
-  LoadingOutlined,
-} from '@ant-design/icons';
+import { CompanyModal } from '@app/interfaces/interfaces';
+import { ClearOutlined, FundTwoTone, InfoCircleTwoTone, LoadingOutlined } from '@ant-design/icons';
 import TabPane from 'antd/lib/tabs/TabPane';
 import { getAllTools } from '@app/services/tools';
 import { getAllServices, getAllSubServices } from '@app/services/services';

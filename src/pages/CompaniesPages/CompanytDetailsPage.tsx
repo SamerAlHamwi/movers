@@ -8,7 +8,7 @@ const CompanytDetailsPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.companies')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.CompanieDetails')}</PageTitle>
       <CompanyDetails />
     </>
   );

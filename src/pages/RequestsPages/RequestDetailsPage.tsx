@@ -8,7 +8,7 @@ const RequestDetailsPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.Requests')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.RequestDetails')}</PageTitle>
       <RequestDetails />
     </>
   );

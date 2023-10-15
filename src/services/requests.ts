@@ -8,13 +8,6 @@ const getAllRequests = async (page: number, pageSize: number, search: string) =>
   );
 };
 
-const getAllOffers = async (page: number, pageSize: number, search: string, id: string | undefined) => {
-  const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${id}`,
-  );
-};
-
 const getRequestById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.requests}/Get?Id=${id}`);
 };
@@ -36,14 +29,11 @@ const confirmRequest = async (data: any) => {
 };
 
 const suitableForRequest = async (data: any) => {
-  console.log('data', data);
-
   return await httpApi.post(`${apiPrefix.requests}/InsertAndNoticFilteredCompanies?requestId=${data.id}`, data.request);
 };
 
 export {
   getAllRequests,
-  getAllOffers,
   getRequestById,
   createRequest,
   DeleteRequest,

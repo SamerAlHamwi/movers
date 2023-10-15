@@ -12,13 +12,17 @@ import { CreateButtonText, Header, Image, Modal } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useSelector } from 'react-redux';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 import { getSuitableCompanies } from '@app/services/companies';
 import { getSuitableBranches } from '@app/services/branches';
 import { suitableForRequest } from '@app/services/requests';
 import { Checkbox } from '@app/components/common/Checkbox/Checkbox';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import Button from 'antd/es/button/button';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { LeftOutlined } from '@ant-design/icons';
+import { TextBack } from '@app/components/GeneralStyles';
+import { FONT_WEIGHT } from '@app/styles/themes/constants';
 
 interface ForRequest {
   id: string | undefined;
@@ -32,8 +36,9 @@ export const SuitableCompanies: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
+  const { isTablet, isMobile, isDesktop, mobileOnly, desktopOnly } = useResponsive();
   const { requestId } = useParams();
+  const Navigate = useNavigate();
 
   const [pageCompany, setPageCompany] = useState<number>(1);
   const [pageBranch, setPageBranch] = useState<number>(1);
@@ -124,7 +129,10 @@ export const SuitableCompanies: React.FC = () => {
     suitableForRequest(data)
       .then((res) => {
         res.data?.success &&
-          message.open({ content: <Alert message={t('asks.confirmAskSuccessMessage')} type={`success`} showIcon /> });
+          message.open({
+            content: <Alert message={t('requests.confirmSuitableSuccessMessage')} type={`success`} showIcon />,
+          });
+        Navigate('/requests', { replace: false });
       })
       .catch((error) =>
         message.open({ content: <Alert message={error.message || error.error?.message} type={`error`} showIcon /> }),
@@ -148,14 +156,14 @@ export const SuitableCompanies: React.FC = () => {
   };
 
   const columnsCompany = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('common.selected')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       dataIndex: 'id',
       render: (id: any) => (
         <Checkbox onChange={() => handleCheckboxChangeForCompanies(id)} checked={selectedCompanies.includes(id)} />
       ),
     },
+    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
@@ -220,14 +228,14 @@ export const SuitableCompanies: React.FC = () => {
   ];
 
   const columnsBranch = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('common.selected')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       dataIndex: 'id',
       render: (id: any) => (
         <Checkbox onChange={() => handleCheckboxChangeForBranches(id)} checked={selectedBranches.includes(id)} />
       ),
     },
+    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
@@ -293,27 +301,6 @@ export const SuitableCompanies: React.FC = () => {
 
   return (
     <>
-      <Row justify={'end'}>
-        {/*    Image    */}
-        {isOpenSliderImage ? (
-          <Modal
-            size={isDesktop || isTablet ? 'medium' : 'small'}
-            open={isOpenSliderImage}
-            onCancel={() => setIsOpenSliderImage(false)}
-            footer={null}
-            closable={false}
-            destroyOnClose
-          >
-            <AntdImage
-              preview={false}
-              style={{ borderRadius: '.3rem' }}
-              src={attachmentData !== undefined ? attachmentData?.url : ''}
-              size={isDesktop || isTablet ? 'small' : isMobile ? 'x_small' : mobileOnly ? 'xx_small' : 'x_small'}
-            />
-          </Modal>
-        ) : null}
-      </Row>
-
       <Card
         title={t('requests.suitableCompanies')}
         padding={
@@ -325,6 +312,39 @@ export const SuitableCompanies: React.FC = () => {
         }
         style={{ height: 'auto', marginBottom: '70px' }}
       >
+        <Row justify={'end'}>
+          <Btn
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            type="ghost"
+            onClick={() => Navigate(-1)}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Btn>
+
+          {/*    Image    */}
+          {isOpenSliderImage ? (
+            <Modal
+              size={isDesktop || isTablet ? 'medium' : 'small'}
+              open={isOpenSliderImage}
+              onCancel={() => setIsOpenSliderImage(false)}
+              footer={null}
+              closable={false}
+              destroyOnClose
+            >
+              <AntdImage
+                preview={false}
+                style={{ borderRadius: '.3rem' }}
+                src={attachmentData !== undefined ? attachmentData?.url : ''}
+                size={isDesktop || isTablet ? 'small' : isMobile ? 'x_small' : mobileOnly ? 'xx_small' : 'x_small'}
+              />
+            </Modal>
+          ) : null}
+        </Row>
         <Table
           pagination={{
             showSizeChanger: true,
