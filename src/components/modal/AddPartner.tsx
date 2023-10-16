@@ -3,16 +3,13 @@ import { Space, Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../Admin/Translations';
-import { CreatePartnerModalProps, CreateUserModalProps } from './ModalProps';
+import { CreatePartnerModalProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
-import { InputPassword } from '../common/inputs/InputPassword/InputPassword.styles';
 import { Button } from '../common/buttons/Button/Button';
 import { LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { Partner, UserModel } from '@app/interfaces/interfaces';
-import { Select, Option } from '../common/selects/Select/Select';
-import { Text } from '../GeneralStyles';
+import { Partner } from '@app/interfaces/interfaces';
 
 export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCancel, onCreatePartner, isLoading }) => {
   const [form] = BaseForm.useForm();
@@ -20,16 +17,11 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
   const { isDesktop, isTablet } = useResponsive();
 
   const generateRandomCode = () => {
-    const min = 10000; // Minimum 5-digit number
-    const max = 99999; // Maximum 5-digit number
+    const min = 10000;
+    const max = 99999;
     return Math.floor(Math.random() * (max - min + 1)) + min;
   };
   const [code, setCode] = useState(generateRandomCode());
-
-  const generateNewCode = () => {
-    const newCode = generateRandomCode();
-    setCode(newCode);
-  };
 
   const onOk = () => {
     form.submit();

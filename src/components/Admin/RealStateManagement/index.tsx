@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
@@ -30,6 +30,7 @@ export const Partners: React.FC = () => {
     add: false,
     edit: false,
     delete: false,
+    numbers: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -165,6 +166,16 @@ export const Partners: React.FC = () => {
       render: (index: number, record: Partner) => {
         return (
           <Space>
+            <TableButton
+              severity="info"
+              onClick={() => {
+                setEditmodaldata(record);
+                handleModalOpen('numbers');
+              }}
+            >
+              <ApartmentOutlined />
+            </TableButton>
+
             <TableButton
               severity="info"
               onClick={() => {
