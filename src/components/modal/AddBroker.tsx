@@ -45,7 +45,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('Brokers.addBrokerModalTitle')}
+          {t('brokers.addBrokerModalTitle')}
         </div>
       }
       onCancel={onCancel}
@@ -57,7 +57,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button type="primary" style={{ height: 'auto' }} loading={isLoading} key="add" onClick={onOk}>
-              <P1>{t('Brokers.addBrokerModalTitle')}</P1>
+              <P1>{t('brokers.addBrokerModalTitle')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>
@@ -117,7 +117,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
         <BaseForm.Item
           name="mediatorCode"
           initialValue={code}
-          label={<LableText>{t('Brokers.code')}</LableText>}
+          label={<LableText>{t('brokers.code')}</LableText>}
           rules={[
             {
               required: true,
@@ -131,7 +131,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
 
         <BaseForm.Item
           name="commissionPercentage"
-          label={<LableText>{t('Brokers.commission')}</LableText>}
+          label={<LableText>{t('brokers.commission')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
@@ -140,7 +140,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
 
         <BaseForm.Item
           name="mediatorProfit"
-          label={<LableText>{t('Brokers.balance')}</LableText>}
+          label={<LableText>{t('brokers.balance')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

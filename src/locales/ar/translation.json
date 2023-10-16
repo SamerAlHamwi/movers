@@ -324,8 +324,8 @@
     "deleteToolModalDescription": "هل أنت متأكد من حذف هذه أداة"
   },
 
-  "_comment10": "*********************************** Brokers ************************************************",
-  "Brokers": {
+  "_comment10": "*********************************** brokers ************************************************",
+  "brokers": {
     "BrokersList": "قائمة الوسطاء",
     "code": "كود الوسيط",
     "commission": "نسبة العمولة",
@@ -339,21 +339,18 @@
     "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح"
   },
 
-  "_comment11": "*********************************** Partners ************************************************",
-  "Partners": {
-    "addPartner": "إضافة الشريك",
+  "_comment11": "*********************************** partners ************************************************",
+  "partners": {
     "PartnersList": "قائمة الشركاء",
-
-    "deletePartnerModalDescription": "هل أنت متأكد؟",
+    "code": "كود الشريك",
+    "discountPercentage": "نسبة الخصم للشريك",
+    "addPartner": "إضافة الشريك",
+    "addPartnerModalTitle": "إضافة شريك",
+    "addPartnerSuccessMessage": "تمت إضافة الشريك بنجاح",
     "deletePartnerModalTitle": "حذف الشريك",
-    "addBrokerModalTitle": "إضافة وسيط",
+    "deletePartnerModalDescription": "هل أنت متأكد من حذف هذا الشريك؟",
     "editPartnerModalTitle": "تعديل معلومات الشريك",
-    "addpartnerModalTitle": "إضافة شريك",
-    "partnercode": "كود الشريك",
-    "partnerName": "اسم الشريك",
-    "partnerPhoneNumber": "رقم هاتف الشريك",
-    "partnerdiscountPercentage": "نسبة الخصم للشريك",
-    "PartnersStatus": "حالة الشريك"
+    "editPartnerSuccessMessage": "تم تعديل معلومات الشريك بنجاح"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

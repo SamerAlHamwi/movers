@@ -47,7 +47,7 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('Partners.addpartnerModalTitle')}
+          {t('partners.addPartnerModalTitle')}
         </div>
       }
       onCancel={onCancel}
@@ -59,7 +59,7 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button type="primary" style={{ height: 'auto' }} loading={isLoading} key="add" onClick={onOk}>
-              <P1>{t('Partners.addpartnerModalTitle')}</P1>
+              <P1>{t('partners.addPartnerModalTitle')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>
@@ -67,33 +67,59 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
     >
       <BaseForm form={form} onFinish={onFinish} name="PartnerForm">
         <BaseForm.Item
-          name="partnerPhoneNumber"
-          label={<LableText>{t('Partners.partnerPhoneNumber')}</LableText>}
+          name="firstName"
+          label={<LableText>{t('common.firstName')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
-        <div>
-          <BaseForm.Item
-            name="partnerCode"
-            initialValue={code} // Set the initialValue to the generated code
-            label={<LableText>{t('Partners.partnercode')}</LableText>}
-            rules={[
-              {
-                required: true,
-                message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-              },
-            ]}
-            style={{ marginTop: '-.5rem' }}
-          >
-            <Input />
-          </BaseForm.Item>
-        </div>
+
+        <BaseForm.Item
+          name="lastName"
+          label={<LableText>{t('common.lastName')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="partnerPhoneNumber"
+          label={<LableText>{t('common.phoneNumber')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="emailAddress"
+          label={<LableText>{t('common.emailAddress')}</LableText>}
+          // rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="partnerCode"
+          initialValue={code}
+          label={<LableText>{t('partners.code')}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
 
         <BaseForm.Item
           name="discountPercentage"
-          label={<LableText>{t('Partners.partnerdiscountPercentage')}</LableText>}
+          label={<LableText>{t('partners.discountPercentage')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

@@ -40,7 +40,7 @@ export const Partners: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<Partner | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -52,7 +52,7 @@ export const Partners: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Partner', page, pageSize, refetchOnAddManager, isDelete, isEdit],
+    ['Partner', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
       getAllPartner(page, pageSize, searchString)
         .then((data) => {
@@ -81,8 +81,8 @@ export const Partners: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-    setRefetchOnAddManager(false);
-  }, [isDelete, isEdit, refetchOnAddManager, page, pageSize, searchString, language, refetch]);
+    setRefetchOnAdd(false);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -90,11 +90,11 @@ export const Partners: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addManager = useMutation((data: Partner) =>
+  const addPartner = useMutation((data: Partner) =>
     CreatePartner(data)
       .then((data) => {
-        notificationController.success({ message: t('Brokers.addPartnerSuccessMessage') });
-        setRefetchOnAddManager(data.data?.success);
+        notificationController.success({ message: t('partners.addPartnerSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -102,8 +102,8 @@ export const Partners: React.FC = () => {
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addManager.isLoading }));
-  }, [addManager.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, add: addPartner.isLoading }));
+  }, [addPartner.isLoading]);
 
   const deletePartner = useMutation((id: number) =>
     DeletePartner(id)
@@ -111,7 +111,7 @@ export const Partners: React.FC = () => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('Partners.deletePartnerSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('partners.deletePartnerSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -142,7 +142,7 @@ export const Partners: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`managers.editPartnerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`partners.editPartnerSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -156,9 +156,9 @@ export const Partners: React.FC = () => {
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('Partners.partnerPhoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
-    { title: <Header>{t('Partners.partnercode')}</Header>, dataIndex: 'partnerCode' },
-    { title: <Header>{t('Partners.partnerdiscountPercentage')}</Header>, dataIndex: 'discountPercentage' },
+    { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
+    { title: <Header>{t('partners.code')}</Header>, dataIndex: 'partnerCode' },
+    { title: <Header>{t('partners.discountPercentage')}</Header>, dataIndex: 'discountPercentage' },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
@@ -193,7 +193,7 @@ export const Partners: React.FC = () => {
   return (
     <>
       <Card
-        title={t('Partners.PartnersList')}
+        title={t('partners.PartnersList')}
         padding={
           dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -210,7 +210,7 @@ export const Partners: React.FC = () => {
             }}
             onClick={() => handleModalOpen('add')}
           >
-            <CreateButtonText>{t('Partners.addPartner')}</CreateButtonText>
+            <CreateButtonText>{t('partners.addPartner')}</CreateButtonText>
           </Button>
           {/*    Add    */}
           {modalState.add && (
@@ -218,9 +218,9 @@ export const Partners: React.FC = () => {
               visible={modalState.add}
               onCancel={() => handleModalClose('add')}
               onCreatePartner={(PartnerInfo) => {
-                addManager.mutateAsync(PartnerInfo);
+                addPartner.mutateAsync(PartnerInfo);
               }}
-              isLoading={addManager.isLoading}
+              isLoading={addPartner.isLoading}
             />
           )}
           {/*    EDIT    */}
@@ -242,7 +242,7 @@ export const Partners: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('Partners.deletePartnerModalTitle')}
+              title={t('partners.deletePartnerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
               isDanger={true}

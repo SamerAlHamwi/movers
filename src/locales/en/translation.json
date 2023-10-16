@@ -317,8 +317,8 @@
     "deleteToolModalDescription": "Are You Sure To Delete This Tool?"
   },
 
-  "_comment10": "*********************************** Brokers ************************************************",
-  "Brokers": {
+  "_comment10": "*********************************** brokers ************************************************",
+  "brokers": {
     "BrokersList": "Brokers List",
     "code": "Code",
     "commission": "Commission",
@@ -332,23 +332,18 @@
     "editBrokerSuccessMessage": "The Broker has been Edited Successfully"
   },
 
-  "_comment11": "*********************************** Partners ************************************************",
-  "Partners": {
-    "Partners": "Real State Management",
-    "addPartnerModalTitle": "Add Mover",
-    "addPartner": "Add RSM",
-    "addPartnerSuccessMessage": "Done Successfully",
-    "editPartnerSuccessMessage": "Done Successfully",
+  "_comment11": "*********************************** partners ************************************************",
+  "partners": {
     "PartnersList": "Real State Management List",
-    "deletePartnerModalDescription": "Are you sure?",
+    "code": "RSM Code",
+    "discountPercentage": "Discount Percentage",
+    "addPartner": "Add RSM",
+    "addPartnerModalTitle": "Add Mover",
+    "addPartnerSuccessMessage": "The Partner has been Added Successfully",
     "deletePartnerModalTitle": "Delete RSM",
-    "partnercode": "RSM Code",
-    "partnerName": "RSM Name",
-    "PartnersStatus": "RSM Status",
+    "deletePartnerModalDescription": "Are You Sure To Delete This Partner?",
     "editPartnerModalTitle": "Edit RSM",
-    "addpartnerModalTitle": "Add RSM",
-    "partnerdiscountPercentage": "Discount Percentage",
-    "partnerPhoneNumber": "Phone Number "
+    "editPartnerSuccessMessage": "The Partner has been Edited Successfully"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

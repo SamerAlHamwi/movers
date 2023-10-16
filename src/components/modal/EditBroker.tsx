@@ -37,7 +37,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
       open={visible}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('Brokers.editBrokerModalTitle')}
+          {t('brokers.editBrokerModalTitle')}
         </div>
       }
       onCancel={onCancel}
@@ -108,7 +108,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
 
         <BaseForm.Item
           name="mediatorCode"
-          label={<LableText>{t('Brokers.code')}</LableText>}
+          label={<LableText>{t('brokers.code')}</LableText>}
           rules={[
             {
               required: true,
@@ -122,7 +122,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
 
         <BaseForm.Item
           name="commissionPercentage"
-          label={<LableText>{t('Brokers.commission')}</LableText>}
+          label={<LableText>{t('brokers.commission')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
@@ -131,7 +131,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
 
         <BaseForm.Item
           name="mediatorProfit"
-          label={<LableText>{t('Brokers.balance')}</LableText>}
+          label={<LableText>{t('brokers.balance')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

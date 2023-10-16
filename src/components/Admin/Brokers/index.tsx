@@ -93,7 +93,7 @@ export const Brokers: React.FC = () => {
   const addBroker = useMutation((data: Broker) =>
     CreateMediator(data)
       .then((data) => {
-        notificationController.success({ message: t('Brokers.addBrokerSuccessMessage') });
+        notificationController.success({ message: t('brokers.addBrokerSuccessMessage') });
         setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
@@ -111,7 +111,7 @@ export const Brokers: React.FC = () => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('Brokers.deleteBrokerSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('brokers.deleteBrokerSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -142,7 +142,7 @@ export const Brokers: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`Brokers.editBrokerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`brokers.editBrokerSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -157,9 +157,9 @@ export const Brokers: React.FC = () => {
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'mediatorPhoneNumber' },
-    { title: <Header>{t('Brokers.code')}</Header>, dataIndex: 'mediatorCode' },
-    { title: <Header>{t('Brokers.commission')}</Header>, dataIndex: 'commissionPercentage' },
-    { title: <Header>{t('Brokers.balance')}</Header>, dataIndex: 'mediatorProfit' },
+    { title: <Header>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
+    { title: <Header>{t('brokers.commission')}</Header>, dataIndex: 'commissionPercentage' },
+    { title: <Header>{t('brokers.balance')}</Header>, dataIndex: 'mediatorProfit' },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
@@ -194,7 +194,7 @@ export const Brokers: React.FC = () => {
   return (
     <>
       <Card
-        title={t('Brokers.BrokersList')}
+        title={t('brokers.BrokersList')}
         padding={
           dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -211,7 +211,7 @@ export const Brokers: React.FC = () => {
             }}
             onClick={() => handleModalOpen('add')}
           >
-            <CreateButtonText>{t('Brokers.addBroker')}</CreateButtonText>
+            <CreateButtonText>{t('brokers.addBroker')}</CreateButtonText>
           </Button>
           {/*    Add    */}
           {modalState.add && (
@@ -243,7 +243,7 @@ export const Brokers: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('Brokers.deleteBrookerModalTitle')}
+              title={t('brokers.deleteBrookerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
               isDanger={true}
