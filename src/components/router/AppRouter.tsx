@@ -30,11 +30,11 @@ const ChildAttributeChoicePage = lazy(() => import('@app/pages/SourceTypesPages/
 const CountryPage = lazy(() => import('@app/pages/LocationsPages/CountriesPage'));
 const CityPage = lazy(() => import('@app/pages/LocationsPages/CitiesPage'));
 const RegionPage = lazy(() => import('@app/pages/LocationsPages/RegionPage'));
-const Notifications = lazy(() => import('@app/pages/RelatedPages/NotificationsPage'));
-const Terms = lazy(() => import('@app/pages/RelatedPages/TermPage'));
-const ContactusPage = lazy(() => import('@app/pages/RelatedPages/ContactUsPage'));
-const PrivacyPolicy = lazy(() => import('@app/pages/RelatedPages/PrivacyPolicyPage'));
-const RolePage = lazy(() => import('@app/pages/RelatedPages/RolesPage'));
+const Notifications = lazy(() => import('@app/pages/OtherPages/NotificationsPage'));
+const Terms = lazy(() => import('@app/pages/OtherPages/TermPage'));
+const ContactusPage = lazy(() => import('@app/pages/OtherPages/ContactUsPage'));
+const PrivacyPolicy = lazy(() => import('@app/pages/OtherPages/PrivacyPolicyPage'));
+const RolePage = lazy(() => import('@app/pages/OtherPages/RolesPage'));
 const RequestPage = lazy(() => import('@app/pages/RequestsPages/RequestsPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/RequestsPages/RequestDetailsPage'));
 const SuitableCompanyPage = lazy(() => import('@app/pages/RequestsPages/SuitableCompaniesPage'));
@@ -50,8 +50,8 @@ const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
 const Brokerspage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
 const Partnerspage = lazy(() => import('@app/pages/UsersPages/PartnersPage'));
-const AskForHelpPage = lazy(() => import('@app/pages/RelatedPages/HelpRequestsPage'));
-const FrequentlyQuestionPage = lazy(() => import('@app/pages/RelatedPages/FrequentlyQuestionsPage'));
+const AskForHelpPage = lazy(() => import('@app/pages/OtherPages/HelpRequestsPage'));
+const FrequentlyQuestionPage = lazy(() => import('@app/pages/OtherPages/FrequentlyQuestionsPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);

@@ -7,6 +7,7 @@
     "attachment": "صورة",
     "icon": "الأيقونة",
     "phoneNumber": "رقم الهاتف",
+    "emailAddress": "عنوان البريد الإلكتروني",
     "bio": "الوصف",
     "name": "الاسم",
     "name_ar": "الاسم بالعربية",
@@ -325,23 +326,17 @@
 
   "_comment10": "*********************************** Brokers ************************************************",
   "Brokers": {
-    "addPartner": "إضافة وسيط",
     "BrokersList": "قائمة الوسطاء",
-
-    "deletePartnerModalDescription": "هل انت متاكد?",
-    "deletePartnerModalTitle": "حذف ",
-    "partnercode": "كود الوسيط",
-    "partnerName": "اسم الوسيط",
-    "mediatorProfit": "الربح",
-    "PartnersStatus": "حالة الوسيط",
-    "editPartnerModalTitle": "تعديل الوسيط",
-
-    "addpartnerModalTitle": "إضافة وسيط",
+    "code": "كود الوسيط",
+    "commission": "نسبة العمولة",
+    "balance": "رصيد الوسيط",
+    "addBroker": "إضافة وسيط",
     "addBrokerModalTitle": "إضافة وسيط",
-    "partnerdiscountPercentage": "نسبة للوسيط",
-    "partnerPhoneNumber": "رقم الهاتف ",
-    "addPartnerSuccessMessage": "تمت العملية بنجاح",
-    "editPartnerSuccessMessage": "تمت العملية بنجاح"
+    "addBrokerSuccessMessage": "تم إضافة الوسيط بنجاح",
+    "deleteBrokerModalTitle": "حذف الوسيط",
+    "deleteBrokerModalDescription": "هل أنت متأكد من حذف هذا الوسيط؟",
+    "editBrokerModalTitle": "تعديل الوسيط",
+    "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح"
   },
 
   "_comment11": "*********************************** Partners ************************************************",
