@@ -1,11 +1,19 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { message, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, ApartmentOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  FileSearchOutlined,
+  PhoneOutlined,
+  TagOutlined,
+  ContactsOutlined,
+  CodeOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
@@ -17,6 +25,7 @@ import { TableButton } from '../../GeneralStyles';
 import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
+import { AddCodesForREM } from '@app/components/modal/AddCodesForREM';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 
@@ -30,13 +39,14 @@ export const Partners: React.FC = () => {
     add: false,
     edit: false,
     delete: false,
-    numbers: false,
+    code: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [codemodaldata, setCodemodaldata] = useState<Partner | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<Partner | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<Partner | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
@@ -106,6 +116,21 @@ export const Partners: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, add: addPartner.isLoading }));
   }, [addPartner.isLoading]);
 
+  const addCodes = useMutation((data: Partner) =>
+    CreatePartner(data)
+      .then((data) => {
+        notificationController.success({ message: t('partners.addPartnerSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, code: addCodes.isLoading }));
+  }, [addCodes.isLoading]);
+
   const deletePartner = useMutation((id: number) =>
     DeletePartner(id)
       .then((data) => {
@@ -166,35 +191,53 @@ export const Partners: React.FC = () => {
       render: (index: number, record: Partner) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('numbers');
-              }}
-            >
-              <ApartmentOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('details');
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.code')}>
+              <TableButton
+                severity="warning"
+                onClick={() => {
+                  setCodemodaldata(record);
+                  handleModalOpen('code');
+                }}
+              >
+                <CodeOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('delete');
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
@@ -223,6 +266,7 @@ export const Partners: React.FC = () => {
           >
             <CreateButtonText>{t('partners.addPartner')}</CreateButtonText>
           </Button>
+
           {/*    Add    */}
           {modalState.add && (
             <AddPartner
@@ -234,6 +278,19 @@ export const Partners: React.FC = () => {
               isLoading={addPartner.isLoading}
             />
           )}
+
+          {/*    CODE    */}
+          {modalState.code && (
+            <AddCodesForREM
+              visible={modalState.code}
+              onCancel={() => handleModalClose('code')}
+              onCreatePartner={(info) => {
+                addCodes.mutateAsync(info);
+              }}
+              isLoading={addCodes.isLoading}
+            />
+          )}
+
           {/*    EDIT    */}
           {modalState.edit && (
             <EditPartner
@@ -244,6 +301,7 @@ export const Partners: React.FC = () => {
               isLoading={editPartner.isLoading}
             />
           )}
+
           {/*    Delete    */}
           {modalState.delete && (
             <ActionModal
