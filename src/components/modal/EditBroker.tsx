@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { InputNumber, Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -11,15 +11,38 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { Broker } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 import { Select, Option } from '../common/selects/Select/Select';
-import { getCountries } from '@app/services/locations';
+import { getCities, getCountries } from '@app/services/locations';
 import { useQuery } from 'react-query';
+
+const generateRandomCode = () => {
+  const min = 10000000;
+  const max = 99999999;
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+};
 
 export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr_values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
 
+  const [code, setCode] = useState(generateRandomCode());
+  const [countryId, setCountryId] = useState<string>('0');
+
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
+    enabled: countryId !== '0',
+  });
+
+  useEffect(() => {
+    if (countryId !== '0') {
+      citiesRefetch();
+    }
+  }, [countryId]);
+
+  const ChangeCountryHandler = (e: any) => {
+    setCountryId(e);
+    form.setFieldValue('cityId', '');
+  };
 
   const onOk = () => {
     form.submit();
@@ -28,6 +51,10 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
   const onFinish = (value: Broker) => {
     value = Object.assign({}, value, { isActive: true });
     onEdit(value);
+  };
+
+  const onChange = (value: any) => {
+    console.log('changed', value);
   };
 
   return (
@@ -59,7 +86,6 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
         <BaseForm.Item
           name="firstName"
           label={<LableText>{t('common.firstName')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
@@ -68,7 +94,14 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
         <BaseForm.Item
           name="lastName"
           label={<LableText>{t('common.lastName')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="companyName"
+          label={<LableText>{t('brokers.companyName')}</LableText>}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
@@ -86,18 +119,16 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
         <BaseForm.Item
           name="emailAddress"
           label={<LableText>{t('common.emailAddress')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
 
         <BaseForm.Item
-          name="countryId"
           label={<LableText>{t('companies.country')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
         >
-          <Select>
+          <Select onChange={ChangeCountryHandler}>
             {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
               <Option key={country.id} value={country.id}>
                 {country?.name}
@@ -107,12 +138,31 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
         </BaseForm.Item>
 
         <BaseForm.Item
+          name="cityId"
+          label={<LableText>{t('companies.city')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+        >
+          <Select>
+            {citiesData?.data?.result?.items.map((city: any) => (
+              <Select key={city.name} value={city.id}>
+                {city?.name}
+              </Select>
+            ))}
+          </Select>
+        </BaseForm.Item>
+
+        <BaseForm.Item
           name="mediatorCode"
+          initialValue={code}
           label={<LableText>{t('brokers.code')}</LableText>}
           rules={[
             {
               required: true,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+            {
+              pattern: /^[0-9]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
             },
           ]}
           style={{ marginTop: '-.5rem' }}
@@ -126,16 +176,15 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <Input />
-        </BaseForm.Item>
-
-        <BaseForm.Item
-          name="mediatorProfit"
-          label={<LableText>{t('brokers.balance')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <Input />
+          <InputNumber
+            defaultValue={0}
+            min={0}
+            max={100}
+            formatter={(value) => `${value}%`}
+            parser={(value: any) => value!.replace('%', '')}
+            onChange={onChange}
+            style={{ width: '100%' }}
+          />
         </BaseForm.Item>
       </BaseForm>
     </Modal>
