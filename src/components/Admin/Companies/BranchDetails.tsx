@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image } from 'antd';
+import { Row, Tree, Image, Space, Progress } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -136,6 +136,11 @@ const BranchDetails: React.FC = () => {
     margin: 1.25rem 0.5rem;
   `;
 
+  const conicPinkColors = { '0%': '#ffba6f', '50%': '#ff6f61', '100%': '#ff4369' };
+  const conicGreenColors = { '0%': '#f6ff00', '50%': '#b3ff00', '100%': '#73d13d' };
+  const conicBlueColors = { '0%': '#a6dcef', '50%': '#2e93e5', '100%': '#0050b3' };
+  const conicRedColors = { '0%': '#ffbb96', '50%': '#ff6b45', '100%': '#e62b1d' };
+
   useEffect(() => {
     if (isRefetching) {
       setLoading(true);
@@ -247,6 +252,72 @@ const BranchDetails: React.FC = () => {
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{branchData?.numberOfTransfers}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                {t('companies.evaluation')} :
+              </h3>
+
+              <ColStyle>
+                <DetailsTitle>{t('companies.generalRating')} :</DetailsTitle>
+              </ColStyle>
+              <Space wrap style={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: '3rem' }}>
+                <Progress
+                  type="circle"
+                  percent={branchData?.generalRating?.quality * 10}
+                  format={(percent) => (
+                    <p>
+                      {percent} <h6> {t('companies.quality')} </h6>
+                    </p>
+                  )}
+                  strokeColor={conicBlueColors}
+                />
+                <Progress
+                  type="circle"
+                  percent={branchData?.generalRating?.overallRating * 10}
+                  format={(percent) => (
+                    <p>
+                      {percent} <h6> {t('companies.overallRating')} </h6>
+                    </p>
+                  )}
+                  strokeColor={conicPinkColors}
+                />
+                <Progress
+                  type="circle"
+                  percent={branchData?.generalRating?.customerService * 10}
+                  format={(percent) => (
+                    <p>
+                      {percent} <h6> {t('companies.customerService')} </h6>
+                    </p>
+                  )}
+                  strokeColor={conicGreenColors}
+                />
+                <Progress
+                  type="circle"
+                  percent={branchData?.generalRating?.valueOfServiceForMoney * 10}
+                  format={(percent) => (
+                    <p>
+                      {percent} <h6> {t('companies.valueOfServiceForMoney')} </h6>
+                    </p>
+                  )}
+                  strokeColor={conicRedColors}
+                />
+              </Space>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.reviews')} :</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  {branchData?.reviews.length > 0
+                    ? branchData?.reviews.map((review: any, index: number) => (
+                        <DetailsValue key={review?.id}>
+                          {index + 1} - <span style={{ fontWeight: '600' }}>{review?.reviewDescription} </span>
+                          {' ( from ' + review?.user?.fullName + ' / ' + review?.user?.userName + ' )'}
+                        </DetailsValue>
+                      ))
+                    : '___'}
                 </ColStyle>
               </DetailsRow>
 

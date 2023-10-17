@@ -277,7 +277,15 @@
     "deletecompanyModalDescription": "Are You Sure To Delete This Company?",
     "services": "Services",
     "addCompanySuccessMessage": "The Company has been Added Successfully",
-    "branchInfo": "Branch Informations"
+    "branchInfo": "Branch Informations",
+    "evaluation": "Evaluation",
+    "generalRating": "General Rating",
+    "quality": "Quality",
+    "overallRating": "Overall rating",
+    "customerService": "Customer service",
+    "valueOfServiceForMoney": "Service value for money",
+    "reviews": "Reviews",
+    "details": "Details"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -515,7 +523,8 @@
     "deleteBranchModalDescription": "Are You Sure To Delete This Branch?",
     "region": "Region",
     "branchInfo": "Branch Informations",
-    "branchProfile": "Branch Profile"
+    "branchProfile": "Branch Profile",
+    "details": "Details"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -607,6 +616,7 @@
     "selectedByUser": "Selected By User",
     "company": "Company",
     "branch": "Branch",
+    "details": "Details",
     "sendToUserSuccessMessage": "Those Offers Will Send To User",
     "services": "Services",
     "selectedCompany": "Company Informations",

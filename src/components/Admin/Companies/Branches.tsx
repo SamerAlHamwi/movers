@@ -185,7 +185,7 @@ export const Branches: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('branch.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -204,7 +204,7 @@ export const Branches: React.FC = () => {
                   width: 'auto',
                 }}
               >
-                {t('requests.details')}
+                {t('branch.details')}
               </div>
             </Button>
           </Space>

@@ -277,7 +277,7 @@ export const Companies: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -296,7 +296,7 @@ export const Companies: React.FC = () => {
                   width: 'auto',
                 }}
               >
-                {t('requests.details')}
+                {t('companies.details')}
               </div>
             </Button>
           </Space>
@@ -331,11 +331,6 @@ export const Companies: React.FC = () => {
                 </TableButton>
               </Space>
             )}
-            {/* {record.statues === 1 && (
-              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-                {t('companies.checking')}
-              </Tag>
-            )} */}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
                 {t('companies.approved')}
@@ -359,7 +354,6 @@ export const Companies: React.FC = () => {
             <TableButton
               severity="success"
               onClick={() => {
-                // navigate(`${record.id}/addBranch`, { replace: false });
                 navigate(`${record.id}/branches`, { replace: false });
               }}
             >

@@ -278,7 +278,15 @@
     "deletecompanyModalDescription": "هل أنت متأكد من حذف هذه الشركة",
     "services": "الخدمات",
     "addCompanySuccessMessage": "تمت إضافة الشركة بنجاح",
-    "branchInfo": "معلومات الفرع"
+    "branchInfo": "معلومات الفرع",
+    "evaluation": "التقييم",
+    "generalRating": "التقييم العام",
+    "quality": "الجودة",
+    "overallRating": "التقييم العام",
+    "customerService": "خدمة الزبائن",
+    "valueOfServiceForMoney": "تقييم الخدمة مقابل المال",
+    "reviews": "المراجعات",
+    "details": "تفاصيل الشركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -512,7 +520,8 @@
     "deleteBranchModalDescription": "هل أنت متأكد من حذف هذا الفرع",
     "region": "المنطقة",
     "branchInfo": "معلومات الفرع",
-    "branchProfile": "بروفايل الفرع"
+    "branchProfile": "بروفايل الفرع",
+    "details": "تفاصيل الفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -604,6 +613,7 @@
     "selectedByUser": "مُحددة من قِبَل المستخدم",
     "company": "شركة",
     "branch": "فرع",
+    "details": "تفاصيل العرض",
     "sendToUserSuccessMessage": "سيتم إرسال هذه العروض للمستخدم",
     "services": "الخدمات",
     "selectedCompany": "معلومات الشركة المُقدّمة للعرض",
