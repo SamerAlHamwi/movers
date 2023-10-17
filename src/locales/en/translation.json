@@ -73,7 +73,11 @@
     "productCode": "Product Code",
     "here": "here",
     "viewAll": "view all",
-    "ShowMore": "Show more"
+    "ShowMore": "Show more",
+    "details": "Details",
+    "phoneNumbers": "Phone Numbers",
+    "code": "Codes",
+    "onlyNumbers": "Only Numbers are allowed"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -323,6 +327,7 @@
     "code": "Code",
     "commission": "Commission",
     "balance": "Balance",
+    "companyName": "Company Name",
     "addBroker": "Add Broker",
     "addBrokerModalTitle": "Add Broker",
     "addBrokerSuccessMessage": "The Broker has been Added Successfully",
@@ -334,15 +339,15 @@
 
   "_comment11": "*********************************** partners ************************************************",
   "partners": {
-    "PartnersList": "Real State Management List",
-    "code": "RSM Code",
+    "PartnersList": "Real Estate Management List",
+    "code": "REM Code",
     "discountPercentage": "Discount Percentage",
-    "addPartner": "Add RSM",
+    "addPartner": "Add REM",
     "addPartnerModalTitle": "Add Mover",
     "addPartnerSuccessMessage": "The Partner has been Added Successfully",
-    "deletePartnerModalTitle": "Delete RSM",
+    "deletePartnerModalTitle": "Delete REM",
     "deletePartnerModalDescription": "Are You Sure To Delete This Partner?",
-    "editPartnerModalTitle": "Edit RSM",
+    "editPartnerModalTitle": "Edit REM",
     "editPartnerSuccessMessage": "The Partner has been Edited Successfully"
   },
 

@@ -58,12 +58,6 @@
     "arInfo": "المعلومات بالعربية",
     "hideDescription": "إخفاء التوصيف",
     "showDescription": "عرض التوصيف",
-    "userType": {
-      "userType": "نوع المستخدم",
-      "admin": "مدير",
-      "manager": "مدير لعبة",
-      "student": "طالب"
-    },
     "approve": "قبول",
     "reject": "رفض",
     "prev": "السابق",
@@ -78,7 +72,11 @@
     "productCode": "رمز المنتج",
     "here": "هنا",
     "viewAll": "عرض الكل",
-    "ShowMore": "عرض المزيد"
+    "ShowMore": "عرض المزيد",
+    "details": "تفاصيل",
+    "phoneNumbers": "أرقام موبايل",
+    "code": "أكواد",
+    "onlyNumbers": "يُسمح بإستخدام الأرقام فقط"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -330,6 +328,7 @@
     "code": "كود الوسيط",
     "commission": "نسبة العمولة",
     "balance": "رصيد الوسيط",
+    "companyName": "إسم الشركة",
     "addBroker": "إضافة وسيط",
     "addBrokerModalTitle": "إضافة وسيط",
     "addBrokerSuccessMessage": "تم إضافة الوسيط بنجاح",

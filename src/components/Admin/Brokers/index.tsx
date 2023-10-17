@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { message, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -16,7 +16,7 @@ import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateMediator, DeleteMediator, UpdateMediator, getAllMediators } from '../../../services/mediator';
+import { CreateMediator, DeleteMediator, UpdateMediator, getAllMediators } from '../../../services/brokers';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 
@@ -156,6 +156,9 @@ export const Brokers: React.FC = () => {
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
+    { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
+    { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
     { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'mediatorPhoneNumber' },
     { title: <Header>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
     { title: <Header>{t('brokers.commission')}</Header>, dataIndex: 'commissionPercentage' },
@@ -166,25 +169,29 @@ export const Brokers: React.FC = () => {
       render: (index: number, record: Broker) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('delete');
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
