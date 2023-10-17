@@ -235,7 +235,9 @@ export const Requests: React.FC = () => {
       render: (record: number) => {
         return (
           <>
-            {record == 1
+            {record == 0
+              ? '___'
+              : record == 1
               ? t('requests.Internal')
               : record == 2
               ? t('requests.External')

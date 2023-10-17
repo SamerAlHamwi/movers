@@ -82,7 +82,7 @@ let companyInfo: any = {
     isForBranchCompany: false,
   },
   comment: 'string',
-  // serviceType: 1,
+  serviceType: 0,
   userDto: {
     dialCode: '963',
     phoneNumber: '0997829849',
@@ -115,6 +115,7 @@ export const AddCompany: React.FC = () => {
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
+  const [valueRadio, setValueRadio] = useState(1);
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
@@ -408,7 +409,7 @@ export const AddCompany: React.FC = () => {
         phoneNumber: phoneNumberU,
         password: form.getFieldValue(['userDto', 'password']),
       },
-      // serviceType: valueRadio,
+      serviceType: valueRadio,
       services: requestServices,
       companyProfilePhotoId: logo,
       additionalAttachmentIds: updatedFormData.additionalAttachmentIds,
@@ -855,7 +856,7 @@ export const AddCompany: React.FC = () => {
         )}
         {current === 2 && (
           <>
-            {/* <BaseForm.Item key={10} name="serviceType">
+            <BaseForm.Item key={10} name="serviceType">
               <Radio.Group
                 style={{ display: 'flex', width: '100%' }}
                 onChange={(event) => {
@@ -872,7 +873,7 @@ export const AddCompany: React.FC = () => {
                   Both
                 </Radio>
               </Radio.Group>
-            </BaseForm.Item> */}
+            </BaseForm.Item>
             <BaseForm.Item key="100" name="services">
               {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                 const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
