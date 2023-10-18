@@ -127,6 +127,23 @@ export const Branches: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
+      dataIndex: 'serviceType',
+      render: (record: number) => {
+        return (
+          <>
+            {record == 0
+              ? '___'
+              : record == 1
+              ? t('requests.Internal')
+              : record == 2
+              ? t('requests.External')
+              : `${t('requests.Internal')} & ${t('requests.External')}`}
+          </>
+        );
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
@@ -168,7 +185,7 @@ export const Branches: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('branch.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -187,7 +204,7 @@ export const Branches: React.FC = () => {
                   width: 'auto',
                 }}
               >
-                {t('requests.details')}
+                {t('branch.details')}
               </div>
             </Button>
           </Space>

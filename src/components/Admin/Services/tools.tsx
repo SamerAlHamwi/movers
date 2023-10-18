@@ -207,7 +207,7 @@ export const Tools: React.FC = () => {
               <EditOutlined />
             </TableButton>
 
-            {/* <TableButton
+            <TableButton
               severity="error"
               onClick={() => {
                 setDeletemodaldata(record);
@@ -215,7 +215,7 @@ export const Tools: React.FC = () => {
               }}
             >
               <DeleteOutlined />
-            </TableButton> */}
+            </TableButton>
           </Space>
         );
       },

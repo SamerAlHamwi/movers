@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { message, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -16,11 +16,11 @@ import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateMediator, DeleteMediator, UpdateMediator, getAllMediators } from '../../../services/mediator';
+import { CreateMediator, DeleteMediator, UpdateMediator, getAllMediators } from '../../../services/brokers';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 
-export const Mediators: React.FC = () => {
+export const Brokers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
@@ -40,7 +40,7 @@ export const Mediators: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<Broker | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [refetchOnAddMediator, setRefetchOnAddMediator] = useState(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -52,7 +52,7 @@ export const Mediators: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Mediators', page, pageSize, refetchOnAddMediator, isDelete, isEdit],
+    ['Brokers', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
       getAllMediators(page, pageSize, searchString)
         .then((data) => {
@@ -81,8 +81,8 @@ export const Mediators: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-    setRefetchOnAddMediator(false);
-  }, [isDelete, isEdit, refetchOnAddMediator, page, pageSize, language, searchString, refetch]);
+    setRefetchOnAdd(false);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -90,11 +90,11 @@ export const Mediators: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addMediator = useMutation((data: Broker) =>
+  const addBroker = useMutation((data: Broker) =>
     CreateMediator(data)
       .then((data) => {
-        notificationController.success({ message: t('Brokers.addPartnerSuccessMessage') });
-        setRefetchOnAddMediator(data.data?.success);
+        notificationController.success({ message: t('brokers.addBrokerSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -102,16 +102,16 @@ export const Mediators: React.FC = () => {
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addMediator.isLoading }));
-  }, [addMediator.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, add: addBroker.isLoading }));
+  }, [addBroker.isLoading]);
 
-  const deleteMediator = useMutation((id: number) =>
+  const deleteBroker = useMutation((id: number) =>
     DeleteMediator(id)
       .then((data) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('Brokers.deletePartnerSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('brokers.deleteBrokerSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -123,26 +123,26 @@ export const Mediators: React.FC = () => {
 
   const handleDelete = (id: any) => {
     if (page > 1 && dataSource?.length === 1) {
-      deleteMediator.mutateAsync(id);
+      deleteBroker.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deleteMediator.mutateAsync(id);
+      deleteBroker.mutateAsync(id);
     }
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteMediator.isLoading }));
-  }, [deleteMediator.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteBroker.isLoading }));
+  }, [deleteBroker.isLoading]);
 
-  const editMediator = useMutation((data: Broker) => UpdateMediator(data));
+  const editBroker = useMutation((data: Broker) => UpdateMediator(data));
 
   const handleEdit = (data: Broker, id: number) => {
-    editMediator
+    editBroker
       .mutateAsync({ ...data, id })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`Brokers.editPartnerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`brokers.editBrokerSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -151,40 +151,51 @@ export const Mediators: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editMediator.isLoading }));
-  }, [editMediator.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editBroker.isLoading }));
+  }, [editBroker.isLoading]);
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('Brokers.partnerPhoneNumber')}</Header>, dataIndex: 'mediatorPhoneNumber' },
-    { title: <Header>{t('Brokers.partnercode')}</Header>, dataIndex: 'mediatorCode' },
-    { title: <Header>{t('Brokers.partnerdiscountPercentage')}</Header>, dataIndex: 'commissionPercentage' },
-    { title: <Header>{t('Brokers.mediatorProfit')}</Header>, dataIndex: 'mediatorProfit' },
+    { title: <Header>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
+    { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
+    { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
+    { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'mediatorPhoneNumber' },
+    { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    { title: <Header>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
+      dataIndex: 'commissionPercentage',
+    },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.balance')}</Header>, dataIndex: 'mediatorProfit' },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: Broker) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('delete');
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
@@ -194,7 +205,7 @@ export const Mediators: React.FC = () => {
   return (
     <>
       <Card
-        title={t('Brokers.BrokersList')}
+        title={t('brokers.BrokersList')}
         padding={
           dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -211,7 +222,7 @@ export const Mediators: React.FC = () => {
             }}
             onClick={() => handleModalOpen('add')}
           >
-            <CreateButtonText>{t('Brokers.addPartner')}</CreateButtonText>
+            <CreateButtonText>{t('brokers.addBroker')}</CreateButtonText>
           </Button>
           {/*    Add    */}
           {modalState.add && (
@@ -219,19 +230,19 @@ export const Mediators: React.FC = () => {
               visible={modalState.add}
               onCancel={() => handleModalClose('add')}
               onCreateBroker={(BrokerInfo) => {
-                addMediator.mutateAsync(BrokerInfo);
+                addBroker.mutateAsync(BrokerInfo);
               }}
-              isLoading={addMediator.isLoading}
+              isLoading={addBroker.isLoading}
             />
           )}
           {/*    EDIT    */}
           {modalState.edit && (
             <EditBroker
-              Brokr_values={editmodaldata}
+              values={editmodaldata}
               visible={modalState.edit}
               onCancel={() => handleModalClose('edit')}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
-              isLoading={editMediator.isLoading}
+              isLoading={editBroker.isLoading}
             />
           )}
           {/*    Delete    */}
@@ -243,12 +254,11 @@ export const Mediators: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('Brokers.deletePartnerModalTitle')}
+              title={t('brokers.deleteBrookerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              // description={t('managers.deleteMediatorModalDescription')}
               isDanger={true}
-              isLoading={deleteMediator.isLoading}
+              isLoading={deleteBroker.isLoading}
             />
           )}
         </Row>

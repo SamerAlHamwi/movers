@@ -1,33 +1,45 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { message, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  FileSearchOutlined,
+  PhoneOutlined,
+  TagOutlined,
+  ContactsOutlined,
+  CodeOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText } from '../../GeneralStyles';
-import { Partner, UserModel } from '@app/interfaces/interfaces';
+import { Code, Partner, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
-import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
+import { CreateCode, CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
+import { AddCodesForREM } from '@app/components/modal/AddCodesForREM';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export const Partners: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const Navigate = useNavigate();
 
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const [modalState, setModalState] = useState({
     add: false,
+    addCode: false,
     edit: false,
     delete: false,
   });
@@ -36,15 +48,15 @@ export const Partners: React.FC = () => {
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [codemodaldata, setCodemodaldata] = useState<any>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<Partner | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<Partner | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
-  const [refetchOnAddManager, setRefetchOnAddManager] = useState(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -52,7 +64,7 @@ export const Partners: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Partner', page, pageSize, refetchOnAddManager, isDelete, isEdit],
+    ['Partner', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
       getAllPartner(page, pageSize, searchString)
         .then((data) => {
@@ -81,8 +93,8 @@ export const Partners: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-    setRefetchOnAddManager(false);
-  }, [isDelete, isEdit, refetchOnAddManager, page, pageSize, searchString, language, refetch]);
+    setRefetchOnAdd(false);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -90,11 +102,11 @@ export const Partners: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addManager = useMutation((data: Partner) =>
+  const addPartner = useMutation((data: Partner) =>
     CreatePartner(data)
       .then((data) => {
-        notificationController.success({ message: t('Brokers.addPartnerSuccessMessage') });
-        setRefetchOnAddManager(data.data?.success);
+        notificationController.success({ message: t('partners.addPartnerSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -102,8 +114,25 @@ export const Partners: React.FC = () => {
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addManager.isLoading }));
-  }, [addManager.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, add: addPartner.isLoading }));
+  }, [addPartner.isLoading]);
+
+  const addCode = useMutation((data: any) =>
+    CreateCode(data)
+      .then((data) => {
+        notificationController.success({ message: t('partners.addCodeSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        console.log(error);
+
+        notificationController.error({ message: error?.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, addCode: addCode.isLoading }));
+  }, [addCode.isLoading]);
 
   const deletePartner = useMutation((id: number) =>
     DeletePartner(id)
@@ -111,7 +140,7 @@ export const Partners: React.FC = () => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('Partners.deletePartnerSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('partners.deletePartnerSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -142,7 +171,7 @@ export const Partners: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`managers.editPartnerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`partners.editPartnerSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -156,34 +185,68 @@ export const Partners: React.FC = () => {
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('Partners.partnerPhoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
-    { title: <Header>{t('Partners.partnercode')}</Header>, dataIndex: 'partnerCode' },
-    { title: <Header>{t('Partners.partnerdiscountPercentage')}</Header>, dataIndex: 'discountPercentage' },
+    { title: <Header>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
+    { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
+    { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
+    { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
+    { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    // { title: <Header>{t('common.city')}</Header>, dataIndex: 'citiesPartner',render: (index: number, record: Partner) => {
+    //   return (
+
+    //   );
+    // } },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, record: Partner) => {
+      render: (index: number, record: any) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`${record.id}/details`);
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('delete');
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.code')}>
+              <TableButton
+                severity="warning"
+                onClick={() => {
+                  setCodemodaldata(record);
+                  handleModalOpen('addCode');
+                }}
+              >
+                <CodeOutlined />
+              </TableButton>
+            </Tooltip>
+
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
@@ -193,7 +256,7 @@ export const Partners: React.FC = () => {
   return (
     <>
       <Card
-        title={t('Partners.PartnersList')}
+        title={t('partners.PartnersList')}
         padding={
           dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -210,19 +273,38 @@ export const Partners: React.FC = () => {
             }}
             onClick={() => handleModalOpen('add')}
           >
-            <CreateButtonText>{t('Partners.addPartner')}</CreateButtonText>
+            <CreateButtonText>{t('partners.addPartner')}</CreateButtonText>
           </Button>
+
           {/*    Add    */}
           {modalState.add && (
             <AddPartner
               visible={modalState.add}
               onCancel={() => handleModalClose('add')}
               onCreatePartner={(PartnerInfo) => {
-                addManager.mutateAsync(PartnerInfo);
+                addPartner.mutateAsync(PartnerInfo);
               }}
-              isLoading={addManager.isLoading}
+              isLoading={addPartner.isLoading}
             />
           )}
+
+          {/*    AddCode    */}
+          {modalState.addCode && (
+            <AddCodesForREM
+              visible={modalState.addCode}
+              onCancel={() => handleModalClose('addCode')}
+              onCreateCode={(info: Code) => {
+                const codeInfo = {
+                  createCode: info,
+                  id: codemodaldata?.id,
+                };
+                console.log(codeInfo);
+                addCode.mutateAsync(codeInfo);
+              }}
+              isLoading={addCode.isLoading}
+            />
+          )}
+
           {/*    EDIT    */}
           {modalState.edit && (
             <EditPartner
@@ -233,6 +315,7 @@ export const Partners: React.FC = () => {
               isLoading={editPartner.isLoading}
             />
           )}
+
           {/*    Delete    */}
           {modalState.delete && (
             <ActionModal
@@ -242,7 +325,7 @@ export const Partners: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('Partners.deletePartnerModalTitle')}
+              title={t('partners.deletePartnerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
               isDanger={true}
