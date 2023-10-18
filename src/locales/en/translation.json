@@ -342,7 +342,8 @@
     "deleteBrokerModalTitle": "Delete Broker",
     "deleteBrokerModalDescription": "Are You Sure To Delete This Broker?",
     "editBrokerModalTitle": "Edit Broker",
-    "editBrokerSuccessMessage": "The Broker has been Edited Successfully"
+    "editBrokerSuccessMessage": "The Broker has been Edited Successfully",
+    "tooManyNumbers": "The code must consist of a maximum of 8 numbers"
   },
 
   "_comment11": "*********************************** partners ************************************************",
@@ -356,7 +357,15 @@
     "deletePartnerModalTitle": "Delete REM",
     "deletePartnerModalDescription": "Are You Sure To Delete This Partner?",
     "editPartnerModalTitle": "Edit REM",
-    "editPartnerSuccessMessage": "The Partner has been Edited Successfully"
+    "editPartnerSuccessMessage": "The Partner has been Edited Successfully",
+    "partnerInfo": "Partner Informations",
+    "generalInfo": "General Informations",
+    "companyName": "Company Name",
+    "citiesPartner": "Cities Partner",
+    "codes": "Codes",
+    "addPhoneNumber": "Add Phone Number",
+    "addCodeModalTitle": "Add Code",
+    "addCodeSuccessMessage": "The Code has been Added Successfully"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -669,7 +678,8 @@
     "FrequentlyQuestions": "Frequently Questions",
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "offers": "Offers",
-    "OfferDeails": "Offer Details"
+    "OfferDeails": "Offer Details",
+    "PartnersDetails": "REM Details"
   },
 
   "header": {

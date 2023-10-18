@@ -160,9 +160,13 @@ export const Brokers: React.FC = () => {
     { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
     { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
     { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'mediatorPhoneNumber' },
+    { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
     { title: <Header>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
-    { title: <Header>{t('brokers.commission')}</Header>, dataIndex: 'commissionPercentage' },
-    { title: <Header>{t('brokers.balance')}</Header>, dataIndex: 'mediatorProfit' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
+      dataIndex: 'commissionPercentage',
+    },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.balance')}</Header>, dataIndex: 'mediatorProfit' },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',

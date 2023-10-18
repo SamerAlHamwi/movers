@@ -119,7 +119,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
         </BaseForm.Item>
 
         <BaseForm.Item
-          name="emailAddress"
+          name="email"
           label={<LableText>{t('common.emailAddress')}</LableText>}
           style={{ marginTop: '-.5rem' }}
         >
@@ -165,6 +165,10 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
             {
               pattern: /^[0-9]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
+            },
+            {
+              max: 8,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('brokers.tooManyNumbers')}</p>,
             },
           ]}
           style={{ marginTop: '-.5rem' }}

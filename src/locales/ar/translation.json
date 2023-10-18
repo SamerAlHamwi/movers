@@ -343,7 +343,8 @@
     "deleteBrokerModalTitle": "حذف الوسيط",
     "deleteBrokerModalDescription": "هل أنت متأكد من حذف هذا الوسيط؟",
     "editBrokerModalTitle": "تعديل الوسيط",
-    "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح"
+    "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح",
+    "tooManyNumbers": "الكود يجب أن يتألف من 8 خانات على الأكثر"
   },
 
   "_comment11": "*********************************** partners ************************************************",
@@ -357,7 +358,15 @@
     "deletePartnerModalTitle": "حذف الشريك",
     "deletePartnerModalDescription": "هل أنت متأكد من حذف هذا الشريك؟",
     "editPartnerModalTitle": "تعديل معلومات الشريك",
-    "editPartnerSuccessMessage": "تم تعديل معلومات الشريك بنجاح"
+    "editPartnerSuccessMessage": "تم تعديل معلومات الشريك بنجاح",
+    "partnerInfo": "معلومات الشريك",
+    "generalInfo": "معلومات عامة",
+    "companyName": "إسم الشركة",
+    "citiesPartner": "مدن الشريك",
+    "codes": "أكواد",
+    "addPhoneNumber": "إضافة رقم موبايل",
+    "addCodeModalTitle": "إضافة كود",
+    "addCodeSuccessMessage": "تمت إضافة الكود بنجاح"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -665,7 +674,8 @@
     "FrequentlyQuestions": "الأسئلة المتكررة",
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "offers": "عروض الأسعار",
-    "OfferDeails": "تفاصيل العرض"
+    "OfferDeails": "تفاصيل العرض",
+    "PartnersDetails": "تفاصيل الشريك"
   },
 
   "header": {
