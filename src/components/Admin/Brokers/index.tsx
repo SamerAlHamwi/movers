@@ -238,7 +238,7 @@ export const Brokers: React.FC = () => {
           {/*    EDIT    */}
           {modalState.edit && (
             <EditBroker
-              Brokr_values={editmodaldata}
+              values={editmodaldata}
               visible={modalState.edit}
               onCancel={() => handleModalClose('edit')}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}

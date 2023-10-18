@@ -20,13 +20,14 @@ const generateRandomCode = () => {
   return Math.floor(Math.random() * (max - min + 1)) + min;
 };
 
-export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr_values, onEdit, isLoading }) => {
+export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
 
   const [code, setCode] = useState(generateRandomCode());
   const [countryId, setCountryId] = useState<string>('0');
+  const [cityId, setCityId] = useState<string>(values?.city?.id);
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
   const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
@@ -44,18 +45,28 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
     form.setFieldValue('cityId', '');
   };
 
+  const ChangeCityHandler = (e: any) => {
+    setCityId(e);
+  };
+
   const onOk = () => {
     form.submit();
   };
 
+  console.log(cityId);
+
   const onFinish = (value: Broker) => {
-    value = Object.assign({}, value, { isActive: true });
+    console.log(value);
+    console.log(cityId);
+    value = Object.assign({}, value, { cityId: cityId });
     onEdit(value);
   };
 
   const onChange = (value: any) => {
     console.log('changed', value);
   };
+
+  console.log(values);
 
   return (
     <Modal
@@ -82,7 +93,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} onFinish={onFinish} name="BrokersForm" initialValues={Brokr_values}>
+      <BaseForm form={form} onFinish={onFinish} name="BrokersForm" initialValues={values}>
         <BaseForm.Item
           name="firstName"
           label={<LableText>{t('common.firstName')}</LableText>}
@@ -117,7 +128,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
         </BaseForm.Item>
 
         <BaseForm.Item
-          name="emailAddress"
+          name="email"
           label={<LableText>{t('common.emailAddress')}</LableText>}
           style={{ marginTop: '-.5rem' }}
         >
@@ -128,7 +139,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
           label={<LableText>{t('companies.country')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
         >
-          <Select onChange={ChangeCountryHandler}>
+          <Select onChange={ChangeCountryHandler} defaultValue={values?.city?.country?.name}>
             {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
               <Option key={country.id} value={country.id}>
                 {country?.name}
@@ -142,7 +153,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
           label={<LableText>{t('companies.city')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
         >
-          <Select>
+          <Select defaultValue={values?.city?.name} value={cityId} onChange={ChangeCityHandler}>
             {citiesData?.data?.result?.items.map((city: any) => (
               <Select key={city.name} value={city.id}>
                 {city?.name}
@@ -163,6 +174,10 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, Brokr
             {
               pattern: /^[0-9]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
+            },
+            {
+              max: 8,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('brokers.tooManyNumbers')}</p>,
             },
           ]}
           style={{ marginTop: '-.5rem' }}

@@ -55,10 +55,6 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
     onCreateBroker(BrokerInfo);
   };
 
-  const onChange = (value: any) => {
-    console.log('changed', value);
-  };
-
   return (
     <Modal
       style={{ marginTop: '-6rem' }}
@@ -188,7 +184,6 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
             max={100}
             formatter={(value) => `${value}%`}
             parser={(value: any) => value!.replace('%', '')}
-            onChange={onChange}
             style={{ width: '100%' }}
           />
         </BaseForm.Item>
