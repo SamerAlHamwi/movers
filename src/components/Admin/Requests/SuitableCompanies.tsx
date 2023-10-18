@@ -188,7 +188,7 @@ export const SuitableCompanies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    { title: <Header>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     {
       title: <Header>{t('requests.services')}</Header>,
       dataIndex: 'services',
@@ -201,7 +201,7 @@ export const SuitableCompanies: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('companies.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: any) => {
         return (
@@ -236,23 +236,6 @@ export const SuitableCompanies: React.FC = () => {
       ),
     },
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    {
-      title: <Header>{t('common.image')}</Header>,
-      dataIndex: ['companyProfile', 'url'],
-      render: (url: string, record: any) => {
-        return (
-          <>
-            <Image
-              src={url}
-              onClick={() => {
-                setIsOpenSliderImage(true);
-                setAttachmentData(record?.companyProfile);
-              }}
-            />
-          </>
-        );
-      },
-    },
     { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
     { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
     { title: <Header>{t('common.bio')}</Header>, dataIndex: 'bio' },
@@ -260,7 +243,7 @@ export const SuitableCompanies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    { title: <Header>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     {
       title: <Header>{t('requests.services')}</Header>,
       dataIndex: 'services',
@@ -273,7 +256,7 @@ export const SuitableCompanies: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('companies.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: any) => {
         return (

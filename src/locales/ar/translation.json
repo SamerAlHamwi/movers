@@ -7,6 +7,7 @@
     "attachment": "صورة",
     "icon": "الأيقونة",
     "phoneNumber": "رقم الهاتف",
+    "emailAddress": "عنوان البريد الإلكتروني",
     "bio": "الوصف",
     "name": "الاسم",
     "name_ar": "الاسم بالعربية",
@@ -57,12 +58,6 @@
     "arInfo": "المعلومات بالعربية",
     "hideDescription": "إخفاء التوصيف",
     "showDescription": "عرض التوصيف",
-    "userType": {
-      "userType": "نوع المستخدم",
-      "admin": "مدير",
-      "manager": "مدير لعبة",
-      "student": "طالب"
-    },
     "approve": "قبول",
     "reject": "رفض",
     "prev": "السابق",
@@ -77,7 +72,11 @@
     "productCode": "رمز المنتج",
     "here": "هنا",
     "viewAll": "عرض الكل",
-    "ShowMore": "عرض المزيد"
+    "ShowMore": "عرض المزيد",
+    "details": "تفاصيل",
+    "phoneNumbers": "أرقام موبايل",
+    "code": "أكواد",
+    "onlyNumbers": "يُسمح بإستخدام الأرقام فقط"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -279,7 +278,15 @@
     "deletecompanyModalDescription": "هل أنت متأكد من حذف هذه الشركة",
     "services": "الخدمات",
     "addCompanySuccessMessage": "تمت إضافة الشركة بنجاح",
-    "branchInfo": "معلومات الفرع"
+    "branchInfo": "معلومات الفرع",
+    "evaluation": "التقييم",
+    "generalRating": "التقييم العام",
+    "quality": "الجودة",
+    "overallRating": "التقييم العام",
+    "customerService": "خدمة الزبائن",
+    "valueOfServiceForMoney": "تقييم الخدمة مقابل المال",
+    "reviews": "المراجعات",
+    "details": "تفاصيل الشركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -323,42 +330,43 @@
     "deleteToolModalDescription": "هل أنت متأكد من حذف هذه أداة"
   },
 
-  "_comment10": "*********************************** Brokers ************************************************",
-  "Brokers": {
-    "addPartner": "إضافة وسيط",
+  "_comment10": "*********************************** brokers ************************************************",
+  "brokers": {
     "BrokersList": "قائمة الوسطاء",
-
-    "deletePartnerModalDescription": "هل انت متاكد?",
-    "deletePartnerModalTitle": "حذف ",
-    "partnercode": "كود الوسيط",
-    "partnerName": "اسم الوسيط",
-    "mediatorProfit": "الربح",
-    "PartnersStatus": "حالة الوسيط",
-    "editPartnerModalTitle": "تعديل الوسيط",
-
-    "addpartnerModalTitle": "إضافة وسيط",
+    "code": "كود الوسيط",
+    "commission": "نسبة العمولة",
+    "balance": "رصيد الوسيط",
+    "companyName": "إسم الشركة",
+    "addBroker": "إضافة وسيط",
     "addBrokerModalTitle": "إضافة وسيط",
-    "partnerdiscountPercentage": "نسبة للوسيط",
-    "partnerPhoneNumber": "رقم الهاتف ",
-    "addPartnerSuccessMessage": "تمت العملية بنجاح",
-    "editPartnerSuccessMessage": "تمت العملية بنجاح"
+    "addBrokerSuccessMessage": "تم إضافة الوسيط بنجاح",
+    "deleteBrokerModalTitle": "حذف الوسيط",
+    "deleteBrokerModalDescription": "هل أنت متأكد من حذف هذا الوسيط؟",
+    "editBrokerModalTitle": "تعديل الوسيط",
+    "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح",
+    "tooManyNumbers": "الكود يجب أن يتألف من 8 خانات على الأكثر"
   },
 
-  "_comment11": "*********************************** Partners ************************************************",
-  "Partners": {
-    "addPartner": "إضافة الشريك",
+  "_comment11": "*********************************** partners ************************************************",
+  "partners": {
     "PartnersList": "قائمة الشركاء",
-
-    "deletePartnerModalDescription": "هل أنت متأكد؟",
+    "code": "كود الشريك",
+    "discountPercentage": "نسبة الخصم للشريك",
+    "addPartner": "إضافة الشريك",
+    "addPartnerModalTitle": "إضافة شريك",
+    "addPartnerSuccessMessage": "تمت إضافة الشريك بنجاح",
     "deletePartnerModalTitle": "حذف الشريك",
-    "addBrokerModalTitle": "إضافة وسيط",
+    "deletePartnerModalDescription": "هل أنت متأكد من حذف هذا الشريك؟",
     "editPartnerModalTitle": "تعديل معلومات الشريك",
-    "addpartnerModalTitle": "إضافة شريك",
-    "partnercode": "كود الشريك",
-    "partnerName": "اسم الشريك",
-    "partnerPhoneNumber": "رقم هاتف الشريك",
-    "partnerdiscountPercentage": "نسبة الخصم للشريك",
-    "PartnersStatus": "حالة الشريك"
+    "editPartnerSuccessMessage": "تم تعديل معلومات الشريك بنجاح",
+    "partnerInfo": "معلومات الشريك",
+    "generalInfo": "معلومات عامة",
+    "companyName": "إسم الشركة",
+    "citiesPartner": "مدن الشريك",
+    "codes": "أكواد",
+    "addPhoneNumber": "إضافة رقم موبايل",
+    "addCodeModalTitle": "إضافة كود",
+    "addCodeSuccessMessage": "تمت إضافة الكود بنجاح"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -521,7 +529,8 @@
     "deleteBranchModalDescription": "هل أنت متأكد من حذف هذا الفرع",
     "region": "المنطقة",
     "branchInfo": "معلومات الفرع",
-    "branchProfile": "بروفايل الفرع"
+    "branchProfile": "بروفايل الفرع",
+    "details": "تفاصيل الفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -613,6 +622,7 @@
     "selectedByUser": "مُحددة من قِبَل المستخدم",
     "company": "شركة",
     "branch": "فرع",
+    "details": "تفاصيل العرض",
     "sendToUserSuccessMessage": "سيتم إرسال هذه العروض للمستخدم",
     "services": "الخدمات",
     "selectedCompany": "معلومات الشركة المُقدّمة للعرض",
@@ -664,7 +674,8 @@
     "FrequentlyQuestions": "الأسئلة المتكررة",
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "offers": "عروض الأسعار",
-    "OfferDeails": "تفاصيل العرض"
+    "OfferDeails": "تفاصيل العرض",
+    "PartnersDetails": "تفاصيل الشريك"
   },
 
   "header": {

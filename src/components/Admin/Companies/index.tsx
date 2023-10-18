@@ -220,7 +220,9 @@ export const Companies: React.FC = () => {
       render: (record: number) => {
         return (
           <>
-            {record == 1
+            {record == 0
+              ? '___'
+              : record == 1
               ? t('requests.Internal')
               : record == 2
               ? t('requests.External')
@@ -275,7 +277,7 @@ export const Companies: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.details')}</Header>,
       dataIndex: 'details',
       render: (index: number, record: any) => {
         return (
@@ -294,7 +296,7 @@ export const Companies: React.FC = () => {
                   width: 'auto',
                 }}
               >
-                {t('requests.details')}
+                {t('companies.details')}
               </div>
             </Button>
           </Space>
@@ -307,7 +309,7 @@ export const Companies: React.FC = () => {
       render: (index: number, record: CompanyModal) => {
         return (
           <>
-            {record.statues === 0 && (
+            {(record.statues === 0 || record.statues === 1) && (
               <Space>
                 <TableButton
                   severity="info"
@@ -328,11 +330,6 @@ export const Companies: React.FC = () => {
                   <CloseOutlined />
                 </TableButton>
               </Space>
-            )}
-            {record.statues === 1 && (
-              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-                {t('companies.checking')}
-              </Tag>
             )}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
@@ -357,7 +354,6 @@ export const Companies: React.FC = () => {
             <TableButton
               severity="success"
               onClick={() => {
-                // navigate(`${record.id}/addBranch`, { replace: false });
                 navigate(`${record.id}/branches`, { replace: false });
               }}
             >

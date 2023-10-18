@@ -7,7 +7,7 @@ import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Steps, Image, Tree } from 'antd';
+import { Button, Col, Input, Row, Steps, Image, Tree, Radio } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
@@ -90,6 +90,7 @@ export const AddBranch: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [valueRadio, setValueRadio] = useState(1);
 
   const GetAllServices = useQuery('getAllServices', getServices);
 
@@ -301,6 +302,7 @@ export const AddBranch: React.FC = () => {
         phoneNumber: phoneNumberU,
         password: form.getFieldValue(['userDto', 'password']),
       },
+      serviceType: valueRadio,
       services: requestServices,
       regionId: regionId,
       availableCitiesIds: selectedCityValues,
@@ -692,6 +694,24 @@ export const AddBranch: React.FC = () => {
         )}
         {current === 2 && (
           <>
+            <BaseForm.Item key={10} name="serviceType">
+              <Radio.Group
+                style={{ display: 'flex', width: '100%' }}
+                onChange={(event) => {
+                  setValueRadio(event.target.value);
+                }}
+              >
+                <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                  Internal
+                </Radio>
+                <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                  External
+                </Radio>
+                <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                  Both
+                </Radio>
+              </Radio.Group>
+            </BaseForm.Item>
             <BaseForm.Item key="100" name="services">
               {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                 const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];

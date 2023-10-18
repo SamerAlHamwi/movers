@@ -7,6 +7,7 @@
     "attachment": "Attachment",
     "icon": "Icon",
     "phoneNumber": "Phone Number",
+    "emailAddress": "Email Address",
     "bio": "BIO",
     "bio_ar": "Arabic BIO",
     "bio_en": "English BIO",
@@ -58,12 +59,6 @@
     "arInfo": "Arabic Info",
     "hideDescription": "Hide description",
     "showDescription": "Show description",
-    "userType": {
-      "userType": "User type",
-      "admin": "Admin",
-      "manager": "Manager",
-      "student": "Student"
-    },
     "approve": "Approve",
     "reject": "Reject",
     "prev": "Previous",
@@ -78,7 +73,11 @@
     "productCode": "Product Code",
     "here": "here",
     "viewAll": "view all",
-    "ShowMore": "Show more"
+    "ShowMore": "Show more",
+    "details": "Details",
+    "phoneNumbers": "Phone Numbers",
+    "code": "Codes",
+    "onlyNumbers": "Only Numbers are allowed"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -278,7 +277,15 @@
     "deletecompanyModalDescription": "Are You Sure To Delete This Company?",
     "services": "Services",
     "addCompanySuccessMessage": "The Company has been Added Successfully",
-    "branchInfo": "Branch Informations"
+    "branchInfo": "Branch Informations",
+    "evaluation": "Evaluation",
+    "generalRating": "General Rating",
+    "quality": "Quality",
+    "overallRating": "Overall rating",
+    "customerService": "Customer service",
+    "valueOfServiceForMoney": "Service value for money",
+    "reviews": "Reviews",
+    "details": "Details"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -322,42 +329,43 @@
     "deleteToolModalDescription": "Are You Sure To Delete This Tool?"
   },
 
-  "_comment10": "*********************************** Brokers ************************************************",
-  "Brokers": {
-    "addPartner": "Add Broker",
+  "_comment10": "*********************************** brokers ************************************************",
+  "brokers": {
     "BrokersList": "Brokers List",
-    "deletePartnerModalDescription": "Are you sure?",
-    "deletePartnerModalTitle": "Delete ",
-    "partnercode": "Broker Code",
-    "partnerName": "Broker Name",
-    "mediatorProfit": "Broker Balance",
-    "PartnersStatus": "Broker Status",
-    "editPartnerModalTitle": "Edit Broker",
-    "addpartnerModalTitle": "Add Broker",
+    "code": "Code",
+    "commission": "Commission",
+    "balance": "Balance",
+    "companyName": "Company Name",
+    "addBroker": "Add Broker",
     "addBrokerModalTitle": "Add Broker",
-    "partnerdiscountPercentage": "Broker commission",
-    "partnerPhoneNumber": "Phone Number ",
-    "addPartnerSuccessMessage": "Done Successfully",
-    "editPartnerSuccessMessage": "Done Successfully"
+    "addBrokerSuccessMessage": "The Broker has been Added Successfully",
+    "deleteBrokerModalTitle": "Delete Broker",
+    "deleteBrokerModalDescription": "Are You Sure To Delete This Broker?",
+    "editBrokerModalTitle": "Edit Broker",
+    "editBrokerSuccessMessage": "The Broker has been Edited Successfully",
+    "tooManyNumbers": "The code must consist of a maximum of 8 numbers"
   },
 
-  "_comment11": "*********************************** Partners ************************************************",
-  "Partners": {
-    "Partners": "Real State Management",
-    "addBrokerModalTitle": "Add Mover",
-    "addPartner": "Add RSM",
-    "addPartnerSuccessMessage": "Done Successfully",
-    "editPartnerSuccessMessage": "Done Successfully",
-    "PartnersList": "Real State Management List",
-    "deletePartnerModalDescription": "Are you sure?",
-    "deletePartnerModalTitle": "Delete RSM",
-    "partnercode": "RSM Code",
-    "partnerName": "RSM Name",
-    "PartnersStatus": "RSM Status",
-    "editPartnerModalTitle": "Edit RSM",
-    "addpartnerModalTitle": "Add RSM",
-    "partnerdiscountPercentage": "Discount Percentage",
-    "partnerPhoneNumber": "Phone Number "
+  "_comment11": "*********************************** partners ************************************************",
+  "partners": {
+    "PartnersList": "Real Estate Management List",
+    "code": "REM Code",
+    "discountPercentage": "Discount Percentage",
+    "addPartner": "Add REM",
+    "addPartnerModalTitle": "Add Mover",
+    "addPartnerSuccessMessage": "The Partner has been Added Successfully",
+    "deletePartnerModalTitle": "Delete REM",
+    "deletePartnerModalDescription": "Are You Sure To Delete This Partner?",
+    "editPartnerModalTitle": "Edit REM",
+    "editPartnerSuccessMessage": "The Partner has been Edited Successfully",
+    "partnerInfo": "Partner Informations",
+    "generalInfo": "General Informations",
+    "companyName": "Company Name",
+    "citiesPartner": "Cities Partner",
+    "codes": "Codes",
+    "addPhoneNumber": "Add Phone Number",
+    "addCodeModalTitle": "Add Code",
+    "addCodeSuccessMessage": "The Code has been Added Successfully"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -524,7 +532,8 @@
     "deleteBranchModalDescription": "Are You Sure To Delete This Branch?",
     "region": "Region",
     "branchInfo": "Branch Informations",
-    "branchProfile": "Branch Profile"
+    "branchProfile": "Branch Profile",
+    "details": "Details"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -616,6 +625,7 @@
     "selectedByUser": "Selected By User",
     "company": "Company",
     "branch": "Branch",
+    "details": "Details",
     "sendToUserSuccessMessage": "Those Offers Will Send To User",
     "services": "Services",
     "selectedCompany": "Company Informations",
@@ -640,7 +650,7 @@
     "Users": "Users",
     "Managers": "Managers",
     "Partners": "Real State Management",
-    "Brokers": "Broker",
+    "Brokers": "Brokers",
     "Companies": "Companies",
     "CompanieDetails": "Company Details",
     "Services": "Services",
@@ -668,7 +678,8 @@
     "FrequentlyQuestions": "Frequently Questions",
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "offers": "Offers",
-    "OfferDeails": "Offer Details"
+    "OfferDeails": "Offer Details",
+    "PartnersDetails": "REM Details"
   },
 
   "header": {

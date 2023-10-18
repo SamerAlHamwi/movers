@@ -14,6 +14,7 @@ import {
   RequestModel,
   BranchModel,
   faqModel,
+  Code,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -33,6 +34,10 @@ export interface CreateBranchModalProps extends ModalProps {
 }
 export interface CreatePartnerModalProps extends ModalProps {
   onCreatePartner: (PartnerInfo: Partner) => void;
+}
+
+export interface CreateCodeModalProps extends ModalProps {
+  onCreateCode: (CodeInfo: Code) => void;
 }
 export interface CreateRoleModalProps extends ModalProps {
   onCreate: (info: RoleModel) => void;
@@ -102,7 +107,7 @@ export interface EditPartnerProps extends ModalProps {
   onEdit: (data: Partner) => void;
 }
 export interface EditBrokerProps extends ModalProps {
-  Brokr_values: Broker | undefined;
+  values: Broker | undefined;
   onEdit: (data: Broker) => void;
 }
 export interface EditProps extends ModalProps {
