@@ -20,33 +20,35 @@ import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText } from '../../GeneralStyles';
-import { Partner, UserModel } from '@app/interfaces/interfaces';
+import { Code, Partner, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
-import { CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
+import { CreateCode, CreatePartner, DeletePartner, UpdatePartner, getAllPartner } from '../../../services/partners';
 import { AddPartner } from '@app/components/modal/AddPartner';
 import { EditPartner } from '@app/components/modal/EditPartner';
 import { AddCodesForREM } from '@app/components/modal/AddCodesForREM';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export const Partners: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const Navigate = useNavigate();
 
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const [modalState, setModalState] = useState({
     add: false,
+    addCode: false,
     edit: false,
     delete: false,
-    code: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [codemodaldata, setCodemodaldata] = useState<Partner | undefined>(undefined);
+  const [codemodaldata, setCodemodaldata] = useState<any>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<Partner | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<Partner | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
@@ -55,7 +57,6 @@ export const Partners: React.FC = () => {
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -116,20 +117,22 @@ export const Partners: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, add: addPartner.isLoading }));
   }, [addPartner.isLoading]);
 
-  const addCodes = useMutation((data: Partner) =>
-    CreatePartner(data)
+  const addCode = useMutation((data: any) =>
+    CreateCode(data)
       .then((data) => {
-        notificationController.success({ message: t('partners.addPartnerSuccessMessage') });
+        notificationController.success({ message: t('partners.addCodeSuccessMessage') });
         setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
+        console.log(error);
+
+        notificationController.error({ message: error?.message || error.error?.message });
       }),
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, code: addCodes.isLoading }));
-  }, [addCodes.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, addCode: addCode.isLoading }));
+  }, [addCode.isLoading]);
 
   const deletePartner = useMutation((id: number) =>
     DeletePartner(id)
@@ -182,21 +185,27 @@ export const Partners: React.FC = () => {
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
+    { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
+    { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
     { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
-    { title: <Header>{t('partners.code')}</Header>, dataIndex: 'partnerCode' },
-    { title: <Header>{t('partners.discountPercentage')}</Header>, dataIndex: 'discountPercentage' },
+    { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    // { title: <Header>{t('common.city')}</Header>, dataIndex: 'citiesPartner',render: (index: number, record: Partner) => {
+    //   return (
+
+    //   );
+    // } },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, record: Partner) => {
+      render: (index: number, record: any) => {
         return (
           <Space>
             <Tooltip placement="top" title={t('common.details')}>
               <TableButton
                 severity="success"
                 onClick={() => {
-                  setEditmodaldata(record);
-                  handleModalOpen('details');
+                  Navigate(`${record.id}/details`);
                 }}
               >
                 <TagOutlined />
@@ -208,7 +217,7 @@ export const Partners: React.FC = () => {
                 severity="warning"
                 onClick={() => {
                   setCodemodaldata(record);
-                  handleModalOpen('code');
+                  handleModalOpen('addCode');
                 }}
               >
                 <CodeOutlined />
@@ -279,15 +288,20 @@ export const Partners: React.FC = () => {
             />
           )}
 
-          {/*    CODE    */}
-          {modalState.code && (
+          {/*    AddCode    */}
+          {modalState.addCode && (
             <AddCodesForREM
-              visible={modalState.code}
-              onCancel={() => handleModalClose('code')}
-              onCreatePartner={(info) => {
-                addCodes.mutateAsync(info);
+              visible={modalState.addCode}
+              onCancel={() => handleModalClose('addCode')}
+              onCreateCode={(info: Code) => {
+                const codeInfo = {
+                  createCode: info,
+                  id: codemodaldata?.id,
+                };
+                console.log(codeInfo);
+                addCode.mutateAsync(codeInfo);
               }}
-              isLoading={addCodes.isLoading}
+              isLoading={addCode.isLoading}
             />
           )}
 

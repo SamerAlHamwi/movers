@@ -1,5 +1,5 @@
 import { httpApi } from '@app/api/httpApi';
-import { Partner, UserModel } from '@app/interfaces/interfaces';
+import { Code, Partner, UserModel } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllPartner = async (page: number, pageSize: number, search: string, isActive?: boolean) => {
@@ -11,12 +11,20 @@ const getAllPartner = async (page: number, pageSize: number, search: string, isA
   );
 };
 
+const getPartner = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.partner}/Get?Id=${id}`);
+};
+
 const DeletePartner = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.partner}/Delete?Id=${id}`);
 };
 
 const CreatePartner = async (data: Partner) => {
   return await httpApi.post(`${apiPrefix.partner}/Create`, data);
+};
+
+const CreateCode = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.partner}/AddNewCodeToPatner`, data);
 };
 
 const UpdatePartner = async (data: Partner) => {
@@ -31,4 +39,13 @@ const DeActivatePartner = async (id: number) => {
   return await httpApi.post(`${apiPrefix.partner}/DeActivate`, { id });
 };
 
-export { getAllPartner, CreatePartner, UpdatePartner, DeletePartner, ActivatePartner, DeActivatePartner };
+export {
+  getAllPartner,
+  getPartner,
+  CreatePartner,
+  CreateCode,
+  UpdatePartner,
+  DeletePartner,
+  ActivatePartner,
+  DeActivatePartner,
+};

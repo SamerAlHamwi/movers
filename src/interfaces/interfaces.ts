@@ -293,15 +293,20 @@ export interface CityModel {
 }
 export interface Partner {
   id: number;
-
   partnerCode: string;
   partnerPhoneNumber: string;
   isActive?: boolean | string;
   discountPercentage: number;
 }
+
+export interface Code {
+  rsmCode: string;
+  discountPercentage: number;
+  phoneNumbers: string[];
+}
 export interface Broker {
   id: number;
-
+  city: any;
   mediatorCode: string;
   mediatorPhoneNumbe: string;
   isActive?: boolean | string;

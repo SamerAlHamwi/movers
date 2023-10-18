@@ -263,4 +263,23 @@ export default createGlobalStyle`
     display: flex
   }
 
+  .formList {
+    color: #ff5252;
+  }
+  
+  .formList .ant-form-item-label {
+    position: relative;
+    max-width: 100%;
+    min-height: 1px;
+  }
+  
+  .formList .ant-form-item-control {
+    max-width: 90% !important;
+  }
+
+  .formList .dynamic-delete-button{
+    position: relative;
+    top: -50px;
+    float: right;
+  }
 `;
