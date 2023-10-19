@@ -120,7 +120,6 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
         </BaseForm.Item>
 
         <BaseForm.Item
-          // name="countryId"
           label={<LableText>{t('companies.country')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
         >

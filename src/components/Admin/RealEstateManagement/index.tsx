@@ -190,11 +190,6 @@ export const Partners: React.FC = () => {
     { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
     { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
     { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
-    // { title: <Header>{t('common.city')}</Header>, dataIndex: 'citiesPartner',render: (index: number, record: Partner) => {
-    //   return (
-
-    //   );
-    // } },
     {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
@@ -212,7 +207,7 @@ export const Partners: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('common.code')}>
+            <Tooltip placement="top" title={t('partners.addCode')}>
               <TableButton
                 severity="warning"
                 onClick={() => {

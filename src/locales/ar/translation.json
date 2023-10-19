@@ -367,7 +367,13 @@
     "addPhoneNumber": "إضافة رقم موبايل",
     "addCodeModalTitle": "إضافة كود",
     "addCodeSuccessMessage": "تمت إضافة الكود بنجاح",
-    "addCode": "إضافة كود"
+    "addCode": "إضافة كود",
+    "deleteCodeModalTitle": "حذف كود",
+    "deleteCodeModalDescription": "هل أنت متأكد من حذف هذا الكود؟",
+    "deleteCodeSuccessMessage": "تم حذف الكود بنجاح",
+    "deleteNumberModalTitle": "حذف رقم موبايل",
+    "deleteNumberModalDescription": "هل أت متأكد من حذف هذا الرقم من الكود؟",
+    "deleteNumberSuccessMessage": "تم حذف رقم الموبايل من الكود بنجاح"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

@@ -19,6 +19,14 @@ const DeletePartner = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.partner}/Delete?Id=${id}`);
 };
 
+const DeleteCode = async (id: number) => {
+  return await httpApi.delete(`${apiPrefix.partner}/DeleteCodeFromPatner?Id=${id}`);
+};
+
+const DeleteNumber = async (id: number) => {
+  return await httpApi.delete(`${apiPrefix.partner}/DeleteNumberFromCode?Id=${id}`);
+};
+
 const CreatePartner = async (data: Partner) => {
   return await httpApi.post(`${apiPrefix.partner}/Create`, data);
 };
@@ -46,6 +54,8 @@ export {
   CreateCode,
   UpdatePartner,
   DeletePartner,
+  DeleteCode,
+  DeleteNumber,
   ActivatePartner,
   DeActivatePartner,
 };

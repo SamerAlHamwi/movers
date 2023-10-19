@@ -23,6 +23,7 @@ import {
   EnvironmentOutlined,
   FileProtectOutlined,
   FileUnknownOutlined,
+  DollarOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -67,6 +68,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     key: 'Companies',
     url: '/companies',
     icon: <BankOutlined />,
+  },
+  {
+    title: 'sidebarNavigation.Points',
+    key: 'Points',
+    url: '/Points',
+    icon: <DollarOutlined />,
   },
   {
     title: 'sidebarNavigation.AskForHelp',

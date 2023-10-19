@@ -366,7 +366,13 @@
     "addPhoneNumber": "Add Phone Number",
     "addCodeModalTitle": "Add Code",
     "addCodeSuccessMessage": "The Code has been Added Successfully",
-    "addCode": "Add Code"
+    "addCode": "Add Code",
+    "deleteCodeModalTitle": "Delete Code",
+    "deleteCodeModalDescription": "Are You Sure To Delete This Code?",
+    "deleteCodeSuccessMessage": "The Code has been Deleted Successfully",
+    "deleteNumberModalTitle": "Delete Phone Number",
+    "deleteNumberModalDescription": "Are You Sure To Delete This Phone Number From The Code?",
+    "deleteNumberSuccessMessage": "The Phone Number has been Deleted From Code Successfully"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
