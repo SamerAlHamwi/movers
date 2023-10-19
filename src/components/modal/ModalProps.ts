@@ -15,6 +15,7 @@ import {
   BranchModel,
   faqModel,
   Code,
+  Point,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -34,6 +35,10 @@ export interface CreateBranchModalProps extends ModalProps {
 }
 export interface CreatePartnerModalProps extends ModalProps {
   onCreatePartner: (PartnerInfo: Partner) => void;
+}
+
+export interface CreatePointModalProps extends ModalProps {
+  onCreate: (info: Point) => void;
 }
 
 export interface CreateCodeModalProps extends ModalProps {
@@ -105,6 +110,11 @@ export interface EditFAQProps extends ModalProps {
 export interface EditPartnerProps extends ModalProps {
   Partner_values: Partner | undefined;
   onEdit: (data: Partner) => void;
+}
+
+export interface EditPointProps extends ModalProps {
+  values: Point | undefined;
+  onEdit: (data: Point) => void;
 }
 export interface EditBrokerProps extends ModalProps {
   values: Broker | undefined;

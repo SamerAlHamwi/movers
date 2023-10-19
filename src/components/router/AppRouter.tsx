@@ -53,6 +53,7 @@ const Partnerspage = lazy(() => import('@app/pages/REMPages/PartnersPage'));
 const REMDetailPage = lazy(() => import('@app/pages/REMPages/REMDetailsPage'));
 const AskForHelpPage = lazy(() => import('@app/pages/OtherPages/HelpRequestsPage'));
 const FrequentlyQuestionPage = lazy(() => import('@app/pages/OtherPages/FrequentlyQuestionsPage'));
+const PointPage = lazy(() => import('@app/pages/PointsPages/PointPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -95,6 +96,7 @@ const PartnerPage = withLoading(Partnerspage);
 const REMDetailsPage = withLoading(REMDetailPage);
 const AskForHelpsPage = withLoading(AskForHelpPage);
 const FrequentlyQuestionsPage = withLoading(FrequentlyQuestionPage);
+const PointsPage = withLoading(PointPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -294,6 +296,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <EditBranchesPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="Points"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <PointsPage />
               </PrivateRoute>
             }
           />

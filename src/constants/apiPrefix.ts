@@ -24,4 +24,5 @@ export default {
   ask: '/api/services/app/User',
   frequentlyQuestions: '/api/services/app/FrequentlyQuestion',
   offers: '/api/services/app/Offer',
+  points: '/api/services/app/Point',
 };

@@ -366,7 +366,8 @@
     "codes": "أكواد",
     "addPhoneNumber": "إضافة رقم موبايل",
     "addCodeModalTitle": "إضافة كود",
-    "addCodeSuccessMessage": "تمت إضافة الكود بنجاح"
+    "addCodeSuccessMessage": "تمت إضافة الكود بنجاح",
+    "addCode": "إضافة كود"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -639,6 +640,21 @@
     "emailAddress": "عنوان البريد الإلكتروني"
   },
 
+  "_comment24": "*********************************** points ************************************************",
+  "points": {
+    "pointsList": "قائمة الباقات",
+    "price": "السعر",
+    "numberOfPoint": "عدد النقاط",
+    "addPoint": "إضافة باقة",
+    "addPointModalTitle": "إضافة باقة",
+    "addPointSuccessMessage": "تمت إضافة الباقة بنجاح",
+    "deletePointSuccessMessage": "تم حذف الباقة بنجاح",
+    "deletePointModalTitle": "حذف الباقة",
+    "deletePointModalDescription": "هل أنت متأكد من حذف هذه الباقة",
+    "editPointModalTitle": "تعديل معلومات الباقة",
+    "editPointSuccessMessage": "تم تعديل معلومات الباقة بنجاح"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -675,7 +691,8 @@
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "offers": "عروض الأسعار",
     "OfferDeails": "تفاصيل العرض",
-    "PartnersDetails": "تفاصيل الشريك"
+    "PartnersDetails": "تفاصيل الشريك",
+    "Points": "الباقات"
   },
 
   "header": {

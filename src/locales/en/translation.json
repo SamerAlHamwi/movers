@@ -365,7 +365,8 @@
     "codes": "Codes",
     "addPhoneNumber": "Add Phone Number",
     "addCodeModalTitle": "Add Code",
-    "addCodeSuccessMessage": "The Code has been Added Successfully"
+    "addCodeSuccessMessage": "The Code has been Added Successfully",
+    "addCode": "Add Code"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -642,6 +643,21 @@
     "emailAddress": "Email Address"
   },
 
+  "_comment24": "*********************************** points ************************************************",
+  "points": {
+    "pointsList": "Bundles List",
+    "price": "Price",
+    "numberOfPoint": "Numbers Of Points",
+    "addPoint": "Add Bundle",
+    "addPointModalTitle": "Add Bundle",
+    "addPointSuccessMessage": "The Bundle has been Added Successfully",
+    "deletePointSuccessMessage": "The Bundle has been Deleted Successfully",
+    "deletePointModalTitle": "Delete Bundle",
+    "deletePointModalDescription": "Are You Sure To Delete This Bundle?",
+    "editPointModalTitle": "Edit Bundle",
+    "editPointSuccessMessage": "The Bundle has been Edited Successfully"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -679,7 +695,8 @@
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "offers": "Offers",
     "OfferDeails": "Offer Details",
-    "PartnersDetails": "REM Details"
+    "PartnersDetails": "REM Details",
+    "Points": "Bundles"
   },
 
   "header": {
