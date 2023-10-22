@@ -373,7 +373,8 @@
     "deleteCodeSuccessMessage": "تم حذف الكود بنجاح",
     "deleteNumberModalTitle": "حذف رقم موبايل",
     "deleteNumberModalDescription": "هل أت متأكد من حذف هذا الرقم من الكود؟",
-    "deleteNumberSuccessMessage": "تم حذف رقم الموبايل من الكود بنجاح"
+    "deleteNumberSuccessMessage": "تم حذف رقم الموبايل من الكود بنجاح",
+    "thereAreNoCodesForThisPartnerYet": "لا يوجد أكواد لهذا الشريك حتى الآن"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

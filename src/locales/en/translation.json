@@ -372,7 +372,8 @@
     "deleteCodeSuccessMessage": "The Code has been Deleted Successfully",
     "deleteNumberModalTitle": "Delete Phone Number",
     "deleteNumberModalDescription": "Are You Sure To Delete This Phone Number From The Code?",
-    "deleteNumberSuccessMessage": "The Phone Number has been Deleted From Code Successfully"
+    "deleteNumberSuccessMessage": "The Phone Number has been Deleted From Code Successfully",
+    "thereAreNoCodesForThisPartnerYet": "There Are No Codes For This Partner Yet"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

@@ -50,7 +50,7 @@ const REMDetails: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [partnerData, setCompanyData] = useState<any>();
   const [deleteCodemodaldata, setDeleteCodemodaldata] = useState<Partner | undefined>(undefined);
-  const [deleteNumbermodaldata, setDeleteNumbermodaldata] = useState<Partner | undefined>(undefined);
+  const [deleteNumbermodaldata, setDeleteNumbermodaldata] = useState<string | undefined>(undefined);
   const [isDeleteCode, setIsDeleteCode] = useState(false);
   const [isDeleteNumber, setIsDeleteNumber] = useState(false);
 
@@ -155,8 +155,8 @@ const REMDetails: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, deleteCode: deleteCode.isLoading }));
   }, [deleteCode.isLoading]);
 
-  const deleteNumber = useMutation((id: number) =>
-    DeleteNumber(id)
+  const deleteNumber = useMutation((data) =>
+    DeleteNumber(data)
       .then((data) => {
         data.data?.success &&
           (setIsDeleteNumber(data.data?.success),
@@ -171,8 +171,8 @@ const REMDetails: React.FC = () => {
       }),
   );
 
-  const handleDeleteNumber = (id: any) => {
-    deleteNumber.mutateAsync(id);
+  const handleDeleteNumber = (phoneNumber: any) => {
+    deleteNumber.mutateAsync(phoneNumber);
   };
 
   useEffect(() => {
@@ -220,7 +220,11 @@ const REMDetails: React.FC = () => {
             visible={modalState.deleteNumber}
             onCancel={() => handleModalClose('deleteNumber')}
             onOK={() => {
-              deleteNumbermodaldata !== undefined && handleDeleteNumber(deleteNumbermodaldata);
+              console.log(deleteNumbermodaldata);
+              console.log(deleteCodemodaldata);
+
+              const data = { phoneNumber: deleteNumbermodaldata, id: deleteCodemodaldata };
+              deleteNumbermodaldata !== undefined && handleDeleteNumber(data);
             }}
             width={isDesktop || isTablet ? '450px' : '350px'}
             title={t('partners.deleteNumberModalTitle')}
@@ -345,7 +349,8 @@ const REMDetails: React.FC = () => {
                               severity="error"
                               style={{ display: 'inline-flex', border: 'none', background: 'none' }}
                               onClick={() => {
-                                setDeleteNumbermodaldata(code?.id);
+                                setDeleteCodemodaldata(code?.id);
+                                setDeleteNumbermodaldata(phoneNumber);
                                 handleModalOpen('deleteNumber');
                               }}
                             >
