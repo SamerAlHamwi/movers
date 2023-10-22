@@ -1,30 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Tooltip } from 'antd';
+import { Col, message, Popconfirm, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllPoints, CreatePoint, DeletePoint, UpdatePoint } from '@app/services/points';
+import {
+  getAllPoints,
+  CreatePoint,
+  DeletePoint,
+  UpdatePoint,
+  ActivatePoint,
+  DeActivatePoint,
+} from '@app/services/points';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { Header, CreateButtonText } from '../../GeneralStyles';
+import { Header, CreateButtonText, LableText } from '../../GeneralStyles';
 import { Point } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { AddPoint } from '@app/components/modal/AddPoint';
 import { EditPoint } from '@app/components/modal/EditPoint';
+import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { defineColorBySeverity } from '@app/utils/utils';
+import styled from 'styled-components';
 
 export const Points: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
 
   const [modalState, setModalState] = useState({
     add: false,
@@ -41,6 +52,16 @@ export const Points: React.FC = () => {
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [temp, setTemp] = useState<any>();
+  const [bundleStatus, setBundleStatus] = useState<boolean | undefined>(undefined);
+  const [isActivate, setIsActivate] = useState(false);
+  const [isDeActivate, setIsDeActivate] = useState(false);
+  const [isHover, setIsHover] = useState(false);
+
+  const TableText = styled.div`
+    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
+    font-weight: ${FONT_WEIGHT.regular};
+  `;
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -50,10 +71,12 @@ export const Points: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
   };
 
+  console.log(bundleStatus);
+
   const { refetch, isRefetching } = useQuery(
-    ['Points', page, pageSize, refetchOnAdd, isDelete, isEdit],
+    ['Points', page, pageSize, refetchOnAdd, isDelete, isEdit, bundleStatus],
     () =>
-      getAllPoints(page, pageSize, searchString)
+      getAllPoints(page, pageSize, searchString, bundleStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -80,7 +103,9 @@ export const Points: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString]);
+    setIsActivate(false);
+    setIsDeActivate(false);
+  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString, bundleStatus, isActivate, isDeActivate]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -152,6 +177,32 @@ export const Points: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editPoint.isLoading }));
   }, [editPoint.isLoading]);
 
+  const activateBundle = useMutation((id: number) =>
+    ActivatePoint(id)
+      .then((data) => {
+        message.open({
+          content: <Alert message={t('points.activatePartnerSuccessMessage')} type="success" showIcon />,
+        });
+        setIsActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
+      }),
+  );
+
+  const deActivateBundle = useMutation((id: number) =>
+    DeActivatePoint(id)
+      .then((data) => {
+        message.open({
+          content: <Alert message={t('points.deactivatePartnerSuccessMessage')} type="success" showIcon />,
+        });
+        setIsDeActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
+      }),
+  );
+
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -176,35 +227,184 @@ export const Points: React.FC = () => {
       },
     },
     {
+      title: <Header>{t('points.bundleStatus')}</Header>,
+      dataIndex: 'isActive',
+      render: (bundleStatus: boolean) => {
+        return <>{(bundleStatus = bundleStatus ? t('common.active') : t('common.inactive'))}</>;
+      },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              <Radio style={{ display: 'block', fontSize }} value={true}>
+                {t('common.active')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={false}>
+                {t('common.inactive')}
+              </Radio>
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  disabled={bundleStatus === undefined ? true : false}
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setBundleStatus(undefined);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setBundleStatus(temp === false ? 'false' : temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
+    },
+    {
       title: <Header>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
         return (
-          <Space>
-            <Tooltip placement="top" title={t('common.edit')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  setEditmodaldata(record);
-                  handleModalOpen('edit');
-                }}
-              >
-                <EditOutlined />
-              </TableButton>
-            </Tooltip>
+          <>
+            <Space>
+              <Tooltip placement="top" title={t('common.edit')}>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    setEditmodaldata(record);
+                    handleModalOpen('edit');
+                  }}
+                >
+                  <EditOutlined />
+                </TableButton>
+              </Tooltip>
 
-            <Tooltip placement="top" title={t('common.delete')}>
-              <TableButton
-                severity="error"
-                onClick={() => {
-                  setDeletemodaldata(record);
-                  handleModalOpen('delete');
-                }}
-              >
-                <DeleteOutlined />
-              </TableButton>
-            </Tooltip>
-          </Space>
+              <Tooltip placement="top" title={t('common.delete')}>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setDeletemodaldata(record);
+                    handleModalOpen('delete');
+                  }}
+                >
+                  <DeleteOutlined />
+                </TableButton>
+              </Tooltip>
+
+              {record.isActive === true ? (
+                <Tooltip placement="top" title={t('common.deactivate')}>
+                  <Popconfirm
+                    placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                    title={<LableText>{t('points.deactivatePartnerConfirm')}</LableText>}
+                    okButtonProps={{
+                      onMouseOver: () => {
+                        setIsHover(true);
+                      },
+                      onMouseLeave: () => {
+                        setIsHover(false);
+                      },
+                      loading: false,
+                      style: {
+                        color: `${defineColorBySeverity('info')}`,
+                        background: isHover
+                          ? 'var(--background-color)'
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                        borderColor: isHover
+                          ? `${defineColorBySeverity('info')}`
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                      },
+                    }}
+                    okText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {deActivateBundle.isLoading ? (
+                          <>
+                            {t(`common.deactivate`)} <LoadingOutlined />
+                          </>
+                        ) : (
+                          t(`common.deactivate`)
+                        )}
+                      </div>
+                    }
+                    cancelText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {t(`common.cancel`)}
+                      </div>
+                    }
+                    onConfirm={() => deActivateBundle.mutateAsync(record.id)}
+                  >
+                    <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                      <TableText>{t('common.deactivate')}</TableText>
+                    </Button>
+                  </Popconfirm>
+                </Tooltip>
+              ) : (
+                <Tooltip placement="top" title={t('common.activate')}>
+                  <Popconfirm
+                    placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                    title={<LableText>{t('points.activatePartnerConfirm')}</LableText>}
+                    okButtonProps={{
+                      onMouseOver: () => {
+                        setIsHover(true);
+                      },
+                      onMouseLeave: () => {
+                        setIsHover(false);
+                      },
+                      loading: false,
+                      style: {
+                        color: `${defineColorBySeverity('info')}`,
+                        background: isHover
+                          ? 'var(--background-color)'
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                        borderColor: isHover
+                          ? `${defineColorBySeverity('info')}`
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                      },
+                    }}
+                    okText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {activateBundle.isLoading ? (
+                          <>
+                            {t(`common.activate`)} <LoadingOutlined />
+                          </>
+                        ) : (
+                          t(`common.activate`)
+                        )}
+                      </div>
+                    }
+                    cancelText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {t(`common.cancel`)}
+                      </div>
+                    }
+                    onConfirm={() => activateBundle.mutateAsync(record.id)}
+                  >
+                    <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                      <TableText>{t('common.activate')}</TableText>
+                    </Button>
+                  </Popconfirm>
+                </Tooltip>
+              )}
+            </Space>
+          </>
         );
       },
     },

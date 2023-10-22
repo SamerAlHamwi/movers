@@ -76,7 +76,9 @@
     "details": "تفاصيل",
     "phoneNumbers": "أرقام موبايل",
     "code": "أكواد",
-    "onlyNumbers": "يُسمح بإستخدام الأرقام فقط"
+    "onlyNumbers": "يُسمح بإستخدام الأرقام فقط",
+    "onlyEnglishCharacters": "يُسمح بإستخدام الأحرف الإنكليزية فقط",
+    "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -667,7 +669,12 @@
     "deletePointModalTitle": "حذف الباقة",
     "deletePointModalDescription": "هل أنت متأكد من حذف هذه الباقة",
     "editPointModalTitle": "تعديل معلومات الباقة",
-    "editPointSuccessMessage": "تم تعديل معلومات الباقة بنجاح"
+    "editPointSuccessMessage": "تم تعديل معلومات الباقة بنجاح",
+    "bundleStatus": "حالة الباقة",
+    "activatePartnerSuccessMessage": "تم تفعيل الباقة",
+    "deactivatePartnerSuccessMessage": "تم إلغاء تفعيل الباقة",
+    "deactivatePartnerConfirm": "إلغاء تفعيل حالة الباقة؟",
+    "activatePartnerConfirm": "تفعيل حالة الباقة؟"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

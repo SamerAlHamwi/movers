@@ -77,7 +77,9 @@
     "details": "Details",
     "phoneNumbers": "Phone Numbers",
     "code": "Codes",
-    "onlyNumbers": "Only Numbers are allowed"
+    "onlyNumbers": "Only Numbers are allowed",
+    "onlyEnglishCharacters": "Only English Characters Are Accepted",
+    "onlyArabicCharacters": "Only Arabic Characters Are Accepted"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -670,7 +672,12 @@
     "deletePointModalTitle": "Delete Bundle",
     "deletePointModalDescription": "Are You Sure To Delete This Bundle?",
     "editPointModalTitle": "Edit Bundle",
-    "editPointSuccessMessage": "The Bundle has been Edited Successfully"
+    "editPointSuccessMessage": "The Bundle has been Edited Successfully",
+    "bundleStatus": "Bundle Status",
+    "activatePartnerSuccessMessage": "Activate Bundle Successfully!",
+    "deactivatePartnerSuccessMessage": "Deactivate Bundle Successfully!",
+    "deactivatePartnerConfirm": "Deactivate  Bundle?",
+    "activatePartnerConfirm": "Activate Bundle?"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

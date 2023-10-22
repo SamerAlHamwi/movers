@@ -3,6 +3,8 @@ import { Point } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllPoints = async (page: number, pageSize: number, search: string, isActive?: boolean) => {
+  console.log(isActive);
+
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.points}/GetAll?${
@@ -24,11 +26,11 @@ const UpdatePoint = async (data: Point) => {
 };
 
 const ActivatePoint = async (id: number) => {
-  return await httpApi.post(`${apiPrefix.points}/Activate`, { id });
+  return await httpApi.put(`${apiPrefix.points}/SwitchActivation`, { id, isActive: true });
 };
 
 const DeActivatePoint = async (id: number) => {
-  return await httpApi.post(`${apiPrefix.points}/DeActivate`, { id });
+  return await httpApi.put(`${apiPrefix.points}/SwitchActivation`, { id, isActive: false });
 };
 
 export { getAllPoints, CreatePoint, UpdatePoint, DeletePoint, ActivatePoint, DeActivatePoint };
