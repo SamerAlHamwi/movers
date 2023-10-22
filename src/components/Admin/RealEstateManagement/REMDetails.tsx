@@ -1,42 +1,40 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Tag, Space, Progress } from 'antd';
+import { Row, Card, Tooltip, message, Alert } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { getPartner } from '@app/services/partners';
+import { getPartner, DeleteCode, DeleteNumber, CreateNumber } from '@app/services/partners';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { DataNode } from 'antd/es/tree';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined } from '@ant-design/icons';
-import { TextBack } from '@app/components/GeneralStyles';
+import { DeleteOutlined, LeftOutlined, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import { TableButton, TextBack } from '@app/components/GeneralStyles';
+import { Partner } from '@app/interfaces/interfaces';
+import { ActionModal } from '@app/components/modal/ActionModal';
+import { AddNumberForCode } from '@app/components/modal/AddNumberForCode';
 
-export type specifierType = {
-  name: string;
-  value: number | undefined;
+const gridStyle: React.CSSProperties = {
+  width: '25%',
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
 };
 
-export type partnerData = {
-  companyCode: string;
-  id: number;
+const gridHover: React.CSSProperties = {
+  width: '25%',
+  textAlign: 'center',
+  display: 'flex',
+  flexDirection: 'column',
+  justifyContent: 'space-around',
+  cursor: 'pointer',
 };
-
-const treeStyle = {
-  width: '96%',
-  margin: '0 2%',
-  padding: '0.5rem',
-  borderRadius: '0.25rem',
-  border: '1px solid #d9d9d9',
-  backgroundColor: '#fff',
-};
-
-let treeData: DataNode[] = [];
 
 const REMDetails: React.FC = () => {
   const { t } = useTranslation();
@@ -45,10 +43,27 @@ const REMDetails: React.FC = () => {
   const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
   const Navigate = useNavigate();
 
+  const [modalState, setModalState] = useState({
+    deleteCode: false,
+    deleteNumber: false,
+    addNumber: false,
+  });
   const [loading, setLoading] = useState(true);
   const [partnerData, setCompanyData] = useState<any>();
-  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
-  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [deleteCodeModaldata, setDeleteCodeModaldata] = useState<Partner | undefined>(undefined);
+  const [deleteNumberModaldata, setDeleteNumberModaldata] = useState<string | undefined>(undefined);
+  const [addNumberModaldata, setAddNumberModaldata] = useState<string | undefined>(undefined);
+  const [isDeleteCode, setIsDeleteCode] = useState(false);
+  const [isDeleteNumber, setIsDeleteNumber] = useState(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
+  };
+
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const { refetch, isRefetching } = useQuery(['getPartner'], () =>
     getPartner(partnerId)
@@ -62,35 +77,6 @@ const REMDetails: React.FC = () => {
         setLoading(false);
       }),
   );
-
-  const onExpand = (expandedKeysValue: React.Key[]) => {
-    setExpandedKeys(expandedKeysValue);
-    setAutoExpandParent(false);
-  };
-
-  if (partnerData && partnerData?.codes) {
-    treeData = partnerData?.codes.map((code: any) => ({
-      title: (
-        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <span style={{ fontWeight: 'bold' }}>
-            <p style={{ color: '#01509a', display: 'inline' }}> {code?.rsmCode}</p> /
-            <p style={{ color: '#30af5b', display: 'inline' }}> {code?.discountPercentage}%</p>
-          </span>
-        </span>
-      ),
-      key: code?.rsmCode,
-      children: code?.phonesNumbers.map((phonesNumber: any, index: number) => ({
-        title: (
-          <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-            <span style={{ fontWeight: 'bold' }}>
-              {index + 1} - {phonesNumber}
-            </span>
-          </span>
-        ),
-        key: phonesNumber,
-      })),
-    }));
-  }
 
   const DetailsRow = styled.div`
     display: flex;
@@ -130,11 +116,6 @@ const REMDetails: React.FC = () => {
     margin: 1.25rem 0.5rem;
   `;
 
-  const conicPinkColors = { '0%': '#ffba6f', '50%': '#ff6f61', '100%': '#ff4369' };
-  const conicGreenColors = { '0%': '#f6ff00', '50%': '#b3ff00', '100%': '#73d13d' };
-  const conicBlueColors = { '0%': '#a6dcef', '50%': '#2e93e5', '100%': '#0050b3' };
-  const conicRedColors = { '0%': '#ffbb96', '50%': '#ff6b45', '100%': '#e62b1d' };
-
   useEffect(() => {
     if (isRefetching) {
       setLoading(true);
@@ -144,11 +125,82 @@ const REMDetails: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [refetch, language]);
+    setRefetchOnAdd(false);
+  }, [refetch, refetchOnAdd, language]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+    setIsDeleteCode(false);
+    setIsDeleteNumber(false);
+  }, [isDeleteCode, isDeleteNumber, refetch]);
+
+  const deleteCode = useMutation((id: number) =>
+    DeleteCode(id)
+      .then((data) => {
+        data.data?.success &&
+          (setIsDeleteCode(data.data?.success),
+          message.open({
+            content: <Alert message={t('partners.deleteCodeSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleDeleteCode = (id: any) => {
+    deleteCode.mutateAsync(id);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, deleteCode: deleteCode.isLoading }));
+  }, [deleteCode.isLoading]);
+
+  const deleteNumber = useMutation((data) =>
+    DeleteNumber(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsDeleteNumber(data.data?.success),
+          message.open({
+            content: <Alert message={t('partners.deleteNumberSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleDeleteNumber = (phoneNumber: any) => {
+    deleteNumber.mutateAsync(phoneNumber);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, deleteNumber: deleteNumber.isLoading }));
+  }, [deleteNumber.isLoading]);
+
+  const addNumber = useMutation((data: any) =>
+    CreateNumber(data)
+      .then((data) => {
+        notificationController.success({ message: t('partners.addNumberSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, addNumber: addNumber.isLoading }));
+  }, [addNumber.isLoading]);
 
   return (
     <>
-      <PageTitle>{t('partners.partnerInfo')}</PageTitle>
+      <PageTitle>{t('partners.REMInfo')}</PageTitle>
       <Row justify={'end'}>
         <Button
           style={{
@@ -162,13 +214,59 @@ const REMDetails: React.FC = () => {
         >
           <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
         </Button>
+
+        {/*    Delete Code    */}
+        {modalState.deleteCode && (
+          <ActionModal
+            visible={modalState.deleteCode}
+            onCancel={() => handleModalClose('deleteCode')}
+            onOK={() => {
+              deleteCodeModaldata !== undefined && handleDeleteCode(deleteCodeModaldata);
+            }}
+            width={isDesktop || isTablet ? '450px' : '350px'}
+            title={t('partners.deleteCodeModalTitle')}
+            okText={t('common.delete')}
+            cancelText={t('common.cancel')}
+            isDanger={true}
+            description={t('partners.deleteCodeModalDescription')}
+            isLoading={deleteCode.isLoading}
+          />
+        )}
+
+        {/*    Delete Number    */}
+        {modalState.deleteNumber && (
+          <ActionModal
+            visible={modalState.deleteNumber}
+            onCancel={() => handleModalClose('deleteNumber')}
+            onOK={() => {
+              const data = { phoneNumber: deleteNumberModaldata, id: deleteCodeModaldata };
+              deleteNumberModaldata !== undefined && handleDeleteNumber(data);
+            }}
+            width={isDesktop || isTablet ? '450px' : '350px'}
+            title={t('partners.deleteNumberModalTitle')}
+            okText={t('common.delete')}
+            cancelText={t('common.cancel')}
+            isDanger={true}
+            description={t('partners.deleteNumberModalDescription')}
+            isLoading={deleteNumber.isLoading}
+          />
+        )}
+
+        {/*    Add Number    */}
+        {modalState.addNumber && (
+          <AddNumberForCode
+            visible={modalState.addNumber}
+            onCancel={() => handleModalClose('addNumber')}
+            onCreate={(info) => {
+              const data = { phoneNumber: info, id: addNumberModaldata };
+              addNumber.mutateAsync(data);
+            }}
+            isLoading={addNumber.isLoading}
+          />
+        )}
       </Row>
       <Row>
-        <Cardd
-          title={t('partners.partnerInfo')}
-          padding="0 1.25rem 1rem 1.25rem"
-          style={{ width: '100%', height: 'auto' }}
-        >
+        <Cardd title={t('partners.REMInfo')} padding="0 1.25rem 1rem 1.25rem" style={{ width: '100%', height: 'auto' }}>
           <Spinner spinning={loading}>
             <Details>
               <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('partners.generalInfo')} :</h3>
@@ -236,17 +334,79 @@ const REMDetails: React.FC = () => {
                 {t('partners.codes')} :
               </h3>
 
-              <Tree
-                className="specialTree"
-                key={100}
-                style={treeStyle}
-                defaultExpandAll
-                defaultExpandParent
-                expandedKeys={expandedKeys}
-                autoExpandParent={autoExpandParent}
-                onExpand={onExpand}
-                treeData={treeData as DataNode[]}
-              />
+              {partnerData?.codes.length == 0 && <p>{t('partners.thereAreNoCodesForThisPartnerYet')}</p>}
+
+              {partnerData?.codes.map((code: any) => (
+                <Card
+                  key={code?.id}
+                  title={
+                    <>
+                      <p style={{ color: '#01509a', display: 'inline' }}> {code?.rsmCode} </p>/
+                      <p style={{ color: '#30af5b', display: 'inline' }}> {code?.discountPercentage} </p>
+                      <p style={{ display: 'inline', fontSize: 'smaller', fontWeight: '500' }}>
+                        {code?.codeType == 1 ? '%' : 'AED'}
+                      </p>
+                    </>
+                  }
+                  extra={
+                    <Tooltip placement="top" title={t('partners.deleteCode')}>
+                      <TableButton
+                        severity="error"
+                        onClick={() => {
+                          setDeleteCodeModaldata(code?.id);
+                          handleModalOpen('deleteCode');
+                        }}
+                      >
+                        <DeleteOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  }
+                >
+                  {code?.phonesNumbers != null &&
+                    code?.phonesNumbers.length > 0 &&
+                    code?.phonesNumbers[0] != '' &&
+                    code?.phonesNumbers.map((phoneNumber: string) => (
+                      <Card.Grid key={phoneNumber} style={gridStyle}>
+                        <div>
+                          {phoneNumber}
+                          {phoneNumber != '' && (
+                            <Tooltip placement="top" title={t('partners.deleteNumber')}>
+                              <TableButton
+                                severity="error"
+                                style={{ display: 'inline-flex', border: 'none', background: 'none' }}
+                                onClick={() => {
+                                  setDeleteCodeModaldata(code?.id);
+                                  setDeleteNumberModaldata(phoneNumber);
+                                  handleModalOpen('deleteNumber');
+                                }}
+                              >
+                                <DeleteOutlined />
+                              </TableButton>
+                            </Tooltip>
+                          )}
+                        </div>
+                      </Card.Grid>
+                    ))}
+                  <Tooltip placement="top" title={t('partners.addPhoneNumber')}>
+                    <Card.Grid
+                      style={gridHover}
+                      onClick={() => {
+                        setAddNumberModaldata(code?.id);
+                        handleModalOpen('addNumber');
+                      }}
+                    >
+                      <div>
+                        <TableButton
+                          severity="info"
+                          style={{ display: 'inline-flex', border: 'none', background: 'none' }}
+                        >
+                          <PlusOutlined />
+                        </TableButton>
+                      </div>
+                    </Card.Grid>
+                  </Tooltip>
+                </Card>
+              ))}
             </Details>
           </Spinner>
         </Cardd>

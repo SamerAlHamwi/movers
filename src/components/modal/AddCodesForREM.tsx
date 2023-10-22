@@ -104,17 +104,17 @@ export const AddCodesForREM: React.FC<CreateCodeModalProps> = ({ visible, onCanc
             }}
           >
             <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-              discountPercentag
+              {t('partners.percentage')}
             </Radio>
             <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-              fixedValue
+              {t('partners.fixedValue')}
             </Radio>
           </Radio.Group>
         </BaseForm.Item>
 
         <BaseForm.Item
           name="discountPercentage"
-          label={<LableText>{t('partners.discountPercentage')}</LableText>}
+          label={<LableText>{t('partners.discount')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

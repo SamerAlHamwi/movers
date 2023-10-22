@@ -76,7 +76,9 @@
     "details": "تفاصيل",
     "phoneNumbers": "أرقام موبايل",
     "code": "أكواد",
-    "onlyNumbers": "يُسمح بإستخدام الأرقام فقط"
+    "onlyNumbers": "يُسمح بإستخدام الأرقام فقط",
+    "onlyEnglishCharacters": "يُسمح بإستخدام الأحرف الإنكليزية فقط",
+    "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -286,7 +288,11 @@
     "customerService": "خدمة الزبائن",
     "valueOfServiceForMoney": "تقييم الخدمة مقابل المال",
     "reviews": "المراجعات",
-    "details": "تفاصيل الشركة"
+    "details": "تفاصيل الشركة",
+    "points": "نقاط الشركة",
+    "numberOfPaidPoints": "",
+    "numberOfGiftedPoints": "",
+    "totalPoints": ""
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -366,7 +372,23 @@
     "codes": "أكواد",
     "addPhoneNumber": "إضافة رقم موبايل",
     "addCodeModalTitle": "إضافة كود",
-    "addCodeSuccessMessage": "تمت إضافة الكود بنجاح"
+    "addCodeSuccessMessage": "تمت إضافة الكود بنجاح",
+    "addCode": "إضافة كود",
+    "deleteCodeModalTitle": "حذف كود",
+    "deleteCodeModalDescription": "هل أنت متأكد من حذف هذا الكود؟",
+    "deleteCodeSuccessMessage": "تم حذف الكود بنجاح",
+    "deleteNumberModalTitle": "حذف رقم موبايل",
+    "deleteNumberModalDescription": "هل أت متأكد من حذف هذا الرقم من الكود؟",
+    "deleteNumberSuccessMessage": "تم حذف رقم الموبايل من الكود بنجاح",
+    "thereAreNoCodesForThisPartnerYet": "لا يوجد أكواد لهذا الشريك حتى الآن",
+    "addNumberModalTitle": "إضافة رقم موبايل لهذا الكود",
+    "addNumberSuccessMessage": "تمت إضافة رقم الموبايل لهذا الكود بنجاح",
+    "deleteNumber": "حذف رقم موبايل",
+    "deleteCode": "حذف كود",
+    "percentage": "خصم بنسبة مئوية",
+    "fixedValue": "قيمة خصم ثابتة",
+    "discount": "الخصم",
+    "REMInfo": "معلومات الشريك"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -639,6 +661,26 @@
     "emailAddress": "عنوان البريد الإلكتروني"
   },
 
+  "_comment24": "*********************************** points ************************************************",
+  "points": {
+    "pointsList": "قائمة الباقات",
+    "price": "السعر",
+    "numberOfPoint": "عدد النقاط",
+    "addPoint": "إضافة باقة",
+    "addPointModalTitle": "إضافة باقة",
+    "addPointSuccessMessage": "تمت إضافة الباقة بنجاح",
+    "deletePointSuccessMessage": "تم حذف الباقة بنجاح",
+    "deletePointModalTitle": "حذف الباقة",
+    "deletePointModalDescription": "هل أنت متأكد من حذف هذه الباقة",
+    "editPointModalTitle": "تعديل معلومات الباقة",
+    "editPointSuccessMessage": "تم تعديل معلومات الباقة بنجاح",
+    "bundleStatus": "حالة الباقة",
+    "activatePartnerSuccessMessage": "تم تفعيل الباقة",
+    "deactivatePartnerSuccessMessage": "تم إلغاء تفعيل الباقة",
+    "deactivatePartnerConfirm": "إلغاء تفعيل حالة الباقة؟",
+    "activatePartnerConfirm": "تفعيل حالة الباقة؟"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -675,7 +717,8 @@
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "offers": "عروض الأسعار",
     "OfferDeails": "تفاصيل العرض",
-    "PartnersDetails": "تفاصيل الشريك"
+    "PartnersDetails": "تفاصيل الشريك",
+    "Points": "الباقات"
   },
 
   "header": {

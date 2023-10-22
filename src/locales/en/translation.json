@@ -77,7 +77,9 @@
     "details": "Details",
     "phoneNumbers": "Phone Numbers",
     "code": "Codes",
-    "onlyNumbers": "Only Numbers are allowed"
+    "onlyNumbers": "Only Numbers are allowed",
+    "onlyEnglishCharacters": "Only English Characters Are Accepted",
+    "onlyArabicCharacters": "Only Arabic Characters Are Accepted"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -285,7 +287,11 @@
     "customerService": "Customer service",
     "valueOfServiceForMoney": "Service value for money",
     "reviews": "Reviews",
-    "details": "Details"
+    "details": "Details",
+    "points": "Points",
+    "numberOfPaidPoints": "NO. Paid Points",
+    "numberOfGiftedPoints": "NO. Gifted Points",
+    "totalPoints": "Total Points"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -365,7 +371,23 @@
     "codes": "Codes",
     "addPhoneNumber": "Add Phone Number",
     "addCodeModalTitle": "Add Code",
-    "addCodeSuccessMessage": "The Code has been Added Successfully"
+    "addCodeSuccessMessage": "The Code has been Added Successfully",
+    "addCode": "Add Code",
+    "deleteCodeModalTitle": "Delete Code",
+    "deleteCodeModalDescription": "Are You Sure To Delete This Code?",
+    "deleteCodeSuccessMessage": "The Code has been Deleted Successfully",
+    "deleteNumberModalTitle": "Delete Phone Number",
+    "deleteNumberModalDescription": "Are You Sure To Delete This Phone Number From The Code?",
+    "deleteNumberSuccessMessage": "The Phone Number has been Deleted From Code Successfully",
+    "thereAreNoCodesForThisPartnerYet": "There Are No Codes For This Partner Yet",
+    "addNumberModalTitle": "Add Phone Number For Code",
+    "addNumberSuccessMessage": "The Phone Number For Code has been Added Successfully",
+    "deleteNumber": "Delete Phone Number",
+    "deleteCode": "Delete Code",
+    "percentage": "Percentage Discount",
+    "fixedValue": "Fixed Discount Value",
+    "discount": "Discount",
+    "REMInfo": "REM Informations"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",
@@ -642,6 +664,26 @@
     "emailAddress": "Email Address"
   },
 
+  "_comment24": "*********************************** points ************************************************",
+  "points": {
+    "pointsList": "Bundles List",
+    "price": "Price",
+    "numberOfPoint": "Numbers Of Points",
+    "addPoint": "Add Bundle",
+    "addPointModalTitle": "Add Bundle",
+    "addPointSuccessMessage": "The Bundle has been Added Successfully",
+    "deletePointSuccessMessage": "The Bundle has been Deleted Successfully",
+    "deletePointModalTitle": "Delete Bundle",
+    "deletePointModalDescription": "Are You Sure To Delete This Bundle?",
+    "editPointModalTitle": "Edit Bundle",
+    "editPointSuccessMessage": "The Bundle has been Edited Successfully",
+    "bundleStatus": "Bundle Status",
+    "activatePartnerSuccessMessage": "Activate Bundle Successfully!",
+    "deactivatePartnerSuccessMessage": "Deactivate Bundle Successfully!",
+    "deactivatePartnerConfirm": "Deactivate  Bundle?",
+    "activatePartnerConfirm": "Activate Bundle?"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -679,7 +721,8 @@
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "offers": "Offers",
     "OfferDeails": "Offer Details",
-    "PartnersDetails": "REM Details"
+    "PartnersDetails": "REM Details",
+    "Points": "Bundles"
   },
 
   "header": {
