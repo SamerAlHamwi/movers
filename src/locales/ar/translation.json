@@ -374,7 +374,15 @@
     "deleteNumberModalTitle": "حذف رقم موبايل",
     "deleteNumberModalDescription": "هل أت متأكد من حذف هذا الرقم من الكود؟",
     "deleteNumberSuccessMessage": "تم حذف رقم الموبايل من الكود بنجاح",
-    "thereAreNoCodesForThisPartnerYet": "لا يوجد أكواد لهذا الشريك حتى الآن"
+    "thereAreNoCodesForThisPartnerYet": "لا يوجد أكواد لهذا الشريك حتى الآن",
+    "addNumberModalTitle": "إضافة رقم موبايل لهذا الكود",
+    "addNumberSuccessMessage": "تمت إضافة رقم الموبايل لهذا الكود بنجاح",
+    "deleteNumber": "حذف رقم موبايل",
+    "deleteCode": "حذف كود",
+    "percentage": "خصم بنسبة مئوية",
+    "fixedValue": "قيمة خصم ثابتة",
+    "discount": "الخصم",
+    "REMInfo": "معلومات الشريك"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

@@ -373,7 +373,15 @@
     "deleteNumberModalTitle": "Delete Phone Number",
     "deleteNumberModalDescription": "Are You Sure To Delete This Phone Number From The Code?",
     "deleteNumberSuccessMessage": "The Phone Number has been Deleted From Code Successfully",
-    "thereAreNoCodesForThisPartnerYet": "There Are No Codes For This Partner Yet"
+    "thereAreNoCodesForThisPartnerYet": "There Are No Codes For This Partner Yet",
+    "addNumberModalTitle": "Add Phone Number For Code",
+    "addNumberSuccessMessage": "The Phone Number For Code has been Added Successfully",
+    "deleteNumber": "Delete Phone Number",
+    "deleteCode": "Delete Code",
+    "percentage": "Percentage Discount",
+    "fixedValue": "Fixed Discount Value",
+    "discount": "Discount",
+    "REMInfo": "REM Informations"
   },
 
   "_comment12": "*********************************** attributeForSourceType ************************************************",

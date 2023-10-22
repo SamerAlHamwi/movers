@@ -37,6 +37,10 @@ export interface CreatePartnerModalProps extends ModalProps {
   onCreatePartner: (PartnerInfo: Partner) => void;
 }
 
+export interface CreateNumberModalProps extends ModalProps {
+  onCreate: (info: string) => void;
+}
+
 export interface CreatePointModalProps extends ModalProps {
   onCreate: (info: Point) => void;
 }
