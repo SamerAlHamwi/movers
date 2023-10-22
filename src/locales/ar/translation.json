@@ -288,7 +288,11 @@
     "customerService": "خدمة الزبائن",
     "valueOfServiceForMoney": "تقييم الخدمة مقابل المال",
     "reviews": "المراجعات",
-    "details": "تفاصيل الشركة"
+    "details": "تفاصيل الشركة",
+    "points": "نقاط الشركة",
+    "numberOfPaidPoints": "",
+    "numberOfGiftedPoints": "",
+    "totalPoints": ""
   },
 
   "_comment7": "*********************************** subServices ************************************************",

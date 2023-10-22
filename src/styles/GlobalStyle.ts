@@ -282,4 +282,19 @@ export default createGlobalStyle`
     top: -50px;
     float: right;
   }
+
+  .Segmented {
+    height: 120px
+  }
+
+  .ant-segmented-item  {
+    height: fit-content;
+  }
+
+  .anticon-dropbox,
+  .anticon-gift,
+  .anticon-dollar {
+    position: relative;
+    top: -4px;
+  }
 `;

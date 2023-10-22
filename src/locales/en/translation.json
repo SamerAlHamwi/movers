@@ -287,7 +287,11 @@
     "customerService": "Customer service",
     "valueOfServiceForMoney": "Service value for money",
     "reviews": "Reviews",
-    "details": "Details"
+    "details": "Details",
+    "points": "Points",
+    "numberOfPaidPoints": "NO. Paid Points",
+    "numberOfGiftedPoints": "NO. Gifted Points",
+    "totalPoints": "Total Points"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
