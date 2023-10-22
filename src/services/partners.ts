@@ -19,12 +19,29 @@ const DeletePartner = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.partner}/Delete?Id=${id}`);
 };
 
+const DeleteCode = async (id: number) => {
+  return await httpApi.delete(`${apiPrefix.partner}/DeleteCodeFromPatner?Id=${id}`);
+};
+
+const DeleteNumber = async (data: any) => {
+  return await httpApi.delete(`${apiPrefix.partner}/DeleteNumberFromCode`, {
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    data: data,
+  });
+};
+
 const CreatePartner = async (data: Partner) => {
   return await httpApi.post(`${apiPrefix.partner}/Create`, data);
 };
 
 const CreateCode = async (data: any) => {
   return await httpApi.post(`${apiPrefix.partner}/AddNewCodeToPatner`, data);
+};
+
+const CreateNumber = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.partner}/AddNumberToCode`, data);
 };
 
 const UpdatePartner = async (data: Partner) => {
@@ -44,8 +61,11 @@ export {
   getPartner,
   CreatePartner,
   CreateCode,
+  CreateNumber,
   UpdatePartner,
   DeletePartner,
+  DeleteCode,
+  DeleteNumber,
   ActivatePartner,
   DeActivatePartner,
 };

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Partners } from '@app/components/Admin/RealEstateManagement';
 
-const Partnerspage: React.FC = () => {
+const PartnersPage: React.FC = () => {
   const { t } = useTranslation();
 
   return (
@@ -14,4 +14,4 @@ const Partnerspage: React.FC = () => {
   );
 };
 
-export default Partnerspage;
+export default PartnersPage;

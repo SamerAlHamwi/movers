@@ -14,12 +14,6 @@ import { Select, Option } from '../common/selects/Select/Select';
 import { useQuery } from 'react-query';
 import { getCities, getCountries } from '@app/services/locations';
 
-const generateRandomCode = () => {
-  const min = 10000000;
-  const max = 99999999;
-  return Math.floor(Math.random() * (max - min + 1)) + min;
-};
-
 export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCancel, onCreatePartner, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
@@ -120,7 +114,6 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
         </BaseForm.Item>
 
         <BaseForm.Item
-          // name="countryId"
           label={<LableText>{t('companies.country')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
         >

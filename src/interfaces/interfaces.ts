@@ -299,6 +299,13 @@ export interface Partner {
   discountPercentage: number;
 }
 
+export interface Point {
+  id: number;
+  numberOfPoint: number;
+  price: number;
+  translations: Translation[];
+}
+
 export interface Code {
   rsmCode: string;
   discountPercentage: number;
