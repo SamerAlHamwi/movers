@@ -616,7 +616,8 @@
     "followed": "Finished",
     "confirmAskSuccessMessage": "The Asking For Help has been Confirmed Successfully",
     "confirmAskModalTitle": "Confirm Asking For Help",
-    "confirmAskModalDescription": "Are You Sure To Confirm This Asking For Help?"
+    "confirmAskModalDescription": "Are You Sure To Confirm This Asking For Help?",
+    "confirmHelpRequest": "Confirm Help Request"
   },
 
   "_comment22": "*********************************** FAQ ************************************************",

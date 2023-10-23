@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { notificationController } from '@app/controllers/notificationController';
-import { useAppSelector } from '@app/hooks/reduxHooks';
-import { Table, CreateButtonText } from '../../GeneralStyles';
-import { LanguageType } from '@app/interfaces/interfaces';
+import { Table } from '../../GeneralStyles';
 import { getAllAsks, confirmAsks } from '../../../services/asks';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
-import { Alert, Button, Col, Radio, RadioChangeEvent, Row, Space, Tag, message } from 'antd';
-import { CheckOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
+import { Alert, Button, Col, Radio, RadioChangeEvent, Row, Space, Tag, Tooltip, message } from 'antd';
+import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { createRequest } from '@app/services/requests';
 import { useNavigate } from 'react-router-dom';
 
 type User = {
@@ -69,21 +66,6 @@ export const AskForHelp: React.FC = () => {
       enabled: asksData === undefined,
     },
   );
-
-  const addRequest = useMutation((data: any) =>
-    createRequest(data)
-      .then((data) => {
-        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
-        // setRefetchOnAdd(data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      }),
-  );
-
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
-  // }, [addRequest.isLoading]);
 
   const handleConfirm = (id: any) => {
     confirm.mutateAsync(id);
@@ -279,25 +261,26 @@ export const AskForHelp: React.FC = () => {
           <>
             {record?.statues == 1 && (
               <Space>
-                <TableButton
-                  severity="info"
-                  onClick={() => {
-                    console.log(record);
-                    console.log(record?.id);
+                <Tooltip placement="top" title={t('asks.confirmHelpRequest')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setConfirmAskId(record?.id);
+                      setModalStatus(true);
+                    }}
+                  >
+                    <CheckOutlined />
+                  </TableButton>
+                </Tooltip>
 
-                    setConfirmAskId(record?.id);
-                    setModalStatus(true);
-                  }}
-                >
-                  <CheckOutlined />
-                </TableButton>
-
-                <TableButton
-                  severity="success"
-                  onClick={() => navigate(`/${record.user.id}/addRequest`, { replace: false })}
-                >
-                  <PlusOutlined />
-                </TableButton>
+                <Tooltip placement="top" title={t('requests.addRequest')}>
+                  <TableButton
+                    severity="success"
+                    onClick={() => navigate(`/${record.user.id}/addRequest`, { replace: false })}
+                  >
+                    <PlusOutlined />
+                  </TableButton>
+                </Tooltip>
               </Space>
             )}
           </>
