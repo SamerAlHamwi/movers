@@ -73,7 +73,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.Points',
     key: 'Points',
     url: '/Points',
-    icon: <DollarOutlined />,
+    icon: <DollarOutlined style={{ marginBottom: '-7px' }} />,
   },
   {
     title: 'sidebarNavigation.AskForHelp',
