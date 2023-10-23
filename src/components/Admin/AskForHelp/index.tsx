@@ -11,7 +11,7 @@ import { getAllAsks, confirmAsks } from '../../../services/asks';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { Alert, Button, Col, Radio, RadioChangeEvent, Row, Space, Tag, Tooltip, message } from 'antd';
-import { CheckOutlined, PlusOutlined } from '@ant-design/icons';
+import { AuditOutlined, CheckOutlined } from '@ant-design/icons';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { ActionModal } from '@app/components/modal/ActionModal';
@@ -278,7 +278,7 @@ export const AskForHelp: React.FC = () => {
                     severity="success"
                     onClick={() => navigate(`/${record.user.id}/addRequest`, { replace: false })}
                   >
-                    <PlusOutlined />
+                    <AuditOutlined />
                   </TableButton>
                 </Tooltip>
               </Space>
