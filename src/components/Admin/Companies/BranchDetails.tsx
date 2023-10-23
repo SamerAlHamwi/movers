@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Space, Progress } from 'antd';
+import { Row, Tree, Image, Space, Progress, Avatar, Segmented } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -14,7 +14,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined } from '@ant-design/icons';
+import { DollarOutlined, DropboxOutlined, GiftOutlined, LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
@@ -254,6 +254,51 @@ const BranchDetails: React.FC = () => {
                   <DetailsValue>{branchData?.numberOfTransfers}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
+
+              <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                {t('companies.points')} :
+              </h3>
+
+              <Space
+                direction="vertical"
+                style={{ display: 'flex', gap: '8px', flexDirection: 'row', justifyContent: 'space-around' }}
+              >
+                <Segmented
+                  className="Segmented"
+                  options={[
+                    {
+                      label: (
+                        <div style={{ padding: 4, height: 'fit-content' }}>
+                          <Avatar style={{ backgroundColor: '#01509a' }} icon={<DollarOutlined />} />
+                          <p> {t('companies.numberOfPaidPoints')} </p>
+                          <p> {branchData?.numberOfPaidPoints} </p>
+                        </div>
+                      ),
+                      value: 'user1',
+                    },
+                    {
+                      label: (
+                        <div style={{ padding: 4, height: 'fit-content' }}>
+                          <Avatar style={{ backgroundColor: '#f56a00' }} icon={<GiftOutlined />} />
+                          <p> {t('companies.numberOfGiftedPoints')} </p>
+                          <p> {branchData?.numberOfGiftedPoints} </p>
+                        </div>
+                      ),
+                      value: 'user2',
+                    },
+                    {
+                      label: (
+                        <div style={{ padding: 4, height: 'fit-content' }}>
+                          <Avatar style={{ backgroundColor: '#30af5b' }} icon={<DropboxOutlined />} />
+                          <p> {t('companies.totalPoints')} </p>
+                          <p> {branchData?.totalPoints} </p>
+                        </div>
+                      ),
+                      value: 'user3',
+                    },
+                  ]}
+                />
+              </Space>
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.evaluation')} :
