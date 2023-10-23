@@ -613,7 +613,8 @@
     "followed": "تم إنجازه",
     "confirmAskSuccessMessage": "تمت المساعدة لهذا الطلب بنجاح",
     "confirmAskModalTitle": "تأكيد طلب المساعدة",
-    "confirmAskModalDescription": "هل أنت متأكد من التأكيد على هذا الطلب؟"
+    "confirmAskModalDescription": "هل أنت متأكد من التأكيد على هذا الطلب؟",
+    "confirmHelpRequest": "إتمام طلب المساعدة"
   },
 
   "_comment22": "*********************************** FAQ ************************************************",

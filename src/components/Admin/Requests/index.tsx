@@ -30,7 +30,7 @@ export const Requests: React.FC = () => {
   const { isTablet, isMobile, isDesktop } = useResponsive();
 
   const [modalState, setModalState] = useState({
-    add: false,
+    // add: false,
     edit: false,
     delete: false,
     approve: false,
@@ -99,20 +99,20 @@ export const Requests: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addRequest = useMutation((data: any) =>
-    createRequest(data)
-      .then((data) => {
-        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
-        setRefetchOnAdd(data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      }),
-  );
+  // const addRequest = useMutation((data: any) =>
+  //   createRequest(data)
+  //     .then((data) => {
+  //       notificationController.success({ message: t('requests.addRequestSuccessMessage') });
+  //       setRefetchOnAdd(data.data?.success);
+  //     })
+  //     .catch((error) => {
+  //       notificationController.error({ message: error.message || error.error?.message });
+  //     }),
+  // );
 
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
-  }, [addRequest.isLoading]);
+  // useEffect(() => {
+  //   setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
+  // }, [addRequest.isLoading]);
 
   const deleteRequest = useMutation((id: number) =>
     DeleteRequest(id)
@@ -444,7 +444,7 @@ export const Requests: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          <Button
+          {/* <Button
             type="primary"
             style={{
               marginBottom: '.5rem',
@@ -454,7 +454,7 @@ export const Requests: React.FC = () => {
             onClick={() => navigate('/addRequest', { replace: false })}
           >
             <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
-          </Button>
+          </Button> */}
 
           {/*    EDIT    */}
           {modalState.edit && (

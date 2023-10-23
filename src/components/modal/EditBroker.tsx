@@ -175,10 +175,10 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
               pattern: /^[0-9]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
             },
-            {
-              max: 8,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('brokers.tooManyNumbers')}</p>,
-            },
+            // {
+            //   max: 8,
+            //   message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('brokers.tooManyNumbers')}</p>,
+            // },
           ]}
           style={{ marginTop: '-.5rem' }}
         >

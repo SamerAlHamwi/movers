@@ -156,11 +156,21 @@ export const Brokers: React.FC = () => {
 
   const columns = [
     { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
-    { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
-    { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
-    { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'mediatorPhoneNumber' },
-    { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.phoneNumber')}</Header>,
+      dataIndex: 'mediatorPhoneNumber',
+    },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    {
+      title: <Header>{t('companies.city')}</Header>,
+      dataIndex: 'city',
+      render: (record: any) => {
+        return <Space>{record?.name}</Space>;
+      },
+    },
     { title: <Header>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
