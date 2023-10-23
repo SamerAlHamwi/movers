@@ -379,7 +379,6 @@ const REMDetails: React.FC = () => {
                         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                           <div>
                             <TableButton
-                              // severity="info"
                               style={{ display: 'inline-flex', border: 'none', background: 'none', margin: '0 -8px' }}
                             >
                               <PhoneOutlined />

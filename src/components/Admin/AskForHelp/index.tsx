@@ -13,10 +13,12 @@ import { getAllAsks, confirmAsks } from '../../../services/asks';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { Alert, Button, Col, Radio, RadioChangeEvent, Row, Space, Tag, message } from 'antd';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, PlusOutlined } from '@ant-design/icons';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { ActionModal } from '@app/components/modal/ActionModal';
+import { createRequest } from '@app/services/requests';
+import { useNavigate } from 'react-router-dom';
 
 type User = {
   id: number;
@@ -37,6 +39,7 @@ export const AskForHelp: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
+  const navigate = useNavigate();
 
   const [asksData, setAsksData] = useState<Notification[] | undefined>(undefined);
   const [page, setPage] = useState(1);
@@ -66,6 +69,21 @@ export const AskForHelp: React.FC = () => {
       enabled: asksData === undefined,
     },
   );
+
+  const addRequest = useMutation((data: any) =>
+    createRequest(data)
+      .then((data) => {
+        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
+        // setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  // useEffect(() => {
+  //   setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
+  // }, [addRequest.isLoading]);
 
   const handleConfirm = (id: any) => {
     confirm.mutateAsync(id);
@@ -273,6 +291,13 @@ export const AskForHelp: React.FC = () => {
                 >
                   <CheckOutlined />
                 </TableButton>
+
+                <TableButton
+                  severity="success"
+                  onClick={() => navigate(`/${record.user.id}/addRequest`, { replace: false })}
+                >
+                  <PlusOutlined />
+                </TableButton>
               </Space>
             )}
           </>
@@ -291,23 +316,37 @@ export const AskForHelp: React.FC = () => {
             : '1.25rem 1.25rem 0rem'
         }
       >
-        {modalStatus && (
-          <ActionModal
-            visible={modalStatus}
-            onCancel={() => setModalStatus(false)}
-            onOK={() => {
-              console.log(confirmAskId);
-
-              confirmAskId !== undefined && handleConfirm(confirmAskId);
+        <Row justify={'end'}>
+          {/* <Button
+            type="primary"
+            style={{
+              marginBottom: '.5rem',
+              width: 'auto',
+              height: 'auto',
             }}
-            width={isDesktop || isTablet ? '450px' : '350px'}
-            title={t('asks.confirmAskModalTitle')}
-            okText={t('common.confrim')}
-            cancelText={t('common.cancel')}
-            description={t('asks.confirmAskModalDescription')}
-            isLoading={confirm.isLoading}
-          />
-        )}
+            onClick={() => navigate('/addRequest', { replace: false })}
+          >
+            <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
+          </Button> */}
+
+          {modalStatus && (
+            <ActionModal
+              visible={modalStatus}
+              onCancel={() => setModalStatus(false)}
+              onOK={() => {
+                console.log(confirmAskId);
+
+                confirmAskId !== undefined && handleConfirm(confirmAskId);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('asks.confirmAskModalTitle')}
+              okText={t('common.confrim')}
+              cancelText={t('common.cancel')}
+              description={t('asks.confirmAskModalDescription')}
+              isLoading={confirm.isLoading}
+            />
+          )}
+        </Row>
 
         <Table
           dataSource={asksData}

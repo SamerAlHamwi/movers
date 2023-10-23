@@ -155,7 +155,7 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="addRequest"
+            path=":userId/addRequest"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddRequestsPage />
