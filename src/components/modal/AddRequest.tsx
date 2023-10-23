@@ -4,11 +4,11 @@ import { useTranslation } from 'react-i18next';
 import { message, Steps, Radio, Image, Row, Col, Space, Tree } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
-import { CreateButtonText, treeStyle, LableText } from '../GeneralStyles';
+import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
 import { Input } from '../Admin/Translations';
-import { FONT_SIZE } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
-import { BankOutlined, ClearOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+import { BankOutlined, ClearOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -29,8 +29,10 @@ import { Alert } from '../common/Alert/Alert';
 import { uploadAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
 import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -71,12 +73,16 @@ let requestData = {
       attachmentIds: [0],
     },
   ],
+
+  userId: '',
 };
 
 export const AddRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+  const { userId } = useParams();
+  const Navigate = useNavigate();
 
   const sourceLat = 25.15658048160557;
   const sourceLng = 55.34100848084654;
@@ -329,6 +335,7 @@ export const AddRequest: React.FC = () => {
             content: <Alert message={t('requests.addRequestSuccessMessage')} type={`success`} showIcon />,
           });
         requestServicesArray = [];
+        Navigate(`/AskForHelp`);
       })
       .catch((error) => {
         message.open({
@@ -444,6 +451,8 @@ export const AddRequest: React.FC = () => {
           attachmentIds: attachmentIds,
         },
       ],
+
+      userId: userId ? userId : '0',
     };
   };
 
@@ -478,6 +487,19 @@ export const AddRequest: React.FC = () => {
   return (
     <Card title={t('addRequest.addRequest')} padding="1.25rem 1.25rem 1.25rem">
       <Row justify={'end'} style={{ width: '100%' }}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+
         {current > 0 && (
           <Button
             style={{
@@ -694,7 +716,6 @@ export const AddRequest: React.FC = () => {
                         direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                       }
                 }
-                // style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
               >
                 <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
               </BaseButtonsForm.Item>
