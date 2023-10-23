@@ -13,7 +13,14 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import { DeleteOutlined, LeftOutlined, PlusOutlined, PlusSquareOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  LeftOutlined,
+  PhoneOutlined,
+  PlusOutlined,
+  PlusSquareOutlined,
+  QrcodeOutlined,
+} from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
 import { Partner } from '@app/interfaces/interfaces';
 import { ActionModal } from '@app/components/modal/ActionModal';
@@ -339,8 +346,10 @@ const REMDetails: React.FC = () => {
               {partnerData?.codes.map((code: any) => (
                 <Card
                   key={code?.id}
+                  style={{ marginBottom: '3rem' }}
                   title={
                     <>
+                      Code:
                       <p style={{ color: '#01509a', display: 'inline' }}> {code?.rsmCode} </p>/
                       <p style={{ color: '#30af5b', display: 'inline' }}> {code?.discountPercentage} </p>
                       <p style={{ display: 'inline', fontSize: 'smaller', fontWeight: '500' }}>
@@ -367,8 +376,16 @@ const REMDetails: React.FC = () => {
                     code?.phonesNumbers[0] != '' &&
                     code?.phonesNumbers.map((phoneNumber: string) => (
                       <Card.Grid key={phoneNumber} style={gridStyle}>
-                        <div>
-                          {phoneNumber}
+                        <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                          <div>
+                            <TableButton
+                              // severity="info"
+                              style={{ display: 'inline-flex', border: 'none', background: 'none', margin: '0 -8px' }}
+                            >
+                              <PhoneOutlined />
+                            </TableButton>
+                            {phoneNumber}
+                          </div>
                           {phoneNumber != '' && (
                             <Tooltip placement="top" title={t('partners.deleteNumber')}>
                               <TableButton
