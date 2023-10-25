@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, message, Popconfirm, Row, Space, Tooltip } from 'antd';
+import { Col, message, Popconfirm, Row, Space, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { CreatePoint, DeletePoint, UpdatePoint, ActivatePoint, DeActivatePoint } from '@app/services/points';
-import { getAllRejectReasons } from '@app/services/rejectReason';
+import {
+  getAllRejectReasons,
+  CreateRejectReason,
+  DeleteRejectReason,
+  UpdateRejectReason,
+  ActivateRejectReason,
+  DeActivateRejectReason,
+} from '@app/services/rejectReason';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText, LableText } from '../../GeneralStyles';
-import { Point } from '@app/interfaces/interfaces';
+import { RejectReason } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
@@ -38,16 +44,16 @@ export const RejectReasons: React.FC = () => {
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
-  const [dataSource, setDataSource] = useState<Point[] | undefined>(undefined);
+  const [dataSource, setDataSource] = useState<RejectReason[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<Point | undefined>(undefined);
-  const [deletemodaldata, setDeletemodaldata] = useState<Point | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<RejectReason | undefined>(undefined);
+  const [deletemodaldata, setDeletemodaldata] = useState<RejectReason | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [temp, setTemp] = useState<any>();
-  const [bundleStatus, setBundleStatus] = useState<boolean | undefined>(undefined);
+  const [reasonRejectStatus, setBundleStatus] = useState<boolean | undefined>(undefined);
   const [isActivate, setIsActivate] = useState(false);
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isHover, setIsHover] = useState(false);
@@ -65,10 +71,8 @@ export const RejectReasons: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
   };
 
-  console.log(bundleStatus);
-
   const { refetch, isRefetching } = useQuery(
-    ['Points', page, pageSize, refetchOnAdd, isDelete, isEdit, bundleStatus],
+    ['Points', page, pageSize, refetchOnAdd, isDelete, isEdit, reasonRejectStatus],
     () =>
       getAllRejectReasons(page, pageSize, searchString)
         .then((data) => {
@@ -99,7 +103,18 @@ export const RejectReasons: React.FC = () => {
     setRefetchOnAdd(false);
     setIsActivate(false);
     setIsDeActivate(false);
-  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString, bundleStatus, isActivate, isDeActivate]);
+  }, [
+    isDelete,
+    refetchOnAdd,
+    isEdit,
+    page,
+    pageSize,
+    language,
+    searchString,
+    reasonRejectStatus,
+    isActivate,
+    isDeActivate,
+  ]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -107,10 +122,10 @@ export const RejectReasons: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  const addPoint = useMutation((data: any) =>
-    CreatePoint(data)
+  const addRejectReason = useMutation((data: any) =>
+    CreateRejectReason(data)
       .then((data) => {
-        notificationController.success({ message: t('points.addPointSuccessMessage') });
+        notificationController.success({ message: t('rejectReasons.addRejectReasonSuccessMessage') });
         setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
@@ -119,16 +134,16 @@ export const RejectReasons: React.FC = () => {
   );
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addPoint.isLoading }));
-  }, [addPoint.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, add: addRejectReason.isLoading }));
+  }, [addRejectReason.isLoading]);
 
-  const deletePoint = useMutation((id: number) =>
-    DeletePoint(id)
+  const deleteRejectReason = useMutation((id: number) =>
+    DeleteRejectReason(id)
       .then((data) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('points.deletePointSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('rejectReasons.deleteRejectReasonSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -140,26 +155,26 @@ export const RejectReasons: React.FC = () => {
 
   const handleDelete = (id: any) => {
     if (page > 1 && dataSource?.length === 1) {
-      deletePoint.mutateAsync(id);
+      deleteRejectReason.mutateAsync(id);
       setPage(page - 1);
     } else {
-      deletePoint.mutateAsync(id);
+      deleteRejectReason.mutateAsync(id);
     }
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: deletePoint.isLoading }));
-  }, [deletePoint.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRejectReason.isLoading }));
+  }, [deleteRejectReason.isLoading]);
 
-  const editPoint = useMutation((data: Point) => UpdatePoint(data));
+  const editRejectReason = useMutation((data: RejectReason) => UpdateRejectReason(data));
 
-  const handleEdit = (data: Point, id: number) => {
-    editPoint
+  const handleEdit = (data: RejectReason, id: number) => {
+    editRejectReason
       .mutateAsync({ ...data, id })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`points.editPointSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`rejectReasons.editRejectReasonSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -168,14 +183,14 @@ export const RejectReasons: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editPoint.isLoading }));
-  }, [editPoint.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editRejectReason.isLoading }));
+  }, [editRejectReason.isLoading]);
 
   const activateBundle = useMutation((id: number) =>
-    ActivatePoint(id)
+    ActivateRejectReason(id)
       .then((data) => {
         message.open({
-          content: <Alert message={t('points.activatePartnerSuccessMessage')} type="success" showIcon />,
+          content: <Alert message={t('rejectReasons.activateRejectReasonSuccessMessage')} type="success" showIcon />,
         });
         setIsActivate(data.data?.success);
       })
@@ -185,10 +200,10 @@ export const RejectReasons: React.FC = () => {
   );
 
   const deActivateBundle = useMutation((id: number) =>
-    DeActivatePoint(id)
+    DeActivateRejectReason(id)
       .then((data) => {
         message.open({
-          content: <Alert message={t('points.deactivatePartnerSuccessMessage')} type="success" showIcon />,
+          content: <Alert message={t('rejectReasons.deactivateRejectReasonSuccessMessage')} type="success" showIcon />,
         });
         setIsDeActivate(data.data?.success);
       })
@@ -200,31 +215,17 @@ export const RejectReasons: React.FC = () => {
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>,
-      dataIndex: 'name',
-      render: (name: Point) => {
-        return <>{name}</>;
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.description')}</Header>,
+      dataIndex: 'description',
+      render: (description: RejectReason) => {
+        return <>{description}</>;
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('points.numberOfPoint')}</Header>,
-      dataIndex: 'numberOfPoint',
-      render: (numberOfPoint: Point) => {
-        return <>{numberOfPoint}</>;
-      },
-    },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('points.price')}</Header>,
-      dataIndex: 'price',
-      render: (price: Point) => {
-        return <>{price}</>;
-      },
-    },
-    {
-      title: <Header>{t('points.bundleStatus')}</Header>,
+      title: <Header>{t('rejectReasons.reasonRejectStatus')}</Header>,
       dataIndex: 'isActive',
-      render: (bundleStatus: boolean) => {
-        return <>{(bundleStatus = bundleStatus ? t('common.active') : t('common.inactive'))}</>;
+      render: (reasonRejectStatus: boolean) => {
+        return <>{(reasonRejectStatus = reasonRejectStatus ? t('common.active') : t('common.inactive'))}</>;
       },
       filterDropdown: () => {
         const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
@@ -247,7 +248,7 @@ export const RejectReasons: React.FC = () => {
             <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
               <Col>
                 <Button
-                  disabled={bundleStatus === undefined ? true : false}
+                  disabled={reasonRejectStatus === undefined ? true : false}
                   style={{ fontSize, fontWeight: '400' }}
                   size="small"
                   onClick={() => {
@@ -270,6 +271,25 @@ export const RejectReasons: React.FC = () => {
               </Col>
             </Row>
           </div>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('rejectReasons.possibilityPotentialClient')}</Header>,
+      dataIndex: 'possibilityPotentialClient',
+      render: (record: number) => {
+        return (
+          <>
+            {record == 1 ? (
+              <Tag color="#30af5b" style={{ padding: '4px' }}>
+                {t('rejectReasons.PotentialClient')}
+              </Tag>
+            ) : (
+              <Tag color="#ff5252" style={{ padding: '4px' }}>
+                {t('rejectReasons.NotPotentialClient')}
+              </Tag>
+            )}
+          </>
         );
       },
     },
@@ -308,7 +328,7 @@ export const RejectReasons: React.FC = () => {
                 <Tooltip placement="top" title={t('common.deactivate')}>
                   <Popconfirm
                     placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                    title={<LableText>{t('points.deactivatePartnerConfirm')}</LableText>}
+                    title={<LableText>{t('rejectReasons.deactivateRejectReasonConfirm')}</LableText>}
                     okButtonProps={{
                       onMouseOver: () => {
                         setIsHover(true);
@@ -354,7 +374,7 @@ export const RejectReasons: React.FC = () => {
                 <Tooltip placement="top" title={t('common.activate')}>
                   <Popconfirm
                     placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                    title={<LableText>{t('points.activatePartnerConfirm')}</LableText>}
+                    title={<LableText>{t('rejectReasons.activateRejectReasonConfirm')}</LableText>}
                     okButtonProps={{
                       onMouseOver: () => {
                         setIsHover(true);
@@ -407,7 +427,7 @@ export const RejectReasons: React.FC = () => {
   return (
     <>
       <Card
-        title={t('points.rejectReasonList')}
+        title={t('rejectReasons.rejectReasonList')}
         padding={
           dataSource === undefined || dataSource?.length === 0 || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -424,7 +444,7 @@ export const RejectReasons: React.FC = () => {
             }}
             onClick={() => handleModalOpen('add')}
           >
-            <CreateButtonText>{t('points.addRejectReason')}</CreateButtonText>
+            <CreateButtonText>{t('rejectReasons.addRejectReason')}</CreateButtonText>
           </Button>
 
           {/*    Add    */}
@@ -433,22 +453,22 @@ export const RejectReasons: React.FC = () => {
               visible={modalState.add}
               onCancel={() => handleModalClose('add')}
               onCreate={(info) => {
-                addPoint.mutateAsync(info);
+                addRejectReason.mutateAsync(info);
               }}
-              isLoading={addPoint.isLoading}
+              isLoading={addRejectReason.isLoading}
             />
           )}
 
           {/*    EDIT    */}
-          {modalState.edit && (
+          {/* {modalState.edit && (
             <EditPoint
               values={editmodaldata}
               visible={modalState.edit}
               onCancel={() => handleModalClose('edit')}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
-              isLoading={editPoint.isLoading}
+              isLoading={editRejectReason.isLoading}
             />
-          )}
+          )} */}
 
           {/*    Delete    */}
           {modalState.delete && (
@@ -459,12 +479,12 @@ export const RejectReasons: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('points.deletePointModalTitle')}
+              title={t('rejectReasons.deleteRejectReasonModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('points.deletePointModalDescription')}
+              description={t('rejectReasons.deleteRejectReasonModalDescription')}
               isDanger={true}
-              isLoading={deletePoint.isLoading}
+              isLoading={deleteRejectReason.isLoading}
             />
           )}
         </Row>

@@ -8,7 +8,7 @@ const RejectReasonsPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.RejectReasons')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.RejectReason')}</PageTitle>
       <RejectReasons />
     </>
   );

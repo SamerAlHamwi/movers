@@ -692,6 +692,27 @@
     "activatePartnerConfirm": "Activate Bundle?"
   },
 
+  "_comment25": "*********************************** rejectReasons ************************************************",
+  "rejectReasons": {
+    "rejectReasonList": "Reject Reasons List",
+    "possibilityPotentialClient": "Possibility Of A Potential Client",
+    "PotentialClient": "Yes",
+    "NotPotentialClient": "No",
+    "reasonRejectStatus": "Reason Reject Status",
+    "addRejectReason": "Add Reject Reason",
+    "addRejectReasonModalTitle": "Add Reject Reason",
+    "addRejectReasonSuccessMessage": "The Reject Reason has been Added Successfully",
+    "deleteRejectReasonSuccessMessage": "The Reject Reason has been Deleted Successfully",
+    "deleteRejectReasonModalTitle": "Delete Reject Reason",
+    "deleteRejectReasonModalDescription": "Are You Sure To Delete This Reject Reason?",
+    "editRejectReasonModalTitle": "Edit Reject Reason",
+    "editRejectReasonSuccessMessage": "The Reject Reason has been Edited Successfully",
+    "activateRejectReasonSuccessMessage": "Activate Reject Reason Successfully!",
+    "deactivateRejectReasonSuccessMessage": "Deactivate Reject Reason Successfully!",
+    "deactivateRejectReasonConfirm": "Deactivate  Reject Reason?",
+    "activateRejectReasonConfirm": "Activate Reject Reason?"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
