@@ -505,7 +505,12 @@
     "suitableBranches": "الأفرع المناسبة",
     "offers": "عروض الأسعار",
     "selected": "تحديد",
-    "confirmSuitableSuccessMessage": "تمت الموافقة على الشركات والأفرع بنجاح"
+    "confirmSuitableSuccessMessage": "تمت الموافقة على الشركات والأفرع بنجاح",
+    "searchForUserModalTitle": "بحث عن المستخدم في النظام",
+    "userNumber": "رقم موبايل المستخدم",
+    "PIN": "PIN رمز",
+    "only6Number": "يُسمح فقط ب 6 أرقام",
+    "searchForUser": "البحث عن المستخدم"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -719,7 +724,8 @@
     "offers": "عروض الأسعار",
     "OfferDeails": "تفاصيل العرض",
     "PartnersDetails": "تفاصيل الشريك",
-    "Points": "الباقات"
+    "Points": "الباقات",
+    "RejectReason": "أسباب الرفض"
   },
 
   "header": {

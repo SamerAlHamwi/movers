@@ -19,6 +19,10 @@ const getAllUsers = async (
   );
 };
 
+const getAllUsersForAddRequest = async (search: string) => {
+  return await httpApi.get(`${apiPrefix.users}/GetAll?UserType=2&KeyWord=${search}`);
+};
+
 const Delete = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.users}/Delete?Id=${id}`);
 };
@@ -39,4 +43,4 @@ const DeActivate = async (id: number) => {
   return await httpApi.post(`${apiPrefix.users}/DeActivate`, { id });
 };
 
-export { getAllUsers, Create, Update, Delete, Activate, DeActivate };
+export { getAllUsers, getAllUsersForAddRequest, Create, Update, Delete, Activate, DeActivate };

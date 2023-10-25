@@ -120,9 +120,9 @@
   "users": {
     "usersList": "Users List",
     "addUser": "Add User",
-    "userName": "User name",
+    "userName": "User Name",
     "userFullName": "Full Name",
-    "userStatus": "User status",
+    "userStatus": "User Status",
     "usertype": "User Type",
     "activateUserConfirm": "Activate User?",
     "deactivateUserConfirm": "Deactivate User?",
@@ -508,7 +508,12 @@
     "suitableBranches": "Suitable Branches",
     "offers": "Offers",
     "selected": "Select",
-    "confirmSuitableSuccessMessage": "The Companies and Branches have been Approved Successfully"
+    "confirmSuitableSuccessMessage": "The Companies and Branches have been Approved Successfully",
+    "searchForUserModalTitle": "Search For User In The System",
+    "userNumber": "User Phone Number",
+    "PIN": "PIN Code",
+    "only6Number": "only 6 Numbers Are Allowed",
+    "searchForUser": "Search For User"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -723,7 +728,8 @@
     "offers": "Offers",
     "OfferDeails": "Offer Details",
     "PartnersDetails": "REM Details",
-    "Points": "Bundles"
+    "Points": "Bundles",
+    "RejectReason": "Reject Reasons"
   },
 
   "header": {

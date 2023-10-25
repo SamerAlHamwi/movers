@@ -8,12 +8,12 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { getAllRequests, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
+import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { Header } from '../../GeneralStyles';
+import { Header, CreateButtonText } from '../../GeneralStyles';
 import { RequestModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
@@ -21,15 +21,17 @@ import Tag from 'antd/es/tag';
 import { useNavigate } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
+import { SearchForUser } from '@app/components/modal/SearchForUser';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
 
   const [modalState, setModalState] = useState({
+    searchForUser: false,
     edit: false,
     delete: false,
     approve: false,
@@ -97,6 +99,21 @@ export const Requests: React.FC = () => {
       setPage(1);
     }
   }, [page, dataSource]);
+
+  const addRequest = useMutation((data: any) =>
+    createRequest(data)
+      .then((data) => {
+        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
+  }, [addRequest.isLoading]);
 
   const deleteRequest = useMutation((id: number) =>
     DeleteRequest(id)
@@ -258,7 +275,7 @@ export const Requests: React.FC = () => {
             style={{ height: '2.4rem' }}
             severity="info"
             onClick={() => {
-              navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
+              Navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
             }}
           >
             <div
@@ -285,7 +302,7 @@ export const Requests: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/offers`, { state: record.name });
+                Navigate(`${record.id}/offers`, { state: record.name });
               }}
             >
               <div
@@ -312,7 +329,7 @@ export const Requests: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/details`, { state: record.name });
+                Navigate(`${record.id}/details`, { state: record.name });
               }}
             >
               <div
@@ -428,6 +445,35 @@ export const Requests: React.FC = () => {
         }
       >
         <Row justify={'end'}>
+          <Button
+            type="primary"
+            style={{
+              marginBottom: '.5rem',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={
+              () => handleModalOpen('searchForUser')
+              // Navigate('/addRequest', { replace: false })
+            }
+          >
+            <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
+          </Button>
+
+          {/*    Search For User Name    */}
+          {modalState.searchForUser && (
+            <SearchForUser
+              visible={modalState.searchForUser}
+              onCancel={() => handleModalClose('searchForUser')}
+              onCreate={(info) => {
+                // const displayName = info.name;
+                // const values = { ...info, displayName };
+                // addRole.mutateAsync(values);
+              }}
+              // isLoading={addRole.isLoading}
+            />
+          )}
+
           {/*    EDIT    */}
           {modalState.edit && (
             <EditRequest
