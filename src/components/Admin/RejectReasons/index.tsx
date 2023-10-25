@@ -25,7 +25,7 @@ import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { AddRejectReason } from '@app/components/modal/AddRejectReason';
-import { EditPoint } from '@app/components/modal/EditPoint';
+import { EditRejectReason } from '@app/components/modal/EditRejectReason';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { defineColorBySeverity } from '@app/utils/utils';
@@ -460,15 +460,15 @@ export const RejectReasons: React.FC = () => {
           )}
 
           {/*    EDIT    */}
-          {/* {modalState.edit && (
-            <EditPoint
+          {modalState.edit && (
+            <EditRejectReason
               values={editmodaldata}
               visible={modalState.edit}
               onCancel={() => handleModalClose('edit')}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
               isLoading={editRejectReason.isLoading}
             />
-          )} */}
+          )}
 
           {/*    Delete    */}
           {modalState.delete && (

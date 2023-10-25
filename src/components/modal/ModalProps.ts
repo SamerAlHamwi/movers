@@ -125,6 +125,11 @@ export interface EditPointProps extends ModalProps {
   values: Point | undefined;
   onEdit: (data: Point) => void;
 }
+
+export interface EditRejectReasonProps extends ModalProps {
+  values: RejectReason | undefined;
+  onEdit: (data: RejectReason) => void;
+}
 export interface EditBrokerProps extends ModalProps {
   values: Broker | undefined;
   onEdit: (data: Broker) => void;
