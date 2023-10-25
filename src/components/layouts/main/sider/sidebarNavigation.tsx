@@ -24,6 +24,7 @@ import {
   FileProtectOutlined,
   FileUnknownOutlined,
   DollarOutlined,
+  StopOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -122,6 +123,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     key: 'Brokers',
     url: `/Brokers`,
     icon: <TeamOutlined />,
+  },
+  {
+    title: 'sidebarNavigation.RejectReason',
+    key: 'RejectReason',
+    url: `/RejectReason`,
+    icon: <StopOutlined />,
   },
   {
     title: 'sidebarNavigation.ContactUs',

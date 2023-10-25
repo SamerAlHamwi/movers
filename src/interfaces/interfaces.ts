@@ -306,6 +306,12 @@ export interface Point {
   translations: Translation[];
 }
 
+export interface RejectReason {
+  id: number;
+  possibilityPotentialClient: number;
+  translations: Translation[];
+}
+
 export interface Code {
   rsmCode: string;
   discountPercentage: number;

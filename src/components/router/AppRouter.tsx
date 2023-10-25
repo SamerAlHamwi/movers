@@ -48,7 +48,8 @@ const BranchesPage = lazy(() => import('@app/pages/CompaniesPages/BranchPage'));
 const BranchDetailPage = lazy(() => import('@app/pages/CompaniesPages/BranchDetailsPage'));
 const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage'));
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
-const Brokerspage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
+const BrokerspPage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
+const RejectReasonsPage = lazy(() => import('@app/pages/RejectReason/RejectReasonsPage'));
 const Partnerspage = lazy(() => import('@app/pages/REMPages/PartnersPage'));
 const REMDetailPage = lazy(() => import('@app/pages/REMPages/REMDetailsPage'));
 const AskForHelpPage = lazy(() => import('@app/pages/OtherPages/HelpRequestsPage'));
@@ -91,7 +92,8 @@ const BranchPage = withLoading(BranchesPage);
 const BranchDetailsPage = withLoading(BranchDetailPage);
 const AddBranchesPage = withLoading(AddBranchPage);
 const EditBranchesPage = withLoading(EditBranchPage);
-const BrokerPage = withLoading(Brokerspage);
+const BrokerPage = withLoading(BrokerspPage);
+const RejectReasonPage = withLoading(RejectReasonsPage);
 const PartnerPage = withLoading(Partnerspage);
 const REMDetailsPage = withLoading(REMDetailPage);
 const AskForHelpsPage = withLoading(AskForHelpPage);
@@ -314,6 +316,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <BrokerPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="RejectReason"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <RejectReasonPage />
               </PrivateRoute>
             }
           />

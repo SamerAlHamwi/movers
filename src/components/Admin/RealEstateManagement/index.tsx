@@ -323,6 +323,7 @@ export const Partners: React.FC = () => {
               title={t('partners.deletePartnerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
+              description={t('partners.deletePartnerModalDescription')}
               isDanger={true}
               isLoading={deletePartner.isLoading}
             />

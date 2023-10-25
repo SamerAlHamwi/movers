@@ -120,9 +120,9 @@
   "users": {
     "usersList": "Users List",
     "addUser": "Add User",
-    "userName": "User name",
+    "userName": "User Name",
     "userFullName": "Full Name",
-    "userStatus": "User status",
+    "userStatus": "User Status",
     "usertype": "User Type",
     "activateUserConfirm": "Activate User?",
     "deactivateUserConfirm": "Deactivate User?",
@@ -347,6 +347,7 @@
     "addBrokerSuccessMessage": "The Broker has been Added Successfully",
     "deleteBrokerModalTitle": "Delete Broker",
     "deleteBrokerModalDescription": "Are You Sure To Delete This Broker?",
+    "deleteBrokerSuccessMessage": "The Broker has been Deleted Successfully",
     "editBrokerModalTitle": "Edit Broker",
     "editBrokerSuccessMessage": "The Broker has been Edited Successfully",
     "tooManyNumbers": "The code must consist of a maximum of 8 numbers"
@@ -359,15 +360,16 @@
     "discountPercentage": "Discount Percentage",
     "addPartner": "Add REM",
     "addPartnerModalTitle": "Add Mover",
-    "addPartnerSuccessMessage": "The Partner has been Added Successfully",
+    "addPartnerSuccessMessage": "The REM has been Added Successfully",
     "deletePartnerModalTitle": "Delete REM",
-    "deletePartnerModalDescription": "Are You Sure To Delete This Partner?",
+    "deletePartnerModalDescription": "Are You Sure To Delete This REM?",
+    "deletePartnerSuccessMessage": "The REM has been Deleted Successfully",
     "editPartnerModalTitle": "Edit REM",
-    "editPartnerSuccessMessage": "The Partner has been Edited Successfully",
-    "partnerInfo": "Partner Informations",
+    "editPartnerSuccessMessage": "The REM has been Edited Successfully",
+    "partnerInfo": "REM Informations",
     "generalInfo": "General Informations",
     "companyName": "Company Name",
-    "citiesPartner": "Cities Partner",
+    "citiesPartner": "Cities REM",
     "codes": "Codes",
     "addPhoneNumber": "Add Phone Number",
     "addCodeModalTitle": "Add Code",
@@ -379,7 +381,7 @@
     "deleteNumberModalTitle": "Delete Phone Number",
     "deleteNumberModalDescription": "Are You Sure To Delete This Phone Number From The Code?",
     "deleteNumberSuccessMessage": "The Phone Number has been Deleted From Code Successfully",
-    "thereAreNoCodesForThisPartnerYet": "There Are No Codes For This Partner Yet",
+    "thereAreNoCodesForThisPartnerYet": "There Are No Codes For This REM Yet",
     "addNumberModalTitle": "Add Phone Number For Code",
     "addNumberSuccessMessage": "The Phone Number For Code has been Added Successfully",
     "deleteNumber": "Delete Phone Number",
@@ -508,7 +510,12 @@
     "suitableBranches": "Suitable Branches",
     "offers": "Offers",
     "selected": "Select",
-    "confirmSuitableSuccessMessage": "The Companies and Branches have been Approved Successfully"
+    "confirmSuitableSuccessMessage": "The Companies and Branches have been Approved Successfully",
+    "searchForUserModalTitle": "Search For User In The System",
+    "userNumber": "User Phone Number",
+    "PIN": "PIN Code",
+    "only6Number": "only 6 Numbers Are Allowed",
+    "searchForUser": "Search For User"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -685,6 +692,27 @@
     "activatePartnerConfirm": "Activate Bundle?"
   },
 
+  "_comment25": "*********************************** rejectReasons ************************************************",
+  "rejectReasons": {
+    "rejectReasonList": "Reject Reasons List",
+    "possibilityPotentialClient": "Possibility Of A Potential Client",
+    "PotentialClient": "Yes",
+    "NotPotentialClient": "No",
+    "reasonRejectStatus": "Reason Reject Status",
+    "addRejectReason": "Add Reject Reason",
+    "addRejectReasonModalTitle": "Add Reject Reason",
+    "addRejectReasonSuccessMessage": "The Reject Reason has been Added Successfully",
+    "deleteRejectReasonSuccessMessage": "The Reject Reason has been Deleted Successfully",
+    "deleteRejectReasonModalTitle": "Delete Reject Reason",
+    "deleteRejectReasonModalDescription": "Are You Sure To Delete This Reject Reason?",
+    "editRejectReasonModalTitle": "Edit Reject Reason",
+    "editRejectReasonSuccessMessage": "The Reject Reason has been Edited Successfully",
+    "activateRejectReasonSuccessMessage": "Activate Reject Reason Successfully!",
+    "deactivateRejectReasonSuccessMessage": "Deactivate Reject Reason Successfully!",
+    "deactivateRejectReasonConfirm": "Deactivate  Reject Reason?",
+    "activateRejectReasonConfirm": "Activate Reject Reason?"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -692,7 +720,7 @@
     "Term": "Terms & Conditions",
     "Users": "Users",
     "Managers": "Managers",
-    "Partners": "Real State Management",
+    "Partners": "Real Estate Management",
     "Brokers": "Brokers",
     "Companies": "Companies",
     "CompanieDetails": "Company Details",
@@ -723,7 +751,8 @@
     "offers": "Offers",
     "OfferDeails": "Offer Details",
     "PartnersDetails": "REM Details",
-    "Points": "Bundles"
+    "Points": "Bundles",
+    "RejectReason": "Reject Reasons"
   },
 
   "header": {

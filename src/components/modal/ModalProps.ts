@@ -16,6 +16,7 @@ import {
   faqModel,
   Code,
   Point,
+  RejectReason,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -39,6 +40,10 @@ export interface CreatePartnerModalProps extends ModalProps {
 
 export interface CreateNumberModalProps extends ModalProps {
   onCreate: (info: string) => void;
+}
+
+export interface CreateRejectReasonModalProps extends ModalProps {
+  onCreate: (info: RejectReason) => void;
 }
 
 export interface CreatePointModalProps extends ModalProps {
@@ -119,6 +124,11 @@ export interface EditPartnerProps extends ModalProps {
 export interface EditPointProps extends ModalProps {
   values: Point | undefined;
   onEdit: (data: Point) => void;
+}
+
+export interface EditRejectReasonProps extends ModalProps {
+  values: RejectReason | undefined;
+  onEdit: (data: RejectReason) => void;
 }
 export interface EditBrokerProps extends ModalProps {
   values: Broker | undefined;
