@@ -24,7 +24,7 @@ import { RejectReason } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
-import { AddPoint } from '@app/components/modal/AddPoint';
+import { AddRejectReason } from '@app/components/modal/AddRejectReason';
 import { EditPoint } from '@app/components/modal/EditPoint';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
@@ -222,6 +222,25 @@ export const RejectReasons: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('rejectReasons.possibilityPotentialClient')}</Header>,
+      dataIndex: 'possibilityPotentialClient',
+      render: (record: number) => {
+        return (
+          <>
+            {record == 1 ? (
+              <Tag color="#30af5b" style={{ padding: '4px' }}>
+                {t('rejectReasons.PotentialClient')}
+              </Tag>
+            ) : (
+              <Tag color="#ff5252" style={{ padding: '4px' }}>
+                {t('rejectReasons.NotPotentialClient')}
+              </Tag>
+            )}
+          </>
+        );
+      },
+    },
+    {
       title: <Header>{t('rejectReasons.reasonRejectStatus')}</Header>,
       dataIndex: 'isActive',
       render: (reasonRejectStatus: boolean) => {
@@ -271,25 +290,6 @@ export const RejectReasons: React.FC = () => {
               </Col>
             </Row>
           </div>
-        );
-      },
-    },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('rejectReasons.possibilityPotentialClient')}</Header>,
-      dataIndex: 'possibilityPotentialClient',
-      render: (record: number) => {
-        return (
-          <>
-            {record == 1 ? (
-              <Tag color="#30af5b" style={{ padding: '4px' }}>
-                {t('rejectReasons.PotentialClient')}
-              </Tag>
-            ) : (
-              <Tag color="#ff5252" style={{ padding: '4px' }}>
-                {t('rejectReasons.NotPotentialClient')}
-              </Tag>
-            )}
-          </>
         );
       },
     },
@@ -449,7 +449,7 @@ export const RejectReasons: React.FC = () => {
 
           {/*    Add    */}
           {modalState.add && (
-            <AddPoint
+            <AddRejectReason
               visible={modalState.add}
               onCancel={() => handleModalClose('add')}
               onCreate={(info) => {
