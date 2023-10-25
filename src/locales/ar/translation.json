@@ -348,6 +348,7 @@
     "addBrokerSuccessMessage": "تم إضافة الوسيط بنجاح",
     "deleteBrokerModalTitle": "حذف الوسيط",
     "deleteBrokerModalDescription": "هل أنت متأكد من حذف هذا الوسيط؟",
+    "deleteBrokerSuccessMessage": "تم حذف لبوسيط بنجاح",
     "editBrokerModalTitle": "تعديل الوسيط",
     "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح",
     "tooManyNumbers": "الكود يجب أن يتألف من 8 خانات على الأكثر"
@@ -363,6 +364,7 @@
     "addPartnerSuccessMessage": "تمت إضافة الشريك بنجاح",
     "deletePartnerModalTitle": "حذف الشريك",
     "deletePartnerModalDescription": "هل أنت متأكد من حذف هذا الشريك؟",
+    "deletePartnerSuccessMessage": "تم حذف الشريك بنجاح",
     "editPartnerModalTitle": "تعديل معلومات الشريك",
     "editPartnerSuccessMessage": "تم تعديل معلومات الشريك بنجاح",
     "partnerInfo": "معلومات الشريك",

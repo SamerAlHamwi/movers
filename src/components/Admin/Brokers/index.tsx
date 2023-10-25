@@ -264,9 +264,10 @@ export const Brokers: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('brokers.deleteBrookerModalTitle')}
+              title={t('brokers.deleteBrokerModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
+              description={t('brokers.deleteBrokerModalDescription')}
               isDanger={true}
               isLoading={deleteBroker.isLoading}
             />
