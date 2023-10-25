@@ -25,4 +25,5 @@ export default {
   frequentlyQuestions: '/api/services/app/FrequentlyQuestion',
   offers: '/api/services/app/Offer',
   points: '/api/services/app/Point',
+  rejectReason: '/api/services/app/RejectReason',
 };
