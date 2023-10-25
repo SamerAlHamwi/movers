@@ -3,8 +3,6 @@ import { Point } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllPoints = async (page: number, pageSize: number, search: string, isActive?: boolean) => {
-  console.log(isActive);
-
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.points}/GetAll?${

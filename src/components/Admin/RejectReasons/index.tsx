@@ -53,7 +53,7 @@ export const RejectReasons: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [temp, setTemp] = useState<any>();
-  const [reasonRejectStatus, setBundleStatus] = useState<boolean | undefined>(undefined);
+  const [reasonRejectStatus, setRejectReasonStatus] = useState<boolean | undefined>(undefined);
   const [isActivate, setIsActivate] = useState(false);
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isHover, setIsHover] = useState(false);
@@ -72,9 +72,9 @@ export const RejectReasons: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Points', page, pageSize, refetchOnAdd, isDelete, isEdit, reasonRejectStatus],
+    ['RejectReason', page, pageSize, refetchOnAdd, isDelete, isEdit, reasonRejectStatus],
     () =>
-      getAllRejectReasons(page, pageSize, searchString)
+      getAllRejectReasons(page, pageSize, searchString, reasonRejectStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -253,7 +253,7 @@ export const RejectReasons: React.FC = () => {
                   size="small"
                   onClick={() => {
                     setTemp(undefined);
-                    setBundleStatus(undefined);
+                    setRejectReasonStatus(undefined);
                   }}
                 >
                   {t('common.reset')}
@@ -264,7 +264,7 @@ export const RejectReasons: React.FC = () => {
                   size="small"
                   type="primary"
                   style={{ fontSize, fontWeight: '400' }}
-                  onClick={() => setBundleStatus(temp === false ? 'false' : temp)}
+                  onClick={() => setRejectReasonStatus(temp === false ? 'false' : temp)}
                 >
                   {t('common.apply')}
                 </Button>
