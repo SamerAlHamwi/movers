@@ -21,16 +21,17 @@ import Tag from 'antd/es/tag';
 import { useNavigate } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
+import { SearchForUser } from '@app/components/modal/SearchForUser';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
 
   const [modalState, setModalState] = useState({
-    // add: false,
+    searchForUser: false,
     edit: false,
     delete: false,
     approve: false,
@@ -99,20 +100,20 @@ export const Requests: React.FC = () => {
     }
   }, [page, dataSource]);
 
-  // const addRequest = useMutation((data: any) =>
-  //   createRequest(data)
-  //     .then((data) => {
-  //       notificationController.success({ message: t('requests.addRequestSuccessMessage') });
-  //       setRefetchOnAdd(data.data?.success);
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error.message || error.error?.message });
-  //     }),
-  // );
+  const addRequest = useMutation((data: any) =>
+    createRequest(data)
+      .then((data) => {
+        notificationController.success({ message: t('requests.addRequestSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
 
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
-  // }, [addRequest.isLoading]);
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, add: addRequest.isLoading }));
+  }, [addRequest.isLoading]);
 
   const deleteRequest = useMutation((id: number) =>
     DeleteRequest(id)
@@ -274,7 +275,7 @@ export const Requests: React.FC = () => {
             style={{ height: '2.4rem' }}
             severity="info"
             onClick={() => {
-              navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
+              Navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
             }}
           >
             <div
@@ -301,7 +302,7 @@ export const Requests: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/offers`, { state: record.name });
+                Navigate(`${record.id}/offers`, { state: record.name });
               }}
             >
               <div
@@ -328,7 +329,7 @@ export const Requests: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/details`, { state: record.name });
+                Navigate(`${record.id}/details`, { state: record.name });
               }}
             >
               <div
@@ -444,17 +445,34 @@ export const Requests: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          {/* <Button
+          <Button
             type="primary"
             style={{
               marginBottom: '.5rem',
               width: 'auto',
               height: 'auto',
             }}
-            onClick={() => navigate('/addRequest', { replace: false })}
+            onClick={
+              () => handleModalOpen('searchForUser')
+              // Navigate('/addRequest', { replace: false })
+            }
           >
             <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
-          </Button> */}
+          </Button>
+
+          {/*    Search For User Name    */}
+          {modalState.searchForUser && (
+            <SearchForUser
+              visible={modalState.searchForUser}
+              onCancel={() => handleModalClose('searchForUser')}
+              onCreate={(info) => {
+                // const displayName = info.name;
+                // const values = { ...info, displayName };
+                // addRole.mutateAsync(values);
+              }}
+              // isLoading={addRole.isLoading}
+            />
+          )}
 
           {/*    EDIT    */}
           {modalState.edit && (

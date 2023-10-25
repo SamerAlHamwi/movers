@@ -348,6 +348,7 @@
     "addBrokerSuccessMessage": "تم إضافة الوسيط بنجاح",
     "deleteBrokerModalTitle": "حذف الوسيط",
     "deleteBrokerModalDescription": "هل أنت متأكد من حذف هذا الوسيط؟",
+    "deleteBrokerSuccessMessage": "تم حذف لبوسيط بنجاح",
     "editBrokerModalTitle": "تعديل الوسيط",
     "editBrokerSuccessMessage": "تم تعديل معلومات الوسيط بنجاح",
     "tooManyNumbers": "الكود يجب أن يتألف من 8 خانات على الأكثر"
@@ -363,6 +364,7 @@
     "addPartnerSuccessMessage": "تمت إضافة الشريك بنجاح",
     "deletePartnerModalTitle": "حذف الشريك",
     "deletePartnerModalDescription": "هل أنت متأكد من حذف هذا الشريك؟",
+    "deletePartnerSuccessMessage": "تم حذف الشريك بنجاح",
     "editPartnerModalTitle": "تعديل معلومات الشريك",
     "editPartnerSuccessMessage": "تم تعديل معلومات الشريك بنجاح",
     "partnerInfo": "معلومات الشريك",
@@ -505,7 +507,12 @@
     "suitableBranches": "الأفرع المناسبة",
     "offers": "عروض الأسعار",
     "selected": "تحديد",
-    "confirmSuitableSuccessMessage": "تمت الموافقة على الشركات والأفرع بنجاح"
+    "confirmSuitableSuccessMessage": "تمت الموافقة على الشركات والأفرع بنجاح",
+    "searchForUserModalTitle": "بحث عن المستخدم في النظام",
+    "userNumber": "رقم موبايل المستخدم",
+    "PIN": "PIN رمز",
+    "only6Number": "يُسمح فقط ب 6 أرقام",
+    "searchForUser": "البحث عن المستخدم"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -682,6 +689,27 @@
     "activatePartnerConfirm": "تفعيل حالة الباقة؟"
   },
 
+  "_comment25": "*********************************** rejectReasons ************************************************",
+  "rejectReasons": {
+    "rejectReasonList": "قائمة أسباب الرفض",
+    "possibilityPotentialClient": "إحتمالية العميل المحتمل",
+    "PotentialClient": "نعم",
+    "NotPotentialClient": "لا",
+    "reasonRejectStatus": "حالة سبب الرفض",
+    "addRejectReason": "إضافة سبب رفض",
+    "addRejectReasonModalTitle": "إضافة سبب رفض",
+    "addRejectReasonSuccessMessage": "تمت إضافة سبب الرفض بنجاح",
+    "deleteRejectReasonSuccessMessage": "تم حذف سبب الرفض بنجاح",
+    "deleteRejectReasonModalTitle": "حذف سبب الرفض",
+    "deleteRejectReasonModalDescription": "هل أنت متأكد من حذف سبب الرفض هذا",
+    "editRejectReasonModalTitle": "تعديل معلومات سبب الرفض",
+    "editRejectReasonSuccessMessage": "تم تعديل معلومات سبب الرفض بنجاح",
+    "activateRejectReasonSuccessMessage": "تم تفعيل سبب الرفض بنجاح",
+    "deactivateRejectReasonSuccessMessage": "تم إلغاء تفعيل سبب الرفض بنجاح",
+    "deactivateRejectReasonConfirm": "إلغاء تفعيل حالة سبب الرفض؟",
+    "activateRejectReasonConfirm": "تفعيل حالة سبب الرفض؟"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -719,7 +747,8 @@
     "offers": "عروض الأسعار",
     "OfferDeails": "تفاصيل العرض",
     "PartnersDetails": "تفاصيل الشريك",
-    "Points": "الباقات"
+    "Points": "الباقات",
+    "RejectReason": "أسباب الرفض"
   },
 
   "header": {
