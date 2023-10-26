@@ -565,7 +565,7 @@
   "_comment19": "*********************************** Notifications ************************************************",
   "notifications": {
     "notificationsList": "قائمة الإشعارات",
-    "notices": "الإشعارات",
+    "Notifications": "الإشعارات",
     "send": "إرسال إشعار",
     "sendp": "إضافة",
     "englishdescription": "التوصيف بالإنكليزية",

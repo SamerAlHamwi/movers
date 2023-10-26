@@ -450,7 +450,7 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="notices"
+            path="Notifications"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <NotificationsPage />
