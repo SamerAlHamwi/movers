@@ -155,7 +155,7 @@ export const Brokers: React.FC = () => {
   }, [editBroker.isLoading]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
@@ -165,20 +165,20 @@ export const Brokers: React.FC = () => {
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
     {
-      title: <Header>{t('companies.city')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.city')}</Header>,
       dataIndex: 'city',
       render: (record: any) => {
         return <Space>{record?.name}</Space>;
       },
     },
-    { title: <Header>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.code')}</Header>, dataIndex: 'mediatorCode' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
       dataIndex: 'commissionPercentage',
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.balance')}</Header>, dataIndex: 'mediatorProfit' },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: Broker) => {
         return (

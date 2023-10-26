@@ -163,9 +163,9 @@ export const SuitableCompanies: React.FC = () => {
         <Checkbox onChange={() => handleCheckboxChangeForCompanies(id)} checked={selectedCompanies.includes(id)} />
       ),
     },
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('common.image')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.image')}</Header>,
       dataIndex: ['companyProfile', 'url'],
       render: (url: string, record: any) => {
         return (
@@ -181,16 +181,16 @@ export const SuitableCompanies: React.FC = () => {
         );
       },
     },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
-    { title: <Header>{t('common.bio')}</Header>, dataIndex: 'bio' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     {
-      title: <Header>{t('requests.services')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
         <Space style={{ display: 'grid' }}>
@@ -235,17 +235,17 @@ export const SuitableCompanies: React.FC = () => {
         <Checkbox onChange={() => handleCheckboxChangeForBranches(id)} checked={selectedBranches.includes(id)} />
       ),
     },
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('common.address')}</Header>, dataIndex: 'address' },
-    { title: <Header>{t('common.bio')}</Header>, dataIndex: 'bio' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     {
-      title: <Header>{t('requests.services')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
       dataIndex: 'services',
       render: (record: any) => (
         <Space style={{ display: 'grid' }}>

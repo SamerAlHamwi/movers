@@ -338,7 +338,9 @@ export const PrivacyPolicy: React.FC = () => {
               : [
                   ...notificationsColumns,
                   {
-                    title: <Header>{t('notifications.destination.destination')}</Header>,
+                    title: (
+                      <Header style={{ wordBreak: 'normal' }}>{t('notifications.destination.destination')}</Header>
+                    ),
                     dataIndex: 'destination',
                     width: '15%',
                     render: (destination: number) => {

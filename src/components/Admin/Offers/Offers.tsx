@@ -110,10 +110,10 @@ export const Offers: React.FC = () => {
         <Checkbox onChange={() => handleCheckboxChangeForSendToUser(id)} checked={selectedOffers.includes(id)} />
       ),
     },
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('offers.price')}</Header>, dataIndex: 'price' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('offers.price')}</Header>, dataIndex: 'price' },
     {
-      title: <Header>{t('offers.provider')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.provider')}</Header>,
       dataIndex: 'provider',
       render: (index: number, record: any) => {
         return (
@@ -159,36 +159,6 @@ export const Offers: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header>{t('requests.status')}</Header>,
-    //   dataIndex: 'status',
-    //   render: (index: number, record: RequestModel) => {
-    //     return (
-    //       <>
-    //         {record.statues === 1 && (
-    //           <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-    //             {t('requests.checking')}
-    //           </Tag>
-    //         )}
-    //         {record.statues === 2 && (
-    //           <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
-    //             {t('requests.approved')}
-    //           </Tag>
-    //         )}
-    //         {record.statues === 3 && (
-    //           <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
-    //             {t('requests.rejected')}
-    //           </Tag>
-    //         )}
-    //         {record.statues === 4 && (
-    //           <Tag key={record?.id} color="#d98b3d" style={{ padding: '4px' }}>
-    //             {t('offers.selectedByUser')}
-    //           </Tag>
-    //         )}
-    //       </>
-    //     );
-    //   },
-    // },
   ];
 
   return (

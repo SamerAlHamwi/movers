@@ -161,23 +161,23 @@ export const FrequentlyQuestions: React.FC = () => {
   }, [editFAQ.isLoading]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header>{t('faq.question')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('faq.question')}</Header>,
       dataIndex: 'question',
       render: (question: string) => {
         return <>{question}</>;
       },
     },
     {
-      title: <Header>{t('faq.answer')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('faq.answer')}</Header>,
       dataIndex: 'answer',
       render: (answer: string) => {
         return <>{answer}</>;
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: faqModel) => {
         return (

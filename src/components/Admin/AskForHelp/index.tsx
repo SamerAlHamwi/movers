@@ -139,7 +139,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.emailAddress')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.emailAddress')}</Header>,
       dataIndex: 'user',
       render: (record: User['user']) => (
         <div
@@ -156,7 +156,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.creationTime')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.creationTime')}</Header>,
       dataIndex: 'user',
       render: (record: User['user']) => (
         <div
@@ -173,7 +173,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.message')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.message')}</Header>,
       dataIndex: 'message',
       render: (record: User) => (
         <div
@@ -190,7 +190,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.status')}</Header>,
       dataIndex: 'statues',
       render: (status: User['statues']) => {
         return (

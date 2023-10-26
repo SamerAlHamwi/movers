@@ -630,16 +630,16 @@
   "_comment22": "*********************************** FAQ ************************************************",
   "faq": {
     "faqList": "FAQ List",
-    "addFAQ": "Add Frequently asked question",
+    "addFAQ": "Add Frequently Asked Question",
     "question": "Question",
     "answer": "Answer",
-    "addFAQModalTitle": "Add Frequently asked question",
-    "addFAQSuccessMessage": "The Frequently asked question has been Added Successfully",
-    "editFAQModalTitle": "Edit Frequently asked question",
-    "editFAQSuccessMessage": "The Frequently asked question has been Edited Successfully",
-    "deleteFAQModalTitle": "Delete Frequently asked question",
-    "deleteFAQSuccessMessage": "The Frequently asked question has been Deleted Successfully",
-    "deleteFAQModalDescription": "Are You Sure To Delete This Frequently asked question?",
+    "addFAQModalTitle": "Add Frequently Asked Question",
+    "addFAQSuccessMessage": "The Frequently Asked Question has been Added Successfully",
+    "editFAQModalTitle": "Edit Frequently Asked Question",
+    "editFAQSuccessMessage": "The Frequently Asked Question has been Edited Successfully",
+    "deleteFAQModalTitle": "Delete Frequently Asked Question",
+    "deleteFAQSuccessMessage": "The Frequently Asked Question has been Deleted Successfully",
+    "deleteFAQModalDescription": "Are You Sure To Delete This Frequently Asked Question?",
     "question_ar": "Arabic Question",
     "question_en": "English Question",
     "answer_ar": "Arabic Answer",
@@ -752,7 +752,8 @@
     "OfferDeails": "Offer Details",
     "PartnersDetails": "REM Details",
     "Points": "Bundles",
-    "RejectReason": "Reject Reasons"
+    "RejectReason": "Reject Reasons",
+    "Drafts": "Drafts"
   },
 
   "header": {

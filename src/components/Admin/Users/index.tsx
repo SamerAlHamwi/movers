@@ -161,19 +161,19 @@ export const User: React.FC = () => {
   `;
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('users.userFullName')}</Header>, dataIndex: 'fullName' },
-    { title: <Header>{t('users.userName')}</Header>, dataIndex: 'userName' },
-    { title: <Header>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userFullName')}</Header>, dataIndex: 'fullName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userName')}</Header>, dataIndex: 'userName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
     {
-      title: <Header>{t('common.creationTime')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.creationTime')}</Header>,
       dataIndex: 'creationTime',
       render: (creationTime: string) => {
         return <>{Dates.format(creationTime, 'DD MMMM YYYY, h:mm a')}</>;
       },
     },
     {
-      title: <Header>{t('users.userStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('users.userStatus')}</Header>,
       dataIndex: 'isActive',
       render: (userStatus: boolean) => {
         return <>{(userStatus = userStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -226,7 +226,7 @@ export const User: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('users.usertype')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('users.usertype')}</Header>,
       dataIndex: 'type',
       render: (userType: number) => {
         return (
@@ -284,7 +284,7 @@ export const User: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: UserModel) => {
         return (

@@ -748,7 +748,8 @@
     "OfferDeails": "تفاصيل العرض",
     "PartnersDetails": "تفاصيل الشريك",
     "Points": "الباقات",
-    "RejectReason": "أسباب الرفض"
+    "RejectReason": "أسباب الرفض",
+    "Drafts": "الطلبات الغير مستكملة"
   },
 
   "header": {

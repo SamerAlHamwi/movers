@@ -182,10 +182,10 @@ export const SourceType: React.FC = () => {
   }, [page, Data]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     {
-      title: <Header>{t('common.icon')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.icon')}</Header>,
       dataIndex: ['icon', 'url'],
       render: (url: string, record: sourceTypes) => {
         return (
@@ -202,7 +202,7 @@ export const SourceType: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('sourceTypes.attributeForSource')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.attributeForSource')}</Header>,
       dataIndex: 'attributeForSource',
       render: (index: number, record: sourceTypes) => {
         return (
@@ -229,7 +229,7 @@ export const SourceType: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: SourceTypeModel) => {
         return (

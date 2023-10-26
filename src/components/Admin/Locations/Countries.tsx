@@ -229,11 +229,11 @@ export const Country: React.FC = () => {
   `;
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('locations.dialCode')}</Header>, dataIndex: 'dialCode' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('locations.dialCode')}</Header>, dataIndex: 'dialCode' },
     {
-      title: <Header>{t('locations.countryStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('locations.countryStatus')}</Header>,
       dataIndex: 'isActive',
       render: (countryStatus: boolean) => {
         return <>{(countryStatus = countryStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -286,7 +286,7 @@ export const Country: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('locations.cities')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('locations.cities')}</Header>,
       dataIndex: 'cities',
       render: (index: number, record: countries) => {
         return (
@@ -313,7 +313,7 @@ export const Country: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: CountryModel) => {
         return (
