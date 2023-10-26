@@ -56,7 +56,8 @@ export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, i
 
   const onFinish = (info: any) => {
     setPINCOde(info.pinCode);
-    Navigate(`/${userId}/addRequest`);
+    // Navigate(`/${userId}/addRequest`);
+    Navigate(`/${userId}/drafts`);
   };
 
   const onChange = (value: string) => {
