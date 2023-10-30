@@ -33,8 +33,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import moment from 'moment';
-import dayjs from 'dayjs';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -48,6 +46,14 @@ const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
 const lang = localStorage.getItem('Go Movaro-lang');
+interface DisabledState {
+  [key: string]: boolean;
+}
+
+type ImageObject = {
+  id: number;
+  files: any[];
+};
 
 let requestData = {
   sourceCityId: '',
@@ -113,7 +119,8 @@ export const AddRequest: React.FC = () => {
   const [selectedSourceType, setSelectedSourceType] = useState('0');
   const [sourceType, setSourceType] = useState('0');
   const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
-  const [attributeChoiceItems, setAttributeChoiceItems] = useState<JSX.Element[]>([]);
+  const [disabledState, setDisabledState] = useState<DisabledState>({});
+  const [disabledUpload, setDisabledUpload] = useState<DisabledState>({});
 
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
@@ -121,10 +128,72 @@ export const AddRequest: React.FC = () => {
   const [fileList, setFileList] = useState([]);
   const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
   const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
+  const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>();
+  const [attributeForSourceTypeId, setAttributeForSourceTypeId] = useState(0);
+  const [imagesLists, setImagesLists] = useState<Array<Array<Array<any>>>>([]);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
+  const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
+
+  const outputArray = selectedCheckboxes.map((checkboxId) => ({
+    attributeForSourcTypeId: checkboxId,
+    attributeChoiceId: selectedRadios[checkboxId] || 0,
+  }));
+
+  const setImagesListAtIndex = (
+    sourceTypeIndex: number,
+    parentAttributeChoiceIndex: number,
+    childAttributeChoiceIndex: number,
+    fileList: any[],
+  ) => {
+    setImagesLists((prevLists) => {
+      const newLists = [...prevLists];
+      if (!newLists[sourceTypeIndex]) {
+        newLists[sourceTypeIndex] = [];
+      }
+      if (!newLists[sourceTypeIndex][parentAttributeChoiceIndex]) {
+        newLists[sourceTypeIndex][parentAttributeChoiceIndex] = [];
+      }
+      newLists[sourceTypeIndex][parentAttributeChoiceIndex][childAttributeChoiceIndex] = fileList;
+      return newLists;
+    });
+  };
+
+  const handlePreview = (
+    sourceTypeIndex: number,
+    parentAttributeChoiceIndex: number,
+    childAttributeChoiceIndex: number,
+    file: any,
+  ) => {
+    const imagesListForComponent =
+      imagesLists[sourceTypeIndex]?.[parentAttributeChoiceIndex]?.[childAttributeChoiceIndex];
+    if (imagesListForComponent) {
+      const fileIndex = imagesListForComponent.findIndex((item: any) => item.uid === file.uid);
+      if (fileIndex !== -1) {
+        const fileToPreview = imagesListForComponent[fileIndex];
+        setPreviewOpen(true);
+        setPreviewImage(fileToPreview.url);
+        setPreviewTitle(fileToPreview.name);
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (parentAttributeChoiceIdValue) {
+      getChildAttributeChoice(parentAttributeChoiceIdValue)
+        .then((data) => {
+          const items = data?.data?.result?.items || [];
+          setChildAttributeChoices(items);
+        })
+        .catch((error) => {
+          message.open(error);
+        });
+    }
+  }, [parentAttributeChoiceIdValue]);
 
   const handleCancel = () => setPreviewOpen(false);
 
-  const handlePreview = async (file: UploadFile) => {
+  const handlePreviews = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -168,6 +237,7 @@ export const AddRequest: React.FC = () => {
     data: attributeForSourceTypesData,
     refetch: AttributeForSourceTypesRefetch,
     isRefetching: attributeForSourceTypesIsRefetching,
+    isLoading: attributeForSourceTypesIsLoading,
   } = useQuery('AttributeForSourceTypes', () => getAttributeForSourceTypes(selectedSourceType), {
     refetchOnWindowFocus: false,
     enabled: Number(selectedSourceType) !== 0,
@@ -179,7 +249,7 @@ export const AddRequest: React.FC = () => {
 
   useEffect(() => {
     AttributeForSourceTypesRefetch();
-  }, [selectedSourceType, sourceType]);
+  }, [selectedSourceType, sourceType, disabledUpload]);
 
   const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
     if (event.latLng) {
@@ -398,18 +468,6 @@ export const AddRequest: React.FC = () => {
     }
     extractServicesIds(requestServicesArray);
 
-    const selectedChoicesArray = Object.entries(selectedChoices);
-
-    const attributeForSourceTypeValues = selectedChoicesArray.map(([sourceTypeId, choice]: any) => {
-      const sourceTypeIdNumber = parseInt(sourceTypeId);
-      const parts = choice.split(' ');
-      const attributeChoiceId = parseInt(parts[2].replace('parentAttributeChoice', ''));
-      return {
-        attributeForSourcTypeId: sourceTypeIdNumber,
-        attributeChoiceId: attributeChoiceId,
-      };
-    });
-
     const formDataArray = fileList.map((file: any) => {
       const formData = new FormData();
       formData.append('RefType', '2');
@@ -448,7 +506,7 @@ export const AddRequest: React.FC = () => {
       services: requestServices,
 
       sourceTypeId: selectedSourceType,
-      attributeForSourceTypeValues,
+      attributeForSourceTypeValues: outputArray,
       attributeChoiceAndAttachments: [
         {
           attributeChoiceId: null,
@@ -475,16 +533,17 @@ export const AddRequest: React.FC = () => {
     </div>
   );
 
-  interface DisabledState {
-    [key: string]: boolean;
-  }
-
-  const [disabledState, setDisabledState] = useState<DisabledState>({});
-
   const toggleDisable = (sourceTypeId: string) => {
     setDisabledState((prevState) => ({
       ...prevState,
       [sourceTypeId]: prevState[sourceTypeId] === undefined ? true : !prevState[sourceTypeId],
+    }));
+  };
+
+  const uploadDisable = (itemId: string) => {
+    setDisabledUpload((prevState) => ({
+      ...prevState,
+      [itemId]: prevState[itemId] === undefined ? true : !prevState[itemId],
     }));
   };
 
@@ -1040,55 +1099,177 @@ export const AddRequest: React.FC = () => {
                     <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
                       <div style={{ margin: '1rem' }}>
                         <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>
-                          <Checkbox onClick={() => toggleDisable(sourceTypeItem.id)}>{sourceTypeItem.name}</Checkbox>
+                          <BaseForm.Item name={sourceTypeItem.name} valuePropName="checked">
+                            <Checkbox
+                              key={sourceTypeItem.id}
+                              onClick={() => {
+                                toggleDisable(sourceTypeItem.id);
+                              }}
+                              // onChange={(CheckboxChangeEvent) => {
+                              //   const isChecked = CheckboxChangeEvent.target.checked;
+                              //   if (isChecked) {
+                              //     setCheckedSourceItemIDs((prevCheckedIDs) => [...prevCheckedIDs, sourceTypeItem.id]);
+                              //   } else {
+                              //     setCheckedSourceItemIDs((prevCheckedIDs) =>
+                              //       prevCheckedIDs.filter((id) => id !== sourceTypeItem.id),
+                              //     );
+                              //   }
+                              // }}
+
+                              // onChange={(CheckboxChangeEvent) => {
+                              //   const isChecked = CheckboxChangeEvent.target.checked;
+                              //   if (isChecked) {
+                              //     setCheckedSourceItemIDs((prevCheckedIDs) => [...prevCheckedIDs, sourceTypeItem.id]);
+                              //   } else {
+                              //     setCheckedSourceItemIDs((prevCheckedIDs) =>
+                              //       prevCheckedIDs.filter((id) => id !== sourceTypeItem.id),
+                              //     );
+                              //   }
+                              // }}
+
+                              onChange={(CheckboxChangeEvent) => {
+                                const isChecked = CheckboxChangeEvent.target.checked;
+                                if (isChecked) {
+                                  setSelectedCheckboxes((prevSelectedCheckboxes) => [
+                                    ...prevSelectedCheckboxes,
+                                    sourceTypeItem.id,
+                                  ]);
+                                } else {
+                                  setSelectedCheckboxes((prevSelectedCheckboxes) =>
+                                    prevSelectedCheckboxes.filter((id) => id !== sourceTypeItem.id),
+                                  );
+                                }
+                              }}
+                            >
+                              {sourceTypeItem.name}
+                            </Checkbox>
+                          </BaseForm.Item>
                         </p>
                         <Radio.Group
                           style={{ display: 'flex', justifyContent: 'space-around' }}
+                          // onChange={(e) => {
+                          //   const sourceTypeId = sourceTypeItem.id;
+                          //   setAttributeForSourceTypeId(sourceTypeId);
+                          //   setSelectedChoices((prevSelectedChoices) => ({
+                          //     ...prevSelectedChoices,
+                          //     [sourceTypeId]: e.target.value,
+                          //   }));
+                          // }}
+
+                          // onChange={(e) => {
+                          //   console.log(e.target.value);
+
+                          //   const sourceTypeId = sourceTypeItem.id;
+                          //   setAttributeForSourceTypeId(sourceTypeId);
+                          //   setSelectedChoices((prevSelectedChoices) => ({
+                          //     ...prevSelectedChoices,
+                          //     [sourceTypeId]: e.target.value,
+                          //   }));
+                          //   // Create an object representing the selected data for this sourceTypeItem and Radio
+                          //   const selectedObject = {
+                          //     attributeForSourcTypeId: sourceTypeId,
+                          //     attributeChoiceId: e.target.value,
+                          //   };
+                          //   // Update the selectedData array
+                          //   setSelectedData((prevSelectedData) => [selectedObject]);
+                          // }}
                           onChange={(e) => {
                             const sourceTypeId = sourceTypeItem.id;
-                            const parentAttributeChoiceId = parseInt(
-                              e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
-                            );
+                            setAttributeForSourceTypeId(sourceTypeId);
                             setSelectedChoices((prevSelectedChoices) => ({
                               ...prevSelectedChoices,
                               [sourceTypeId]: e.target.value,
                             }));
 
-                            getChildAttributeChoice(parentAttributeChoiceId)
-                              .then((data) => {
-                                const items = data?.data?.result?.items || [];
-
-                                const itemElements = items.map((item: any) => (
-                                  <div key={item.id} style={{ margin: '4rem 1rem 5rem' }}>
-                                    <p>{item.name}</p>
-                                  </div>
-                                ));
-
-                                setAttributeChoiceItems((prevAttributeChoiceItems) => ({
-                                  ...prevAttributeChoiceItems,
-                                  [sourceTypeId]: itemElements,
-                                }));
-                              })
-                              .catch((error) => {
-                                console.error(error);
-                              });
+                            // Update the selectedRadios for this sourceTypeItem
+                            setSelectedRadios((prevSelectedRadios) => ({
+                              ...prevSelectedRadios,
+                              [sourceTypeId]: e.target.value.id,
+                            }));
                           }}
                           value={selectedChoices[sourceTypeItem.id]}
                         >
-                          {console.log('disabledState', disabledState[sourceTypeItem.id])}
                           {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
-                            <Radio
-                              disabled={!disabledState[sourceTypeItem.id]}
-                              key={parentAttributeChoice.id}
-                              value={`sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${parentAttributeChoice.id}`}
-                            >
-                              {parentAttributeChoice.name}
-                            </Radio>
+                            <>
+                              <Radio
+                                disabled={!disabledState[sourceTypeItem.id]}
+                                key={parentAttributeChoice.id}
+                                value={parentAttributeChoice}
+                                onChange={(e) => {
+                                  // const parentAttributeChoiceId = parseInt(
+                                  //   e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
+                                  // );
+                                  console.log(parentAttributeChoice.id);
+
+                                  setParentAttributeChoiceIdValue(parentAttributeChoice.id);
+                                }}
+                                style={{ height: '30px' }}
+                              >
+                                {parentAttributeChoice.name}
+                              </Radio>
+                              <Row style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                {childAttributeChoices?.map(
+                                  (item: any, index: number) =>
+                                    parentAttributeChoice?.id === item?.attributeChociceParentId && (
+                                      <div key={item.id} style={{ margin: '4rem 1rem 5rem' }}>
+                                        <BaseForm.Item key={index} name={item.name} valuePropName="checked">
+                                          <Checkbox onClick={() => uploadDisable(item?.id)}>
+                                            <p>{item.name}</p>
+                                          </Checkbox>
+                                        </BaseForm.Item>
+                                        <Upload
+                                          key={item.id}
+                                          disabled={!disabledUpload[item?.id]}
+                                          action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                          accept=".jpeg,.png,.jpg"
+                                          listType="picture-card"
+                                          fileList={
+                                            imagesLists[attributeForSourceTypeId]?.[parentAttributeChoiceIdValue]?.[
+                                              item.id
+                                            ]
+                                          }
+                                          onPreview={(file) =>
+                                            handlePreview(
+                                              attributeForSourceTypeId,
+                                              parentAttributeChoiceIdValue,
+                                              item.id,
+                                              file,
+                                            )
+                                          }
+                                          beforeUpload={(file) => {
+                                            const formData = new FormData();
+                                            formData.append('RefType', '2');
+                                            formData.append('file', file);
+                                            uploadImage.mutate(formData);
+                                            return false;
+                                          }}
+                                          onChange={(e: any) =>
+                                            setImagesListAtIndex(
+                                              attributeForSourceTypeId,
+                                              parentAttributeChoiceIdValue,
+                                              item.id,
+                                              e.fileList,
+                                            )
+                                          }
+                                          maxCount={3}
+                                        >
+                                          {imagesLists[index]?.length >= 3 ? null : uploadButton}
+                                        </Upload>
+                                        <Modal
+                                          open={previewOpen}
+                                          title={previewTitle}
+                                          footer={null}
+                                          onCancel={handleCancel}
+                                        >
+                                          <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                                        </Modal>
+                                      </div>
+                                    ),
+                                )}
+                              </Row>
+                            </>
                           ))}
                         </Radio.Group>
-                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                          {attributeChoiceItems[sourceTypeItem.id]}
-                        </div>
                       </div>
                     </Card>
                   ))}
@@ -1097,7 +1278,7 @@ export const AddRequest: React.FC = () => {
                     accept=".jpeg,.png,.jpg"
                     listType="picture-card"
                     fileList={fileList}
-                    onPreview={handlePreview}
+                    onPreview={handlePreviews}
                     onChange={handleChange}
                   >
                     {fileList.length >= 8 ? null : uploadButton}
