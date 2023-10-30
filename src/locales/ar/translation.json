@@ -508,11 +508,18 @@
     "offers": "عروض الأسعار",
     "selected": "تحديد",
     "confirmSuitableSuccessMessage": "تمت الموافقة على الشركات والأفرع بنجاح",
-    "searchForUserModalTitle": "بحث عن المستخدم في النظام",
+    "searchForUserModalTitle": "بحث عن المستخدم في النظام والحصول على تفويض المستخدم",
     "userNumber": "رقم موبايل المستخدم",
     "PIN": "PIN رمز",
     "only6Number": "يُسمح فقط ب 6 أرقام",
-    "searchForUser": "البحث عن المستخدم"
+    "searchForUser": "البحث عن المستخدم",
+    "truePIN": "رمز ال PIN مطابق للمستخدم",
+    "falsePIN": "رمز ال PIN غير مطابق للمستخدم",
+    "completeDraft": "إستكمال الطلب ",
+    "addNewRequest": "إضافة طلب جديد",
+    "draftsList": "قائمة الطلبات الغير مستكملة",
+    "checkPINForUserModalTitle": "إدخال رمز ال PIN للحصول على تفويض المستخدم",
+    "checkPINForUserModal": "إرسال رمز ال PIN"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -749,7 +756,8 @@
     "PartnersDetails": "تفاصيل الشريك",
     "Points": "الباقات",
     "RejectReason": "أسباب الرفض",
-    "Drafts": "الطلبات الغير مستكملة"
+    "Drafts": "الطلبات الغير مستكملة",
+    "CompleteDraft": "إستكمال طلب نقل"
   },
 
   "header": {

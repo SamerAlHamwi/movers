@@ -515,7 +515,14 @@
     "userNumber": "User Phone Number",
     "PIN": "PIN Code",
     "only6Number": "only 6 Numbers Are Allowed",
-    "searchForUser": "Search For User"
+    "searchForUser": "Search For User",
+    "truePIN": "The PIN Code Matches The User",
+    "falsePIN": "The PIN Code Doesn't Matches The User",
+    "completeDraft": "Complete The Draft",
+    "addNewRequest": "Add New Request",
+    "draftsList": "Drafts List",
+    "checkPINForUserModalTitle": "Enter The PIN Code To Obtain User Authorization",
+    "checkPINForUserModal": "Enter The PIN Code"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -753,7 +760,8 @@
     "PartnersDetails": "REM Details",
     "Points": "Bundles",
     "RejectReason": "Reject Reasons",
-    "Drafts": "Drafts"
+    "Drafts": "Drafts",
+    "CompleteDraft": "Complete Draft"
   },
 
   "header": {

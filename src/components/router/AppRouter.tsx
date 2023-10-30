@@ -41,6 +41,8 @@ const SuitableCompanyPage = lazy(() => import('@app/pages/RequestsPages/Suitable
 const OfferPage = lazy(() => import('@app/pages/RequestsPages/OffersPage'));
 const OfferDetailsPage = lazy(() => import('@app/pages/RequestsPages/OfferDetailsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/RequestsPages/AddRequestPage'));
+const CompleteDraftPage = lazy(() => import('@app/pages/RequestsPages/CompleteDraftsPage'));
+const DraftPage = lazy(() => import('@app/pages/Drafts/DraftPage'));
 const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
@@ -85,6 +87,8 @@ const SuitableCompaniesPage = withLoading(SuitableCompanyPage);
 const OffersPage = withLoading(OfferPage);
 const OffersDetailsPage = withLoading(OfferDetailsPage);
 const AddRequestsPage = withLoading(AddRequestPage);
+const CompleteDraftsPage = withLoading(CompleteDraftPage);
+const DraftsPage = withLoading(DraftPage);
 const CompanyPage = withLoading(Companiespage);
 const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
@@ -156,11 +160,32 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          {/* Add Requests */}
           <Route
             path=":userId/addRequest"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <AddRequestsPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Complete Draft */}
+          <Route
+            path=":userId/drafts/:draftId/completeDraft"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <CompleteDraftsPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/*  Drafts */}
+          <Route
+            path=":userId/drafts"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <DraftsPage />
               </PrivateRoute>
             }
           />

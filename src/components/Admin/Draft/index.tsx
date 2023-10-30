@@ -3,12 +3,12 @@ import { useTranslation } from 'react-i18next';
 import { Row, Space } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
-import { Button as ButtonCol } from '@app/components/common/buttons/Button/Button';
+import { Button, Button as ButtonCol } from '@app/components/common/buttons/Button/Button';
 import { useQuery } from 'react-query';
 import { getAllDrafts } from '@app/services/drafts';
 import { Table } from '@app/components/common/Table/Table';
 import { notificationController } from '@app/controllers/notificationController';
-import { Header } from '../../GeneralStyles';
+import { CreateButtonText, Header } from '../../GeneralStyles';
 import { RequestModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -58,8 +58,8 @@ export const Drafts: React.FC = () => {
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
-      dataIndex: 'details',
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.completeDraft')}</Header>,
+      dataIndex: 'completeDraft',
       render: (index: number, record: any) => {
         return (
           <Space>
@@ -67,7 +67,7 @@ export const Drafts: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                Navigate(`/${userId}/drafts/${record.id}/addRequest`, { state: record.name });
+                Navigate(`/${userId}/drafts/${record.id}/completeDraft`, { state: record.name });
               }}
             >
               <div
@@ -77,7 +77,7 @@ export const Drafts: React.FC = () => {
                   width: 'auto',
                 }}
               >
-                {t('requests.details')}
+                {t('requests.completeDraft')}
               </div>
             </ButtonCol>
           </Space>
@@ -88,7 +88,7 @@ export const Drafts: React.FC = () => {
 
   return (
     <>
-      <Card title={t('drafts.draftsList')} style={{ height: 'auto', marginBottom: '70px' }}>
+      <Card title={t('requests.draftsList')} style={{ height: 'auto', marginBottom: '70px' }}>
         <Row justify={'end'}>
           <Btn
             style={{
@@ -102,7 +102,20 @@ export const Drafts: React.FC = () => {
           >
             <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
           </Btn>
+
+          <Button
+            type="primary"
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => Navigate(`/${userId}/addRequest`)}
+          >
+            <CreateButtonText>{t('requests.addNewRequest')}</CreateButtonText>
+          </Button>
         </Row>
+
         <Table
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

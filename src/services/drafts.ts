@@ -13,4 +13,8 @@ const sendForUser = async (data: any) => {
   return await httpApi.post(`${apiPrefix.drafts}/ApproveOfferToSendItToUser`, data);
 };
 
-export { getAllDrafts, getDraftById, sendForUser };
+const checkPIN = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.users}/CheckIfUserOwnesPinByPhoneNumber`, data);
+};
+
+export { getAllDrafts, getDraftById, sendForUser, checkPIN };
