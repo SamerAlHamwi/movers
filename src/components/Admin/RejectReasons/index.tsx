@@ -241,7 +241,7 @@ export const RejectReasons: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('rejectReasons.reasonRejectStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('rejectReasons.reasonRejectStatus')}</Header>,
       dataIndex: 'isActive',
       render: (reasonRejectStatus: boolean) => {
         return <>{(reasonRejectStatus = reasonRejectStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -294,7 +294,7 @@ export const RejectReasons: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
         return (

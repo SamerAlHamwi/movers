@@ -221,10 +221,10 @@ export const City: React.FC = () => {
   };
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     {
-      title: <Header>{t('locations.regions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('locations.regions')}</Header>,
       dataIndex: 'regions',
       render: (index: number, record: cities) => {
         return (
@@ -251,7 +251,7 @@ export const City: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('locations.cityStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('locations.cityStatus')}</Header>,
       dataIndex: 'isActive',
       render: (cityStatus: boolean) => {
         return <>{(cityStatus = cityStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -304,7 +304,7 @@ export const City: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: CityModel) => {
         return (

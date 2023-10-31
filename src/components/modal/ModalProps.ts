@@ -71,6 +71,13 @@ export interface CreateBrokrModalProps extends ModalProps {
 export interface CreateModalProps extends ModalProps {
   onCreate: (info: SourceTypeModel) => void;
 }
+export interface SearchForUserModalProps extends ModalProps {
+  onCreate: (info: any, userId: number) => void;
+}
+
+export interface CheckPINModalProps extends ModalProps {
+  onCreate: (info: any) => void;
+}
 
 export interface CreateCountryModalProps extends ModalProps {
   onCreateCountry: (countryInfo: CountryModel) => void;

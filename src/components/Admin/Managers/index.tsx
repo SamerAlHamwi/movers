@@ -221,18 +221,18 @@ export const Manager: React.FC = () => {
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('managers.managerFullName')}</Header>, dataIndex: 'fullName' },
-    { title: <Header>{t('users.userName')}</Header>, dataIndex: 'userName' },
-    { title: <Header>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('managers.managerFullName')}</Header>, dataIndex: 'fullName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userName')}</Header>, dataIndex: 'userName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
     {
-      title: <Header>{t('common.creationTime')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.creationTime')}</Header>,
       dataIndex: 'creationTime',
       render: (creationTime: string) => {
         return <>{Dates.format(creationTime, 'DD MMMM YYYY, h:mm a')}</>;
       },
     },
     {
-      title: <Header>{t('managers.type')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('managers.type')}</Header>,
       dataIndex: 'type',
       render: (managerType: number) => {
         return <>{managerType === 1 ? t('managers.admin') : t('managers.employee')}</>;
@@ -289,7 +289,7 @@ export const Manager: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('managers.managerStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('managers.managerStatus')}</Header>,
       dataIndex: 'isActive',
       render: (managerStatus: boolean) => {
         return <>{(managerStatus = managerStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -342,7 +342,7 @@ export const Manager: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: UserModel) => {
         return (

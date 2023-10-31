@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import { SearchForUser } from '@app/components/modal/SearchForUser';
+import { checkPIN } from '@app/services/drafts';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -51,6 +52,7 @@ export const Requests: React.FC = () => {
   const [isApproved, setIsApproved] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [userId, setUserId] = useState<number>(0);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -213,6 +215,27 @@ export const Requests: React.FC = () => {
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, reject: rejectRequest.isLoading }));
   }, [rejectRequest.isLoading]);
+
+  const confirm = useMutation((data) =>
+    checkPIN(data)
+      .then((data) => {
+        if (data.data?.success && data.data?.result?.isOwner) {
+          message.open({
+            content: <Alert message={t('requests.truePIN')} type={`success`} showIcon />,
+          });
+          Navigate(`/${userId}/drafts`);
+        } else if (data.data?.success && !data.data?.result?.isOwner) {
+          message.open({
+            content: <Alert message={t('requests.falsePIN')} type={`error`} showIcon />,
+          });
+        }
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -434,6 +457,8 @@ export const Requests: React.FC = () => {
     },
   ];
 
+  console.log(userId);
+
   return (
     <>
       <Card
@@ -452,10 +477,7 @@ export const Requests: React.FC = () => {
               width: 'auto',
               height: 'auto',
             }}
-            onClick={
-              () => handleModalOpen('searchForUser')
-              // Navigate('/addRequest', { replace: false })
-            }
+            onClick={() => handleModalOpen('searchForUser')}
           >
             <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
           </Button>
@@ -465,12 +487,11 @@ export const Requests: React.FC = () => {
             <SearchForUser
               visible={modalState.searchForUser}
               onCancel={() => handleModalClose('searchForUser')}
-              onCreate={(info) => {
-                // const displayName = info.name;
-                // const values = { ...info, displayName };
-                // addRole.mutateAsync(values);
+              onCreate={(info, id) => {
+                setUserId(id);
+                confirm.mutateAsync(info);
               }}
-              // isLoading={addRole.isLoading}
+              isLoading={confirm.isLoading}
             />
           )}
 

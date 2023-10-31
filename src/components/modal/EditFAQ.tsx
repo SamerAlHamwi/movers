@@ -26,7 +26,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
     const my_data = {
       translations: info.translations?.map((_, i) => ({
         ...info.translations[i],
-        language: i === 1 ? ('en' as LanguageType) : ('ar' as LanguageType),
+        language: i === 0 ? ('en' as LanguageType) : ('ar' as LanguageType),
       })),
       id: 0,
     };
@@ -60,7 +60,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
     >
       <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="FAQForm">
         <BaseForm.Item
-          name={['translations', 1, 'question']}
+          name={['translations', 0, 'question']}
           label={<LableText>{t('faq.question_en')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
@@ -68,7 +68,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'answer']}
+          name={['translations', 0, 'answer']}
           label={<LableText>{t('faq.answer_en')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
@@ -77,7 +77,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 0, 'question']}
+          name={['translations', 1, 'question']}
           label={<LableText>{t('faq.question_ar')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
@@ -85,7 +85,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 0, 'answer']}
+          name={['translations', 1, 'answer']}
           label={<LableText>{t('faq.answer_ar')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}

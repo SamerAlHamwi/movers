@@ -515,7 +515,14 @@
     "userNumber": "User Phone Number",
     "PIN": "PIN Code",
     "only6Number": "only 6 Numbers Are Allowed",
-    "searchForUser": "Search For User"
+    "searchForUser": "Search For User",
+    "truePIN": "The PIN Code Matches The User",
+    "falsePIN": "The PIN Code Doesn't Matches The User",
+    "completeDraft": "Complete The Draft",
+    "addNewRequest": "Add New Request",
+    "draftsList": "Drafts List",
+    "checkPINForUserModalTitle": "Enter The PIN Code To Obtain User Authorization",
+    "checkPINForUserModal": "Enter The PIN Code"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -571,7 +578,7 @@
     "deleteprivacyModalTitle": "Delete Privacy",
     "deleteNprivacyModalDescription": "Are you sure ?",
     "PrivacyList": "PrivacyPolicy",
-    "notices": "Notices",
+    "Notifications": "Notices",
     "send": "Send Notification",
     "sendp": "Create",
     "englishMessage": "English messages",
@@ -630,16 +637,16 @@
   "_comment22": "*********************************** FAQ ************************************************",
   "faq": {
     "faqList": "FAQ List",
-    "addFAQ": "Add Frequently asked question",
+    "addFAQ": "Add Frequently Asked Question",
     "question": "Question",
     "answer": "Answer",
-    "addFAQModalTitle": "Add Frequently asked question",
-    "addFAQSuccessMessage": "The Frequently asked question has been Added Successfully",
-    "editFAQModalTitle": "Edit Frequently asked question",
-    "editFAQSuccessMessage": "The Frequently asked question has been Edited Successfully",
-    "deleteFAQModalTitle": "Delete Frequently asked question",
-    "deleteFAQSuccessMessage": "The Frequently asked question has been Deleted Successfully",
-    "deleteFAQModalDescription": "Are You Sure To Delete This Frequently asked question?",
+    "addFAQModalTitle": "Add Frequently Asked Question",
+    "addFAQSuccessMessage": "The Frequently Asked Question has been Added Successfully",
+    "editFAQModalTitle": "Edit Frequently Asked Question",
+    "editFAQSuccessMessage": "The Frequently Asked Question has been Edited Successfully",
+    "deleteFAQModalTitle": "Delete Frequently Asked Question",
+    "deleteFAQSuccessMessage": "The Frequently Asked Question has been Deleted Successfully",
+    "deleteFAQModalDescription": "Are You Sure To Delete This Frequently Asked Question?",
     "question_ar": "Arabic Question",
     "question_en": "English Question",
     "answer_ar": "Arabic Answer",
@@ -752,7 +759,9 @@
     "OfferDeails": "Offer Details",
     "PartnersDetails": "REM Details",
     "Points": "Bundles",
-    "RejectReason": "Reject Reasons"
+    "RejectReason": "Reject Reasons",
+    "Drafts": "Drafts",
+    "CompleteDraft": "Complete Draft"
   },
 
   "header": {

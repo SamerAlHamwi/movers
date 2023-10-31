@@ -223,10 +223,10 @@ export const Region: React.FC = () => {
   };
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     {
-      title: <Header>{t('locations.regionStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('locations.regionStatus')}</Header>,
       dataIndex: 'isActive',
       render: (regionStatus: boolean) => {
         return <>{(regionStatus = regionStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -279,7 +279,7 @@ export const Region: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: RegionModel) => {
         return (

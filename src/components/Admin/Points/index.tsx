@@ -227,7 +227,7 @@ export const Points: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('points.bundleStatus')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('points.bundleStatus')}</Header>,
       dataIndex: 'isActive',
       render: (bundleStatus: boolean) => {
         return <>{(bundleStatus = bundleStatus ? t('common.active') : t('common.inactive'))}</>;
@@ -280,7 +280,7 @@ export const Points: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
         return (

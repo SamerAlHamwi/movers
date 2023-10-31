@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { Card } from 'components/common/Card/Card';
-import { Header, TableButton } from '../../GeneralStyles';
+import { CreateButtonText, Header, TableButton } from '../../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { notificationController } from '@app/controllers/notificationController';
@@ -16,6 +16,8 @@ import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { useNavigate } from 'react-router-dom';
+import { checkPIN } from '@app/services/drafts';
+import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
 
 type User = {
   id: number;
@@ -36,8 +38,11 @@ export const AskForHelp: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop } = useResponsive();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
 
+  const [modalState, setModalState] = useState({
+    checkPINForUser: false,
+  });
   const [asksData, setAsksData] = useState<Notification[] | undefined>(undefined);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(1);
@@ -48,6 +53,16 @@ export const AskForHelp: React.FC = () => {
   const [confirmAskId, setConfirmAskId] = useState<any>(undefined);
   const [modalStatus, setModalStatus] = useState<boolean>();
   const [isConfirmed, setIsConfirmed] = useState(false);
+  const [userId, setUserId] = useState<number>(0);
+  const [userName, setUserName] = useState<string>('0');
+
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
+  };
+
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const { refetch, isRefetching } = useQuery(
     ['getAllAsks'],
@@ -68,10 +83,10 @@ export const AskForHelp: React.FC = () => {
   );
 
   const handleConfirm = (id: any) => {
-    confirm.mutateAsync(id);
+    confirmRequestHelp.mutateAsync(id);
   };
 
-  const confirm = useMutation((data: any) =>
+  const confirmRequestHelp = useMutation((data: any) =>
     confirmAsks(data)
       .then((data) => {
         data.data?.success &&
@@ -97,6 +112,27 @@ export const AskForHelp: React.FC = () => {
     setIsLoading(true);
     refetch();
   }, [isConfirmed, statusType, page, pageSize, language, searchString, refetch]);
+
+  const confirm = useMutation((data) =>
+    checkPIN(data)
+      .then((data) => {
+        if (data.data?.success && data.data?.result?.isOwner) {
+          message.open({
+            content: <Alert message={t('requests.truePIN')} type={`success`} showIcon />,
+          });
+          Navigate(`/${userId}/drafts`);
+        } else if (data.data?.success && !data.data?.result?.isOwner) {
+          message.open({
+            content: <Alert message={t('requests.falsePIN')} type={`error`} showIcon />,
+          });
+        }
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
 
   const columns = [
     {
@@ -139,7 +175,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.emailAddress')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.emailAddress')}</Header>,
       dataIndex: 'user',
       render: (record: User['user']) => (
         <div
@@ -156,7 +192,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.creationTime')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.creationTime')}</Header>,
       dataIndex: 'user',
       render: (record: User['user']) => (
         <div
@@ -173,7 +209,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.message')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.message')}</Header>,
       dataIndex: 'message',
       render: (record: User) => (
         <div
@@ -190,7 +226,7 @@ export const AskForHelp: React.FC = () => {
       ),
     },
     {
-      title: <Header>{t('asks.status')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('asks.status')}</Header>,
       dataIndex: 'statues',
       render: (status: User['statues']) => {
         return (
@@ -276,7 +312,12 @@ export const AskForHelp: React.FC = () => {
                 <Tooltip placement="top" title={t('requests.addRequest')}>
                   <TableButton
                     severity="success"
-                    onClick={() => navigate(`/${record.user.id}/addRequest`, { replace: false })}
+                    onClick={() => {
+                      setUserName(record?.user?.phoneNumber);
+                      setUserId(record?.user?.id);
+                      handleModalOpen('checkPINForUser');
+                    }}
+                    // onClick={() => Navigate(`/${record.user.id}/addRequest`, { replace: false })}
                   >
                     <AuditOutlined />
                   </TableButton>
@@ -307,18 +348,29 @@ export const AskForHelp: React.FC = () => {
               width: 'auto',
               height: 'auto',
             }}
-            onClick={() => navigate('/addRequest', { replace: false })}
+            onClick={() => handleModalOpen('checkPINForUser')}
           >
             <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
           </Button> */}
+
+          {/*    Check PIN For User    */}
+          {modalState.checkPINForUser && (
+            <CheckPINForUser
+              visible={modalState.checkPINForUser}
+              onCancel={() => handleModalClose('checkPINForUser')}
+              onCreate={(info) => {
+                const values = { ...info, phoneNumber: userName };
+                confirm.mutateAsync(values);
+              }}
+              isLoading={confirm.isLoading}
+            />
+          )}
 
           {modalStatus && (
             <ActionModal
               visible={modalStatus}
               onCancel={() => setModalStatus(false)}
               onOK={() => {
-                console.log(confirmAskId);
-
                 confirmAskId !== undefined && handleConfirm(confirmAskId);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
@@ -326,7 +378,7 @@ export const AskForHelp: React.FC = () => {
               okText={t('common.confrim')}
               cancelText={t('common.cancel')}
               description={t('asks.confirmAskModalDescription')}
-              isLoading={confirm.isLoading}
+              isLoading={confirmRequestHelp.isLoading}
             />
           )}
         </Row>
