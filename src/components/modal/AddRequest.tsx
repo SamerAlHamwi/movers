@@ -43,47 +43,13 @@ const getBase64 = (file: RcFile): Promise<string> =>
   });
 
 const { Step } = Steps;
+let requestData = {};
 let requestServicesArray: any = [];
 const requestServices: any = [];
 const lang = localStorage.getItem('Go Movaro-lang');
 interface DisabledState {
   [key: string]: boolean;
 }
-
-type ImageObject = {
-  id: number;
-  files: any[];
-};
-
-let requestData = {
-  sourceCityId: '',
-  sourceAddress: '',
-  sourceLongitude: 0,
-  sourceLatitude: 0,
-  moveAtUtc: null,
-
-  destinationCityId: '',
-  destinationAddress: '',
-  destinationLongitude: 0,
-  destinationLatitude: 0,
-  arrivalAtUtc: null,
-
-  requestForQuotationContacts: [{}],
-  serviceType: 0,
-  comment: '',
-  services: [],
-
-  sourceTypeId: '',
-  attributeForSourceTypeValues: [{}],
-  attributeChoiceAndAttachments: [
-    {
-      attributeChoiceId: null,
-      attachmentIds: [0],
-    },
-  ],
-
-  userId: '',
-};
 
 export const AddRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
@@ -126,7 +92,6 @@ export const AddRequest: React.FC = () => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState([]);
-  const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
   const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
   const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>();
@@ -134,6 +99,14 @@ export const AddRequest: React.FC = () => {
   const [imagesLists, setImagesLists] = useState<Array<Array<Array<any>>>>([]);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
   const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
+  // const [getID, setGetID] = useState<boolean>();
+  // const [attributeAttachment, setAttributettachment] = useState<number>(0);
+  // const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
+  const [itemId, setItemId] = useState(0);
+
+  const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
+    Array<{ attributeChoiceId: number | null; attachmentIds: number[] }>
+  >([]);
 
   const outputArray = selectedCheckboxes.map((checkboxId) => ({
     attributeForSourcTypeId: checkboxId,
@@ -209,18 +182,65 @@ export const AddRequest: React.FC = () => {
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
     onSuccess: (data: any) => {
       if (data.data.success) {
-        setAttachmentIds((prevIds) => [...prevIds, data.data.result?.id]);
+        const newId = data.data.result?.id;
+        // setGetID(data.data.success);
+        // setAttributettachment(newId);
+        // setAttachmentIds((prevIds) => {
+        //   if (!prevIds.includes(newId)) {
+        //     return [...prevIds, newId];
+        //   }
+        //   return prevIds;
+        // });
         setPreviewImage(data.data.result?.url);
+
+        setAttributeChoiceAndAttachments((prevAttributes) => {
+          const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
+          console.log(itemId);
+          console.log(existingObjectIndex);
+
+          if (existingObjectIndex !== -1) {
+            // If an object with the same attributeChoiceId exists, and the attachmentId is not already in the array, add it
+            const updatedAttributes = [...prevAttributes];
+            const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
+            if (!attachmentIds.includes(newId)) {
+              attachmentIds.push(newId);
+            }
+            return updatedAttributes;
+          } else {
+            // If no object with the same attributeChoiceId exists, create a new object
+            if (itemId == -10) {
+              return [
+                ...prevAttributes,
+                {
+                  attributeChoiceId: null,
+                  attachmentIds: [newId],
+                },
+              ];
+            } else {
+              return [
+                ...prevAttributes,
+                {
+                  attributeChoiceId: itemId,
+                  attachmentIds: [newId],
+                },
+              ];
+            }
+          }
+        });
       } else {
         message.open({
           content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
         });
       }
+      // setGetID(false);
     },
+
     onError: (error: any) => {
       message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
     },
   });
+
+  console.log(attributeChoiceAndAttachments);
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
@@ -351,8 +371,6 @@ export const AddRequest: React.FC = () => {
   });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
-    console.log(expandedKeysValue);
-
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
@@ -407,6 +425,7 @@ export const AddRequest: React.FC = () => {
             content: <Alert message={t('requests.addRequestSuccessMessage')} type={`success`} showIcon />,
           });
         requestServicesArray = [];
+        setAttributeChoiceAndAttachments([]);
         Navigate(`/requests`);
       })
       .catch((error) => {
@@ -507,31 +526,33 @@ export const AddRequest: React.FC = () => {
 
       sourceTypeId: selectedSourceType,
       attributeForSourceTypeValues: outputArray,
-      attributeChoiceAndAttachments: [
-        {
-          attributeChoiceId: null,
-          attachmentIds: attachmentIds,
-        },
-      ],
-
+      attributeChoiceAndAttachments: attributeChoiceAndAttachments,
       userId: userId ? userId : '0',
     };
   };
 
   useEffect(() => {
     if (attachmentIdsChanged) {
-      requestData.attributeChoiceAndAttachments[0].attachmentIds = attachmentIds;
+      // requestData.attributeChoiceAndAttachments[0].attachmentIds = attachmentIds;
       createRequestMutation.mutateAsync(requestData);
       setAttachmentIdsChanged(false);
     }
   }, [attachmentIdsChanged]);
 
-  const uploadButton = (
+  const uploadButtonForAttribute = (
     <div>
       <PlusOutlined />
       <div className="ant-upload-text">Upload</div>
     </div>
   );
+
+  const uploadButtonForAllRequest = (
+    <div onClick={() => setItemId(-10)}>
+      <PlusOutlined />
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
+  console.log(itemId);
 
   const toggleDisable = (sourceTypeId: string) => {
     setDisabledState((prevState) => ({
@@ -1105,28 +1126,6 @@ export const AddRequest: React.FC = () => {
                               onClick={() => {
                                 toggleDisable(sourceTypeItem.id);
                               }}
-                              // onChange={(CheckboxChangeEvent) => {
-                              //   const isChecked = CheckboxChangeEvent.target.checked;
-                              //   if (isChecked) {
-                              //     setCheckedSourceItemIDs((prevCheckedIDs) => [...prevCheckedIDs, sourceTypeItem.id]);
-                              //   } else {
-                              //     setCheckedSourceItemIDs((prevCheckedIDs) =>
-                              //       prevCheckedIDs.filter((id) => id !== sourceTypeItem.id),
-                              //     );
-                              //   }
-                              // }}
-
-                              // onChange={(CheckboxChangeEvent) => {
-                              //   const isChecked = CheckboxChangeEvent.target.checked;
-                              //   if (isChecked) {
-                              //     setCheckedSourceItemIDs((prevCheckedIDs) => [...prevCheckedIDs, sourceTypeItem.id]);
-                              //   } else {
-                              //     setCheckedSourceItemIDs((prevCheckedIDs) =>
-                              //       prevCheckedIDs.filter((id) => id !== sourceTypeItem.id),
-                              //     );
-                              //   }
-                              // }}
-
                               onChange={(CheckboxChangeEvent) => {
                                 const isChecked = CheckboxChangeEvent.target.checked;
                                 if (isChecked) {
@@ -1147,32 +1146,6 @@ export const AddRequest: React.FC = () => {
                         </p>
                         <Radio.Group
                           style={{ display: 'flex', justifyContent: 'space-around' }}
-                          // onChange={(e) => {
-                          //   const sourceTypeId = sourceTypeItem.id;
-                          //   setAttributeForSourceTypeId(sourceTypeId);
-                          //   setSelectedChoices((prevSelectedChoices) => ({
-                          //     ...prevSelectedChoices,
-                          //     [sourceTypeId]: e.target.value,
-                          //   }));
-                          // }}
-
-                          // onChange={(e) => {
-                          //   console.log(e.target.value);
-
-                          //   const sourceTypeId = sourceTypeItem.id;
-                          //   setAttributeForSourceTypeId(sourceTypeId);
-                          //   setSelectedChoices((prevSelectedChoices) => ({
-                          //     ...prevSelectedChoices,
-                          //     [sourceTypeId]: e.target.value,
-                          //   }));
-                          //   // Create an object representing the selected data for this sourceTypeItem and Radio
-                          //   const selectedObject = {
-                          //     attributeForSourcTypeId: sourceTypeId,
-                          //     attributeChoiceId: e.target.value,
-                          //   };
-                          //   // Update the selectedData array
-                          //   setSelectedData((prevSelectedData) => [selectedObject]);
-                          // }}
                           onChange={(e) => {
                             const sourceTypeId = sourceTypeItem.id;
                             setAttributeForSourceTypeId(sourceTypeId);
@@ -1180,8 +1153,6 @@ export const AddRequest: React.FC = () => {
                               ...prevSelectedChoices,
                               [sourceTypeId]: e.target.value,
                             }));
-
-                            // Update the selectedRadios for this sourceTypeItem
                             setSelectedRadios((prevSelectedRadios) => ({
                               ...prevSelectedRadios,
                               [sourceTypeId]: e.target.value.id,
@@ -1196,11 +1167,6 @@ export const AddRequest: React.FC = () => {
                                 key={parentAttributeChoice.id}
                                 value={parentAttributeChoice}
                                 onChange={(e) => {
-                                  // const parentAttributeChoiceId = parseInt(
-                                  //   e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
-                                  // );
-                                  console.log(parentAttributeChoice.id);
-
                                   setParentAttributeChoiceIdValue(parentAttributeChoice.id);
                                 }}
                                 style={{ height: '30px' }}
@@ -1211,9 +1177,17 @@ export const AddRequest: React.FC = () => {
                                 {childAttributeChoices?.map(
                                   (item: any, index: number) =>
                                     parentAttributeChoice?.id === item?.attributeChociceParentId && (
-                                      <div key={item.id} style={{ margin: '4rem 1rem 5rem' }}>
+                                      <div
+                                        key={item.id}
+                                        style={{ margin: '4rem 1rem 5rem' }}
+                                        onClick={() => setItemId(item.id)}
+                                      >
                                         <BaseForm.Item key={index} name={item.name} valuePropName="checked">
-                                          <Checkbox onClick={() => uploadDisable(item?.id)}>
+                                          <Checkbox
+                                            onClick={() => {
+                                              uploadDisable(item?.id);
+                                            }}
+                                          >
                                             <p>{item.name}</p>
                                           </Checkbox>
                                         </BaseForm.Item>
@@ -1241,19 +1215,20 @@ export const AddRequest: React.FC = () => {
                                             formData.append('RefType', '2');
                                             formData.append('file', file);
                                             uploadImage.mutate(formData);
+
                                             return false;
                                           }}
-                                          onChange={(e: any) =>
+                                          onChange={(e: any) => {
                                             setImagesListAtIndex(
                                               attributeForSourceTypeId,
                                               parentAttributeChoiceIdValue,
                                               item.id,
                                               e.fileList,
-                                            )
-                                          }
-                                          maxCount={3}
+                                            );
+                                          }}
+                                          maxCount={20}
                                         >
-                                          {imagesLists[index]?.length >= 3 ? null : uploadButton}
+                                          {imagesLists[index]?.length >= 20 ? null : uploadButtonForAttribute}
                                         </Upload>
                                         <Modal
                                           open={previewOpen}
@@ -1273,7 +1248,7 @@ export const AddRequest: React.FC = () => {
                       </div>
                     </Card>
                   ))}
-                  <Upload
+                  {/* <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     accept=".jpeg,.png,.jpg"
                     listType="picture-card"
@@ -1281,11 +1256,11 @@ export const AddRequest: React.FC = () => {
                     onPreview={handlePreviews}
                     onChange={handleChange}
                   >
-                    {fileList.length >= 8 ? null : uploadButton}
+                    {fileList.length >= 8 ? null : uploadButtonForAllRequest}
                   </Upload>
                   <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                  </Modal>
+                  </Modal> */}
                 </div>
               ) : (
                 ''
