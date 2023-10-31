@@ -99,14 +99,14 @@ export const AddRequest: React.FC = () => {
   const [imagesLists, setImagesLists] = useState<Array<Array<Array<any>>>>([]);
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
   const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
-  // const [getID, setGetID] = useState<boolean>();
-  // const [attributeAttachment, setAttributettachment] = useState<number>(0);
-  // const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
   const [itemId, setItemId] = useState(0);
-
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
-    Array<{ attributeChoiceId: number | null; attachmentIds: number[] }>
+    Array<{ attributeChoiceId: number; attachmentIds: number[] }>
   >([]);
+  const updatedAttributeChoiceAndAttachments = attributeChoiceAndAttachments.map((entry) => ({
+    ...entry,
+    statusOfAttributeChoiceId: disabledUpload[entry.attributeChoiceId] === true,
+  }));
 
   const outputArray = selectedCheckboxes.map((checkboxId) => ({
     attributeForSourcTypeId: checkboxId,
@@ -183,23 +183,10 @@ export const AddRequest: React.FC = () => {
     onSuccess: (data: any) => {
       if (data.data.success) {
         const newId = data.data.result?.id;
-        // setGetID(data.data.success);
-        // setAttributettachment(newId);
-        // setAttachmentIds((prevIds) => {
-        //   if (!prevIds.includes(newId)) {
-        //     return [...prevIds, newId];
-        //   }
-        //   return prevIds;
-        // });
         setPreviewImage(data.data.result?.url);
-
         setAttributeChoiceAndAttachments((prevAttributes) => {
           const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
-          console.log(itemId);
-          console.log(existingObjectIndex);
-
           if (existingObjectIndex !== -1) {
-            // If an object with the same attributeChoiceId exists, and the attachmentId is not already in the array, add it
             const updatedAttributes = [...prevAttributes];
             const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
             if (!attachmentIds.includes(newId)) {
@@ -207,24 +194,23 @@ export const AddRequest: React.FC = () => {
             }
             return updatedAttributes;
           } else {
-            // If no object with the same attributeChoiceId exists, create a new object
-            if (itemId == -10) {
-              return [
-                ...prevAttributes,
-                {
-                  attributeChoiceId: null,
-                  attachmentIds: [newId],
-                },
-              ];
-            } else {
-              return [
-                ...prevAttributes,
-                {
-                  attributeChoiceId: itemId,
-                  attachmentIds: [newId],
-                },
-              ];
-            }
+            // if (itemId == -10) {
+            //   return [
+            //     ...prevAttributes,
+            //     {
+            //       attributeChoiceId: null,
+            //       attachmentIds: [newId],
+            //     },
+            //   ];
+            // } else {
+            return [
+              ...prevAttributes,
+              {
+                attributeChoiceId: itemId,
+                attachmentIds: [newId],
+              },
+            ];
+            // }
           }
         });
       } else {
@@ -232,15 +218,11 @@ export const AddRequest: React.FC = () => {
           content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
         });
       }
-      // setGetID(false);
     },
-
     onError: (error: any) => {
       message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
     },
   });
-
-  console.log(attributeChoiceAndAttachments);
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
@@ -506,6 +488,14 @@ export const AddRequest: React.FC = () => {
         console.error('File upload error:', error);
       });
 
+    const filteredAttributeChoiceAndAttachments = updatedAttributeChoiceAndAttachments.filter(
+      (entry) => entry.statusOfAttributeChoiceId === true,
+    );
+
+    const attributeChoiceAndAttachmentsToSend = filteredAttributeChoiceAndAttachments.map(
+      ({ statusOfAttributeChoiceId, ...rest }) => rest,
+    );
+
     requestData = {
       sourceCityId: cityId.source,
       sourceAddress: form.getFieldValue('sourceAddress'),
@@ -526,14 +516,13 @@ export const AddRequest: React.FC = () => {
 
       sourceTypeId: selectedSourceType,
       attributeForSourceTypeValues: outputArray,
-      attributeChoiceAndAttachments: attributeChoiceAndAttachments,
+      attributeChoiceAndAttachments: attributeChoiceAndAttachmentsToSend,
       userId: userId ? userId : '0',
     };
   };
 
   useEffect(() => {
     if (attachmentIdsChanged) {
-      // requestData.attributeChoiceAndAttachments[0].attachmentIds = attachmentIds;
       createRequestMutation.mutateAsync(requestData);
       setAttachmentIdsChanged(false);
     }
@@ -552,7 +541,6 @@ export const AddRequest: React.FC = () => {
       <div className="ant-upload-text">Upload</div>
     </div>
   );
-  console.log(itemId);
 
   const toggleDisable = (sourceTypeId: string) => {
     setDisabledState((prevState) => ({
