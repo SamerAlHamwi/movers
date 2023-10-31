@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Modal, message, Select } from 'antd';
+import { Space, Modal, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../Admin/Translations';
-import { CreateModalProps } from './ModalProps';
+import { SearchForUserModalProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { Button } from '../common/buttons/Button/Button';
 import { LableText } from '../GeneralStyles';
@@ -12,17 +12,15 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { UserModel } from '@app/interfaces/interfaces';
 import { useQuery } from 'react-query';
 import { getAllUsersForAddRequest } from '@app/services/users';
-import { useNavigate } from 'react-router-dom';
 import { notificationController } from '@app/controllers/notificationController';
 
-export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, isLoading }) => {
+export const SearchForUser: React.FC<SearchForUserModalProps> = ({ visible, onCancel, onCreate, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
-  const Navigate = useNavigate();
 
-  const [userId, setUserId] = useState<string>('0');
-  const [pinCode, setPINCOde] = useState<number>(0o0);
+  const [userName, setUserName] = useState<string>('0');
+  const [userId, setUserId] = useState<number>(0);
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
   const [searchString, setSearchString] = useState('');
   const [loading, setLoading] = useState(true);
@@ -47,7 +45,7 @@ export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, i
 
   const options = dataSource?.map((user: any) => ({
     label: user.userName + ' / ' + user.fullName,
-    value: user.id,
+    value: user.userName,
   }));
 
   const onOk = () => {
@@ -55,12 +53,15 @@ export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, i
   };
 
   const onFinish = (info: any) => {
-    setPINCOde(info.pinCode);
-    Navigate(`/${userId}/addRequest`);
+    onCreate(info, userId);
   };
 
-  const onChange = (value: string) => {
-    setUserId(value);
+  const onChange = (userName: string) => {
+    setUserName(userName);
+    const selectedUser = dataSource?.find((user) => user.userName === userName);
+    if (selectedUser) {
+      setUserId(selectedUser.id);
+    }
   };
 
   const onSearch = (value: string) => {
@@ -99,8 +100,9 @@ export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, i
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} onFinish={onFinish} name="SurceTypesForm">
+      <BaseForm form={form} onFinish={onFinish} name="SearchForUserForm">
         <BaseForm.Item
+          name={'phoneNumber'}
           label={<LableText>{t('requests.userNumber')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
@@ -118,7 +120,7 @@ export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, i
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={'pinCode'}
+          name={'pin'}
           label={<LableText>{t('requests.PIN')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -133,7 +135,7 @@ export const SearchForUser: React.FC<CreateModalProps> = ({ visible, onCancel, i
           ]}
           style={{ marginTop: '-.5rem' }}
         >
-          <Input disabled={userId == '0'} />
+          <Input disabled={userName == '0'} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

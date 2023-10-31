@@ -8,7 +8,7 @@ const NotificationsPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('notifications.notices')}</PageTitle>
+      <PageTitle>{t('notifications.Notifications')}</PageTitle>
       <Notifications />
     </>
   );

@@ -184,10 +184,10 @@ export const Services: React.FC = () => {
   }, [page, Data]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     {
-      title: <Header>{t('common.image')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.image')}</Header>,
       dataIndex: ['attachment', 'url'],
       render: (url: string, record: services) => {
         return (
@@ -206,7 +206,7 @@ export const Services: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('services.subServices')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('services.subServices')}</Header>,
       dataIndex: 'subService',
       render: (index: number, record: services) => {
         return (
@@ -234,7 +234,7 @@ export const Services: React.FC = () => {
       },
     },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: ServiceModel) => {
         return (

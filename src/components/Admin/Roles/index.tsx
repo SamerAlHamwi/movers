@@ -154,13 +154,16 @@ export const Role: React.FC = () => {
   }, [editRole.isLoading]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('roles.Name')}</Header>, dataIndex: 'name' },
-    { title: <Header>{t('roles.DisplayName')}</Header>, dataIndex: 'displayName' },
-    { title: <Header>{t('roles.NormalizedName')}</Header>, dataIndex: 'normalizedName' },
-    { title: <Header>{t('roles.Description')}</Header>, dataIndex: 'description' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.Name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.DisplayName')}</Header>, dataIndex: 'displayName' },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('roles.NormalizedName')}</Header>,
+      dataIndex: 'normalizedName',
+    },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.Description')}</Header>, dataIndex: 'description' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: RoleModel) => {
         return (

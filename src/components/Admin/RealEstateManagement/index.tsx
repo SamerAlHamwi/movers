@@ -184,14 +184,17 @@ export const Partners: React.FC = () => {
   }, [editPartner.isLoading]);
 
   const columns = [
-    { title: <Header>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
-    { title: <Header>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
-    { title: <Header>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
-    { title: <Header>{t('common.phoneNumber')}</Header>, dataIndex: 'partnerPhoneNumber' },
-    { title: <Header>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.firstName')}</Header>, dataIndex: 'firstName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.lastName')}</Header>, dataIndex: 'lastName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
     {
-      title: <Header>{t('common.actions')}</Header>,
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.phoneNumber')}</Header>,
+      dataIndex: 'partnerPhoneNumber',
+    },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
         return (
