@@ -26,7 +26,7 @@ import { Select, Option } from '../common/selects/Select/Select';
 import { getCountries, getCities } from '@app/services/locations';
 import { DatePicker } from '../common/pickers/DatePicker';
 import { Alert } from '../common/Alert/Alert';
-import { uploadAttachment } from '@app/services/Attachment';
+import { uploadAttachment, UploadMultiAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -46,6 +46,7 @@ const { Step } = Steps;
 let requestData = {};
 let requestServicesArray: any = [];
 const requestServices: any = [];
+const IDs: number[] = [];
 const lang = localStorage.getItem('Go Movaro-lang');
 interface DisabledState {
   [key: string]: boolean;
@@ -91,7 +92,7 @@ export const AddRequest: React.FC = () => {
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([]);
+  const [fileList, setFileList] = useState<any[]>([]);
   const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
   const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>();
@@ -100,13 +101,22 @@ export const AddRequest: React.FC = () => {
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
   const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
   const [itemId, setItemId] = useState(0);
+  const [newID, setNewID] = useState(0);
+  const [attachmentsForRequest, setAttachmentsForRequest] = useState<
+    Array<{ attributeChoiceId: number | null; attachmentIds: number[] }>
+  >([]);
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
     Array<{ attributeChoiceId: number; attachmentIds: number[] }>
   >([]);
+  const [fileListLength, setFileListLength] = useState(0);
+  const [picturesList, setPicturesList] = useState<any[]>([]);
+  const [allIDs, setAllIDs] = useState<any[]>([]);
   const updatedAttributeChoiceAndAttachments = attributeChoiceAndAttachments.map((entry) => ({
     ...entry,
     statusOfAttributeChoiceId: disabledUpload[entry.attributeChoiceId] === true,
   }));
+
+  console.log(allIDs);
 
   const outputArray = selectedCheckboxes.map((checkboxId) => ({
     attributeForSourcTypeId: checkboxId,
@@ -175,15 +185,15 @@ export const AddRequest: React.FC = () => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-  const handleChange = ({ fileList }: any) => {
-    setFileList(fileList);
-  };
-
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
     onSuccess: (data: any) => {
       if (data.data.success) {
         const newId = data.data.result?.id;
         setPreviewImage(data.data.result?.url);
+        console.log(newId);
+
+        setNewID(newId);
+
         setAttributeChoiceAndAttachments((prevAttributes) => {
           const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
           if (existingObjectIndex !== -1) {
@@ -194,15 +204,6 @@ export const AddRequest: React.FC = () => {
             }
             return updatedAttributes;
           } else {
-            // if (itemId == -10) {
-            //   return [
-            //     ...prevAttributes,
-            //     {
-            //       attributeChoiceId: null,
-            //       attachmentIds: [newId],
-            //     },
-            //   ];
-            // } else {
             return [
               ...prevAttributes,
               {
@@ -210,7 +211,6 @@ export const AddRequest: React.FC = () => {
                 attachmentIds: [newId],
               },
             ];
-            // }
           }
         });
       } else {
@@ -418,6 +418,16 @@ export const AddRequest: React.FC = () => {
       }),
   );
 
+  const attachmentIdsArray = fileList.reduce(
+    (accumulator, file) => {
+      accumulator.attachmentIds.push(file.id);
+      return accumulator;
+    },
+    { attributeChoiceId: null, attachmentIds: [] },
+  );
+
+  // console.log(attachmentIdsArray);
+
   const onFinish = async (values: any) => {
     const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
       form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
@@ -469,24 +479,35 @@ export const AddRequest: React.FC = () => {
     }
     extractServicesIds(requestServicesArray);
 
-    const formDataArray = fileList.map((file: any) => {
-      const formData = new FormData();
-      formData.append('RefType', '2');
-      formData.append('file', file.originFileObj);
-      return formData;
-    });
+    // const formDataArray = fileList.map((file: any) => {
+    //   const formData = new FormData();
+    //   formData.append('RefType', '2');
+    //   formData.append('file', file.originFileObj);
+    //   return formData;
+    // });
 
-    const uploadPromises = formDataArray.map((formData: any) => {
-      return uploadImage.mutateAsync(formData);
-    });
+    // const uploadPromises = formDataArray.map((formData: any) => {
+    //   const result = uploadImage.mutateAsync(formData);
+    //   if (itemId === -10) {
+    //     IDs.push(newID);
+    //     setAttachmentsForRequest([
+    //       {
+    //         attributeChoiceId: null,
+    //         attachmentIds: IDs,
+    //       },
+    //     ]);
+    //   }
+    //   console.log(IDs);
+    //   return result;
+    // });
 
-    Promise.all(uploadPromises)
-      .then(() => {
-        setAttachmentIdsChanged(true);
-      })
-      .catch((error) => {
-        console.error('File upload error:', error);
-      });
+    // Promise.all(uploadPromises)
+    //   .then(() => {
+    //     setAttachmentIdsChanged(true);
+    //   })
+    //   .catch((error) => {
+    //     message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
+    //   });
 
     const filteredAttributeChoiceAndAttachments = updatedAttributeChoiceAndAttachments.filter(
       (entry) => entry.statusOfAttributeChoiceId === true,
@@ -495,6 +516,20 @@ export const AddRequest: React.FC = () => {
     const attributeChoiceAndAttachmentsToSend = filteredAttributeChoiceAndAttachments.map(
       ({ statusOfAttributeChoiceId, ...rest }) => rest,
     );
+
+    const attachmentIds = fileList.map((file) => file.uid); // Extract all file.uid values
+    const y = [
+      {
+        attributeChoiceId: null,
+        attachmentIds: attachmentIds,
+      },
+    ];
+
+    console.log('yyyyyyyyyyyyy', y);
+
+    const allAttachments = [...y, ...attributeChoiceAndAttachmentsToSend];
+
+    console.log('allAttachments', allAttachments);
 
     requestData = {
       sourceCityId: cityId.source,
@@ -516,9 +551,10 @@ export const AddRequest: React.FC = () => {
 
       sourceTypeId: selectedSourceType,
       attributeForSourceTypeValues: outputArray,
-      attributeChoiceAndAttachments: attributeChoiceAndAttachmentsToSend,
+      attributeChoiceAndAttachments: allAttachments,
       userId: userId ? userId : '0',
     };
+    setAttachmentIdsChanged(true);
   };
 
   useEffect(() => {
@@ -555,6 +591,35 @@ export const AddRequest: React.FC = () => {
       [itemId]: prevState[itemId] === undefined ? true : !prevState[itemId],
     }));
   };
+
+  const maher = async (options: any) => {
+    const { file } = options;
+
+    if (typeof file?.uid === 'string') picturesList?.push(file);
+
+    if (picturesList?.length === fileListLength) {
+      const formData = new FormData();
+      picturesList?.forEach((item) => {
+        formData.append('files', item);
+      });
+      formData.append('RefType', '2');
+      const result = await UploadMultiAttachment(formData);
+      const x: any[] = [];
+      result?.data?.result?.map((res: any) => {
+        x.push({
+          uid: res?.id,
+          status: 'done',
+          url: res?.url,
+        });
+        setAllIDs((prevId) => [...prevId, res?.id]);
+      });
+      setPicturesList([]);
+      setFileListLength(0);
+
+      setFileList(fileList.concat(x));
+    }
+  };
+  console.log(fileList);
 
   return (
     <Card title={t('addRequest.addRequest')} padding="1.25rem 1.25rem 1.25rem">
@@ -1236,19 +1301,32 @@ export const AddRequest: React.FC = () => {
                       </div>
                     </Card>
                   ))}
-                  {/* <Upload
+                  <Upload
                     action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
                     accept=".jpeg,.png,.jpg"
                     listType="picture-card"
                     fileList={fileList}
                     onPreview={handlePreviews}
-                    onChange={handleChange}
+                    maxCount={10}
+                    multiple
+                    onChange={(item) => {
+                      setFileListLength(item.fileList?.filter((item) => typeof item.uid === 'string')?.length);
+                    }}
+                    onRemove={(file) => {
+                      setFileList((prev: any[]) => {
+                        const test = prev.filter((item: any) => item?.uid !== file?.uid);
+
+                        return test;
+                      });
+                      return;
+                    }}
+                    customRequest={maher}
                   >
                     {fileList.length >= 8 ? null : uploadButtonForAllRequest}
                   </Upload>
                   <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
                     <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                  </Modal> */}
+                  </Modal>
                 </div>
               ) : (
                 ''
