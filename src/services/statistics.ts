@@ -5,4 +5,8 @@ const GetServiceStatistics = async () => {
   return await httpApi.get(`${apiPrefix.requests}/GetServiceStatistics`);
 };
 
-export { GetServiceStatistics };
+const GetStatisticsNumbers = async () => {
+  return await httpApi.get(`${apiPrefix.statictics}/GetStatisticsNumbers`);
+};
+
+export { GetServiceStatistics, GetStatisticsNumbers };

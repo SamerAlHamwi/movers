@@ -724,7 +724,12 @@
 
   "_comment26": "*********************************** charts ************************************************",
   "charts": {
-    "ServiceStatistics": "Services Statistics"
+    "ServiceStatistics": "Services Statistics",
+    "StatisticsNumbers": "General Statistics",
+    "companiesCount": "Companies",
+    "companyBranchCount": "Branches",
+    "brokersCount": "Brokers",
+    "partnersCount": "REMs"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

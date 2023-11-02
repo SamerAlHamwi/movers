@@ -721,7 +721,12 @@
 
   "_comment26": "*********************************** charts ************************************************",
   "charts": {
-    "ServiceStatistics": "إحصائيات الخدمات"
+    "ServiceStatistics": "إحصائيات الخدمات",
+    "StatisticsNumbers": "إحصائيات عامة",
+    "companiesCount": "الشركات",
+    "companyBranchCount": "الأفرع",
+    "brokersCount": "الوسطاء",
+    "partnersCount": "الشركاء"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

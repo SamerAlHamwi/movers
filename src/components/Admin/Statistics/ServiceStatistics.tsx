@@ -6,17 +6,12 @@ import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
 
-const ServiceStatistics = ({ data }: any) => {
+const ServiceStatistics = () => {
   const { t } = useTranslation();
 
   const [serviceStatistics, setServiceStatistics] = useState<any[] | undefined>(undefined);
 
-  const {
-    data: getServiceStatisticsData,
-    refetch,
-    isRefetching,
-    error,
-  } = useQuery(['GetServiceStatistics'], () =>
+  const { data, refetch, isRefetching, error } = useQuery(['GetServiceStatistics'], () =>
     GetServiceStatistics()
       .then((response) => {
         if (response.data?.success) {
@@ -50,6 +45,7 @@ const ServiceStatistics = ({ data }: any) => {
         distributed: true,
       },
     },
+    colors: ['#F44F5E', '#E55A89', '#D863B1', '#CA6CD8'],
   };
 
   const series = [
