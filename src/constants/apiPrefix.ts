@@ -27,4 +27,6 @@ export default {
   points: '/api/services/app/Point',
   rejectReason: '/api/services/app/RejectReason',
   drafts: '/api/services/app/Draft',
+  attachment: '/api/services/app/Attachment',
+  statictics: '/api/services/app/Statictics',
 };

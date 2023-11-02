@@ -550,7 +550,9 @@
     "destinationAddress": "العنوان",
     "moveAtUtc": "وقت الإنطلاق",
     "arrivalAtUtc": "وقت الوصول",
-    "sourceType": "نوع مكان النقل"
+    "sourceType": "نوع مكان النقل",
+    "chooseOption": "رجاءً إختر نوع مكان النقل من القائمة",
+    "sourceTypeDoesntHaveAttribute": "نوع مكان النقل هذا لا يحتوي على أي فئات"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -715,6 +717,18 @@
     "deactivateRejectReasonSuccessMessage": "تم إلغاء تفعيل سبب الرفض بنجاح",
     "deactivateRejectReasonConfirm": "إلغاء تفعيل حالة سبب الرفض؟",
     "activateRejectReasonConfirm": "تفعيل حالة سبب الرفض؟"
+  },
+
+  "_comment26": "*********************************** charts ************************************************",
+  "charts": {
+    "ServiceStatistics": "إحصائيات الخدمات",
+    "StatisticsNumbers": "إحصائيات عامة",
+    "companiesCount": "الشركات",
+    "companyBranchCount": "الأفرع",
+    "brokersCount": "الوسطاء",
+    "partnersCount": "الشركاء",
+    "CitiesStatistics": "إحصائيات المدن",
+    "requestsCount": "عدد طلبات النقل"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
