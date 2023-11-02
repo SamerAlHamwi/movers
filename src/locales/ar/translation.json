@@ -550,7 +550,9 @@
     "destinationAddress": "العنوان",
     "moveAtUtc": "وقت الإنطلاق",
     "arrivalAtUtc": "وقت الوصول",
-    "sourceType": "نوع مكان النقل"
+    "sourceType": "نوع مكان النقل",
+    "chooseOption": "رجاءً إختر نوع مكان النقل من القائمة",
+    "sourceTypeDoesntHaveAttribute": "نوع مكان النقل هذا لا يحتوي على أي فئات"
   },
 
   "_comment18": "*********************************** Branches ************************************************",

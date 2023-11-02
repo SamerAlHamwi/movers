@@ -33,6 +33,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -46,7 +47,6 @@ const { Step } = Steps;
 let requestData = {};
 let requestServicesArray: any = [];
 const requestServices: any = [];
-const IDs: number[] = [];
 const lang = localStorage.getItem('Go Movaro-lang');
 interface DisabledState {
   [key: string]: boolean;
@@ -58,6 +58,7 @@ export const AddRequest: React.FC = () => {
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const { userId } = useParams();
   const Navigate = useNavigate();
+  const { language } = useLanguage();
 
   const sourceLat = 25.15658048160557;
   const sourceLng = 55.34100848084654;
@@ -102,21 +103,15 @@ export const AddRequest: React.FC = () => {
   const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
   const [itemId, setItemId] = useState(0);
   const [newID, setNewID] = useState(0);
-  const [attachmentsForRequest, setAttachmentsForRequest] = useState<
-    Array<{ attributeChoiceId: number | null; attachmentIds: number[] }>
-  >([]);
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
     Array<{ attributeChoiceId: number; attachmentIds: number[] }>
   >([]);
   const [fileListLength, setFileListLength] = useState(0);
   const [picturesList, setPicturesList] = useState<any[]>([]);
-  const [allIDs, setAllIDs] = useState<any[]>([]);
   const updatedAttributeChoiceAndAttachments = attributeChoiceAndAttachments.map((entry) => ({
     ...entry,
     statusOfAttributeChoiceId: disabledUpload[entry.attributeChoiceId] === true,
   }));
-
-  console.log(allIDs);
 
   const outputArray = selectedCheckboxes.map((checkboxId) => ({
     attributeForSourcTypeId: checkboxId,
@@ -190,10 +185,7 @@ export const AddRequest: React.FC = () => {
       if (data.data.success) {
         const newId = data.data.result?.id;
         setPreviewImage(data.data.result?.url);
-        console.log(newId);
-
         setNewID(newId);
-
         setAttributeChoiceAndAttachments((prevAttributes) => {
           const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
           if (existingObjectIndex !== -1) {
@@ -252,6 +244,12 @@ export const AddRequest: React.FC = () => {
   useEffect(() => {
     AttributeForSourceTypesRefetch();
   }, [selectedSourceType, sourceType, disabledUpload]);
+
+  useEffect(() => {
+    GetAllSourceType.refetch();
+    AttributeForSourceTypesRefetch();
+    GetAllServices.refetch();
+  }, [language]);
 
   const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
     if (event.latLng) {
@@ -418,16 +416,6 @@ export const AddRequest: React.FC = () => {
       }),
   );
 
-  const attachmentIdsArray = fileList.reduce(
-    (accumulator, file) => {
-      accumulator.attachmentIds.push(file.id);
-      return accumulator;
-    },
-    { attributeChoiceId: null, attachmentIds: [] },
-  );
-
-  // console.log(attachmentIdsArray);
-
   const onFinish = async (values: any) => {
     const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
       form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
@@ -479,36 +467,6 @@ export const AddRequest: React.FC = () => {
     }
     extractServicesIds(requestServicesArray);
 
-    // const formDataArray = fileList.map((file: any) => {
-    //   const formData = new FormData();
-    //   formData.append('RefType', '2');
-    //   formData.append('file', file.originFileObj);
-    //   return formData;
-    // });
-
-    // const uploadPromises = formDataArray.map((formData: any) => {
-    //   const result = uploadImage.mutateAsync(formData);
-    //   if (itemId === -10) {
-    //     IDs.push(newID);
-    //     setAttachmentsForRequest([
-    //       {
-    //         attributeChoiceId: null,
-    //         attachmentIds: IDs,
-    //       },
-    //     ]);
-    //   }
-    //   console.log(IDs);
-    //   return result;
-    // });
-
-    // Promise.all(uploadPromises)
-    //   .then(() => {
-    //     setAttachmentIdsChanged(true);
-    //   })
-    //   .catch((error) => {
-    //     message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-    //   });
-
     const filteredAttributeChoiceAndAttachments = updatedAttributeChoiceAndAttachments.filter(
       (entry) => entry.statusOfAttributeChoiceId === true,
     );
@@ -517,7 +475,7 @@ export const AddRequest: React.FC = () => {
       ({ statusOfAttributeChoiceId, ...rest }) => rest,
     );
 
-    const attachmentIds = fileList.map((file) => file.uid); // Extract all file.uid values
+    const attachmentIds = fileList.map((file) => file.uid);
     const y = [
       {
         attributeChoiceId: null,
@@ -525,11 +483,7 @@ export const AddRequest: React.FC = () => {
       },
     ];
 
-    console.log('yyyyyyyyyyyyy', y);
-
     const allAttachments = [...y, ...attributeChoiceAndAttachmentsToSend];
-
-    console.log('allAttachments', allAttachments);
 
     requestData = {
       sourceCityId: cityId.source,
@@ -592,7 +546,7 @@ export const AddRequest: React.FC = () => {
     }));
   };
 
-  const maher = async (options: any) => {
+  const UploadAttachments = async (options: any) => {
     const { file } = options;
 
     if (typeof file?.uid === 'string') picturesList?.push(file);
@@ -611,7 +565,6 @@ export const AddRequest: React.FC = () => {
           status: 'done',
           url: res?.url,
         });
-        setAllIDs((prevId) => [...prevId, res?.id]);
       });
       setPicturesList([]);
       setFileListLength(0);
@@ -619,7 +572,6 @@ export const AddRequest: React.FC = () => {
       setFileList(fileList.concat(x));
     }
   };
-  console.log(fileList);
 
   return (
     <Card title={t('addRequest.addRequest')} padding="1.25rem 1.25rem 1.25rem">
@@ -708,7 +660,7 @@ export const AddRequest: React.FC = () => {
 
             <BaseForm.Item
               name={['requestForQuotationContacts', 0, 'fullName']}
-              label={<LableText>fullName</LableText>}
+              label={<LableText>{t('common.fullName')}</LableText>}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -762,17 +714,17 @@ export const AddRequest: React.FC = () => {
             >
               <Col>
                 <BaseForm.Item name={['requestForQuotationContacts', 0, 'isCallAvailable']} valuePropName="checked">
-                  <Checkbox>isCallAvailable</Checkbox>
+                  <Checkbox>{t('requests.isCallAvailable')}</Checkbox>
                 </BaseForm.Item>
               </Col>
               <Col>
                 <BaseForm.Item name={['requestForQuotationContacts', 0, 'isTelegramAvailable']} valuePropName="checked">
-                  <Checkbox>isTelegramAvailable</Checkbox>
+                  <Checkbox>{t('requests.isTelegramAvailable')}</Checkbox>
                 </BaseForm.Item>
               </Col>
               <Col>
                 <BaseForm.Item name={['requestForQuotationContacts', 0, 'isWhatsAppAvailable']} valuePropName="checked">
-                  <Checkbox>isWhatsAppAvailable</Checkbox>
+                  <Checkbox>{t('requests.isWhatsAppAvailable')}</Checkbox>
                 </BaseForm.Item>
               </Col>
             </Row>
@@ -781,7 +733,7 @@ export const AddRequest: React.FC = () => {
 
             <BaseForm.Item
               name={['requestForQuotationContacts', 1, 'fullName']}
-              label={<LableText>fullName</LableText>}
+              label={<LableText>{t('common.fullName')}</LableText>}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -835,17 +787,17 @@ export const AddRequest: React.FC = () => {
             >
               <Col>
                 <BaseForm.Item name={['requestForQuotationContacts', 1, 'isCallAvailable']} valuePropName="checked">
-                  <Checkbox>isCallAvailable</Checkbox>
+                  <Checkbox>{t('requests.isCallAvailable')}</Checkbox>
                 </BaseForm.Item>
               </Col>
               <Col>
                 <BaseForm.Item name={['requestForQuotationContacts', 1, 'isTelegramAvailable']} valuePropName="checked">
-                  <Checkbox>isTelegramAvailable</Checkbox>
+                  <Checkbox>{t('requests.isTelegramAvailable')}</Checkbox>
                 </BaseForm.Item>
               </Col>
               <Col>
                 <BaseForm.Item name={['requestForQuotationContacts', 1, 'isWhatsAppAvailable']} valuePropName="checked">
-                  <Checkbox>isWhatsAppAvailable</Checkbox>
+                  <Checkbox>{t('requests.isWhatsAppAvailable')}</Checkbox>
                 </BaseForm.Item>
               </Col>
             </Row>
@@ -907,7 +859,7 @@ export const AddRequest: React.FC = () => {
             </BaseForm.Item>
             <BaseForm.Item
               name="sourceAddress"
-              label={<LableText>sourceAddress</LableText>}
+              label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -923,9 +875,11 @@ export const AddRequest: React.FC = () => {
             </BaseForm.Item>
             <BaseForm.Item
               label={<LableText>{t('addRequest.date')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
+              // rules={[
+              //   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+
+              // ]}
+              rules={[{ type: 'object' as const, required: true, message: 'Please select time!' }]}
               style={
                 isDesktop || isTablet
                   ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
@@ -1014,7 +968,7 @@ export const AddRequest: React.FC = () => {
             </BaseForm.Item>
             <BaseForm.Item
               name="destinationAddress"
-              label={<LableText>destinationAddress</LableText>}
+              label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
@@ -1081,10 +1035,10 @@ export const AddRequest: React.FC = () => {
                 }}
               >
                 <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Internal
+                  {t('requests.Internal')}
                 </Radio>
                 <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  External
+                  {t('requests.External')}
                 </Radio>
               </Radio.Group>
             </BaseForm.Item>
@@ -1164,9 +1118,9 @@ export const AddRequest: React.FC = () => {
 
             <BaseForm.Item name={['attributeForSourceTypeValues']}>
               {sourceType == '0' ? (
-                <p>Please choose an option from the select.</p>
+                <p>{t('addRequest.chooseOption')}</p>
               ) : attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
-                <p>This Source Type doesn&apos;t have any Attribute</p>
+                <p>{t('addRequest.sourceTypeDoesntHaveAttribute')}</p>
               ) : attributeForSourceTypesData?.data?.result?.items.length > 0 && sourceType == '1' ? (
                 <div>
                   {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
@@ -1320,7 +1274,7 @@ export const AddRequest: React.FC = () => {
                       });
                       return;
                     }}
-                    customRequest={maher}
+                    customRequest={UploadAttachments}
                   >
                     {fileList.length >= 8 ? null : uploadButtonForAllRequest}
                   </Upload>

@@ -460,7 +460,7 @@
   "requests": {
     "requestsList": "Requests List",
     "comment": "Comment",
-    "sourceType": "Source Type",
+    "sourceType": "Moving Type",
     "serviceType": "Service Type",
     "services": "Services",
     "Internal": "Internal",
@@ -530,7 +530,7 @@
     "addRequest": "Add Request For Quotations",
     "Contact": "Contact",
     "Location": "Location",
-    "SourceType": "Source Type",
+    "SourceType": "Moving Type",
     "Services": "Services",
     "fullNameContactSource": "Full Name",
     "phoneNumberSource": "Phone Number",
@@ -548,12 +548,14 @@
     "DestinationLocation": "Destination Location",
     "country": "Country",
     "city": "City",
-    "date": "date",
+    "date": "Date",
     "sourceAddress": "Address",
     "destinationAddress": "Address",
     "moveAtUtc": "Move Time",
     "arrivalAtUtc": "Arrive Time",
-    "sourceType": "Source Type"
+    "sourceType": "Moving Type",
+    "chooseOption": "Please choose an option from the select",
+    "sourceTypeDoesntHaveAttribute": "This Moving Type doesn't have any Categories"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
