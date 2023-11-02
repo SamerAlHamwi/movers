@@ -726,7 +726,9 @@
     "companiesCount": "الشركات",
     "companyBranchCount": "الأفرع",
     "brokersCount": "الوسطاء",
-    "partnersCount": "الشركاء"
+    "partnersCount": "الشركاء",
+    "CitiesStatistics": "إحصائيات المدن",
+    "requestsCount": "عدد طلبات النقل"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

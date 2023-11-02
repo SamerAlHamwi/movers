@@ -1,21 +1,21 @@
-import { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { GetServiceStatistics } from '@app/services/statistics';
+import { GetCitiesStatistics } from '@app/services/statistics';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
 
-const ServiceStatistics = () => {
+const CitiesStatistics = () => {
   const { t } = useTranslation();
 
-  const [serviceStatistics, setServiceStatistics] = useState<any[] | undefined>(undefined);
+  const [citiesStatistics, setCitiesStatistics] = useState<any[] | undefined>(undefined);
 
-  const { data, refetch, isRefetching, error } = useQuery(['GetServiceStatistics'], () =>
-    GetServiceStatistics()
+  const { data, refetch, isRefetching, error } = useQuery(['GetCitiesStatistics'], () =>
+    GetCitiesStatistics()
       .then((response) => {
         if (response.data?.success) {
-          setServiceStatistics(response.data.result);
+          setCitiesStatistics(response.data.result);
         } else {
           throw new Error(response.data.message || 'Failed to fetch data');
         }
@@ -26,10 +26,10 @@ const ServiceStatistics = () => {
       }),
   );
 
-  const xValues = serviceStatistics?.map((serviceStatistic: any) => serviceStatistic.service.name);
-  const yValues = serviceStatistics?.map((serviceStatistic: any) => ({
-    x: serviceStatistic.service.name,
-    y: serviceStatistic.requestForQuotationCount,
+  const xValues = citiesStatistics?.map((cityStatistics: any) => cityStatistics.cityDto.name);
+  const yValues = citiesStatistics?.map((cityStatistics: any) => ({
+    x: cityStatistics.cityDto.name,
+    y: cityStatistics.requestForQuotationCount,
   }));
 
   const options: any = {
@@ -45,7 +45,7 @@ const ServiceStatistics = () => {
         distributed: true,
       },
     },
-    colors: ['#F44F5E', '#E55A89', '#D863B1', '#CA6CD8'],
+    colors: ['#2196F3', '#1976D2', '#1565C0', '#0D47A1'],
   };
 
   const series = [
@@ -56,7 +56,7 @@ const ServiceStatistics = () => {
   ];
 
   return (
-    <Card padding="0 0 1.875rem" title={t('charts.ServiceStatistics')}>
+    <Card padding="0 0 1.875rem" title={t('charts.CitiesStatistics')}>
       <div className="distributed-column-chart">
         <ReactApexChart options={options} series={series} type="bar" height={350} />
       </div>
@@ -64,4 +64,4 @@ const ServiceStatistics = () => {
   );
 };
 
-export default ServiceStatistics;
+export default CitiesStatistics;

@@ -729,7 +729,9 @@
     "companiesCount": "Companies",
     "companyBranchCount": "Branches",
     "brokersCount": "Brokers",
-    "partnersCount": "REMs"
+    "partnersCount": "REMs",
+    "CitiesStatistics": "Cities Statistics",
+    "requestsCount": "Requests for Quotation Count"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

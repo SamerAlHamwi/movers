@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
@@ -40,7 +40,7 @@ const GeneralStatistics = () => {
       height: 350,
     },
     xaxis: {
-      categories: xValues.map((label) => t(`charts.${label}`)), // Translate the labels
+      categories: xValues.map((label) => t(`charts.${label}`)),
     },
     plotOptions: {
       bar: {
