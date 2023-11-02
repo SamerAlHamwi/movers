@@ -7,6 +7,8 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import styled from 'styled-components';
 import { media } from '@app/styles/themes/constants';
 import { useTranslation } from 'react-i18next';
+import ServiceStatistics from '@app/components/Admin/Statistics/ServiceStatistics';
+
 const Row = styled(R)`
   @media only screen and ${media.xl} {
     padding: 1.3rem 2.3rem 2rem 2.3rem;
@@ -18,7 +20,11 @@ const Statistics: React.FC = () => {
     <>
       <PageTitle>{t('sidebarNavigation.Statistics')}</PageTitle>
       <Row gutter={[30, 30]}>
-        <Col id="gradient-stacked-area" xs={24}>
+        <Col id="gradient-stacked-area" xs={12}>
+          <ServiceStatistics />
+        </Col>
+
+        {/* <Col id="gradient-stacked-area" xs={24}>
           <GradientStackedAreaChart />
         </Col>
         <Col id="pie" xs={24} lg={12}>
@@ -26,7 +32,7 @@ const Statistics: React.FC = () => {
         </Col>
         <Col id="scatter" xs={24} lg={12}>
           <ScatterChart />
-        </Col>
+        </Col> */}
       </Row>
     </>
   );

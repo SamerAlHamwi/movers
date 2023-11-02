@@ -722,6 +722,11 @@
     "activateRejectReasonConfirm": "Activate Reject Reason?"
   },
 
+  "_comment26": "*********************************** charts ************************************************",
+  "charts": {
+    "ServiceStatistics": "Services Statistics"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",

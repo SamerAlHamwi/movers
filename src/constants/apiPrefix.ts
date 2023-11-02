@@ -28,4 +28,5 @@ export default {
   rejectReason: '/api/services/app/RejectReason',
   drafts: '/api/services/app/Draft',
   attachment: '/api/services/app/Attachment',
+  // apiPrefix: '/api/services/app/Attachment',
 };
