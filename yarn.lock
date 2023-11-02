@@ -1641,7 +1641,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@craco/craco@npm:^6.1.2":
+"@craco/craco@npm:^6.3.0":
   version: 6.4.5
   resolution: "@craco/craco@npm:6.4.5"
   dependencies:
@@ -15664,12 +15664,13 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react@npm:^18.2.0":
-  version: 18.2.0
-  resolution: "react@npm:18.2.0"
+"react@npm:^17.0.2":
+  version: 17.0.2
+  resolution: "react@npm:17.0.2"
   dependencies:
     loose-envify: ^1.1.0
-  checksum: 88e38092da8839b830cda6feef2e8505dec8ace60579e46aa5490fc3dc9bba0bd50336507dc166f43e3afc1c42939c09fe33b25fae889d6f402721dcd78fca1b
+    object-assign: ^4.1.1
+  checksum: b254cc17ce3011788330f7bbf383ab653c6848902d7936a87b09d835d091e3f295f7e9dd1597c6daac5dc80f90e778c8230218ba8ad599f74adcc11e33b9d61b
   languageName: node
   linkType: hard
 
@@ -16754,7 +16755,7 @@ __metadata:
   resolution: "simo@workspace:."
   dependencies:
     "@ant-design/icons": ^4.6.2
-    "@craco/craco": ^6.1.2
+    "@craco/craco": ^6.3.0
     "@fontsource/cairo": ^4.5.13
     "@fontsource/lato": ^4.5.10
     "@react-google-maps/api": ^2.7.0
@@ -16804,7 +16805,7 @@ __metadata:
     pigeon-maps: ^0.19.7
     prettier: ^2.3.1
     rc-picker: latest
-    react: ^18.2.0
+    react: ^17.0.2
     react-apexcharts: ^1.4.1
     react-cookie: ^6.1.1
     react-country-flag: ^3.0.2
