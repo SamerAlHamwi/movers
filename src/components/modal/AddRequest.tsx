@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space, Tree } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree, DatePicker } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
@@ -24,7 +24,7 @@ import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
 import { getCountries, getCities } from '@app/services/locations';
-import { DatePicker } from '../common/pickers/DatePicker';
+// import { DatePicker } from '../common/pickers/DatePicker';
 import { Alert } from '../common/Alert/Alert';
 import { uploadAttachment, UploadMultiAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
@@ -102,7 +102,6 @@ export const AddRequest: React.FC = () => {
   const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
   const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
   const [itemId, setItemId] = useState(0);
-  const [newID, setNewID] = useState(0);
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
     Array<{ attributeChoiceId: number; attachmentIds: number[] }>
   >([]);
@@ -185,7 +184,6 @@ export const AddRequest: React.FC = () => {
       if (data.data.success) {
         const newId = data.data.result?.id;
         setPreviewImage(data.data.result?.url);
-        setNewID(newId);
         setAttributeChoiceAndAttachments((prevAttributes) => {
           const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
           if (existingObjectIndex !== -1) {
@@ -244,6 +242,12 @@ export const AddRequest: React.FC = () => {
   useEffect(() => {
     AttributeForSourceTypesRefetch();
   }, [selectedSourceType, sourceType, disabledUpload]);
+
+  useEffect(() => {
+    setSelectedCheckboxes([]);
+  }, [selectedSourceType]);
+
+  console.log(selectedCheckboxes);
 
   useEffect(() => {
     GetAllSourceType.refetch();
@@ -875,11 +879,9 @@ export const AddRequest: React.FC = () => {
             </BaseForm.Item>
             <BaseForm.Item
               label={<LableText>{t('addRequest.date')}</LableText>}
-              // rules={[
-              //   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-
-              // ]}
-              rules={[{ type: 'object' as const, required: true, message: 'Please select time!' }]}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
               style={
                 isDesktop || isTablet
                   ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
@@ -1026,7 +1028,12 @@ export const AddRequest: React.FC = () => {
 
         {current === 2 && (
           <>
-            <BaseForm.Item name={['serviceType']}>
+            <BaseForm.Item
+              name={['serviceType']}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
               <Radio.Group
                 style={{ display: 'flex', width: '100%' }}
                 onChange={(event) => {
@@ -1097,6 +1104,10 @@ export const AddRequest: React.FC = () => {
                 showSearch
                 optionFilterProp="children"
                 onChange={(e: any) => {
+                  // setSelectedCheckboxes([]); // Reset the selectedCheckboxes to an empty object
+                  // setSelectedChoices([]); // Reset the selectedChoices to an empty object
+                  // setImagesLists([]); // Reset the imagesLists to an empty object
+
                   setSelectedSourceType(e);
                   setSourceType('1');
                 }}
@@ -1134,7 +1145,10 @@ export const AddRequest: React.FC = () => {
                                 toggleDisable(sourceTypeItem.id);
                               }}
                               onChange={(CheckboxChangeEvent) => {
+                                console.log(CheckboxChangeEvent);
                                 const isChecked = CheckboxChangeEvent.target.checked;
+                                console.log(isChecked);
+
                                 if (isChecked) {
                                   setSelectedCheckboxes((prevSelectedCheckboxes) => [
                                     ...prevSelectedCheckboxes,
@@ -1152,6 +1166,7 @@ export const AddRequest: React.FC = () => {
                           </BaseForm.Item>
                         </p>
                         <Radio.Group
+                          className="radios"
                           style={{ display: 'flex', justifyContent: 'space-around' }}
                           onChange={(e) => {
                             const sourceTypeId = sourceTypeItem.id;
@@ -1184,11 +1199,7 @@ export const AddRequest: React.FC = () => {
                                 {childAttributeChoices?.map(
                                   (item: any, index: number) =>
                                     parentAttributeChoice?.id === item?.attributeChociceParentId && (
-                                      <div
-                                        key={item.id}
-                                        style={{ margin: '4rem 1rem 5rem' }}
-                                        onClick={() => setItemId(item.id)}
-                                      >
+                                      <div key={item.id} style={{ margin: '1rem' }} onClick={() => setItemId(item.id)}>
                                         <BaseForm.Item key={index} name={item.name} valuePropName="checked">
                                           <Checkbox
                                             onClick={() => {
