@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Popconfirm, Col } from 'antd';
+import { message, Row, Space, Popconfirm, Col, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
@@ -289,100 +289,106 @@ export const User: React.FC = () => {
       render: (index: number, record: UserModel) => {
         return (
           <Space>
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                setIsOpenDeleteModalForm(true);
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  setIsOpenDeleteModalForm(true);
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
 
             {record.isActive === true ? (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('users.deactivateUserConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {deActivateUser.isLoading ? (
-                      <>
-                        {t(`common.deactivate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.deactivate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                onConfirm={() => deActivateUser.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.deactivate')}</TableText>
-                </Button>
-              </Popconfirm>
+              <Tooltip placement="top" title={t('common.deactivate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('users.deactivateUserConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {deActivateUser.isLoading ? (
+                        <>
+                          {t(`common.deactivate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.deactivate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => deActivateUser.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.deactivate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
             ) : (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('users.activateUserConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {activateUser.isLoading ? (
-                      <>
-                        {t(`common.activate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.activate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                onConfirm={() => activateUser.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.activate')}</TableText>
-                </Button>
-              </Popconfirm>
+              <Tooltip placement="top" title={t('common.activate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('users.activateUserConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {activateUser.isLoading ? (
+                        <>
+                          {t(`common.activate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.activate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => activateUser.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.activate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
             )}
           </Space>
         );

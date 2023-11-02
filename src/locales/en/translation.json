@@ -4,6 +4,8 @@
     "id": "Id",
     "and": "and",
     "title": "Title",
+    "title_ar": "Arabic Title",
+    "title_en": "English Title",
     "attachment": "Attachment",
     "icon": "Icon",
     "phoneNumber": "Phone Number",
@@ -291,7 +293,8 @@
     "points": "Points",
     "numberOfPaidPoints": "NO. Paid Points",
     "numberOfGiftedPoints": "NO. Gifted Points",
-    "totalPoints": "Total Points"
+    "totalPoints": "Total Points",
+    "branches": "Branches"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -582,7 +585,6 @@
     "PrivacyList": "PrivacyPolicy",
     "Notifications": "Notices",
     "send": "Send Notification",
-    "sendp": "Create",
     "englishMessage": "English messages",
     "arabicMessage": "Arabic messages",
     "arabictitle": "Arabic Title",
@@ -609,12 +611,12 @@
   },
 
   "_comment20": "*********************************** Terms ************************************************",
-  "Terms": {
+  "terms": {
     "editTermSuccessMessage": "Terms Edit Successfully",
     "deleteTermsSuccessMessage": "Terms delete Successfully",
-    "TermsList": "Terms List",
+    "TermsList": "Terms & Conditions List",
     "sendSuccessMessage": "Terms Added Succesfuly",
-    "addterms": "Create",
+    "addTerm": "Add Term Or Condition",
     "add": "Save Edit"
   },
 

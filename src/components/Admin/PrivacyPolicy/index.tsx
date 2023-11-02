@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
-import { Alert, Row, Space, message } from 'antd';
+import { Alert, Row, Space, Tooltip, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
@@ -228,25 +228,29 @@ export const PrivacyPolicy: React.FC = () => {
       render: (index: number, Data: PrivacyPolicy) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(Data);
-                setIsOpenEditModalForm(true);
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(Data);
+                  setIsOpenEditModalForm(true);
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(Data);
-                setIsOpenDeleteModalForm(true);
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(Data);
+                  setIsOpenDeleteModalForm(true);
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Tag } from 'antd';
+import { message, Row, Space, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -311,24 +311,29 @@ export const Companies: React.FC = () => {
           <>
             {(record.statues === 0 || record.statues === 1) && (
               <Space>
-                <TableButton
-                  severity="info"
-                  onClick={() => {
-                    setApprovemodaldata(record);
-                    handleModalOpen('approve');
-                  }}
-                >
-                  <CheckOutlined />
-                </TableButton>
-                <TableButton
-                  severity="error"
-                  onClick={() => {
-                    setRejectmodaldata(record);
-                    handleModalOpen('reject');
-                  }}
-                >
-                  <CloseOutlined />
-                </TableButton>
+                <Tooltip placement="top" title={t('common.approve')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setApprovemodaldata(record);
+                      handleModalOpen('approve');
+                    }}
+                  >
+                    <CheckOutlined />
+                  </TableButton>
+                </Tooltip>
+
+                <Tooltip placement="top" title={t('common.reject')}>
+                  <TableButton
+                    severity="error"
+                    onClick={() => {
+                      setRejectmodaldata(record);
+                      handleModalOpen('reject');
+                    }}
+                  >
+                    <CloseOutlined />
+                  </TableButton>
+                </Tooltip>
               </Space>
             )}
             {record.statues === 2 && (
@@ -351,42 +356,39 @@ export const Companies: React.FC = () => {
       render: (index: number, record: CompanyModal) => {
         return (
           <Space>
-            <TableButton
-              severity="success"
-              onClick={() => {
-                navigate(`${record.id}/branches`, { replace: false });
-              }}
-            >
-              <ApartmentOutlined />
-            </TableButton>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                // navigate(`${record.id}/EditCom`, { replace: false });
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('companies.branches')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  navigate(`${record.id}/branches`, { replace: false });
+                }}
+              >
+                <ApartmentOutlined />
+              </TableButton>
+            </Tooltip>
 
-            {/* <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton> */}
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  // navigate(`${record.id}/EditCom`, { replace: false });
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('delete');
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },

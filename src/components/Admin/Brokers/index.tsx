@@ -234,6 +234,7 @@ export const Brokers: React.FC = () => {
           >
             <CreateButtonText>{t('brokers.addBroker')}</CreateButtonText>
           </Button>
+
           {/*    Add    */}
           {modalState.add && (
             <AddBrokr
@@ -245,6 +246,7 @@ export const Brokers: React.FC = () => {
               isLoading={addBroker.isLoading}
             />
           )}
+
           {/*    EDIT    */}
           {modalState.edit && (
             <EditBroker
@@ -255,6 +257,7 @@ export const Brokers: React.FC = () => {
               isLoading={editBroker.isLoading}
             />
           )}
+
           {/*    Delete    */}
           {modalState.delete && (
             <ActionModal

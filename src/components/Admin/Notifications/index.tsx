@@ -7,7 +7,7 @@ import {
   ResendPushNotification,
 } from '@app/services/pushNotifications';
 import { useMutation, useQuery } from 'react-query';
-import { Alert, Row, Space, message } from 'antd';
+import { Alert, Row, Space, Tooltip, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
 import { PushNotification } from '@app/components/modal/PushNotification';
@@ -215,25 +215,29 @@ export const Notifications: React.FC = () => {
       render: (index: number, Data: Notification) => {
         return (
           <Space>
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(Data);
-                setIsOpenDeleteModalForm(true);
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(Data);
+                  setIsOpenDeleteModalForm(true);
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="warning"
-              onClick={() => {
-                setResendmodaldata(Data);
-                setIsOpenResendModalForm(true);
-              }}
-            >
-              <RedoOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.resend')}>
+              <TableButton
+                severity="warning"
+                onClick={() => {
+                  setResendmodaldata(Data);
+                  setIsOpenResendModalForm(true);
+                }}
+              >
+                <RedoOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
