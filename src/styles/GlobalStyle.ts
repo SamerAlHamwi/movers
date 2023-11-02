@@ -297,4 +297,10 @@ export default createGlobalStyle`
     position: relative;
     top: -4px;
   }
+  
+  .radios {
+    display: flex;
+    justify-content: space-around;
+    flex-direction: column;
+  }
 `;
