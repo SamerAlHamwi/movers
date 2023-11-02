@@ -4,6 +4,8 @@
     "id": "رقم",
     "and": "و",
     "title": "العنوان",
+    "title_ar": "العنوان بالعربية",
+    "title_en": "العنوان بالإنكليزية",
     "attachment": "صورة",
     "icon": "الأيقونة",
     "phoneNumber": "رقم الهاتف",
@@ -290,9 +292,10 @@
     "reviews": "المراجعات",
     "details": "تفاصيل الشركة",
     "points": "نقاط الشركة",
-    "numberOfPaidPoints": "",
-    "numberOfGiftedPoints": "",
-    "totalPoints": ""
+    "branches": "الفروع",
+    "numberOfPaidPoints": "عدد النقاط المدفوعة",
+    "numberOfGiftedPoints": "عدد النقاط المهداة",
+    "totalPoints": "عدد النقاط الكلي"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -576,7 +579,6 @@
     "notificationsList": "قائمة الإشعارات",
     "Notifications": "الإشعارات",
     "send": "إرسال إشعار",
-    "sendp": "إضافة",
     "englishdescription": "التوصيف بالإنكليزية",
     "arabicdiscription": "التوصيف بالعربية",
     "englishtitle": "العنوان بالإنكليزية",
@@ -606,12 +608,12 @@
   },
 
   "_comment20": "*********************************** Terms ************************************************",
-  "Terms": {
+  "terms": {
     "editTermSuccessMessage": "تم تعديل الشروط والأحكام بنجاح",
     "deleteTermsSuccessMessage": "تم الحذف بنجاح",
     "TermsList": "قائمة الشروط والأحكام",
     "sendSuccessMessage": "تمت الإضافة بنجاح",
-    "addterms": "إنشاء",
+    "addTerm": "إضافة حُكم أو شرط",
     "add": "حفظ التعديل"
   },
 

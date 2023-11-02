@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslation, Trans } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
-import { Alert, Row, Space, message } from 'antd';
+import { Alert, Row, Space, Tooltip, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
 import { Header, TableButton } from '../../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
@@ -15,7 +15,7 @@ import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/terms';
 import { EditTerm } from '@app/components/modal/EditTerm';
-import { PushTerm } from '@app/components/modal/PushTerm';
+import { AddTerm } from '@app/components/modal/AddTerm';
 import { useSelector } from 'react-redux';
 
 export type Translation = {
@@ -92,10 +92,10 @@ export const Term: React.FC = () => {
     else setIsLoading(false);
   }, [isRefetching]);
 
-  const pushTerm = useMutation((data: Term) =>
+  const addTerm = useMutation((data: Term) =>
     createTerm(data)
       .then((data) => {
-        notificationController.success({ message: t('Terms.sendSuccessMessage') });
+        notificationController.success({ message: t('terms.sendSuccessMessage') });
         setRefetchOnAddNotification(data.data?.success);
       })
       .catch((error) => {
@@ -104,8 +104,8 @@ export const Term: React.FC = () => {
   );
 
   useEffect(() => {
-    setIsOpenPushModalForm(pushTerm.isLoading);
-  }, [pushTerm.isLoading]);
+    setIsOpenPushModalForm(addTerm.isLoading);
+  }, [addTerm.isLoading]);
 
   const deleteTerm = useMutation((id: number) =>
     DeleteTerm(id)
@@ -113,7 +113,7 @@ export const Term: React.FC = () => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('Terms.deleteTermsSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('terms.deleteTermsSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error: any) => {
@@ -143,7 +143,7 @@ export const Term: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`Terms.editTermSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`terms.editTermSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -155,94 +155,65 @@ export const Term: React.FC = () => {
     setIsOpenEditModalForm(editTerm.isLoading);
   }, [editTerm.isLoading]);
 
-  const notificationsColumns = [
+  const columns = [
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'common.id'} />
-        </Header>
-      ),
-      dataIndex: 'id',
-    },
-    {
-      title: (
-        <Header>
-          <Trans i18nKey={'notifications.englishtitle'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.title_en')}</Header>,
       dataIndex: ['translations', 0, 'title'],
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'notifications.arabictitle'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.title_ar')}</Header>,
       dataIndex: ['translations', 1, 'title'],
       render: (text: string) => {
-        return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
+        return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'notifications.englishdescription'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.description_en')}</Header>,
       dataIndex: ['translations', 0, 'description'],
-
       render: (text: string) => {
-        const firstSentence = text.split('.')[0]; // Get the first sentence
-
-        return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
+        return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'notifications.arabicdiscription'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.description_ar')}</Header>,
       dataIndex: ['translations', 1, 'description'],
-
       render: (text: string) => {
-        const firstSentence = text.split('.')[0]; // Get the first sentence
-        return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
+        return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'notifications.actions'} />
-        </Header>
-      ),
-
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, Data: Term) => {
+      render: (index: number, record: any) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(Data);
-                setIsOpenEditModalForm(true);
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  setIsOpenEditModalForm(true);
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(Data);
-                setIsOpenDeleteModalForm(true);
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  setIsOpenDeleteModalForm(true);
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
@@ -252,7 +223,7 @@ export const Term: React.FC = () => {
   return (
     <>
       <Card
-        title={t('Terms.TermsList')}
+        title={t('terms.TermsList')}
         padding={
           TermsData?.length === 0 || TermsData === undefined || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -269,9 +240,24 @@ export const Term: React.FC = () => {
             }}
             onClick={() => setIsOpenPushModalForm(true)}
           >
-            <CreateButtonText>{t('notifications.sendp')}</CreateButtonText>
+            <CreateButtonText>{t('terms.addTerm')}</CreateButtonText>
           </Button>
-          {isOpenEditModalForm ? (
+
+          {/*    Add    */}
+          {isOpenPushModalForm && (
+            <AddTerm
+              isManager={user.userType === 0 ? false : true}
+              visible={isOpenPushModalForm}
+              onCancel={() => setIsOpenPushModalForm(false)}
+              onCreateTerm={(data) => {
+                addTerm.mutateAsync(data);
+              }}
+              isLoading={addTerm.isLoading}
+            />
+          )}
+
+          {/*    EDIT    */}
+          {isOpenEditModalForm && (
             <EditTerm
               Term_values={editmodaldata}
               visible={isOpenEditModalForm}
@@ -279,19 +265,10 @@ export const Term: React.FC = () => {
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
               isLoading={editTerm.isLoading}
             />
-          ) : null}{' '}
-          {isOpenPushModalForm ? (
-            <PushTerm
-              isManager={user.userType === 0 ? false : true}
-              visible={isOpenPushModalForm}
-              onCancel={() => setIsOpenPushModalForm(false)}
-              onCreateTerm={(data) => {
-                pushTerm.mutateAsync(data);
-              }}
-              isLoading={pushTerm.isLoading}
-            />
-          ) : null}
-          {isOpenDeleteModalForm ? (
+          )}
+
+          {/*    Delete    */}
+          {isOpenDeleteModalForm && (
             <ActionModal
               visible={isOpenDeleteModalForm}
               onCancel={() => setIsOpenDeleteModalForm(false)}
@@ -306,7 +283,7 @@ export const Term: React.FC = () => {
               isDanger={true}
               isLoading={deleteTerm.isLoading}
             />
-          ) : null}
+          )}
         </Row>
 
         <Table
@@ -327,7 +304,7 @@ export const Term: React.FC = () => {
             showLessItems: true,
             pageSizeOptions: [5, 10, 15, 20],
           }}
-          columns={user.userType === 1 ? notificationsColumns : [...notificationsColumns]}
+          columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={isLoading}
           scroll={{ x: isTablet ? 700 : isMobile ? 800 : 600 }}
         />

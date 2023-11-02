@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@app/components/common/Card/Card';
-import { Alert, Col, Popconfirm, Row, Space, message } from 'antd';
+import { Alert, Col, Popconfirm, Row, Space, Tooltip, message } from 'antd';
 import { Table } from 'components/common/Table/Table';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
@@ -318,109 +318,118 @@ export const Country: React.FC = () => {
       render: (index: number, record: CountryModel) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                setIsOpenEditModalForm(true);
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  setIsOpenEditModalForm(true);
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                setIsOpenDeleteModalForm(true);
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  setIsOpenDeleteModalForm(true);
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
+
             {record.isActive === true ? (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('locations.deactivateCountryConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {deActivateCountry.isLoading ? (
-                      <>
-                        {t(`common.deactivate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.deactivate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                onConfirm={() => deActivateCountry.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.deactivate')}</TableText>
-                </Button>
-              </Popconfirm>
+              <Tooltip placement="top" title={t('common.deactivate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('locations.deactivateCountryConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {deActivateCountry.isLoading ? (
+                        <>
+                          {t(`common.deactivate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.deactivate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => deActivateCountry.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.deactivate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
             ) : (
-              <Popconfirm
-                placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                title={<LableText>{t('locations.activateCountryConfirm')}</LableText>}
-                okButtonProps={{
-                  onMouseOver: () => {
-                    setIsHover(true);
-                  },
-                  onMouseLeave: () => {
-                    setIsHover(false);
-                  },
-                  loading: false,
-                  style: {
-                    color: `${defineColorBySeverity('info')}`,
-                    background: isHover
-                      ? 'var(--background-color)'
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                    borderColor: isHover
-                      ? `${defineColorBySeverity('info')}`
-                      : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                  },
-                }}
-                okText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                    {activateCountry.isLoading ? (
-                      <>
-                        {t(`common.activate`)} <LoadingOutlined />
-                      </>
-                    ) : (
-                      t(`common.activate`)
-                    )}
-                  </div>
-                }
-                cancelText={
-                  <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                }
-                onConfirm={() => activateCountry.mutateAsync(record.id)}
-              >
-                <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                  <TableText>{t('common.activate')}</TableText>
-                </Button>
-              </Popconfirm>
+              <Tooltip placement="top" title={t('common.activate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('locations.activateCountryConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {activateCountry.isLoading ? (
+                        <>
+                          {t(`common.activate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.activate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => activateCountry.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.activate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
             )}
           </Space>
         );
