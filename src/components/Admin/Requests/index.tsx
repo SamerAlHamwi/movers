@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space } from 'antd';
+import { message, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
@@ -377,24 +377,29 @@ export const Requests: React.FC = () => {
           <>
             {record.statues === 1 && (
               <Space>
-                <TableButton
-                  severity="info"
-                  onClick={() => {
-                    setApprovemodaldata(record);
-                    handleModalOpen('approve');
-                  }}
-                >
-                  <CheckOutlined />
-                </TableButton>
-                <TableButton
-                  severity="error"
-                  onClick={() => {
-                    setRejectmodaldata(record);
-                    handleModalOpen('reject');
-                  }}
-                >
-                  <CloseOutlined />
-                </TableButton>
+                <Tooltip placement="top" title={t('common.approve')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setApprovemodaldata(record);
+                      handleModalOpen('approve');
+                    }}
+                  >
+                    <CheckOutlined />
+                  </TableButton>
+                </Tooltip>
+
+                <Tooltip placement="top" title={t('common.reject')}>
+                  <TableButton
+                    severity="error"
+                    onClick={() => {
+                      setRejectmodaldata(record);
+                      handleModalOpen('reject');
+                    }}
+                  >
+                    <CloseOutlined />
+                  </TableButton>
+                </Tooltip>
               </Space>
             )}
             {/* {record.statues === 1 && (
@@ -422,35 +427,29 @@ export const Requests: React.FC = () => {
       render: (index: number, record: RequestModel) => {
         return (
           <Space>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setEditmodaldata(record);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-            <TableButton
-              severity="error"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('delete');
-              }}
-            >
-              <DeleteOutlined />
-            </TableButton>
-
-            {/* <TableButton
-              severity="warning"
-              onClick={() => {
-                setDeletemodaldata(record);
-                handleModalOpen('reject');
-              }}
-            >
-              <RedoOutlined />
-            </TableButton> */}
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
