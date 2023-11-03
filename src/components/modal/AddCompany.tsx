@@ -790,6 +790,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input value={companyInfo?.companyContact?.webSite} />
