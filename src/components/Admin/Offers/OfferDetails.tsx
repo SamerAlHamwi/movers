@@ -312,7 +312,9 @@ const OfferDetails: React.FC = () => {
                 <DetailsValue
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                 >
-                  {offerData?.selectedCompanies?.requestForQuotation?.user?.fullName}
+                  {offerData?.selectedCompanies?.requestForQuotation?.user?.fullName == ' '
+                    ? '___'
+                    : offerData?.selectedCompanies?.requestForQuotation?.user?.fullName}
                 </DetailsValue>
               </DetailsRow>
 

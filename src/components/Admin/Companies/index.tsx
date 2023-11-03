@@ -5,7 +5,14 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, ApartmentOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ApartmentOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  TagOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
@@ -23,7 +30,7 @@ import { useSelector } from 'react-redux';
 export const Companies: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { language } = useLanguage();
   const { desktopOnly, isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
 
@@ -50,7 +57,7 @@ export const Companies: React.FC = () => {
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
 
   const handleButtonClick = () => {
-    navigate('/addCompany', { replace: false });
+    Navigate('/addCompany', { replace: false });
   };
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -259,7 +266,7 @@ export const Companies: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/offers`, { state: record.name });
+                Navigate(`${record.id}/offers`, { state: record.name });
               }}
             >
               <div
@@ -270,33 +277,6 @@ export const Companies: React.FC = () => {
                 }}
               >
                 {t('requests.offers')}
-              </div>
-            </Button>
-          </Space>
-        );
-      },
-    },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.details')}</Header>,
-      dataIndex: 'details',
-      render: (index: number, record: any) => {
-        return (
-          <Space>
-            <Button
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                navigate(`${record.id}/details`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
-                }}
-              >
-                {t('companies.details')}
               </div>
             </Button>
           </Space>
@@ -353,14 +333,25 @@ export const Companies: React.FC = () => {
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, record: CompanyModal) => {
+      render: (index: number, record: any) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('companies.branches')}>
+            <Tooltip placement="top" title={t('common.details')}>
               <TableButton
                 severity="success"
                 onClick={() => {
-                  navigate(`${record.id}/branches`, { replace: false });
+                  Navigate(`${record.id}/details`, { state: record.name });
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
+
+            <Tooltip placement="top" title={t('companies.branches')}>
+              <TableButton
+                severity="warning"
+                onClick={() => {
+                  Navigate(`${record.id}/branches`, { replace: false });
                 }}
               >
                 <ApartmentOutlined />
@@ -371,7 +362,7 @@ export const Companies: React.FC = () => {
               <TableButton
                 severity="info"
                 onClick={() => {
-                  // navigate(`${record.id}/EditCom`, { replace: false });
+                  // Navigate(`${record.id}/EditCom`, { replace: false });
                 }}
               >
                 <EditOutlined />

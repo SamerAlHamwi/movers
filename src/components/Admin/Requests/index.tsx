@@ -6,7 +6,7 @@ import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined, TagOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
@@ -343,33 +343,6 @@ export const Requests: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
-      dataIndex: 'details',
-      render: (index: number, record: any) => {
-        return (
-          <Space>
-            <Button
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                Navigate(`${record.id}/details`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
-                }}
-              >
-                {t('requests.details')}
-              </div>
-            </Button>
-          </Space>
-        );
-      },
-    },
-    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.status')}</Header>,
       dataIndex: 'status',
       render: (index: number, record: RequestModel) => {
@@ -427,6 +400,17 @@ export const Requests: React.FC = () => {
       render: (index: number, record: RequestModel) => {
         return (
           <Space>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`${record.id}/details`, { state: record.name });
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
+
             <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"

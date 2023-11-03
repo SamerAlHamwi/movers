@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Space, message } from 'antd';
+import { Row, Space, Tooltip, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
@@ -11,7 +11,7 @@ import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { Header, CreateButtonText } from '../../GeneralStyles';
+import { Header, CreateButtonText, TableButton } from '../../GeneralStyles';
 import { RequestModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
@@ -20,7 +20,7 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 
 export const Offers: React.FC = () => {
@@ -133,28 +133,21 @@ export const Offers: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.details')}</Header>,
-      dataIndex: 'details',
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
+      dataIndex: 'actions',
       render: (index: number, record: any) => {
         return (
           <Space>
-            <ButtonCol
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                Navigate(`${record.id}/details`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`${record.id}/details`, { state: record.name });
                 }}
               >
-                {t('requests.details')}
-              </div>
-            </ButtonCol>
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
