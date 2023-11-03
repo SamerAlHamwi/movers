@@ -559,6 +559,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[\u0600-\u06FF ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -571,6 +575,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -585,6 +593,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[\u0600-\u06FF ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -597,6 +609,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -611,6 +627,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[\u0600-\u06FF ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -623,6 +643,10 @@ export const AddCompany: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -781,8 +805,6 @@ export const AddCompany: React.FC = () => {
                 }),
               ]}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-
-              // style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
             >
               <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>

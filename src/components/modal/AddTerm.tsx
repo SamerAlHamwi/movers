@@ -65,7 +65,13 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 0, 'title']}
           label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
@@ -73,7 +79,13 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 0, 'description']}
           label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
@@ -81,7 +93,13 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 1, 'title']}
           label={<LableText>{t(`notifications.arabictitle`)}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
           style={{ margin: '-.5rem 0' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'rtl' }} />
@@ -89,7 +107,13 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 1, 'description']}
           label={<LableText>{t(`notifications.arabicdiscription`)}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'ltr' }} />

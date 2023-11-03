@@ -14,8 +14,8 @@ import { LanguageType } from '@app/interfaces/interfaces';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
-import { Pushprivacy } from '@app/components/modal/Pushprivacy';
-import { Editprivacy } from '@app/components/modal/Editprivacy';
+import { AddPrivacyPolicy } from '@app/components/modal/AddPrivacyPolicy';
+import { EditPrivacyPolicy } from '@app/components/modal/EditPrivacyPolicy';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 
@@ -280,7 +280,7 @@ export const PrivacyPolicy: React.FC = () => {
             <CreateButtonText>{t('notifications.sendp')}</CreateButtonText>
           </Button>
           {isOpenEditModalForm ? (
-            <Editprivacy
+            <EditPrivacyPolicy
               Priv_values={editmodaldata}
               visible={isOpenEditModalForm}
               onCancel={() => setIsOpenEditModalForm(false)}
@@ -289,7 +289,7 @@ export const PrivacyPolicy: React.FC = () => {
             />
           ) : null}{' '}
           {isOpenPushModalForm ? (
-            <Pushprivacy
+            <AddPrivacyPolicy
               isManager={user.userType === 0 ? false : true}
               visible={isOpenPushModalForm}
               onCancel={() => setIsOpenPushModalForm(false)}

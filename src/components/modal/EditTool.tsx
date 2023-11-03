@@ -76,27 +76,34 @@ export const EditTool: React.FC<EditProps> = ({ visible, onCancel, values, onEdi
     >
       <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="SurceTypesForm">
         <BaseForm.Item
-          name={['translations', 0, 'name']}
-          label={<LableText>{t('common.name_ar')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <Input />
-        </BaseForm.Item>
-        <BaseForm.Item
           name={['translations', 1, 'name']}
           label={<LableText>{t('common.name_en')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          // rules={[{ required: true, message: t('common.requiredImage') }]}
-          name="image"
-          label={<LableText>{t('common.image')}</LableText>}
-          style={{ marginTop: '-1rem' }}
+          name={['translations', 0, 'name']}
+          label={<LableText>{t('common.name_ar')}</LableText>}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
         >
+          <Input />
+        </BaseForm.Item>
+        <BaseForm.Item name="image" label={<LableText>{t('common.image')}</LableText>} style={{ marginTop: '-1rem' }}>
           <UploadDragger
             maxCount={1}
             showUploadList={false}
