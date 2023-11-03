@@ -7,7 +7,7 @@ import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Steps, Image, Tree, Radio } from 'antd';
+import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Alert, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
@@ -308,6 +308,13 @@ export const AddBranch: React.FC = () => {
       availableCitiesIds: selectedCityValues,
     };
     updatedFormData.translations = branchInfo.translations;
+    if (requestServices.length == 0) {
+      message.open({
+        content: <Alert message={t('requests.atLeastOneService')} type={`error`} showIcon />,
+      });
+      return;
+    }
+
     addBranch.mutate(branchInfo);
   };
 

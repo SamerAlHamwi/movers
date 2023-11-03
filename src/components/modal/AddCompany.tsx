@@ -422,6 +422,12 @@ export const AddCompany: React.FC = () => {
 
     updatedFormData.translations = companyInfo.translations;
     updatedFormData.additionalAttachmentIds = updatedFormData.additionalAttachmentIds.filter((id: any) => id !== 0);
+    if (requestServices.length == 0) {
+      message.open({
+        content: <Alert message={t('requests.atLeastOneService')} type={`error`} showIcon />,
+      });
+      return;
+    }
     addCompany.mutate(companyInfo);
   };
 

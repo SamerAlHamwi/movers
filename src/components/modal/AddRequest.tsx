@@ -517,6 +517,12 @@ export const AddRequest: React.FC = () => {
 
   useEffect(() => {
     if (attachmentIdsChanged) {
+      if (requestServices.length == 0) {
+        message.open({
+          content: <Alert message={t('requests.atLeastOneService')} type={`error`} showIcon />,
+        });
+        return;
+      }
       createRequestMutation.mutateAsync(requestData);
       setAttachmentIdsChanged(false);
     }
