@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, TagOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { DeleteBranch, getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
@@ -185,38 +185,22 @@ export const Branches: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('branch.details')}</Header>,
-      dataIndex: 'details',
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
+      dataIndex: 'actions',
       render: (index: number, record: any) => {
         return (
           <Space>
-            <Button
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                navigate(`${record.id}/details`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  navigate(`${record.id}/details`, { state: record.name });
                 }}
               >
-                {t('branch.details')}
-              </div>
-            </Button>
-          </Space>
-        );
-      },
-    },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
-      dataIndex: 'actions',
-      render: (index: number, record: BranchModel) => {
-        return (
-          <Space>
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
+
             <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"
