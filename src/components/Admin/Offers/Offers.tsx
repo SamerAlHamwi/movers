@@ -4,7 +4,6 @@ import { Row, Space, Tooltip, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
-import { Button as ButtonCol } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
 import { getAllOffers, sendForUser } from '@app/services/offers';
 import { Table } from '@app/components/common/Table/Table';
@@ -18,7 +17,7 @@ import Tag from 'antd/es/tag';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
@@ -64,6 +63,8 @@ export const Offers: React.FC = () => {
     },
   );
 
+  console.log(companyId);
+
   useEffect(() => {
     if (isRefetching) setLoading(true);
     else setLoading(false);
@@ -103,13 +104,14 @@ export const Offers: React.FC = () => {
   };
 
   const columns = [
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
-      dataIndex: 'id',
-      render: (id: any) => (
-        <Checkbox onChange={() => handleCheckboxChangeForSendToUser(id)} checked={selectedOffers.includes(id)} />
-      ),
-    },
+    requestId !== undefined &&
+      companyId === undefined && {
+        title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
+        dataIndex: 'id',
+        render: (id: any) => (
+          <Checkbox onChange={() => handleCheckboxChangeForSendToUser(id)} checked={selectedOffers.includes(id)} />
+        ),
+      },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('offers.price')}</Header>, dataIndex: 'price' },
     {
@@ -152,7 +154,7 @@ export const Offers: React.FC = () => {
         );
       },
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <>
@@ -202,17 +204,19 @@ export const Offers: React.FC = () => {
         />
       </Card>
 
-      <Button
-        type="primary"
-        style={{
-          marginBottom: '.5rem',
-          width: 'auto',
-          height: 'auto',
-        }}
-        onClick={() => sendForUserMutation.mutateAsync(selectedOffers)}
-      >
-        <CreateButtonText>{t('common.done')}</CreateButtonText>
-      </Button>
+      {requestId !== undefined && companyId === undefined && (
+        <Button
+          type="primary"
+          style={{
+            marginBottom: '.5rem',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() => sendForUserMutation.mutateAsync(selectedOffers)}
+        >
+          <CreateButtonText>{t('common.done')}</CreateButtonText>
+        </Button>
+      )}
     </>
   );
 };

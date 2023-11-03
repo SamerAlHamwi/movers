@@ -10,8 +10,6 @@ const getAllOffers = async (
   branchId?: string | undefined,
 ) => {
   const skip = (page - 1) * pageSize;
-  console.log(requestId);
-
   return await httpApi.get(
     `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&CompanyId=${companyId}&CompanyBranchId=${branchId}`,
   );
