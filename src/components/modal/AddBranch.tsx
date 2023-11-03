@@ -607,6 +607,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      type: 'email',
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                    },
                   ]}
                 >
                   <Input value={branchInfo?.companyContact?.emailAddress} />
@@ -724,6 +728,10 @@ export const AddBranch: React.FC = () => {
               }
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                {
+                  type: 'email',
+                  message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                },
               ]}
             >
               <Input />

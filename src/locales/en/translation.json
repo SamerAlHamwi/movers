@@ -81,7 +81,8 @@
     "code": "Codes",
     "onlyNumbers": "Only Numbers are allowed",
     "onlyEnglishCharacters": "Only English Characters Are Accepted",
-    "onlyArabicCharacters": "Only Arabic Characters Are Accepted"
+    "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
+    "invalidEmail": "Email Is Incorrect"
   },
 
   "_comment0": "*********************************** auth ************************************************",

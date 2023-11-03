@@ -171,7 +171,13 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
 
         <BaseForm.Item
           name="emailAddress"
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              type: 'email',
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
           label={<LableText>{t('contactUs.emailAddress')}</LableText>}
         >

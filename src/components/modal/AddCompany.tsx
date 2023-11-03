@@ -770,10 +770,17 @@ export const AddCompany: React.FC = () => {
                   name={['companyContact', 'emailAddress']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      required: true,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                    },
+                    {
+                      type: 'email',
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                    },
                   ]}
                 >
-                  <Input value={companyInfo?.companyContact?.emailAddress} />
+                  <Input />
                 </BaseForm.Item>
               </Col>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
@@ -883,6 +890,10 @@ export const AddCompany: React.FC = () => {
               }
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                {
+                  type: 'email',
+                  message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                },
               ]}
             >
               <Input />
