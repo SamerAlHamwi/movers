@@ -404,6 +404,7 @@ export const AddCompany: React.FC = () => {
       userDto: {
         dialCode: '+' + dialCodeU,
         phoneNumber: phoneNumberU,
+        emailAddress: form.getFieldValue(['userDto', 'emailAddress']),
         password: form.getFieldValue(['userDto', 'password']),
       },
       serviceType: valueRadio,
@@ -863,6 +864,29 @@ export const AddCompany: React.FC = () => {
             >
               <PhoneInput key={2} onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
+
+            <BaseForm.Item
+              label={<LableText>{t('companies.emailAddress')}</LableText>}
+              name={['userDto', 'emailAddress']}
+              style={
+                isDesktop || isTablet
+                  ? {
+                      width: '50%',
+                      margin: 'auto',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+                  : {
+                      width: '80%',
+                      margin: '0 10%',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+              }
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Input />
+            </BaseForm.Item>
 
             <Auth.FormItem
               label={t('auth.password')}
