@@ -244,7 +244,12 @@ export default createGlobalStyle`
   }
   
   .ant-tree-switcher {
-    top: 10px
+    top: 16px;
+    width: 30px;
+  }
+
+  .ant-tree-switcher .ant-tree-switcher-icon {
+    font-size: 14px;
   }
 
   .react-tel-input .form-control {

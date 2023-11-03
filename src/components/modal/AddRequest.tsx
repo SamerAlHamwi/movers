@@ -316,7 +316,7 @@ export const AddRequest: React.FC = () => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <Image src={service?.attachment?.url} width={16} height={16} />
+          <Image src={service?.attachment?.url} width={27} height={27} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
@@ -329,7 +329,7 @@ export const AddRequest: React.FC = () => {
         const subServiceNode = {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <Image src={subService?.attachment?.url} width={16} height={16} />
+              <Image src={subService?.attachment?.url} width={27} height={27} />
               {subService?.name}
             </span>
           ),
@@ -341,7 +341,7 @@ export const AddRequest: React.FC = () => {
           subServiceNode.children = subService.tools.map((tool: any) => ({
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-                <Image src={tool?.attachment?.url} width={16} height={16} />
+                <Image src={tool?.attachment?.url} width={27} height={27} />
                 {tool?.name}
               </span>
             ),
@@ -1123,7 +1123,7 @@ export const AddRequest: React.FC = () => {
                     <Option value={ele.id} key={ele?.id}>
                       <Space>
                         <span role="img" aria-label={ele.name} style={{ display: 'flex', alignItems: 'center' }}>
-                          <img src={ele?.icon?.url} width={16} height={16} style={{ margin: '0 1.5rem 0 0.3rem' }} />
+                          <img src={ele?.icon?.url} width={27} height={27} style={{ margin: '0 1.5rem 0 0.3rem' }} />
                           {ele.name}
                         </span>
                       </Space>
