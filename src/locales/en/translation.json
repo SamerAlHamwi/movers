@@ -738,7 +738,8 @@
     "basicUsersCount": "Users",
     "requestFQCount": "Requests",
     "CitiesStatistics": "Cities Statistics",
-    "requestsCount": "Requests for Quotation Count"
+    "requestsCount": "Requests for Quotation Count",
+    "CompaniesStatistics": "Companies Statistics"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

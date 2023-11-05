@@ -735,7 +735,8 @@
     "basicUsersCount": "المستخدمين",
     "requestFQCount": "طلبات النقل",
     "CitiesStatistics": "إحصائيات المدن",
-    "requestsCount": "عدد طلبات النقل"
+    "requestsCount": "عدد طلبات النقل",
+    "CompaniesStatistics": "إحصائيات الشركات"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

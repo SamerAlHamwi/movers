@@ -10,6 +10,7 @@ import { useTranslation } from 'react-i18next';
 import ServiceStatistics from '@app/components/Admin/Statistics/ServiceStatistics';
 import GeneralStatistics from '@app/components/Admin/Statistics/GeneralStatistics';
 import CitiesStatistics from '@app/components/Admin/Statistics/CitiesStatistics';
+import CompaniesStatistics from '@app/components/Admin/Statistics/CompaniesStatistics';
 
 const Row = styled(R)`
   @media only screen and ${media.xl} {
@@ -25,6 +26,14 @@ const Statistics: React.FC = () => {
       <Row gutter={[30, 30]}>
         <Col id="gradient-stacked-area" xs={24}>
           <GeneralStatistics />
+        </Col>
+
+        <Col id="gradient-stacked-area" xs={24}>
+          <CompaniesStatistics />
+        </Col>
+
+        <Col id="gradient-stacked-area" xs={12}>
+          {/* <CompaniesStatistics /> */}
         </Col>
 
         <Col id="gradient-stacked-area" xs={12}>
