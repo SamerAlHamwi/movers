@@ -6,8 +6,6 @@ const GetStatisticsNumbers = async () => {
 };
 
 const GetUsrsStatistics = async (selectedYear?: any) => {
-  console.log('GetUsrsStatistics', selectedYear);
-
   return await httpApi.get(`${apiPrefix.users}/GetStatisticalNumbers?${selectedYear ? `Year=${selectedYear}&` : ''}`);
 };
 

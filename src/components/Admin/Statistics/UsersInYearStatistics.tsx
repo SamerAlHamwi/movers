@@ -50,7 +50,7 @@ const UsersInYearStatistics = () => {
 
   const optionsInYear: any = {
     chart: {
-      type: 'bar',
+      type: 'rangeArea',
     },
     xaxis: {
       categories: xValuesInYear || [],
