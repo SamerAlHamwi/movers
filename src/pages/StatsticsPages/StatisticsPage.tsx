@@ -12,6 +12,8 @@ import GeneralStatistics from '@app/components/Admin/Statistics/GeneralStatistic
 import CitiesStatistics from '@app/components/Admin/Statistics/CitiesStatistics';
 import CompaniesStatistics from '@app/components/Admin/Statistics/CompaniesStatistics';
 import BranchesStatistics from '@app/components/Admin/Statistics/BranchesStatistics';
+import UsersStatistics from '@app/components/Admin/Statistics/UsersStatistics';
+import UsersInYearStatistics from '@app/components/Admin/Statistics/UsersInYearStatistics';
 
 const Row = styled(R)`
   @media only screen and ${media.xl} {
@@ -25,23 +27,31 @@ const Statistics: React.FC = () => {
     <>
       <PageTitle>{t('sidebarNavigation.Statistics')}</PageTitle>
       <Row gutter={[30, 30]}>
-        <Col id="gradient-stacked-area" xs={24}>
+        <Col id="GeneralStatistics" xs={24}>
           <GeneralStatistics />
         </Col>
 
-        <Col id="gradient-stacked-area" xs={24}>
+        <Col id="UsersInYearStatistics" xs={24}>
+          <UsersInYearStatistics />
+        </Col>
+
+        <Col id="UsersStatistics" xs={24}>
+          <UsersStatistics />
+        </Col>
+
+        <Col id="CompaniesStatistics" xs={24}>
           <CompaniesStatistics />
         </Col>
 
-        <Col id="gradient-stacked-area" xs={24}>
+        <Col id="BranchesStatistics" xs={24}>
           <BranchesStatistics />
         </Col>
 
-        <Col id="gradient-stacked-area" xs={12}>
+        <Col id="ServiceStatistics" xs={12}>
           <ServiceStatistics />
         </Col>
 
-        <Col id="gradient-stacked-area" xs={12}>
+        <Col id="CitiesStatistics" xs={12}>
           <CitiesStatistics />
         </Col>
 

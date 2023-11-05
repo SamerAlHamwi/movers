@@ -75,8 +75,8 @@ const GeneralStatistics = () => {
 
   const series = [
     {
-      name: 'Statistics',
-      data: sortedYValues, // Use sorted values
+      name: `${t('charts.Statistics')}`,
+      data: sortedYValues,
     },
   ];
 

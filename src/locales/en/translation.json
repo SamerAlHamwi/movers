@@ -740,7 +740,21 @@
     "CitiesStatistics": "Cities Statistics",
     "requestsCount": "Requests for Quotation Count",
     "CompaniesStatistics": "Companies Statistics",
-    "BranchesStatistics": "Branches Statistics"
+    "BranchesStatistics": "Branches Statistics",
+    "UsersStatistics": "Users Statistics",
+    "users": "Users",
+    "activeUsers": "Active Users",
+    "deActiveUsers": "InActive Users",
+    "admins": "Admins",
+    "companyBranchUser": "Branch Users",
+    "companyUser": "Company Users",
+    "customerService": "Customers Services",
+    "mediatorUser": "Brokers",
+    "totalCount": "Total Count",
+    "Statistics": "Statistics",
+    "count": "Count",
+    "UsersInYearStatistics": "Users Statistics In Year",
+    "numberOfUser": "Number Of Users"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

@@ -737,7 +737,21 @@
     "CitiesStatistics": "إحصائيات المدن",
     "requestsCount": "عدد طلبات النقل",
     "CompaniesStatistics": "إحصائيات الشركات",
-    "BranchesStatistics": "إحصائيات الأفرع"
+    "BranchesStatistics": "إحصائيات الأفرع",
+    "UsersStatistics": "إحصائيات المستخدمين",
+    "users": "المستخدمين",
+    "activeUsers": "المستخدمين النشطين",
+    "deActiveUsers": "المستخدمين الغير نشطين",
+    "admins": "مسؤولين النظام",
+    "companyBranchUser": "المستخدمين لدى الأفرع",
+    "companyUser": "المستخدمين لدى الشركات",
+    "customerService": "موظفو الخدمات",
+    "mediatorUser": "الوسطاء",
+    "totalCount": "المجموع الكلي",
+    "Statistics": "الإحصائيات",
+    "count": "العدد",
+    "UsersInYearStatistics": "إحصائيات السمتخدمين خلال السنة",
+    "numberOfUser": "عدد المستخدمين"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
