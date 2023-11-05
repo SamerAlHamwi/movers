@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { GetCompaniesStatistics } from '@app/services/statistics';
+import { GetBranchesStatistics } from '@app/services/statistics';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
 
-const CompaniesStatistics = () => {
+const BranchesStatistics = () => {
   const { t } = useTranslation();
 
-  const [companiesStatistics, setCompaniesStatistics] = useState<any[]>([]);
+  const [branchesStatistics, setBranchesStatistics] = useState<any[]>([]);
 
-  const { data, refetch, isRefetching, error } = useQuery(['GetCompaniesStatistics'], () =>
-    GetCompaniesStatistics()
+  const { data, refetch, isRefetching, error } = useQuery(['GetBranchesStatistics'], () =>
+    GetBranchesStatistics()
       .then((response) => {
         if (response.data?.success) {
-          setCompaniesStatistics(response.data.result);
+          setBranchesStatistics(response.data.result);
         } else {
           throw new Error(response.data.message || 'Failed to fetch data');
         }
@@ -26,10 +26,10 @@ const CompaniesStatistics = () => {
       }),
   );
 
-  const xValues = companiesStatistics?.map((companyStatistics: any) => companyStatistics.company.name);
-  const yValues = companiesStatistics?.map((companyStatistics: any) => ({
-    x: companyStatistics.company.name,
-    y: companyStatistics.requestForQuotationCount,
+  const xValues = branchesStatistics?.map((branchStatistics: any) => branchStatistics.companyBranch.name);
+  const yValues = branchesStatistics?.map((branchStatistics: any) => ({
+    x: branchStatistics.companyBranch.name,
+    y: branchStatistics.requestForQuotationCount,
   }));
 
   const options: any = {
@@ -43,7 +43,7 @@ const CompaniesStatistics = () => {
       bar: {
         borderRadius: 10,
         distributed: true,
-        columnWidth: companiesStatistics.length < 5 ? '20%' : companiesStatistics.length < 10 ? '20%' : '50%',
+        columnWidth: branchesStatistics.length < 5 ? '20%' : branchesStatistics.length < 10 ? '20%' : '50%',
       },
     },
   };
@@ -56,7 +56,7 @@ const CompaniesStatistics = () => {
   ];
 
   return (
-    <Card padding="0 0 1.875rem" title={t('charts.CompaniesStatistics')}>
+    <Card padding="0 0 1.875rem" title={t('charts.BranchesStatistics')}>
       <div className="distributed-column-chart">
         <ReactApexChart options={options} series={series} type="bar" height={350} />
       </div>
@@ -64,4 +64,4 @@ const CompaniesStatistics = () => {
   );
 };
 
-export default CompaniesStatistics;
+export default BranchesStatistics;

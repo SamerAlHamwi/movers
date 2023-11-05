@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 const ServiceStatistics = () => {
   const { t } = useTranslation();
 
-  const [serviceStatistics, setServiceStatistics] = useState<any[] | undefined>(undefined);
+  const [serviceStatistics, setServiceStatistics] = useState<any[]>([]);
 
   const { data, refetch, isRefetching, error } = useQuery(['GetServiceStatistics'], () =>
     GetServiceStatistics()
@@ -43,6 +43,7 @@ const ServiceStatistics = () => {
       bar: {
         borderRadius: 10,
         distributed: true,
+        columnWidth: serviceStatistics.length < 10 ? '40%' : '50%',
       },
     },
     colors: ['#F44F5E', '#E55A89', '#D863B1', '#CA6CD8'],

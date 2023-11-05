@@ -739,7 +739,8 @@
     "requestFQCount": "Requests",
     "CitiesStatistics": "Cities Statistics",
     "requestsCount": "Requests for Quotation Count",
-    "CompaniesStatistics": "Companies Statistics"
+    "CompaniesStatistics": "Companies Statistics",
+    "BranchesStatistics": "Branches Statistics"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

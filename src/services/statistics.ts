@@ -9,6 +9,10 @@ const GetCompaniesStatistics = async () => {
   return await httpApi.get(`${apiPrefix.companies}/GetInfoAboutRequestsCount`);
 };
 
+const GetBranchesStatistics = async () => {
+  return await httpApi.get(`${apiPrefix.branches}/GetInfoAboutRequestsCount`);
+};
+
 const GetServiceStatistics = async () => {
   return await httpApi.get(`${apiPrefix.requests}/GetServiceStatistics`);
 };
@@ -17,4 +21,10 @@ const GetCitiesStatistics = async () => {
   return await httpApi.get(`${apiPrefix.requests}/GetCitiesStatistics`);
 };
 
-export { GetStatisticsNumbers, GetCompaniesStatistics, GetServiceStatistics, GetCitiesStatistics };
+export {
+  GetStatisticsNumbers,
+  GetCompaniesStatistics,
+  GetBranchesStatistics,
+  GetServiceStatistics,
+  GetCitiesStatistics,
+};

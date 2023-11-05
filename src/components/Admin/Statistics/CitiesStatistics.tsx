@@ -9,7 +9,7 @@ import { useTranslation } from 'react-i18next';
 const CitiesStatistics = () => {
   const { t } = useTranslation();
 
-  const [citiesStatistics, setCitiesStatistics] = useState<any[] | undefined>(undefined);
+  const [citiesStatistics, setCitiesStatistics] = useState<any[]>([]);
 
   const { data, refetch, isRefetching, error } = useQuery(['GetCitiesStatistics'], () =>
     GetCitiesStatistics()
@@ -43,6 +43,7 @@ const CitiesStatistics = () => {
       bar: {
         borderRadius: 10,
         distributed: true,
+        columnWidth: citiesStatistics.length < 10 ? '40%' : '50%',
       },
     },
     colors: ['#2196F3', '#1976D2', '#1565C0', '#0D47A1'],

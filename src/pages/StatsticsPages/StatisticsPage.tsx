@@ -11,6 +11,7 @@ import ServiceStatistics from '@app/components/Admin/Statistics/ServiceStatistic
 import GeneralStatistics from '@app/components/Admin/Statistics/GeneralStatistics';
 import CitiesStatistics from '@app/components/Admin/Statistics/CitiesStatistics';
 import CompaniesStatistics from '@app/components/Admin/Statistics/CompaniesStatistics';
+import BranchesStatistics from '@app/components/Admin/Statistics/BranchesStatistics';
 
 const Row = styled(R)`
   @media only screen and ${media.xl} {
@@ -32,8 +33,8 @@ const Statistics: React.FC = () => {
           <CompaniesStatistics />
         </Col>
 
-        <Col id="gradient-stacked-area" xs={12}>
-          {/* <CompaniesStatistics /> */}
+        <Col id="gradient-stacked-area" xs={24}>
+          <BranchesStatistics />
         </Col>
 
         <Col id="gradient-stacked-area" xs={12}>
