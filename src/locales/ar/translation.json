@@ -731,6 +731,9 @@
     "companyBranchCount": "الأفرع",
     "brokersCount": "الوسطاء",
     "partnersCount": "الشركاء",
+    "askForHelpCount": "طلبات المساعدة",
+    "basicUsersCount": "المستخدمين",
+    "requestFQCount": "طلبات النقل",
     "CitiesStatistics": "إحصائيات المدن",
     "requestsCount": "عدد طلبات النقل"
   },

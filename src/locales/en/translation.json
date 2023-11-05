@@ -734,6 +734,9 @@
     "companyBranchCount": "Branches",
     "brokersCount": "Brokers",
     "partnersCount": "REMs",
+    "askForHelpCount": "Help Requests",
+    "basicUsersCount": "Users",
+    "requestFQCount": "Requests",
     "CitiesStatistics": "Cities Statistics",
     "requestsCount": "Requests for Quotation Count"
   },
