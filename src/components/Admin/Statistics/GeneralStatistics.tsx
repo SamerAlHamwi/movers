@@ -34,13 +34,23 @@ const GeneralStatistics = () => {
   const xValues = Object.keys(statisticsData);
   const yValues = Object.values(statisticsData);
 
+  // Create an array of objects with labels and values
+  const dataPoints = xValues.map((label, index) => ({ label, value: yValues[index] }));
+
+  // Sort the dataPoints in ascending order by value
+  dataPoints.sort((a, b) => a.value - b.value);
+
+  // Extract the sorted xValues and yValues
+  const sortedXValues = dataPoints.map((dataPoint) => dataPoint.label);
+  const sortedYValues = dataPoints.map((dataPoint) => dataPoint.value);
+
   const options: any = {
     chart: {
       type: 'bar',
       height: 350,
     },
     xaxis: {
-      categories: xValues.map((label) => t(`charts.${label}`)),
+      categories: sortedXValues.map((label) => t(`charts.${label}`)),
     },
     plotOptions: {
       bar: {
@@ -54,8 +64,8 @@ const GeneralStatistics = () => {
     dataLabels: {
       enabled: true,
       textAnchor: 'middle',
-      formatter: function (value: any, { seriesIndex, dataPointIndex }: any) {
-        return `${t(`charts.${xValues[dataPointIndex]}`)}: ${value}`;
+      formatter: function (value: any, { dataPointIndex }: any) {
+        return `${t(`charts.${sortedXValues[dataPointIndex]}`)}: ${value}`;
       },
     },
     legend: {
@@ -66,7 +76,7 @@ const GeneralStatistics = () => {
   const series = [
     {
       name: 'Statistics',
-      data: yValues,
+      data: sortedYValues, // Use sorted values
     },
   ];
 

@@ -81,7 +81,8 @@
     "code": "Codes",
     "onlyNumbers": "Only Numbers are allowed",
     "onlyEnglishCharacters": "Only English Characters Are Accepted",
-    "onlyArabicCharacters": "Only Arabic Characters Are Accepted"
+    "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
+    "invalidEmail": "Email Is Incorrect"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -525,7 +526,8 @@
     "addNewRequest": "Add New Request",
     "draftsList": "Drafts List",
     "checkPINForUserModalTitle": "Enter The PIN Code To Obtain User Authorization",
-    "checkPINForUserModal": "Enter The PIN Code"
+    "checkPINForUserModal": "Enter The PIN Code",
+    "atLeastOneService": "At Least One Service Must Be Selected"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -732,6 +734,9 @@
     "companyBranchCount": "Branches",
     "brokersCount": "Brokers",
     "partnersCount": "REMs",
+    "askForHelpCount": "Help Requests",
+    "basicUsersCount": "Users",
+    "requestFQCount": "Requests",
     "CitiesStatistics": "Cities Statistics",
     "requestsCount": "Requests for Quotation Count"
   },

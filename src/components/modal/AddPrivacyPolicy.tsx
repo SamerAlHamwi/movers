@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Space, Modal } from 'antd';
-import { CreateNotificationModalProps, EditNotifactionprops, EditTermprops } from './ModalProps';
+import { CreateprivacyModalProps } from './ModalProps';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 import { Button } from '../common/buttons/Button/Button';
@@ -11,40 +11,44 @@ import { Select, Option } from '@app/components/common/selects/Select/Select';
 import { TextArea } from '../Admin/Translations';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
-import { Notification } from '@app/components/Admin/Notifications';
-import { LanguageType, NotModal } from '@app/interfaces/interfaces';
-import { useMutation } from 'react-query';
+import { LanguageType } from '@app/interfaces/interfaces';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
-import { Term } from '../Admin/Terms';
 
-export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, Term_values, isLoading }) => {
-  const { t } = useTranslation();
-  const theme = useAppSelector((state) => state.theme.theme);
+export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
+  visible,
+  onCreateprivacy,
+  onCancel,
+  isManager,
+  isLoading,
+}) => {
+  const { isDesktop, isTablet } = useResponsive();
   const [form] = BaseForm.useForm();
-  const [current, setCurrent] = useState(0);
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
-  const [attachments, setAttachments] = useState<any[]>([]);
-
-  useEffect(() => {
-    isLoading ? '' : Term_values !== undefined && form.setFieldsValue(Term_values);
-  }, [Term_values, isLoading]);
+  const { t } = useTranslation();
+  const user = useAppSelector((state) => state.user.user);
 
   const onOk = () => {
     form.submit();
   };
 
-  const onFinish = (data: Term) => {
-    const edited_data = {
-      title: data.title,
-      description: data.description,
-
-      id: data.id,
-      translations: data.translations.map((_, i) => ({
-        ...data.translations[i],
-        language: i === 0 ? ('en' as LanguageType) : ('ar' as LanguageType),
-      })),
+  const onFinish = (value: PrivacyPolicy) => {
+    let data = {
+      title: 'string',
+      description: 'string',
+      translations: [
+        {
+          title: value.translations[0].title,
+          description: value.translations[0].description,
+          language: 'en' as LanguageType,
+        },
+        {
+          title: value.translations[1].title,
+          description: value.translations[1].description,
+          language: 'ar' as LanguageType,
+        },
+      ],
     };
-    onEdit(edited_data);
+    data = user.userType === 1 ? { ...data } : data;
+    onCreateprivacy(data);
   };
 
   const buttonStyle = { height: 'auto' };
@@ -53,7 +57,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
-        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t('notifications.send')}</div>
+        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t('notifications.sendp')}</div>
       }
       onCancel={onCancel}
       maskClosable={true}
@@ -64,13 +68,33 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button style={buttonStyle} loading={isLoading} key="save" type="primary" onClick={onOk}>
-              <P1>{t('Terms.add')}</P1>
+              <P1>{t('notifications.sendp')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>
       }
     >
       <BaseForm form={form} layout="vertical" onFinish={onFinish} name="userForm">
+        {isManager ? null : (
+          <BaseForm.Item
+            style={{ marginTop: '-1rem' }}
+            name={`destination`}
+            label={<LableText>{t(`notifications.destination.destination`)}</LableText>}
+            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          >
+            <Select>
+              <Option value={0}>
+                <Text>{t('notifications.destination.all')}</Text>
+              </Option>
+              <Option value={1}>
+                <Text>{t('notifications.destination.Users')}</Text>
+              </Option>
+              <Option value={2}>
+                <Text>{t('notifications.destination.Companies')}</Text>
+              </Option>
+            </Select>
+          </BaseForm.Item>
+        )}
         <BaseForm.Item
           name={['translations', 0, 'title']}
           label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
@@ -85,7 +109,6 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
-
         <BaseForm.Item
           name={['translations', 0, 'description']}
           label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
@@ -124,9 +147,9 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
             },
           ]}
-          style={{ margin: '-.5rem 0' }}
+          style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
+          <TextArea style={{ textAlign: 'right', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

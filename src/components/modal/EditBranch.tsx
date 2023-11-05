@@ -106,7 +106,7 @@ export const EditBranch: React.FC = () => {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
           <p>{service.id}</p>
-          <Image src={service?.attachment?.url} width={16} height={16} />
+          <Image src={service?.attachment?.url} width={27} height={27} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
@@ -120,7 +120,7 @@ export const EditBranch: React.FC = () => {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
               <p>{subService.id}</p>
-              <Image src={subService?.attachment?.url} width={16} height={16} />
+              <Image src={subService?.attachment?.url} width={27} height={27} />
               {subService?.name}
             </span>
           ),
@@ -135,7 +135,7 @@ export const EditBranch: React.FC = () => {
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
                 <p>{tool.id}</p>
-                <Image src={tool?.attachment?.url} width={16} height={16} />
+                <Image src={tool?.attachment?.url} width={27} height={27} />
                 {tool?.name}
               </span>
             ),
@@ -385,6 +385,10 @@ export const EditBranch: React.FC = () => {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                       },
+                      {
+                        pattern: /^[\u0600-\u06FF ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                      },
                     ]}
                   >
                     <Input />
@@ -401,6 +405,10 @@ export const EditBranch: React.FC = () => {
                       {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                      {
+                        pattern: /^[A-Za-z ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                       },
                     ]}
                   >
@@ -421,6 +429,10 @@ export const EditBranch: React.FC = () => {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                       },
+                      {
+                        pattern: /^[\u0600-\u06FF ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                      },
                     ]}
                   >
                     <Input />
@@ -437,6 +449,10 @@ export const EditBranch: React.FC = () => {
                       {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                      {
+                        pattern: /^[A-Za-z ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                       },
                     ]}
                   >
@@ -457,6 +473,10 @@ export const EditBranch: React.FC = () => {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                       },
+                      {
+                        pattern: /^[\u0600-\u06FF ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                      },
                     ]}
                   >
                     <Input />
@@ -473,6 +493,10 @@ export const EditBranch: React.FC = () => {
                       {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                      {
+                        pattern: /^[A-Za-z ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                       },
                     ]}
                   >
@@ -573,6 +597,10 @@ export const EditBranch: React.FC = () => {
                       {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                      {
+                        pattern: /^[A-Za-z ]+$/,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                       },
                     ]}
                   >

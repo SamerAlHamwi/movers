@@ -78,7 +78,7 @@ const RequestDetails: React.FC = () => {
     treeData = requestData?.services.map((service: any) => ({
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <Image src={service?.attachment?.url} width={16} height={16} />
+          <Image src={service?.attachment?.url} width={27} height={27} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
@@ -86,7 +86,7 @@ const RequestDetails: React.FC = () => {
       children: service?.subServices.map((subService: any) => ({
         title: (
           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-            <Image src={subService?.attachment?.url} width={16} height={16} />
+            <Image src={subService?.attachment?.url} width={27} height={27} />
             {subService?.name}
           </span>
         ),
@@ -94,7 +94,7 @@ const RequestDetails: React.FC = () => {
         children: subService?.tools.map((tool: any) => ({
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <Image src={tool?.attachment?.url} width={16} height={16} />
+              <Image src={tool?.attachment?.url} width={27} height={27} />
               {tool?.name}
             </span>
           ),

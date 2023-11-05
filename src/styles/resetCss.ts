@@ -23,8 +23,4 @@ export const resetCss = css`
   body {
     font-weight: 500;
   }
-
-  img {
-    display: block;
-  }
 `;

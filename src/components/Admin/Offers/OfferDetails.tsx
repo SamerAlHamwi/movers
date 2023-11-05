@@ -72,7 +72,7 @@ const OfferDetails: React.FC = () => {
     treeData = offerData?.serviceValueForOffers.map((service: any) => ({
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <Image src={service?.attachment?.url} width={16} height={16} />
+          <Image src={service?.attachment?.url} width={27} height={27} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
@@ -80,7 +80,7 @@ const OfferDetails: React.FC = () => {
       children: service?.subServices.map((subService: any) => ({
         title: (
           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-            <Image src={subService?.attachment?.url} width={16} height={16} />
+            <Image src={subService?.attachment?.url} width={27} height={27} />
             {subService?.name}
           </span>
         ),
@@ -88,7 +88,7 @@ const OfferDetails: React.FC = () => {
         children: subService?.tools.map((tool: any) => ({
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <Image src={tool?.attachment?.url} width={16} height={16} />( {tool?.amount} ) {tool?.name}
+              <Image src={tool?.attachment?.url} width={27} height={27} />( {tool?.amount} ) {tool?.name}
             </span>
           ),
           key: tool?.id,
