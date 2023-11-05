@@ -80,7 +80,8 @@
     "code": "أكواد",
     "onlyNumbers": "يُسمح بإستخدام الأرقام فقط",
     "onlyEnglishCharacters": "يُسمح بإستخدام الأحرف الإنكليزية فقط",
-    "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط"
+    "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط",
+    "invalidEmail": "البريد الإلكتروني غير صحيح"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -522,7 +523,8 @@
     "addNewRequest": "إضافة طلب جديد",
     "draftsList": "قائمة الطلبات الغير مستكملة",
     "checkPINForUserModalTitle": "إدخال رمز ال PIN للحصول على تفويض المستخدم",
-    "checkPINForUserModal": "إرسال رمز ال PIN"
+    "checkPINForUserModal": "إرسال رمز ال PIN",
+    "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -729,6 +731,9 @@
     "companyBranchCount": "الأفرع",
     "brokersCount": "الوسطاء",
     "partnersCount": "الشركاء",
+    "askForHelpCount": "طلبات المساعدة",
+    "basicUsersCount": "المستخدمين",
+    "requestFQCount": "طلبات النقل",
     "CitiesStatistics": "إحصائيات المدن",
     "requestsCount": "عدد طلبات النقل"
   },

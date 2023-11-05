@@ -62,7 +62,13 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
         <BaseForm.Item
           name={['translations', 0, 'question']}
           label={<LableText>{t('faq.question_en')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
@@ -70,7 +76,13 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
         <BaseForm.Item
           name={['translations', 0, 'answer']}
           label={<LableText>{t('faq.answer_en')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
@@ -79,7 +91,13 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
         <BaseForm.Item
           name={['translations', 1, 'question']}
           label={<LableText>{t('faq.question_ar')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
@@ -87,7 +105,13 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
         <BaseForm.Item
           name={['translations', 1, 'answer']}
           label={<LableText>{t('faq.answer_ar')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />

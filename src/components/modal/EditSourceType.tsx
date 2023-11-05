@@ -23,9 +23,6 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
   const [IconId, setIconId] = useState<number>(iconId);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
 
-  console.log(values);
-  console.log(values?.icon?.url);
-
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
       .then((data) => {
@@ -84,17 +81,29 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
     >
       <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="SurceTypesForm">
         <BaseForm.Item
-          name={['translations', 0, 'name']}
-          label={<LableText>{t('common.name_ar')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          name={['translations', 1, 'name']}
+          label={<LableText>{t('common.name_en')}</LableText>}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'name']}
-          label={<LableText>{t('common.name_en')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          name={['translations', 0, 'name']}
+          label={<LableText>{t('common.name_ar')}</LableText>}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />

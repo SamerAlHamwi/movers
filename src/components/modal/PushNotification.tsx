@@ -94,7 +94,13 @@ export const PushNotification: React.FC<CreateNotificationModalProps> = ({
         <BaseForm.Item
           name={['translations', 0, 'message']}
           label={<LableText>{t(`notifications.englishMessage`)}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[A-Za-z ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
@@ -102,7 +108,13 @@ export const PushNotification: React.FC<CreateNotificationModalProps> = ({
         <BaseForm.Item
           name={['translations', 1, 'message']}
           label={<LableText>{t(`notifications.arabicMessage`)}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          rules={[
+            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+            {
+              pattern: /^[\u0600-\u06FF ]+$/,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+            },
+          ]}
           style={{ margin: '-.5rem 0' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />

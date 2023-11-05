@@ -7,7 +7,7 @@ import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Steps, Image, Tree, Radio } from 'antd';
+import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Alert, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
@@ -98,8 +98,7 @@ export const AddBranch: React.FC = () => {
     const serviceNode: DataNode = {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <p>{service.id}</p>
-          <Image src={service?.attachment?.url} width={16} height={16} />
+          <Image src={service?.attachment?.url} width={27} height={27} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
@@ -112,8 +111,7 @@ export const AddBranch: React.FC = () => {
         const subServiceNode = {
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <p>{subService.id}</p>
-              <Image src={subService?.attachment?.url} width={16} height={16} />
+              <Image src={subService?.attachment?.url} width={27} height={27} />
               {subService?.name}
             </span>
           ),
@@ -127,8 +125,7 @@ export const AddBranch: React.FC = () => {
           subServiceNode.children = subService.tools.map((tool: any) => ({
             title: (
               <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-                <p>{tool.id}</p>
-                <Image src={tool?.attachment?.url} width={16} height={16} />
+                <Image src={tool?.attachment?.url} width={27} height={27} />
                 {tool?.name}
               </span>
             ),
@@ -300,6 +297,7 @@ export const AddBranch: React.FC = () => {
       userDto: {
         dialCode: '+' + dialCodeU,
         phoneNumber: phoneNumberU,
+        emailAddress: form.getFieldValue(['userDto', 'emailAddress']),
         password: form.getFieldValue(['userDto', 'password']),
       },
       serviceType: valueRadio,
@@ -308,6 +306,13 @@ export const AddBranch: React.FC = () => {
       availableCitiesIds: selectedCityValues,
     };
     updatedFormData.translations = branchInfo.translations;
+    if (requestServices.length == 0) {
+      message.open({
+        content: <Alert message={t('requests.atLeastOneService')} type={`error`} showIcon />,
+      });
+      return;
+    }
+
     addBranch.mutate(branchInfo);
   };
 
@@ -394,6 +399,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[\u0600-\u06FF ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -406,6 +415,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -420,6 +433,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[\u0600-\u06FF ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -432,6 +449,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -446,6 +467,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[\u0600-\u06FF ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -458,6 +483,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input />
@@ -578,6 +607,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      type: 'email',
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                    },
                   ]}
                 >
                   <Input value={branchInfo?.companyContact?.emailAddress} />
@@ -590,6 +623,10 @@ export const AddBranch: React.FC = () => {
                   style={{ marginTop: '-1rem' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                    {
+                      pattern: /^[A-Za-z ]+$/,
+                      message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                    },
                   ]}
                 >
                   <Input value={branchInfo?.companyContact?.webSite} />
@@ -676,6 +713,33 @@ export const AddBranch: React.FC = () => {
             >
               <PhoneInput key={2} onChange={handleFormattedValueChange} country={'ae'} />
             </BaseButtonsForm.Item>
+
+            <BaseForm.Item
+              label={<LableText>{t('companies.emailAddress')}</LableText>}
+              name={['userDto', 'emailAddress']}
+              style={
+                isDesktop || isTablet
+                  ? {
+                      width: '50%',
+                      margin: 'auto',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+                  : {
+                      width: '80%',
+                      margin: '0 10%',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+              }
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                {
+                  type: 'email',
+                  message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                },
+              ]}
+            >
+              <Input />
+            </BaseForm.Item>
 
             <Auth.FormItem
               label={t('auth.password')}
