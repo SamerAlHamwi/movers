@@ -588,7 +588,6 @@
     "arabicdiscription": "التوصيف بالعربية",
     "englishtitle": "العنوان بالإنكليزية",
     "arabictitle": "العنوان بالعربية",
-    "PrivacyList": "سياسة الخصوصية",
     "englishMessage": "باللغة الإنكليزية",
     "arabicMessage": "باللغة العربية",
     "actions": "الإجراء",
@@ -768,6 +767,20 @@
     "totalNumber": "العدد الكلي",
     "UsersViaBrokersStatistics": "إحصائيات المستخدمين من خلال الوسطاء",
     "numberOfRequests": "عدد طلبات النقل"
+  },
+
+  "_comment27": "*********************************** Terms ************************************************",
+  "privacyPolicy": {
+    "PrivacyList": "قائمة سياسة الخصوصية",
+    "TermsList": "قائمة الشروط والأحكام",
+    "addTermModalTitle": "إضافة حُكم",
+    "addTermSuccessMessage": "تمت إضافة الحُكم بنجاح",
+    "editTermModalTitle": "تعديل حُكم",
+    "deleteTermModalTitle": "حذف الحُكم",
+    "editTermSuccessMessage": "تم تعديل الشرط بنجاح",
+    "deleteTermModalDescription": "هل أنت متأكد من حذف هذا الحُكم",
+    "deleteTermsSuccessMessage": "تم حذف الحُكم بنجاح",
+    "addTerm": "إضافة حُكم أو شرط"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

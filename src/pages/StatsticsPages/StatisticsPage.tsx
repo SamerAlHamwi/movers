@@ -46,9 +46,9 @@ const Statistics: React.FC = () => {
           <UsersViaBrokersStatistics />
         </Col>
 
-        <Col id="CompaniesStatistics" xs={24}>
+        {/* <Col id="CompaniesStatistics" xs={24}>
           <CompaniesStatistics />
-        </Col>
+        </Col> */}
 
         <Col id="BranchesStatistics" xs={24}>
           <BranchesStatistics />
