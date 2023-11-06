@@ -754,7 +754,8 @@
     "Statistics": "Statistics",
     "count": "Count",
     "UsersInYearStatistics": "Users Statistics In Year",
-    "numberOfUser": "Number Of Users"
+    "numberOfUser": "Number Of Users",
+    "RequestsInTimeLineStatistics": "Requests Statistics"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

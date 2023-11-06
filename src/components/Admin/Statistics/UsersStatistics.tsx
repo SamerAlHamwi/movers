@@ -21,21 +21,11 @@ const UsersStatistics = () => {
     totalCount: 0,
   });
 
-  const [usersStatisticsInYear, setUsersStatisticsInYear] = useState({
-    chartPoints: [
-      {
-        month: 0,
-        userCount: 0,
-      },
-    ],
-  });
-
   const { data, refetch, isRefetching, error } = useQuery(['GetUsrsStatistics'], () =>
     GetUsrsStatistics()
       .then((response) => {
         if (response.data?.success) {
           setUsersStatistics(response.data.result);
-          setUsersStatisticsInYear(response.data.result);
         } else {
           throw new Error(response.data.message || 'Failed to fetch data');
         }
@@ -92,38 +82,6 @@ const UsersStatistics = () => {
     },
   ];
 
-  // const xValuesInYear = usersStatisticsInYear?.chartPoints?.map(
-  //   (userStatisticsInYear: any) => userStatisticsInYear.month,
-  // );
-  // const yValuesInYear = usersStatisticsInYear?.chartPoints?.map((userStatisticsInYear: any) => ({
-  //   x: userStatisticsInYear.month,
-  //   y: userStatisticsInYear.userCount,
-  // }));
-
-  // const optionsInYear: any = {
-  //   chart: {
-  //     type: 'bar',
-  //   },
-  //   xaxis: {
-  //     categories: xValuesInYear || [],
-  //   },
-  //   plotOptions: {
-  //     bar: {
-  //       borderRadius: 10,
-  //       distributed: true,
-  //       columnWidth: usersStatisticsInYear.chartPoints.length < 10 ? '40%' : '50%',
-  //     },
-  //   },
-  //   colors: ['#F44F5E', '#E55A89', '#D863B1', '#CA6CD8'],
-  // };
-
-  // const seriesInYear = [
-  //   {
-  //     name: `${t('charts.requestsCount')}`,
-  //     data: yValuesInYear || [],
-  //   },
-  // ];
-
   return (
     <>
       <Card padding="0 0 1.875rem" title={t('charts.UsersStatistics')}>
@@ -131,11 +89,6 @@ const UsersStatistics = () => {
           <ReactApexChart options={options} series={series} type="bar" height={350} />
         </div>
       </Card>
-      {/* <Card padding="0 0 1.875rem" title={t('charts.UsersStatistics')}>
-        <div className="distributed-column-chart">
-          <ReactApexChart options={optionsInYear} series={seriesInYear} type="line" height={350} />
-        </div>
-      </Card> */}
     </>
   );
 };

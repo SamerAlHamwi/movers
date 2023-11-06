@@ -14,6 +14,7 @@ import CompaniesStatistics from '@app/components/Admin/Statistics/CompaniesStati
 import BranchesStatistics from '@app/components/Admin/Statistics/BranchesStatistics';
 import UsersStatistics from '@app/components/Admin/Statistics/UsersStatistics';
 import UsersInYearStatistics from '@app/components/Admin/Statistics/UsersInYearStatistics';
+import RequestsInTimeLineStatistics from '@app/components/Admin/Statistics/RequestsStatistics';
 
 const Row = styled(R)`
   @media only screen and ${media.xl} {
@@ -29,6 +30,10 @@ const Statistics: React.FC = () => {
       <Row gutter={[30, 30]}>
         <Col id="GeneralStatistics" xs={24}>
           <GeneralStatistics />
+        </Col>
+
+        <Col id="RequestsInTimeLineStatistics" xs={24}>
+          <RequestsInTimeLineStatistics />
         </Col>
 
         <Col id="UsersInYearStatistics" xs={24}>

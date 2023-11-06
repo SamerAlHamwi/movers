@@ -59,7 +59,6 @@ const UsersInYearStatistics = () => {
       bar: {
         borderRadius: 10,
         distributed: true,
-        columnWidth: xValuesInYear.length < 10 ? '40%' : '50%',
       },
     },
     colors: ['#b39dff'],

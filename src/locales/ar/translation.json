@@ -751,7 +751,8 @@
     "Statistics": "الإحصائيات",
     "count": "العدد",
     "UsersInYearStatistics": "إحصائيات السمتخدمين خلال السنة",
-    "numberOfUser": "عدد المستخدمين"
+    "numberOfUser": "عدد المستخدمين",
+    "RequestsInTimeLineStatistics": "إحصائيات طلبات النقل"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

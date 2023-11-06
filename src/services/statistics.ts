@@ -25,6 +25,14 @@ const GetCitiesStatistics = async () => {
   return await httpApi.get(`${apiPrefix.requests}/GetCitiesStatistics`);
 };
 
+const GetRequestsStatistics = async (startDate?: any, endDate?: any) => {
+  return await httpApi.get(
+    `${apiPrefix.requests}/GetStatisticalNumbers?${startDate ? `DateFrom=${startDate}&` : ''}&${
+      endDate ? `DateTo=${endDate}` : ''
+    }`,
+  );
+};
+
 export {
   GetStatisticsNumbers,
   GetUsrsStatistics,
@@ -32,4 +40,5 @@ export {
   GetBranchesStatistics,
   GetServiceStatistics,
   GetCitiesStatistics,
+  GetRequestsStatistics,
 };
