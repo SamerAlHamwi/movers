@@ -12,6 +12,7 @@ import {
   CheckOutlined,
   CloseOutlined,
   TagOutlined,
+  TeamOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
@@ -200,6 +201,7 @@ export const Companies: React.FC = () => {
       });
   };
 
+  const pink = '#ff5252';
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -344,6 +346,18 @@ export const Companies: React.FC = () => {
                 }}
               >
                 <TagOutlined />
+              </TableButton>
+            </Tooltip>
+
+            <Tooltip placement="top" title={t('companies.possibleClients')}>
+              <TableButton
+                // severity="#f9a3a4"
+                color="#f9a3a4"
+                onClick={() => {
+                  Navigate(`${record.id}/possibleClients`, { replace: false });
+                }}
+              >
+                <TeamOutlined />
               </TableButton>
             </Tooltip>
 

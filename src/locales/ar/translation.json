@@ -296,7 +296,10 @@
     "branches": "الفروع",
     "numberOfPaidPoints": "عدد النقاط المدفوعة",
     "numberOfGiftedPoints": "عدد النقاط المهداة",
-    "totalPoints": "عدد النقاط الكلي"
+    "totalPoints": "عدد النقاط الكلي",
+    "possibleClientsList": "قائمة العملاء المحتملين",
+    "possibleClientsInfo": "تفاصيل العملاء المحتملين",
+    "possibleClients": "العملاء المحتملين"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -807,7 +810,8 @@
     "Points": "الباقات",
     "RejectReason": "أسباب الرفض",
     "Drafts": "الطلبات الغير مستكملة",
-    "CompleteDraft": "إستكمال طلب نقل"
+    "CompleteDraft": "إستكمال طلب نقل",
+    "possibleClients": "العملاء المحتملين"
   },
 
   "header": {

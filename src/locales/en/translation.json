@@ -295,7 +295,10 @@
     "numberOfPaidPoints": "NO. Paid Points",
     "numberOfGiftedPoints": "NO. Gifted Points",
     "totalPoints": "Total Points",
-    "branches": "Branches"
+    "branches": "Branches",
+    "possibleClientsList": "Possible Clients List",
+    "possibleClientsInfo": "Possible Clients Informations",
+    "possibleClients": "Possible Clients"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -811,7 +814,8 @@
     "Points": "Bundles",
     "RejectReason": "Reject Reasons",
     "Drafts": "Drafts",
-    "CompleteDraft": "Complete Draft"
+    "CompleteDraft": "Complete Draft",
+    "possibleClients": "Possible Clients"
   },
 
   "header": {

@@ -47,7 +47,7 @@ const attributeChoiceAttachments: any[] = [];
 const RequestDetails: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { requestId } = useParams();
+  const { requestId, possibleClientId } = useParams();
   const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
   const Navigate = useNavigate();
 
@@ -57,7 +57,7 @@ const RequestDetails: React.FC = () => {
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
   const { refetch, isRefetching } = useQuery(['getRequestById'], () =>
-    getRequestById(requestId)
+    getRequestById(requestId ? requestId : possibleClientId)
       .then((data) => {
         const result = data.data?.result;
         setRequestData(result);
@@ -165,9 +165,13 @@ const RequestDetails: React.FC = () => {
     );
   }
 
+  console.log(requestId);
+  console.log(possibleClientId);
+
   return (
     <>
-      <PageTitle>{t('requests.requestInfo')}</PageTitle>
+      {requestId && <PageTitle>{t('requests.requestInfo')}</PageTitle>}
+      {possibleClientId && <PageTitle>{t('companies.possibleClientsInfo')}</PageTitle>}
       <Row justify={'end'}>
         <Btn
           style={{
@@ -184,7 +188,7 @@ const RequestDetails: React.FC = () => {
       </Row>
       <Row>
         <Cardd
-          title={t('requests.requestInfo')}
+          title={requestId ? t('requests.requestInfo') : t('companies.possibleClientsInfo')}
           padding="0 1.25rem 1rem 1.25rem"
           style={{ width: '100%', height: 'auto' }}
         >
