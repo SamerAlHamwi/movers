@@ -33,9 +33,9 @@ export type PrivacyPolicy = {
 };
 
 const Destination = [
-  'notifications.destination.all',
-  'notifications.destination.Users',
-  'notifications.destination.Companies',
+  'privacyPolicy.destination.all',
+  'privacyPolicy.destination.Users',
+  'privacyPolicy.destination.Companies',
 ];
 
 export const PrivacyPolicy: React.FC = () => {
@@ -104,7 +104,7 @@ export const PrivacyPolicy: React.FC = () => {
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
     createPrivacy(data)
       .then((data) => {
-        notificationController.success({ message: t('notifications.sendSuccessMessage') });
+        notificationController.success({ message: t('privacyPolicy.sendSuccessMessage') });
         setRefetchOnAddNotification(data.data?.success);
       })
       .catch((error) => {
@@ -121,7 +121,7 @@ export const PrivacyPolicy: React.FC = () => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('notifications.deletepNotifactionsSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('privacyPolicy.deletepNotifactionsSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error: any) => {
@@ -173,7 +173,7 @@ export const PrivacyPolicy: React.FC = () => {
     {
       title: (
         <Header>
-          <Trans i18nKey={'notifications.englishtitle'} />
+          <Trans i18nKey={'privacyPolicy.englishtitle'} />
         </Header>
       ),
       dataIndex: ['translations', 0, 'title'],
@@ -184,7 +184,7 @@ export const PrivacyPolicy: React.FC = () => {
     {
       title: (
         <Header>
-          <Trans i18nKey={'notifications.arabictitle'} />
+          <Trans i18nKey={'privacyPolicy.arabictitle'} />
         </Header>
       ),
       dataIndex: ['translations', 1, 'title'],
@@ -195,7 +195,7 @@ export const PrivacyPolicy: React.FC = () => {
     {
       title: (
         <Header style={{ wordBreak: 'normal' }}>
-          <Trans i18nKey={'notifications.englishdescription'} />
+          <Trans i18nKey={'privacyPolicy.englishdescription'} />
         </Header>
       ),
       dataIndex: ['translations', 0, 'description'],
@@ -208,7 +208,7 @@ export const PrivacyPolicy: React.FC = () => {
     {
       title: (
         <Header>
-          <Trans i18nKey={'notifications.arabicdiscription'} />
+          <Trans i18nKey={'privacyPolicy.arabicdiscription'} />
         </Header>
       ),
       dataIndex: ['translations', 1, 'description'],
@@ -220,7 +220,7 @@ export const PrivacyPolicy: React.FC = () => {
     {
       title: (
         <Header>
-          <Trans i18nKey={'notifications.actions'} />
+          <Trans i18nKey={'privacyPolicy.actions'} />
         </Header>
       ),
 
@@ -260,7 +260,7 @@ export const PrivacyPolicy: React.FC = () => {
   return (
     <>
       <Card
-        title={t('notifications.PrivacyList')}
+        title={t('privacyPolicy.PrivacyList')}
         padding={
           notificationsData?.length === 0 || notificationsData === undefined || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -277,7 +277,7 @@ export const PrivacyPolicy: React.FC = () => {
             }}
             onClick={() => setIsOpenPushModalForm(true)}
           >
-            <CreateButtonText>{t('notifications.sendp')}</CreateButtonText>
+            <CreateButtonText>{t('privacyPolicy.sendp')}</CreateButtonText>
           </Button>
           {isOpenEditModalForm ? (
             <EditPrivacyPolicy
@@ -307,10 +307,10 @@ export const PrivacyPolicy: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('notifications.deleteprivacyModalTitle')}
+              title={t('privacyPolicy.deleteprivacyModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('notifications.deleteNprivacyModalDescription')}
+              description={t('privacyPolicy.deleteNprivacyModalDescription')}
               isDanger={true}
               isLoading={deleteprivacy.isLoading}
             />
@@ -343,7 +343,7 @@ export const PrivacyPolicy: React.FC = () => {
                   ...notificationsColumns,
                   {
                     title: (
-                      <Header style={{ wordBreak: 'normal' }}>{t('notifications.destination.destination')}</Header>
+                      <Header style={{ wordBreak: 'normal' }}>{t('privacyPolicy.destination.destination')}</Header>
                     ),
                     dataIndex: 'destination',
                     width: '15%',
