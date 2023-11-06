@@ -42,7 +42,6 @@ import CreatableSelect from 'react-select/creatable';
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
-let cityValues: any[] = [];
 const steps = [
   {
     title: 'companyInfo',
@@ -453,8 +452,7 @@ export const AddCompany: React.FC = () => {
   );
 
   const selectCities = (cities: any) => {
-    cityValues = cities.map((city: any) => city.value);
-    setSelectedCityValues(cityValues);
+    setSelectedCityValues(cities);
   };
 
   return (
@@ -747,7 +745,13 @@ export const AddCompany: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <CreatableSelect onChange={selectCities} isMulti options={options} />
+              <Select mode="multiple" onChange={selectCities}>
+                {availableCitiesData?.data?.result?.items.map((city: any) => (
+                  <Select key={city.name} value={city.id}>
+                    {city?.name}
+                  </Select>
+                ))}
+              </Select>
             </BaseForm.Item>
 
             <h2

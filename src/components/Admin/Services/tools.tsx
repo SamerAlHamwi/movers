@@ -70,10 +70,10 @@ export const Tools: React.FC = () => {
     () =>
       getAllTools(subServiceId != undefined ? subServiceId : '', page, pageSize, searchString)
         .then((data) => {
-          const result = data?.data?.result?.items;
-          setTotalCount(data?.data?.result?.totalCount);
+          const result = data.data?.result?.items;
+          setTotalCount(data.data?.result?.totalCount);
           setData(result);
-          setLoading(!data?.data?.success);
+          setLoading(!data.data?.success);
         })
         .catch((error) => {
           notificationController.error({ message: error.message || error.error?.message });
@@ -96,6 +96,11 @@ export const Tools: React.FC = () => {
     if (isRefetching) setLoading(true);
     else setLoading(false);
   }, [isRefetching]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+  }, [page, pageSize, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -332,6 +337,7 @@ export const Tools: React.FC = () => {
             </Button>
           </>
         </Row>
+
         <Table
           dataSource={Data}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}

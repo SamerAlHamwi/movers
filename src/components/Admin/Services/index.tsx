@@ -170,11 +170,6 @@ export const Services: React.FC = () => {
   }, [editService.isLoading]);
 
   useEffect(() => {
-    if (isRefetching) setLoading(true);
-    else setLoading(false);
-  }, [isRefetching]);
-
-  useEffect(() => {
     setLoading(true);
     refetch();
   }, [page, pageSize, language, refetch]);

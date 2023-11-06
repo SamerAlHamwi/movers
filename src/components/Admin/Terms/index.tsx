@@ -49,10 +49,10 @@ export const Term: React.FC = () => {
   const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
   const [deletemodaldata, setDeletemodaldata] = useState<Term | undefined>(undefined);
   const { isTablet, isMobile, isDesktop } = useResponsive();
-  const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
+  const [refetchOnAddTerm, setRefetchOnAddTerm] = useState(false);
 
   const { refetch, isRefetching } = useQuery(
-    ['Term messages', page, isDelete, pageSize, refetchOnAddNotification],
+    ['Term messages', page, isDelete, pageSize, refetchOnAddTerm],
     () =>
       getAllTerm(page, pageSize, searchString)
         .then((data) => {
@@ -84,8 +84,8 @@ export const Term: React.FC = () => {
     refetch();
     setIsDelete(false);
     setIsEdit(false);
-    setRefetchOnAddNotification(false);
-  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, searchString, refetch]);
+    setRefetchOnAddTerm(false);
+  }, [isDelete, isEdit, refetchOnAddTerm, page, pageSize, searchString, refetch]);
 
   useEffect(() => {
     if (isRefetching) setIsLoading(true);
@@ -95,8 +95,8 @@ export const Term: React.FC = () => {
   const addTerm = useMutation((data: Term) =>
     createTerm(data)
       .then((data) => {
-        notificationController.success({ message: t('terms.sendSuccessMessage') });
-        setRefetchOnAddNotification(data.data?.success);
+        notificationController.success({ message: t('terms.addTermSuccessMessage') });
+        setRefetchOnAddTerm(data.data?.success);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -276,10 +276,10 @@ export const Term: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('notifications.deleteprivacyModalTitle')}
+              title={t('terms.deleteTermModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('notifications.deleteNprivacyModalDescription')}
+              description={t('terms.deleteTermModalDescription')}
               isDanger={true}
               isLoading={deleteTerm.isLoading}
             />

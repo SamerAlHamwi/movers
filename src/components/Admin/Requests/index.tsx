@@ -455,8 +455,6 @@ export const Requests: React.FC = () => {
     },
   ];
 
-  console.log(userId);
-
   return (
     <>
       <Card

@@ -138,7 +138,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     icon: <FileProtectOutlined />,
   },
   {
-    title: 'sidebarNavigation.Term',
+    title: 'sidebarNavigation.Terms',
     key: 'Term',
     url: `/Terms`,
     icon: <SafetyCertificateOutlined />,
