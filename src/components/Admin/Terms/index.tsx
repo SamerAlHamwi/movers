@@ -95,7 +95,7 @@ export const Term: React.FC = () => {
   const addTerm = useMutation((data: Term) =>
     createTerm(data)
       .then((data) => {
-        notificationController.success({ message: t('terms.sendSuccessMessage') });
+        notificationController.success({ message: t('terms.addTermSuccessMessage') });
         setRefetchOnAddTerm(data.data?.success);
       })
       .catch((error) => {

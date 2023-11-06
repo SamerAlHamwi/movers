@@ -613,15 +613,13 @@
   "terms": {
     "TermsList": "قائمة الشروط والأحكام",
     "addTermModalTitle": "إضافة حُكم",
+    "addTermSuccessMessage": "تمت إضافة الحُكم بنجاح",
     "editTermModalTitle": "تعديل حُكم",
     "deleteTermModalTitle": "حذف الحُكم",
+    "editTermSuccessMessage": "تم تعديل الشرط بنجاح",
     "deleteTermModalDescription": "هل أنت متأكد من حذف هذا الحُكم",
-
-    "editTermSuccessMessage": "تم تعديل الشروط والأحكام بنجاح",
-    "deleteTermsSuccessMessage": "تم الحذف بنجاح",
-    "sendSuccessMessage": "تمت الإضافة بنجاح",
-    "addTerm": "إضافة حُكم أو شرط",
-    "add": "حفظ التعديل"
+    "deleteTermsSuccessMessage": "تم حذف الحُكم بنجاح",
+    "addTerm": "إضافة حُكم أو شرط"
   },
 
   "_comment21": "*********************************** asks ************************************************",
