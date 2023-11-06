@@ -53,7 +53,9 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
-        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t('notifications.send')}</div>
+        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
+          {t('terms.editTermModalTitle')}
+        </div>
       }
       onCancel={onCancel}
       maskClosable={true}
@@ -64,7 +66,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button style={buttonStyle} loading={isLoading} key="save" type="primary" onClick={onOk}>
-              <P1>{t('Terms.add')}</P1>
+              <P1>{t('common.saveEdit')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>

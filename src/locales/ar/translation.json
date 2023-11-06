@@ -296,7 +296,10 @@
     "branches": "الفروع",
     "numberOfPaidPoints": "عدد النقاط المدفوعة",
     "numberOfGiftedPoints": "عدد النقاط المهداة",
-    "totalPoints": "عدد النقاط الكلي"
+    "totalPoints": "عدد النقاط الكلي",
+    "possibleClientsList": "قائمة العملاء المحتملين",
+    "possibleClientsInfo": "تفاصيل العملاء المحتملين",
+    "possibleClients": "العملاء المحتملين"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -611,12 +614,15 @@
 
   "_comment20": "*********************************** Terms ************************************************",
   "terms": {
-    "editTermSuccessMessage": "تم تعديل الشروط والأحكام بنجاح",
-    "deleteTermsSuccessMessage": "تم الحذف بنجاح",
     "TermsList": "قائمة الشروط والأحكام",
-    "sendSuccessMessage": "تمت الإضافة بنجاح",
-    "addTerm": "إضافة حُكم أو شرط",
-    "add": "حفظ التعديل"
+    "addTermModalTitle": "إضافة حُكم",
+    "addTermSuccessMessage": "تمت إضافة الحُكم بنجاح",
+    "editTermModalTitle": "تعديل حُكم",
+    "deleteTermModalTitle": "حذف الحُكم",
+    "editTermSuccessMessage": "تم تعديل الشرط بنجاح",
+    "deleteTermModalDescription": "هل أنت متأكد من حذف هذا الحُكم",
+    "deleteTermsSuccessMessage": "تم حذف الحُكم بنجاح",
+    "addTerm": "إضافة حُكم أو شرط"
   },
 
   "_comment21": "*********************************** asks ************************************************",
@@ -768,7 +774,7 @@
   "sidebarNavigation": {
     "Brand": "غو موفارو",
     "Statistics": "الإحصائيات",
-    "Term": "الشروط والأحكام",
+    "Terms": "الشروط والأحكام",
     "Users": "المستخدمين",
     "Managers": "المدراء",
     "Partners": "الشركاء",
@@ -804,7 +810,8 @@
     "Points": "الباقات",
     "RejectReason": "أسباب الرفض",
     "Drafts": "الطلبات الغير مستكملة",
-    "CompleteDraft": "إستكمال طلب نقل"
+    "CompleteDraft": "إستكمال طلب نقل",
+    "possibleClients": "العملاء المحتملين"
   },
 
   "header": {

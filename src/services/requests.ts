@@ -8,6 +8,13 @@ const getAllRequests = async (page: number, pageSize: number, search: string) =>
   );
 };
 
+const getPossibleClients = async (CompanyId: string | undefined, page: number, pageSize: number, search: string) => {
+  const skip = (page - 1) * pageSize;
+  return await httpApi.get(
+    `${apiPrefix.requests}/GetAll?CompanyId=${CompanyId}&Statues=6&GetPossibleRequest=true&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+  );
+};
+
 const getRequestById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.requests}/Get?Id=${id}`);
 };
@@ -34,6 +41,7 @@ const suitableForRequest = async (data: any) => {
 
 export {
   getAllRequests,
+  getPossibleClients,
   getRequestById,
   createRequest,
   DeleteRequest,

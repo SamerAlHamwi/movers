@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText, treeStyle } from '../GeneralStyles';
+import { CreateButtonText, LableText, TextBack, treeStyle } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { FONT_SIZE } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { BankOutlined, ClearOutlined, UserAddOutlined } from '@ant-design/icons';
+import { BankOutlined, ClearOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Alert, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -21,12 +21,11 @@ import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import type { DataNode } from 'antd/es/tree';
-import CreatableSelect from 'react-select/creatable';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
 const requestServices: any = [];
-let cityValues: any[] = [];
 const steps = [
   {
     title: 'branchInfo',
@@ -72,9 +71,10 @@ let branchInfo: any = {
 export const AddBranch: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { companyId } = useParams();
   const queryClient = useQueryClient();
+  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
 
   const [countryIdForCities, setCountryIdForCities] = useState<string>('0');
   const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
@@ -82,7 +82,6 @@ export const AddBranch: React.FC = () => {
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
   const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<CompanyModal>(branchInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
@@ -230,7 +229,7 @@ export const AddBranch: React.FC = () => {
       .then((data: any) => {
         notificationController.success({ message: t('branch.addBranchSuccessMessage') });
         queryClient.invalidateQueries('getAllBranches');
-        navigate(`/companies/${companyId}/branches`);
+        Navigate(`/companies/${companyId}/branches`);
         requestServicesArray = [];
       })
       .catch((error) => {
@@ -317,13 +316,25 @@ export const AddBranch: React.FC = () => {
   };
 
   const selectCities = (cities: any) => {
-    cityValues = cities.map((city: any) => city.value);
-    setSelectedCityValues(cityValues);
+    setSelectedCityValues(cities);
   };
 
   return (
     <Card title={t('branch.addBranch')} padding="1.25rem 1.25rem 1.25rem">
       <Row justify={'end'} style={{ width: '100%' }}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+
         {current > 0 && (
           <Button
             style={{
@@ -583,7 +594,13 @@ export const AddBranch: React.FC = () => {
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
               ]}
             >
-              <CreatableSelect onChange={selectCities} isMulti options={options} />
+              <Select mode="multiple" onChange={selectCities}>
+                {availableCitiesData?.data?.result?.items.map((city: any) => (
+                  <Select key={city.name} value={city.id}>
+                    {city?.name}
+                  </Select>
+                ))}
+              </Select>
             </BaseForm.Item>
 
             <h2

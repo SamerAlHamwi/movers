@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Space } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Radio, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -16,6 +16,8 @@ export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onC
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
 
+  const [valueRadio, setValueRadio] = useState(1);
+
   const onOk = () => {
     form.submit();
   };
@@ -26,6 +28,7 @@ export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onC
         ...value.translations[i],
         language: i === 0 ? ('en' as LanguageType) : ('ar' as LanguageType),
       })),
+      possibilityPotentialClient: valueRadio,
     });
     onEdit(value);
   };
@@ -55,7 +58,33 @@ export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onC
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="EditBundleForm">
+      <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="EditRejectReasonForm">
+        <BaseForm.Item
+          key={10}
+          name="possibilityPotentialClient"
+          label={<LableText>{t('rejectReasons.possibilityPotentialClient')}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+        >
+          <Radio.Group
+            style={{ display: 'flex', width: '100%' }}
+            onChange={(event) => {
+              setValueRadio(event.target.value);
+            }}
+          >
+            <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('rejectReasons.PotentialClient')}
+            </Radio>
+            <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('rejectReasons.NotPotentialClient')}
+            </Radio>
+          </Radio.Group>
+        </BaseForm.Item>
+
         <BaseForm.Item
           name={['translations', 0, 'description']}
           label={<LableText>{t(`common.description_en`)}</LableText>}

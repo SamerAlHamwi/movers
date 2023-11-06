@@ -58,7 +58,7 @@ export const AddRejectReason: React.FC<CreateRejectReasonModalProps> = ({ visibl
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} onFinish={onFinish} name="AddBundleForm">
+      <BaseForm form={form} onFinish={onFinish} name="AddRejectReasonForm">
         <BaseForm.Item
           key={10}
           name="possibilityPotentialClient"
