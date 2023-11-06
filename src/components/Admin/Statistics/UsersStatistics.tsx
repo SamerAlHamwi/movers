@@ -1,26 +1,31 @@
 import { useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
+import { GetUsrsStatistics } from '@app/services/statistics';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
-import { GetStatisticsNumbers } from '@app/services/statistics';
 
-const GeneralStatistics = () => {
+const UsersStatistics = () => {
   const { t } = useTranslation();
 
-  const [statisticsData, setStatisticsData] = useState({
-    companiesCount: 0,
-    companyBranchCount: 0,
-    brokersCount: 0,
-    partnersCount: 0,
+  const [usersStatistics, setUsersStatistics] = useState({
+    users: 0,
+    activeUsers: 0,
+    deActiveUsers: 0,
+    admins: 0,
+    companyBranchUser: 0,
+    companyUser: 0,
+    customerService: 0,
+    mediatorUser: 0,
+    totalCount: 0,
   });
 
-  const { data, refetch, isRefetching, error } = useQuery(['GetStatisticsNumbers'], () =>
-    GetStatisticsNumbers()
+  const { data, refetch, isRefetching, error } = useQuery(['GetUsrsStatistics'], () =>
+    GetUsrsStatistics()
       .then((response) => {
         if (response.data?.success) {
-          setStatisticsData(response.data.result);
+          setUsersStatistics(response.data.result);
         } else {
           throw new Error(response.data.message || 'Failed to fetch data');
         }
@@ -31,16 +36,13 @@ const GeneralStatistics = () => {
       }),
   );
 
-  const xValues = Object.keys(statisticsData);
-  const yValues = Object.values(statisticsData);
+  const xValues = Object.keys(usersStatistics);
+  const yValues = Object.values(usersStatistics);
 
-  // Create an array of objects with labels and values
   const dataPoints = xValues.map((label, index) => ({ label, value: yValues[index] }));
 
-  // Sort the dataPoints in ascending order by value
   dataPoints.sort((a, b) => a.value - b.value);
 
-  // Extract the sorted xValues and yValues
   const sortedXValues = dataPoints.map((dataPoint) => dataPoint.label);
   const sortedYValues = dataPoints.map((dataPoint) => dataPoint.value);
 
@@ -75,18 +77,18 @@ const GeneralStatistics = () => {
 
   const series = [
     {
-      name: `${t('charts.Statistics')}`,
+      name: `${t('charts.count')}`,
       data: sortedYValues,
     },
   ];
 
   return (
-    <Card padding="0 0 1.875rem" title={t('charts.StatisticsNumbers')}>
-      <div className="distributed-bar-chart">
+    <Card padding="0 0 1.875rem" title={t('charts.UsersStatistics')}>
+      <div className="distributed-column-chart">
         <ReactApexChart options={options} series={series} type="bar" height={350} />
       </div>
     </Card>
   );
 };
 
-export default GeneralStatistics;
+export default UsersStatistics;

@@ -17,7 +17,6 @@ const ServerErrorPage = lazy(() => import('@app/pages/ErrorsPages/ServerErrorPag
 const Error404Page = lazy(() => import('@app/pages/ErrorsPages/Error404Page'));
 const Logout = lazy(() => import('./Logout'));
 const StatisticsAdmin = lazy(() => import('@app/pages/StatsticsPages/StatisticsPage'));
-const StatisticsManager = lazy(() => import('@app/pages/StatsticsPages/StatisticsManagerPage'));
 const UserPage = lazy(() => import('@app/pages/UsersPages/UsersPage'));
 const ManagerPage = lazy(() => import('@app/pages/UsersPages/ManagersPage'));
 const ServicePage = lazy(() => import('@app/pages/ServicesPages/ServicesPage'));
@@ -63,7 +62,6 @@ const Error404 = withLoading(Error404Page);
 const AuthLayoutFallback = withLoading(AuthLayout);
 const LogoutFallback = withLoading(Logout);
 const StatisticsAdminPage = withLoading(StatisticsAdmin);
-const StatisticsManagerPage = withLoading(StatisticsManager);
 const UsersPage = withLoading(UserPage);
 const ManagersPage = withLoading(ManagerPage);
 const ServicesPage = withLoading(ServicePage);
@@ -120,13 +118,9 @@ export const AppRouter: React.FC = () => {
           <Route
             index
             element={
-              userRole === 'admin' ? (
+              userRole === 'admin' && (
                 <PrivateRoute allowedRoles={[UserRole[1]]}>
                   <StatisticsAdminPage />
-                </PrivateRoute>
-              ) : (
-                <PrivateRoute allowedRoles={[UserRole[4]]}>
-                  <StatisticsManagerPage />
                 </PrivateRoute>
               )
             }
