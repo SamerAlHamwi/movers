@@ -24,7 +24,6 @@ import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
 import { getCountries, getCities } from '@app/services/locations';
-// import { DatePicker } from '../common/pickers/DatePicker';
 import { Alert } from '../common/Alert/Alert';
 import { uploadAttachment, UploadMultiAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
