@@ -40,6 +40,12 @@ const CompaniesStatistics = () => {
     },
     xaxis: {
       categories: xValues || [],
+      labels: {
+        style: {
+          // whiteSpace: 'normal',
+        },
+        rotate: language == 'ar' ? 45 : '',
+      },
     },
     plotOptions: {
       bar: {
