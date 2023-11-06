@@ -587,7 +587,6 @@
     "notificationsList": "Notifications",
     "deleteprivacyModalTitle": "Delete Privacy",
     "deleteNprivacyModalDescription": "Are you sure ?",
-    "PrivacyList": "PrivacyPolicy",
     "Notifications": "Notices",
     "send": "Send Notification",
     "englishMessage": "English messages",
@@ -771,6 +770,20 @@
     "totalNumber": "Total Number",
     "UsersViaBrokersStatistics": "Users Via Brokers Statistics",
     "numberOfRequests": "Number Of Requests"
+  },
+
+  "_comment27": "*********************************** Terms ************************************************",
+  "privacyPolicy": {
+    "PrivacyList": "Privacy Policy List",
+    "TermsList": "Terms & Conditions List",
+    "addTermModalTitle": "Add Term",
+    "addTermSuccessMessage": "The Term Has Been Added Successfully",
+    "editTermModalTitle": "Edit Term",
+    "deleteTermModalTitle": "Delete Term",
+    "deleteTermModalDescription": "Are You Sure To Delete This Term?",
+    "deleteTermsSuccessMessage": "The Term Has Been Deleted Successfully",
+    "editTermSuccessMessage": "The Term Has Been Edited Successfully",
+    "addTerm": "Add Term"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
