@@ -763,7 +763,8 @@
     "approved": "Approved",
     "checking": "Checking",
     "totalNumber": "Total Number",
-    "UsersViaBrokersStatistics": "Users Via Brokers Statistics"
+    "UsersViaBrokersStatistics": "Users Via Brokers Statistics",
+    "numberOfRequests": "Number Of Requests"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

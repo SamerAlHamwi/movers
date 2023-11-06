@@ -760,7 +760,8 @@
     "approved": "تم قبوله",
     "checking": "قيد التحقق",
     "totalNumber": "العدد الكلي",
-    "UsersViaBrokersStatistics": "إحصائيات المستخدمين من خلال الوسطاء"
+    "UsersViaBrokersStatistics": "إحصائيات المستخدمين من خلال الوسطاء",
+    "numberOfRequests": "عدد طلبات النقل"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
