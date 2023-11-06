@@ -294,7 +294,7 @@ export const Requests: React.FC = () => {
       render: (index: number, record: any) => (
         <Space>
           <Button
-            disabled={record.statues !== 2}
+            disabled={record.statues == 2}
             style={{ height: '2.4rem' }}
             severity="info"
             onClick={() => {
@@ -350,7 +350,7 @@ export const Requests: React.FC = () => {
           <>
             {record.statues === 1 && (
               <Space>
-                <Tooltip placement="top" title={t('common.approve')}>
+                {/* <Tooltip placement="top" title={t('common.approve')}>
                   <TableButton
                     severity="info"
                     onClick={() => {
@@ -360,7 +360,7 @@ export const Requests: React.FC = () => {
                   >
                     <CheckOutlined />
                   </TableButton>
-                </Tooltip>
+                </Tooltip> */}
 
                 <Tooltip placement="top" title={t('common.reject')}>
                   <TableButton
@@ -375,11 +375,11 @@ export const Requests: React.FC = () => {
                 </Tooltip>
               </Space>
             )}
-            {/* {record.statues === 1 && (
+            {record.statues === 1 && (
               <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
                 {t('requests.checking')}
               </Tag>
-            )} */}
+            )}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
                 {t('requests.approved')}
@@ -388,6 +388,21 @@ export const Requests: React.FC = () => {
             {record.statues === 3 && (
               <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
                 {t('requests.rejected')}
+              </Tag>
+            )}
+            {record.statues === 4 && (
+              <Tag key={record?.id} color="#546E7A" style={{ padding: '4px' }}>
+                {t('requests.possible')}
+              </Tag>
+            )}
+            {record.statues === 5 && (
+              <Tag key={record?.id} color="#f9a3a4" style={{ padding: '4px' }}>
+                {t('requests.hasOffers')}
+              </Tag>
+            )}
+            {record.statues === 6 && (
+              <Tag key={record?.id} color="#2b908f" style={{ padding: '4px' }}>
+                {t('requests.inProcess')}
               </Tag>
             )}
           </>
