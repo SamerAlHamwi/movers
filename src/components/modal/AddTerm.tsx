@@ -45,7 +45,11 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
     <Modal
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
-      title={<div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t('terms.addterms')}</div>}
+      title={
+        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
+          {t('terms.addTermModalTitle')}
+        </div>
+      }
       onCancel={onCancel}
       maskClosable={true}
       footer={
@@ -55,7 +59,7 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button type="primary" style={{ height: 'auto' }} loading={isLoading} key="add" onClick={onOk}>
-              <P1>{t('terms.addterms')}</P1>
+              <P1>{t('terms.addTermModalTitle')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>

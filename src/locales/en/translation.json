@@ -614,11 +614,16 @@
 
   "_comment20": "*********************************** Terms ************************************************",
   "terms": {
+    "TermsList": "Terms & Conditions List",
+    "addTermModalTitle": "Add Term",
+    "editTermModalTitle": "Edit Term",
+    "deleteTermModalTitle": "Delete Term",
+    "deleteTermModalDescription": "Are You Sure To Delete This Term?",
+
     "editTermSuccessMessage": "Terms Edit Successfully",
     "deleteTermsSuccessMessage": "Terms delete Successfully",
-    "TermsList": "Terms & Conditions List",
     "sendSuccessMessage": "Terms Added Succesfuly",
-    "addTerm": "Add Term Or Condition",
+    "addTerm": "Add Term & Condition",
     "add": "Save Edit"
   },
 
@@ -771,7 +776,7 @@
   "sidebarNavigation": {
     "Brand": "Go Movaro",
     "Statistics": "Statistics",
-    "Term": "Terms & Conditions",
+    "Terms": "Terms & Conditions",
     "Users": "Users",
     "Managers": "Managers",
     "Partners": "Real Estate Management",
