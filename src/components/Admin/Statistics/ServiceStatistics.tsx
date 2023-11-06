@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
 import { GetServiceStatistics } from '@app/services/statistics';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 const ServiceStatistics = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [serviceStatistics, setServiceStatistics] = useState<any[]>([]);
 
@@ -55,6 +57,10 @@ const ServiceStatistics = () => {
       data: yValues || [],
     },
   ];
+
+  useEffect(() => {
+    refetch();
+  }, [language]);
 
   return (
     <Card padding="0 0 1.875rem" title={t('charts.ServiceStatistics')}>

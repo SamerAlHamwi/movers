@@ -1,13 +1,15 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
 import { GetUsersViaBrokersStatistics } from '@app/services/statistics';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 const UsersViaBrokersStatistics = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
 
   const [usersViaBrokersStatistics, setUsersViaBrokersStatistics] = useState<any[]>([]);
 
@@ -37,9 +39,6 @@ const UsersViaBrokersStatistics = () => {
     x: usersViaBrokerStatistics.broker.firstName + ' ' + usersViaBrokerStatistics.broker.lastName,
     y: usersViaBrokerStatistics.userCount,
   }));
-
-  console.log(xValues);
-  console.log(yValues);
 
   const options: any = {
     chart: {
