@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { notificationController } from '@app/controllers/notificationController';
-import { GetCitiesStatistics } from '@app/services/statistics';
+import { GetCompaniesStatistics } from '@app/services/statistics';
 import ReactApexChart from 'react-apexcharts';
 import { useQuery } from 'react-query';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
 import { useLanguage } from '@app/hooks/useLanguage';
 
-const CitiesStatistics = () => {
+const CompaniesStatistics = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
-  const [citiesStatistics, setCitiesStatistics] = useState<any[]>([]);
+  const [companiesStatistics, setCompaniesStatistics] = useState<any[]>([]);
 
-  const { data, refetch, isRefetching, error } = useQuery(['GetCitiesStatistics'], () =>
-    GetCitiesStatistics()
+  const { data, refetch, isRefetching, error } = useQuery(['GetCompaniesStatistics'], () =>
+    GetCompaniesStatistics()
       .then((response) => {
         if (response.data?.success) {
-          setCitiesStatistics(response.data.result);
+          setCompaniesStatistics(response.data.result);
         } else {
           throw new Error(response.data.message || 'Failed to fetch data');
         }
@@ -28,10 +28,10 @@ const CitiesStatistics = () => {
       }),
   );
 
-  const xValues = citiesStatistics?.map((cityStatistics: any) => cityStatistics.cityDto.name);
-  const yValues = citiesStatistics?.map((cityStatistics: any) => ({
-    x: cityStatistics.cityDto.name,
-    y: cityStatistics.requestForQuotationCount,
+  const xValues = companiesStatistics?.map((companyStatistics: any) => companyStatistics.company.name);
+  const yValues = companiesStatistics?.map((companyStatistics: any) => ({
+    x: companyStatistics.company.name,
+    y: companyStatistics.requestForQuotationCount,
   }));
 
   const options: any = {
@@ -40,15 +40,20 @@ const CitiesStatistics = () => {
     },
     xaxis: {
       categories: xValues || [],
+      labels: {
+        style: {
+          // whiteSpace: 'normal',
+        },
+        rotate: language == 'ar' ? 45 : '',
+      },
     },
     plotOptions: {
       bar: {
         borderRadius: 10,
         distributed: true,
-        columnWidth: citiesStatistics.length < 10 ? '40%' : '50%',
+        columnWidth: companiesStatistics.length < 5 ? '20%' : companiesStatistics.length < 10 ? '20%' : '50%',
       },
     },
-    colors: ['#00CED1', '#20B2AA', '#40E0D0', '#00FFFF'],
   };
 
   const series = [
@@ -63,7 +68,7 @@ const CitiesStatistics = () => {
   }, [language]);
 
   return (
-    <Card padding="0 0 1.875rem" title={t('charts.CitiesStatistics')}>
+    <Card padding="0 0 1.875rem" title={t('charts.CompaniesStatistics')}>
       <div className="distributed-column-chart">
         <ReactApexChart options={options} series={series} type="bar" height={350} />
       </div>
@@ -71,4 +76,4 @@ const CitiesStatistics = () => {
   );
 };
 
-export default CitiesStatistics;
+export default CompaniesStatistics;

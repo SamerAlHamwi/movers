@@ -308,4 +308,10 @@ export default createGlobalStyle`
     justify-content: space-around;
     flex-direction: column;
   }
+
+  .apexcharts-xaxis-label {
+    max-width: 20px;
+    white-space: normal;
+    word-wrap: break-word;
+  }
 `;

@@ -50,8 +50,8 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
 
   const onFinish = (BrokerInfo: Broker) => {
     console.log(BrokerInfo);
-
-    BrokerInfo = Object.assign({}, BrokerInfo);
+    const dialCode = { dialCode: '+971' };
+    BrokerInfo = Object.assign({}, BrokerInfo, dialCode);
     onCreateBroker(BrokerInfo);
   };
 
