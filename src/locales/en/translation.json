@@ -755,7 +755,15 @@
     "count": "Count",
     "UsersInYearStatistics": "Users Statistics In Year",
     "numberOfUser": "Number Of Users",
-    "RequestsInTimeLineStatistics": "Requests Statistics"
+    "RequestsInTimeLineStatistics": "Requests Statistics",
+    "inProcess": "In Process",
+    "hasOffers": "Has Offers",
+    "possible": "Possible",
+    "rejected": "Rejected",
+    "approved": "Approved",
+    "checking": "Checking",
+    "totalNumber": "Total Number",
+    "UsersViaBrokersStatistics": "Users Via Brokers Statistics"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

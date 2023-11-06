@@ -6,7 +6,7 @@ const GetStatisticsNumbers = async () => {
 };
 
 const GetUsrsStatistics = async (selectedYear?: any) => {
-  return await httpApi.get(`${apiPrefix.users}/GetStatisticalNumbers?${selectedYear ? `Year=${selectedYear}&` : ''}`);
+  return await httpApi.get(`${apiPrefix.users}/GetStatisticalNumbers${selectedYear ? `?Year=${selectedYear}` : ''}`);
 };
 
 const GetCompaniesStatistics = async () => {
@@ -33,6 +33,10 @@ const GetRequestsStatistics = async (startDate?: any, endDate?: any) => {
   );
 };
 
+const GetUsersViaBrokersStatistics = async () => {
+  return await httpApi.get(`${apiPrefix.Mediator}/StatisticsRegisteredUsersViaBrokers`);
+};
+
 export {
   GetStatisticsNumbers,
   GetUsrsStatistics,
@@ -41,4 +45,5 @@ export {
   GetServiceStatistics,
   GetCitiesStatistics,
   GetRequestsStatistics,
+  GetUsersViaBrokersStatistics,
 };

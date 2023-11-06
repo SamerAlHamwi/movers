@@ -20,8 +20,6 @@ const UsersInYearStatistics = () => {
     ],
   });
 
-  console.log('selectedYear', selectedYear);
-
   const { data, refetch, isRefetching, error } = useQuery(['GetUsrsStatisticsIYear'], () =>
     GetUsrsStatistics(selectedYear)
       .then((response) => {
@@ -86,7 +84,7 @@ const UsersInYearStatistics = () => {
         <DatePicker picker="year" bordered onChange={handleYearChange} size="small" />
       </div>
       <div className="distributed-column-chart">
-        <ReactApexChart options={optionsInYear} series={seriesInYear} type="line" height={350} />
+        <ReactApexChart key={1} options={optionsInYear} series={seriesInYear} height={350} />
       </div>
     </Card>
   );

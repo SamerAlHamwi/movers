@@ -752,7 +752,15 @@
     "count": "العدد",
     "UsersInYearStatistics": "إحصائيات السمتخدمين خلال السنة",
     "numberOfUser": "عدد المستخدمين",
-    "RequestsInTimeLineStatistics": "إحصائيات طلبات النقل"
+    "RequestsInTimeLineStatistics": "إحصائيات طلبات النقل",
+    "inProcess": "قيد المعالجة",
+    "hasOffers": "لديه عروض",
+    "possible": "عميل محتمل",
+    "rejected": "تم رفضه",
+    "approved": "تم قبوله",
+    "checking": "قيد التحقق",
+    "totalNumber": "العدد الكلي",
+    "UsersViaBrokersStatistics": "إحصائيات المستخدمين من خلال الوسطاء"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

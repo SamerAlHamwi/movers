@@ -12,7 +12,7 @@ const { RangePicker } = DatePicker;
 const RequestsInTimeLineStatistics = () => {
   const { t } = useTranslation();
 
-  const [dateRange, setDateRange] = useState<[string, string]>(['', '']); // Initialize with empty strings
+  const [dateRange, setDateRange] = useState<[string, string]>(['', '']);
   const [requestsStatistics, setRequestsStatistics] = useState({
     totalNumber: 0,
     checking: 0,
@@ -23,7 +23,7 @@ const RequestsInTimeLineStatistics = () => {
     inProcess: 0,
   });
 
-  const { data, refetch, isRefetching, error } = useQuery(['GetUsrsStatisticsIYear'], () =>
+  const { data, refetch, isRefetching, error } = useQuery(['GetRequestsStatistics'], () =>
     GetRequestsStatistics(dateRange[0], dateRange[1])
       .then((response) => {
         if (response.data?.success) {
@@ -41,13 +41,12 @@ const RequestsInTimeLineStatistics = () => {
   const xValues = Object.keys(requestsStatistics);
   const yValues = Object.values(requestsStatistics);
 
-  // Create an array of objects with labels and values
-  const dataPoints = xValues.map((label, index) => ({ label, value: yValues[index] }));
+  const translatedXValues = xValues.map((label) => t(`charts.${label}`));
 
-  // Sort the dataPoints in ascending order by value
+  const dataPoints = translatedXValues.map((label, index) => ({ label, value: yValues[index] }));
+
   dataPoints.sort((a, b) => a.value - b.value);
 
-  // Extract sorted xValues and yValues from the sorted dataPoints
   const sortedXValues = dataPoints.map((dataPoint) => dataPoint.label);
   const sortedYValues = dataPoints.map((dataPoint) => dataPoint.value);
 
@@ -99,15 +98,16 @@ const RequestsInTimeLineStatistics = () => {
 
   return (
     <Card padding="0 0 1.875rem" title={t('charts.RequestsInTimeLineStatistics')}>
-      <div className="year-picker" style={{ margin: '1rem 30%' }}>
+      <div style={{ margin: '1rem 30%' }}>
         <RangePicker
           onChange={(dates, dateStrings) => {
             setDateRange(dateStrings);
           }}
+          size="small"
         />
       </div>
       <div className="distributed-column-chart">
-        <ReactApexChart options={options} series={series} type="bar" height={350} />
+        <ReactApexChart key={2} options={options} series={series} type="bar" height={350} />
       </div>
     </Card>
   );

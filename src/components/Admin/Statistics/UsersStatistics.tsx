@@ -83,13 +83,11 @@ const UsersStatistics = () => {
   ];
 
   return (
-    <>
-      <Card padding="0 0 1.875rem" title={t('charts.UsersStatistics')}>
-        <div className="distributed-column-chart">
-          <ReactApexChart options={options} series={series} type="bar" height={350} />
-        </div>
-      </Card>
-    </>
+    <Card padding="0 0 1.875rem" title={t('charts.UsersStatistics')}>
+      <div className="distributed-column-chart">
+        <ReactApexChart options={options} series={series} type="bar" height={350} />
+      </div>
+    </Card>
   );
 };
 

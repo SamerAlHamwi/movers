@@ -46,7 +46,7 @@ const CitiesStatistics = () => {
         columnWidth: citiesStatistics.length < 10 ? '40%' : '50%',
       },
     },
-    colors: ['#2196F3', '#1976D2', '#1565C0', '#0D47A1'],
+    colors: ['#00CED1', '#20B2AA', '#40E0D0', '#00FFFF'],
   };
 
   const series = [

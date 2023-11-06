@@ -1,8 +1,5 @@
 import React from 'react';
 import { Col, Row as R } from 'antd';
-// import { GradientStackedAreaChart } from '@app/components/charts/GradientStackedAreaChart/GradientStackedAreaChart';
-// import { VisitorsPieChart } from '@app/components/charts/VisitorsPieChart';
-// import { ScatterChart } from '@app/components/charts/ScatterChart/ScatterChart';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import styled from 'styled-components';
 import { media } from '@app/styles/themes/constants';
@@ -15,6 +12,7 @@ import BranchesStatistics from '@app/components/Admin/Statistics/BranchesStatist
 import UsersStatistics from '@app/components/Admin/Statistics/UsersStatistics';
 import UsersInYearStatistics from '@app/components/Admin/Statistics/UsersInYearStatistics';
 import RequestsInTimeLineStatistics from '@app/components/Admin/Statistics/RequestsStatistics';
+import UsersViaBrokersStatistics from '@app/components/Admin/Statistics/UsersViaBrokersStatistics';
 
 const Row = styled(R)`
   @media only screen and ${media.xl} {
@@ -44,6 +42,10 @@ const Statistics: React.FC = () => {
           <UsersStatistics />
         </Col>
 
+        <Col id="UsersViaBrokersStatistics" xs={24}>
+          <UsersViaBrokersStatistics />
+        </Col>
+
         <Col id="CompaniesStatistics" xs={24}>
           <CompaniesStatistics />
         </Col>
@@ -59,16 +61,6 @@ const Statistics: React.FC = () => {
         <Col id="CitiesStatistics" xs={12}>
           <CitiesStatistics />
         </Col>
-
-        {/* <Col id="gradient-stacked-area" xs={24}>
-          <GradientStackedAreaChart />
-        </Col>
-        <Col id="pie" xs={24} lg={12}>
-          <VisitorsPieChart />
-        </Col>
-        <Col id="scatter" xs={24} lg={12}>
-          <ScatterChart />
-        </Col> */}
       </Row>
     </>
   );
