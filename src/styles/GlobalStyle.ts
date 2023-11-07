@@ -314,4 +314,12 @@ export default createGlobalStyle`
     white-space: normal;
     word-wrap: break-word;
   }
+
+  .ant-card-head-title {
+    padding: 20px 0 !important;
+  }
+  
+  .cebviy .ant-card-body {
+    padding: 10px 30px !important;
+  }
 `;

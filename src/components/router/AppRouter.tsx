@@ -56,6 +56,7 @@ const Partnerspage = lazy(() => import('@app/pages/REMPages/PartnersPage'));
 const REMDetailPage = lazy(() => import('@app/pages/REMPages/REMDetailsPage'));
 const AskForHelpPage = lazy(() => import('@app/pages/OtherPages/HelpRequestsPage'));
 const FrequentlyQuestionPage = lazy(() => import('@app/pages/OtherPages/FrequentlyQuestionsPage'));
+const ConfigurationsPage = lazy(() => import('@app/pages/OtherPages/ConfigurationsPage'));
 const PointPage = lazy(() => import('@app/pages/PointsPages/PointPage'));
 
 const ServerError = withLoading(ServerErrorPage);
@@ -102,6 +103,7 @@ const PartnerPage = withLoading(Partnerspage);
 const REMDetailsPage = withLoading(REMDetailPage);
 const AskForHelpsPage = withLoading(AskForHelpPage);
 const FrequentlyQuestionsPage = withLoading(FrequentlyQuestionPage);
+const ConfigurationPage = withLoading(ConfigurationsPage);
 const PointsPage = withLoading(PointPage);
 
 export const AppRouter: React.FC = () => {
@@ -547,6 +549,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <FrequentlyQuestionsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="configurations"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <ConfigurationPage />
               </PrivateRoute>
             }
           />
