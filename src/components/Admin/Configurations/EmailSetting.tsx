@@ -6,7 +6,7 @@ import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { Config } from '@app/interfaces/interfaces';
+import { EmailConfig } from '@app/interfaces/interfaces';
 import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { GetEmailSetting, UpdateEmailSetting } from '@app/services/configurations';
@@ -19,9 +19,9 @@ export const EmailSetting: React.FC = () => {
   const [modalState, setModalState] = useState({
     edit: false,
   });
-  const [emailData, setEmailData] = useState<Config | undefined>(undefined);
+  const [emailData, setEmailData] = useState<EmailConfig | undefined>(undefined);
   const [isEdit, setIsEdit] = useState(false);
-  const [editmodaldata, setEditmodaldata] = useState<Config | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<EmailConfig | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const handleModalOpen = (modalType: any) => {
@@ -61,9 +61,9 @@ export const EmailSetting: React.FC = () => {
     setIsEdit(false);
   }, [isEdit, refetch, language]);
 
-  const editEmailSetting = useMutation((data: Config) => UpdateEmailSetting(data));
+  const editEmailSetting = useMutation((data: EmailConfig) => UpdateEmailSetting(data));
 
-  const handleEdit = (data: Config) => {
+  const handleEdit = (data: EmailConfig) => {
     editEmailSetting
       .mutateAsync({ ...data })
       .then((data) => {

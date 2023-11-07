@@ -17,7 +17,8 @@ import {
   Code,
   Point,
   RejectReason,
-  Config,
+  EmailConfig,
+  SmsConfig,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -159,8 +160,13 @@ export interface EditCityProps extends ModalProps {
 }
 
 export interface EditEmailSettingProps extends ModalProps {
-  values: Config | undefined;
-  onEdit: (data: Config) => void;
+  values: EmailConfig | undefined;
+  onEdit: (data: EmailConfig) => void;
+}
+
+export interface EditSmsSettingProps extends ModalProps {
+  values: SmsConfig | undefined;
+  onEdit: (data: SmsConfig) => void;
 }
 
 export interface EditRegionProps extends ModalProps {

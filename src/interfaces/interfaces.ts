@@ -299,7 +299,7 @@ export interface Partner {
   discountPercentage: number;
 }
 
-export interface Config {
+export interface EmailConfig {
   message: string;
   messageForResetPassword: string;
   senderEmail: string;
@@ -308,6 +308,12 @@ export interface Config {
   senderPassword: string;
   senderPort: number;
   senderUseDefaultCredentials: boolean;
+}
+
+export interface SmsConfig {
+  smsUserName: string;
+  smsPassword: string;
+  serviceAccountSID: string;
 }
 
 export interface Point {

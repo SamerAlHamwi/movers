@@ -785,8 +785,8 @@
 
   "_comment28": "*********************************** config ************************************************",
   "config": {
-    "configList": "قائمة الإعدادات",
     "EmailSetting": "إعدادات البريد الإلكتروني",
+    "configList": "قائمة الإعدادات",
     "message": "الرسالة",
     "messageForResetPassword": "الرسالة من أجل تهيئة كلمة المرور",
     "senderEmail": "البريد الإلكتروني",
@@ -796,7 +796,13 @@
     "senderPort": "المنفذ",
     "senderUseDefaultCredentials": "إستخدام بيانات الإعتماد الإفتراضية",
     "editEmailSetting": "تعديل إعدادات البريد الإلكتروني ",
-    "editEmailSettingSuccessMessage": "تم تعديل إعدادات البريد الإلكتروني بنجاح"
+    "editEmailSettingSuccessMessage": "تم تعديل إعدادات البريد الإلكتروني بنجاح",
+    "SmsSetting": "إعدادات الرسائل النصية",
+    "smsUserName": "إسم المستخدم",
+    "smsPassword": "كلمة المرور",
+    "serviceAccountSID": "المعرف الخاص بالخدمة",
+    "editSmsSetting": "تعديل إعدادات الرسائل النصية",
+    "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

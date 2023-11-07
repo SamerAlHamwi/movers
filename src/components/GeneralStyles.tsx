@@ -145,6 +145,7 @@ export const DetailsValue = styled.div`
   color: var(--text-main-color);
   font-size: ${FONT_SIZE.md};
   font-weight: ${FONT_WEIGHT.medium};
+  overflow-wrap: anywhere;
 `;
 
 export const Details = styled.div`

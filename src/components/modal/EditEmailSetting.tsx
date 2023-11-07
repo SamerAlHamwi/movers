@@ -8,7 +8,7 @@ import { EditEmailSettingProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { Config } from '@app/interfaces/interfaces';
+import { EmailConfig } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 
 export const EditEmailSetting: React.FC<EditEmailSettingProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
@@ -20,7 +20,7 @@ export const EditEmailSetting: React.FC<EditEmailSettingProps> = ({ visible, onC
     form.submit();
   };
 
-  const onFinish = (value: Config) => {
+  const onFinish = (value: EmailConfig) => {
     onEdit(value);
   };
 

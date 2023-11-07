@@ -799,7 +799,13 @@
     "senderPort": "Port",
     "senderUseDefaultCredentials": "Use Default Credentials",
     "editEmailSetting": "Edit Email Setting",
-    "editEmailSettingSuccessMessage": "The Email Setting Has Been Edited Successfully"
+    "editEmailSettingSuccessMessage": "The Email Setting Has Been Edited Successfully",
+    "SmsSetting": "SMS Setting",
+    "smsUserName": "User Name",
+    "smsPassword": "User Name",
+    "serviceAccountSID": "The Service Identifier",
+    "editSmsSetting": "Edit SMS Setting",
+    "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

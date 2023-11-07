@@ -10,4 +10,12 @@ const UpdateEmailSetting = async (data: any) => {
   return await httpApi.post(`${apiPrefix.configurations}/SetEmailSetting`, data);
 };
 
-export { GetEmailSetting, UpdateEmailSetting };
+const GetSmsSetting = async () => {
+  return await httpApi.get(`${apiPrefix.configurations}/GetSmsSetting`);
+};
+
+const UpdateSmsSetting = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.configurations}/SetSmsSetting`, data);
+};
+
+export { GetEmailSetting, UpdateEmailSetting, GetSmsSetting, UpdateSmsSetting };
