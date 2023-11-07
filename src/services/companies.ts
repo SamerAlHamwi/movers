@@ -12,7 +12,7 @@ const getAllCompanies = async (page: number, pageSize: number, search: string) =
 const getSuitableCompanies = async (page: number, pageSize: number, search: string, requestId: string | undefined) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
+    `${apiPrefix.companies}/GetAll?statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
   );
 };
 

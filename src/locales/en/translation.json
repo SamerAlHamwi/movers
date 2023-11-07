@@ -786,6 +786,28 @@
     "addTerm": "Add Term"
   },
 
+  "_comment28": "*********************************** config ************************************************",
+  "config": {
+    "configList": "Configurations List",
+    "EmailSetting": "Email Setting",
+    "message": "Message",
+    "messageForResetPassword": "Message For Reset Password",
+    "senderEmail": "Email",
+    "senderEnableSsl": "Enable SSL",
+    "senderHost": "Host",
+    "senderPassword": "Password",
+    "senderPort": "Port",
+    "senderUseDefaultCredentials": "Use Default Credentials",
+    "editEmailSetting": "Edit Email Setting",
+    "editEmailSettingSuccessMessage": "The Email Setting Has Been Edited Successfully",
+    "SmsSetting": "SMS Setting",
+    "smsUserName": "User Name",
+    "smsPassword": "User Name",
+    "serviceAccountSID": "The Service Identifier",
+    "editSmsSetting": "Edit SMS Setting",
+    "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -828,7 +850,8 @@
     "RejectReason": "Reject Reasons",
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
-    "possibleClients": "Possible Clients"
+    "possibleClients": "Possible Clients",
+    "Configurations": "Configurations"
   },
 
   "header": {

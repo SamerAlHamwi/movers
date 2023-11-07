@@ -29,4 +29,5 @@ export default {
   drafts: '/api/services/app/Draft',
   attachment: '/api/services/app/Attachment',
   statictics: '/api/services/app/Statictics',
+  configurations: '/api/services/app/Configuration',
 };

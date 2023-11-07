@@ -299,6 +299,23 @@ export interface Partner {
   discountPercentage: number;
 }
 
+export interface EmailConfig {
+  message: string;
+  messageForResetPassword: string;
+  senderEmail: string;
+  senderEnableSsl: boolean;
+  senderHost: string;
+  senderPassword: string;
+  senderPort: number;
+  senderUseDefaultCredentials: boolean;
+}
+
+export interface SmsConfig {
+  smsUserName: string;
+  smsPassword: string;
+  serviceAccountSID: string;
+}
+
 export interface Point {
   id: number;
   numberOfPoint: number;
