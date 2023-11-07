@@ -7,11 +7,7 @@ const GetEmailSetting = async () => {
 };
 
 const UpdateEmailSetting = async (data: any) => {
-  return await httpApi.put(`${apiPrefix.configurations}/SetEmailSetting`, data);
+  return await httpApi.post(`${apiPrefix.configurations}/SetEmailSetting`, data);
 };
 
-const AddCotactUs = async (data: CountryModel) => {
-  return await httpApi.post(`${apiPrefix.configurations}/Create`, data);
-};
-
-export { GetEmailSetting, AddCotactUs, UpdateEmailSetting };
+export { GetEmailSetting, UpdateEmailSetting };

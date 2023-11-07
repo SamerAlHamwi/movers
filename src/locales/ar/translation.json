@@ -794,7 +794,9 @@
     "senderHost": "الإستضافة",
     "senderPassword": "كلمة المرور",
     "senderPort": "المنفذ",
-    "senderUseDefaultCredential": "استخدام بيانات الاعتماد الافتراضية"
+    "senderUseDefaultCredentials": "إستخدام بيانات الإعتماد الإفتراضية",
+    "editEmailSetting": "تعديل إعدادات البريد الإلكتروني ",
+    "editEmailSettingSuccessMessage": "تم تعديل إعدادات البريد الإلكتروني بنجاح"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

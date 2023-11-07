@@ -307,7 +307,7 @@ export interface Config {
   senderHost: string;
   senderPassword: string;
   senderPort: number;
-  senderUseDefaultCredential: boolean;
+  senderUseDefaultCredentials: boolean;
 }
 
 export interface Point {

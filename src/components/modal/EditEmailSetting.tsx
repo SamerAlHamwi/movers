@@ -8,7 +8,7 @@ import { EditEmailSettingProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CountryModel, LanguageType } from '@app/interfaces/interfaces';
+import { Config } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 
 export const EditEmailSetting: React.FC<EditEmailSettingProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
@@ -20,20 +20,8 @@ export const EditEmailSetting: React.FC<EditEmailSettingProps> = ({ visible, onC
     form.submit();
   };
 
-  const onFinish = (value: CountryModel) => {
-    // value = Object.assign({}, value, {
-    //   translations: [
-    //     {
-    //       name: value.translations[0].name,
-    //       language: 'ar' as LanguageType,
-    //     },
-    //     {
-    //       name: value.translations[1].name,
-    //       language: 'en' as LanguageType,
-    //     },
-    //   ],
-    // });
-    // onEdit(value);
+  const onFinish = (value: Config) => {
+    onEdit(value);
   };
 
   return (
@@ -43,7 +31,7 @@ export const EditEmailSetting: React.FC<EditEmailSettingProps> = ({ visible, onC
       open={visible}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('locations.editCountryModalTitle')}
+          {t('config.editEmailSetting')}
         </div>
       }
       onCancel={onCancel}
@@ -61,38 +49,66 @@ export const EditEmailSetting: React.FC<EditEmailSettingProps> = ({ visible, onC
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="CountriesForm">
+      <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="EditEmailSettingForm">
         <BaseForm.Item
-          name={['translations', 1, 'name']}
-          label={<LableText>{t('common.name_en')}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[A-Za-z ]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-            },
-          ]}
+          name="message"
+          label={<LableText>{t('config.message')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 0, 'name']}
-          label={<LableText>{t('common.name_ar')}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[\u0600-\u06FF ]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-            },
-          ]}
+          name="messageForResetPassword"
+          label={<LableText>{t('config.messageForResetPassword')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name="dialCode"
-          label={<LableText>{t('locations.dialCode')}</LableText>}
+          name="senderEmail"
+          label={<LableText>{t('config.senderEmail')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="senderPassword"
+          label={<LableText>{t('config.senderPassword')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="senderEnableSsl"
+          label={<LableText>{t('config.senderEnableSsl')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="senderHost"
+          label={<LableText>{t('config.senderHost')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="senderPort"
+          label={<LableText>{t('config.senderPort')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="senderUseDefaultCredentials"
+          label={<LableText>{t('config.senderUseDefaultCredentials')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

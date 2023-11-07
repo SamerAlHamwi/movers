@@ -127,3 +127,29 @@ export const treeStyle = {
   border: '1px solid #d9d9d9',
   backgroundColor: '#fff',
 };
+
+export const DetailsRow = styled.div`
+  display: flex;
+  justify-content: flex-start;
+`;
+
+export const DetailsTitle = styled.div`
+  color: var(--text-light-color);
+  font-size: ${FONT_SIZE.md};
+  font-weight: ${FONT_WEIGHT.semibold};
+  margin-right: 0.5rem;
+  width: 25%;
+`;
+
+export const DetailsValue = styled.div`
+  color: var(--text-main-color);
+  font-size: ${FONT_SIZE.md};
+  font-weight: ${FONT_WEIGHT.medium};
+`;
+
+export const Details = styled.div`
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin: 1.25rem 0.5rem;
+`;
