@@ -783,6 +783,20 @@
     "addTerm": "إضافة حُكم أو شرط"
   },
 
+  "_comment28": "*********************************** config ************************************************",
+  "config": {
+    "configList": "قائمة الإعدادات",
+    "EmailSetting": "إعدادات البريد الإلكتروني",
+    "message": "الرسالة",
+    "messageForResetPassword": "الرسالة من أجل تهيئة كلمة المرور",
+    "senderEmail": "البريد الإلكتروني",
+    "senderEnableSsl": "تفعيل الSSL",
+    "senderHost": "الإستضافة",
+    "senderPassword": "كلمة المرور",
+    "senderPort": "المنفذ",
+    "senderUseDefaultCredential": "استخدام بيانات الاعتماد الافتراضية"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -824,7 +838,8 @@
     "RejectReason": "أسباب الرفض",
     "Drafts": "الطلبات الغير مستكملة",
     "CompleteDraft": "إستكمال طلب نقل",
-    "possibleClients": "العملاء المحتملين"
+    "possibleClients": "العملاء المحتملين",
+    "Configurations": "الإعدادات"
   },
 
   "header": {

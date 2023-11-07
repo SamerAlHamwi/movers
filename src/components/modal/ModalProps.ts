@@ -17,6 +17,7 @@ import {
   Code,
   Point,
   RejectReason,
+  Config,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -151,9 +152,15 @@ export interface EditCountryProps extends ModalProps {
   country_values: CountryModel | undefined;
   onEdit: (data: CountryModel) => void;
 }
+
 export interface EditCityProps extends ModalProps {
   city_values: CityModel | undefined;
   onEdit: (data: CityModel) => void;
+}
+
+export interface EditEmailSettingProps extends ModalProps {
+  values: Config | undefined;
+  onEdit: (data: Config) => void;
 }
 
 export interface EditRegionProps extends ModalProps {
