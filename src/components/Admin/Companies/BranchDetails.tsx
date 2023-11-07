@@ -350,7 +350,7 @@ const BranchDetails: React.FC = () => {
                 />
               </Space>
 
-              <DetailsRow>
+              {/* <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.reviews')} :</DetailsTitle>
                 </ColStyle>
@@ -364,7 +364,7 @@ const BranchDetails: React.FC = () => {
                       ))
                     : '___'}
                 </ColStyle>
-              </DetailsRow>
+              </DetailsRow> */}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.companyContact')} :
