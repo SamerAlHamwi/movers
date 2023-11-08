@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Col, Row, Tree, Card, Image, Tag } from 'antd';
+import { Col, Row, Tree, Card, Image, Tag, Tooltip } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -14,7 +14,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
-import { CheckOutlined, CloseOutlined } from '@ant-design/icons';
+import { CheckOutlined, CloseOutlined, TagOutlined } from '@ant-design/icons';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
@@ -245,7 +245,7 @@ const RequestDetails: React.FC = () => {
                 })}
               </DetailsRow>
 
-              <DetailsRow>
+              {/* <DetailsRow>
                 {requestData?.requestForQuotationContacts.map((request: any) => {
                   return (
                     <>
@@ -366,7 +366,7 @@ const RequestDetails: React.FC = () => {
                     </>
                   );
                 })}
-              </DetailsRow>
+              </DetailsRow> */}
 
               <DetailsRow>
                 <ColStyle>
@@ -529,43 +529,149 @@ const RequestDetails: React.FC = () => {
                 <DetailsValue
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                 >
-                  {requestData?.statues === 1 ? (
-                    <Tag color="#30af5b" style={{ padding: '4px' }}>
+                  {requestData?.statues === 1 && (
+                    <Tag key={requestData?.id} color="#30af5b" style={{ padding: '4px' }}>
                       {t('requests.checking')}
                     </Tag>
-                  ) : requestData?.statues === 2 ? (
-                    <Tag color="#01509a" style={{ padding: '4px' }}>
+                  )}
+                  {requestData?.statues === 2 && (
+                    <Tag key={requestData?.id} color="#01509a" style={{ padding: '4px' }}>
                       {t('requests.approved')}
                     </Tag>
-                  ) : requestData?.statues === 3 ? (
-                    <Tag color="#ff5252" style={{ padding: '4px' }}>
+                  )}
+                  {requestData?.statues === 3 && (
+                    <Tag key={requestData?.id} color="#ff5252" style={{ padding: '4px' }}>
                       {t('requests.rejected')}
                     </Tag>
-                  ) : (
-                    '_'
+                  )}
+                  {requestData?.statues === 4 && (
+                    <Tag key={requestData?.id} color="#546E7A" style={{ padding: '4px' }}>
+                      {t('requests.possible')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 5 && (
+                    <Tag key={requestData?.id} color="#f9a3a4" style={{ padding: '4px' }}>
+                      {t('requests.hasOffers')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 6 && (
+                    <Tag key={requestData?.id} color="#2b908f" style={{ padding: '4px' }}>
+                      {t('requests.inProcess')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 7 && (
+                    <Tag key={requestData?.id} color="#73d13d" style={{ padding: '4px' }}>
+                      {t('requests.FinishByCompany')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 8 && (
+                    <Tag key={requestData?.id} color="#90ee7e" style={{ padding: '4px' }}>
+                      {t('requests.FinishByUser')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 9 && (
+                    <Tag key={requestData?.id} color="#d4526e" style={{ padding: '4px' }}>
+                      {t('requests.NotFinishByUser')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 10 && (
+                    <Tag key={requestData?.id} color="#33b2df" style={{ padding: '4px' }}>
+                      {t('requests.Finished')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 11 && (
+                    <Tag key={requestData?.id} color="#faad14" style={{ padding: '4px' }}>
+                      {t('requests.canceled')}
+                    </Tag>
                   )}
                 </DetailsValue>
               </DetailsRow>
 
-              <DetailsRow>
-                <DetailsTitle
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  {t('requests.reasonRefuse')}
-                </DetailsTitle>
+              {requestData?.statues != 1 && requestData?.statues != 3 && requestData?.statues != 11 && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.suitableCompanies&Branches')}
+                  </DetailsTitle>
 
-                <DetailsValue
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  {requestData?.reasonRefuse}
-                </DetailsValue>
-              </DetailsRow>
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Tooltip
+                      placement={language == 'en' ? 'right' : 'left'}
+                      title={t('requests.suitableCompanies&Branches')}
+                    >
+                      <TableButton
+                        severity="success"
+                        onClick={() => {
+                          Navigate(`wasSent/2`);
+                        }}
+                      >
+                        <TagOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
+              {requestData?.statues == 3 && requestData?.reasonRefuse && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.reasonRefuse')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={
+                      isDesktop || isTablet
+                        ? { width: '46%', margin: '0 2%', color: '#ff5252' }
+                        : { width: '80%', margin: '0 10%', color: '#ff5252' }
+                    }
+                  >
+                    {requestData?.reasonRefuse}
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
+              {(requestData?.statues == 6 ||
+                requestData?.statues == 7 ||
+                requestData?.statues == 8 ||
+                requestData?.statues == 9 ||
+                requestData?.statues == 10) &&
+                requestData?.selectedOfferId && (
+                  <DetailsRow>
+                    <DetailsTitle
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      {t('requests.offer')}
+                    </DetailsTitle>
+                    <DetailsValue
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('requests.offerDetails')}>
+                        <TableButton
+                          severity="success"
+                          onClick={() => {
+                            Navigate(`${requestData?.selectedOfferId}/details`);
+                          }}
+                        >
+                          <TagOutlined />
+                        </TableButton>
+                      </Tooltip>
+                    </DetailsValue>
+                  </DetailsRow>
+                )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :
               </h3>
 
-              {/* <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.sourceType')}</DetailsTitle> */}
               <Card style={{ width: '100%', margin: '1rem 0' }}>
                 <Meta
                   avatar={<Image src={requestData?.sourceType?.attachment?.url} />}
@@ -592,18 +698,25 @@ const RequestDetails: React.FC = () => {
 
               {requestData?.attributeChoiceAndAttachments.map((attributeChoiceAndAttachmentsValue: any) => (
                 <Col key={attributeChoiceAndAttachmentsValue?.attributeChoice?.id}>
-                  <h4 style={{ margin: '0 2% 1rem' }}>{attributeChoiceAndAttachmentsValue?.attributeChoice?.name} :</h4>
-                  {attributeChoiceAndAttachmentsValue?.attachments.map((attachment: any) => (
-                    <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
-                  ))}
+                  <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                    <h4 style={{ margin: '2% 1rem' }}>{attributeChoiceAndAttachmentsValue?.attributeChoice?.name} :</h4>
+                    {attributeChoiceAndAttachmentsValue?.attachments.length == 0 ? (
+                      <h5 style={{ margin: '0 2% 1rem', color: '#ff5252' }}>{t('requests.noAttachments')}</h5>
+                    ) : (
+                      attributeChoiceAndAttachmentsValue?.attachments.map((attachment: any) => (
+                        <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
+                      ))
+                    )}
+                  </Card>
                 </Col>
               ))}
 
-              <Row>
+              <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                <h4 style={{ margin: '2% 1rem' }}>{t('requests.additionalAttachments')} :</h4>
                 {requestData?.attachments.map((attachment: any) => (
                   <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
                 ))}
-              </Row>
+              </Card>
             </Details>
           </Spinner>
         </Cardd>
