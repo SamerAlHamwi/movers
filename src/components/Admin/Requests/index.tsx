@@ -23,6 +23,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import { SearchForUser } from '@app/components/modal/SearchForUser';
 import { checkPIN } from '@app/services/drafts';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -207,8 +208,8 @@ export const Requests: React.FC = () => {
       }),
   );
 
-  const handleReject = (id: any) => {
-    const data = { requestId: id, statues: 3 };
+  const handleReject = (info: any) => {
+    const data = { requestId: rejectmodaldata?.id, statues: 3, reasonRefuse: info.reasonRefuse };
     rejectRequest.mutateAsync(data);
   };
 
@@ -428,6 +429,7 @@ export const Requests: React.FC = () => {
 
             <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
+                disabled={record.statues == 2}
                 severity="info"
                 onClick={() => {
                   setEditmodaldata(record);
@@ -540,18 +542,14 @@ export const Requests: React.FC = () => {
 
           {/*    Reject    */}
           {modalState.reject && (
-            <ActionModal
+            <SendRejectReason
               visible={modalState.reject}
               onCancel={() => handleModalClose('reject')}
-              onOK={() => {
-                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id);
+              onCreate={(info) => {
+                handleReject(info);
+                // const data = { requestId: id, statues: 3 };
+                // rejectRequest.mutateAsync(data);
               }}
-              width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('requests.rejectRequestModalTitle')}
-              okText={t('common.reject')}
-              cancelText={t('common.cancel')}
-              description={t('requests.rejectRequestModalDescription')}
-              // isDanger={true}
               isLoading={rejectRequest.isLoading}
             />
           )}
