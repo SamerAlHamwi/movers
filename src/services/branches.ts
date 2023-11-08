@@ -9,10 +9,18 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
   );
 };
 
-const getSuitableBranches = async (page: number, pageSize: number, search: string, requestId: string | undefined) => {
+const getSuitableBranches = async (
+  type: string | undefined,
+  page: number,
+  pageSize: number,
+  search: string,
+  requestId: string | undefined,
+) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.branches}/GetAll?statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
+    `${apiPrefix.branches}/GetAll?GetCompaniesWithRequest=${
+      type == '2' ? 'true' : 'false'
+    }&statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
   );
 };
 

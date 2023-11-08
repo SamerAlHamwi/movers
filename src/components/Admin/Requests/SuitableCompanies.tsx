@@ -37,7 +37,7 @@ export const SuitableCompanies: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, mobileOnly, desktopOnly } = useResponsive();
-  const { requestId } = useParams();
+  const { requestId, type } = useParams();
   const Navigate = useNavigate();
 
   const [pageCompany, setPageCompany] = useState<number>(1);
@@ -58,7 +58,7 @@ export const SuitableCompanies: React.FC = () => {
   const { refetch: refetchCompanies, isRefetching: isRefetchingCompanies } = useQuery(
     ['SuitableCompanies', pageCompany, pageSizeCompany],
     () =>
-      getSuitableCompanies(pageCompany, pageSizeCompany, searchString, requestId)
+      getSuitableCompanies(type, pageCompany, pageSizeCompany, searchString, requestId)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataCompany(result);
@@ -77,7 +77,7 @@ export const SuitableCompanies: React.FC = () => {
   const { refetch: reetchBranch, isRefetching: isRefetchingBranch } = useQuery(
     ['SuitableBranches', pageBranch, pageSizeBranch],
     () =>
-      getSuitableBranches(pageBranch, pageSizeBranch, searchString, requestId)
+      getSuitableBranches(type, pageBranch, pageSizeBranch, searchString, requestId)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataBranch(result);
@@ -156,7 +156,7 @@ export const SuitableCompanies: React.FC = () => {
   };
 
   const columnsCompany = [
-    {
+    type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       dataIndex: 'id',
       render: (id: any) => (
@@ -201,34 +201,26 @@ export const SuitableCompanies: React.FC = () => {
       ),
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.status')}</Header>,
-      dataIndex: 'status',
-      render: (index: number, record: any) => {
-        return (
-          <>
-            {record.statues === 1 && (
-              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-                {t('companies.checking')}
-              </Tag>
-            )}
-            {record.statues === 2 && (
-              <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
-                {t('companies.approved')}
-              </Tag>
-            )}
-            {record.statues === 3 && (
-              <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
-                {t('companies.rejected')}
-              </Tag>
-            )}
-          </>
-        );
-      },
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.isThisCompanyProvideOffer')}</Header>,
+      dataIndex: 'isThisCompanyProvideOffer',
+      render: (record: any) => (
+        <Space style={{ display: 'grid' }}>
+          {record ? (
+            <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
+              {t('requests.true')}
+            </Tag>
+          ) : (
+            <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
+              {t('requests.false')}
+            </Tag>
+          )}
+        </Space>
+      ),
     },
-  ];
+  ].filter(Boolean);
 
   const columnsBranch = [
-    {
+    type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       dataIndex: 'id',
       render: (id: any) => (
@@ -256,31 +248,23 @@ export const SuitableCompanies: React.FC = () => {
       ),
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.status')}</Header>,
-      dataIndex: 'status',
-      render: (index: number, record: any) => {
-        return (
-          <>
-            {record.statues === 1 && (
-              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
-                {t('companies.checking')}
-              </Tag>
-            )}
-            {record.statues === 2 && (
-              <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
-                {t('companies.approved')}
-              </Tag>
-            )}
-            {record.statues === 3 && (
-              <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
-                {t('companies.rejected')}
-              </Tag>
-            )}
-          </>
-        );
-      },
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.isThisBranchProvideOffer')}</Header>,
+      dataIndex: 'isThisCompanyProvideOffer',
+      render: (record: any) => (
+        <Space style={{ display: 'grid' }}>
+          {record ? (
+            <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
+              {t('requests.true')}
+            </Tag>
+          ) : (
+            <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
+              {t('requests.false')}
+            </Tag>
+          )}
+        </Space>
+      ),
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <>
@@ -385,25 +369,27 @@ export const SuitableCompanies: React.FC = () => {
         />
       </Card>
 
-      <Button
-        type="primary"
-        style={{
-          marginBottom: '.5rem',
-          width: 'auto',
-          height: 'auto',
-        }}
-        onClick={() =>
-          suitableForRequestMutation.mutateAsync({
-            id: requestId,
-            request: {
-              companyIds: selectedCompanies,
-              companyBranchIds: selectedBranches,
-            },
-          })
-        }
-      >
-        <CreateButtonText>{t('common.done')}</CreateButtonText>
-      </Button>
+      {type == '1' && (
+        <Button
+          type="primary"
+          style={{
+            marginBottom: '.5rem',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() =>
+            suitableForRequestMutation.mutateAsync({
+              id: requestId,
+              request: {
+                companyIds: selectedCompanies,
+                companyBranchIds: selectedBranches,
+              },
+            })
+          }
+        >
+          <CreateButtonText>{t('common.done')}</CreateButtonText>
+        </Button>
+      )}
     </>
   );
 };
