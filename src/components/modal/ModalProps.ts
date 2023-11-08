@@ -77,6 +77,10 @@ export interface SearchForUserModalProps extends ModalProps {
   onCreate: (info: any, userId: number) => void;
 }
 
+export interface SendRejectReasons extends ModalProps {
+  onCreate: (info: any) => void;
+}
+
 export interface CheckPINModalProps extends ModalProps {
   onCreate: (info: any) => void;
 }

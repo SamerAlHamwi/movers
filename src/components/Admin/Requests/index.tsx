@@ -23,6 +23,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import { SearchForUser } from '@app/components/modal/SearchForUser';
 import { checkPIN } from '@app/services/drafts';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -207,8 +208,8 @@ export const Requests: React.FC = () => {
       }),
   );
 
-  const handleReject = (id: any) => {
-    const data = { requestId: id, statues: 3 };
+  const handleReject = (info: any) => {
+    const data = { requestId: rejectmodaldata?.id, statues: 3, reasonRefuse: info.reasonRefuse };
     rejectRequest.mutateAsync(data);
   };
 
@@ -294,11 +295,11 @@ export const Requests: React.FC = () => {
       render: (index: number, record: any) => (
         <Space>
           <Button
-            disabled={record.statues == 2}
+            disabled={record.statues !== 1}
             style={{ height: '2.4rem' }}
             severity="info"
             onClick={() => {
-              Navigate(`${record.id}/suitableCompanies&Branches`, { state: record.name });
+              Navigate(`${record.id}/suitableCompanies&Branches/1`, { state: record.name });
             }}
           >
             <div
@@ -349,33 +350,6 @@ export const Requests: React.FC = () => {
         return (
           <>
             {record.statues === 1 && (
-              <Space>
-                {/* <Tooltip placement="top" title={t('common.approve')}>
-                  <TableButton
-                    severity="info"
-                    onClick={() => {
-                      setApprovemodaldata(record);
-                      handleModalOpen('approve');
-                    }}
-                  >
-                    <CheckOutlined />
-                  </TableButton>
-                </Tooltip> */}
-
-                <Tooltip placement="top" title={t('common.reject')}>
-                  <TableButton
-                    severity="error"
-                    onClick={() => {
-                      setRejectmodaldata(record);
-                      handleModalOpen('reject');
-                    }}
-                  >
-                    <CloseOutlined />
-                  </TableButton>
-                </Tooltip>
-              </Space>
-            )}
-            {record.statues === 1 && (
               <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
                 {t('requests.checking')}
               </Tag>
@@ -405,6 +379,31 @@ export const Requests: React.FC = () => {
                 {t('requests.inProcess')}
               </Tag>
             )}
+            {record.statues === 7 && (
+              <Tag key={record?.id} color="#73d13d" style={{ padding: '4px' }}>
+                {t('requests.FinishByCompany')}
+              </Tag>
+            )}
+            {record.statues === 8 && (
+              <Tag key={record?.id} color="#90ee7e" style={{ padding: '4px' }}>
+                {t('requests.FinishByUser')}
+              </Tag>
+            )}
+            {record.statues === 9 && (
+              <Tag key={record?.id} color="#d4526e" style={{ padding: '4px' }}>
+                {t('requests.NotFinishByUser')}
+              </Tag>
+            )}
+            {record.statues === 10 && (
+              <Tag key={record?.id} color="#33b2df" style={{ padding: '4px' }}>
+                {t('requests.Finished')}
+              </Tag>
+            )}
+            {record?.statues === 11 && (
+              <Tag key={record?.id} color="#faad14" style={{ padding: '4px' }}>
+                {t('requests.canceled')}
+              </Tag>
+            )}
           </>
         );
       },
@@ -426,8 +425,22 @@ export const Requests: React.FC = () => {
               </TableButton>
             </Tooltip>
 
+            <Tooltip placement="top" title={t('common.reject')}>
+              <TableButton
+                disabled={record.statues !== 1}
+                severity="error"
+                onClick={() => {
+                  setRejectmodaldata(record);
+                  handleModalOpen('reject');
+                }}
+              >
+                <CloseOutlined />
+              </TableButton>
+            </Tooltip>
+
             <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
+                disabled={record.statues !== 1}
                 severity="info"
                 onClick={() => {
                   setEditmodaldata(record);
@@ -540,18 +553,14 @@ export const Requests: React.FC = () => {
 
           {/*    Reject    */}
           {modalState.reject && (
-            <ActionModal
+            <SendRejectReason
               visible={modalState.reject}
               onCancel={() => handleModalClose('reject')}
-              onOK={() => {
-                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id);
+              onCreate={(info) => {
+                handleReject(info);
+                // const data = { requestId: id, statues: 3 };
+                // rejectRequest.mutateAsync(data);
               }}
-              width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('requests.rejectRequestModalTitle')}
-              okText={t('common.reject')}
-              cancelText={t('common.cancel')}
-              description={t('requests.rejectRequestModalDescription')}
-              // isDanger={true}
               isLoading={rejectRequest.isLoading}
             />
           )}

@@ -8,7 +8,7 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { getCompanyById } from '@app/services/companies';
+import { GetReviewDetailsById, getCompanyById } from '@app/services/companies';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
@@ -47,6 +47,7 @@ const CompanyDetails: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [companyData, setCompanyData] = useState<any>();
+  const [companyReviewData, setCompanyReviewData] = useState<any>();
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 
@@ -55,6 +56,19 @@ const CompanyDetails: React.FC = () => {
       .then((data) => {
         const result = data.data?.result;
         setCompanyData(result);
+        setLoading(!data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+        setLoading(false);
+      }),
+  );
+
+  const { refetch: refetchReview, isRefetching: isRefetchingReview } = useQuery(['GetReviewDetailsById'], () =>
+    GetReviewDetailsById(companyId)
+      .then((data) => {
+        const result = data.data?.result;
+        setCompanyReviewData(result);
         setLoading(!data.data?.success);
       })
       .catch((error) => {
@@ -404,8 +418,8 @@ const CompanyDetails: React.FC = () => {
                   <DetailsTitle>{t('companies.reviews')} :</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  {companyData?.reviews.length > 0
-                    ? companyData?.reviews.map((review: any, index: number) => (
+                  {companyReviewData?.length > 0
+                    ? companyReviewData?.map((review: any, index: number) => (
                         <DetailsValue key={review?.id}>
                           {index + 1} - <span style={{ fontWeight: '600' }}>{review?.reviewDescription} </span>
                           {' ( from ' + review?.user?.fullName + ' / ' + review?.user?.userName + ' )'}
