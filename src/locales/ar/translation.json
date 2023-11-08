@@ -527,7 +527,9 @@
     "draftsList": "قائمة الطلبات الغير مستكملة",
     "checkPINForUserModalTitle": "إدخال رمز ال PIN للحصول على تفويض المستخدم",
     "checkPINForUserModal": "إرسال رمز ال PIN",
-    "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل"
+    "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل",
+    "sendRejectReason": "إرسال سبب الرفض للمستخدم",
+    "reasonRefuse": "سبب الرفض"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",

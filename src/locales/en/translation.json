@@ -530,7 +530,9 @@
     "draftsList": "Drafts List",
     "checkPINForUserModalTitle": "Enter The PIN Code To Obtain User Authorization",
     "checkPINForUserModal": "Enter The PIN Code",
-    "atLeastOneService": "At Least One Service Must Be Selected"
+    "atLeastOneService": "At Least One Service Must Be Selected",
+    "sendRejectReason": "Send Reject Reason To User",
+    "reasonRefuse": "Reject Reason"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",

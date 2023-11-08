@@ -547,7 +547,25 @@ const RequestDetails: React.FC = () => {
                 </DetailsValue>
               </DetailsRow>
 
-              <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.sourceType')}</DetailsTitle>
+              <DetailsRow>
+                <DetailsTitle
+                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                >
+                  {t('requests.reasonRefuse')}
+                </DetailsTitle>
+
+                <DetailsValue
+                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                >
+                  {requestData?.reasonRefuse}
+                </DetailsValue>
+              </DetailsRow>
+
+              <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                {t('requests.sourceType')} :
+              </h3>
+
+              {/* <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.sourceType')}</DetailsTitle> */}
               <Card style={{ width: '100%', margin: '1rem 0' }}>
                 <Meta
                   avatar={<Image src={requestData?.sourceType?.attachment?.url} />}
@@ -566,9 +584,11 @@ const RequestDetails: React.FC = () => {
                 />
               </Card>
 
-              <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
-                {t('requests.attachments')} :
-              </h3>
+              {requestData?.attributeChoiceAndAttachments.length > 0 && (
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('requests.attachments')} :
+                </h3>
+              )}
 
               {requestData?.attributeChoiceAndAttachments.map((attributeChoiceAndAttachmentsValue: any) => (
                 <Col key={attributeChoiceAndAttachmentsValue?.attributeChoice?.id}>
