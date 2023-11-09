@@ -200,7 +200,7 @@ export const SuitableCompanies: React.FC = () => {
         </Space>
       ),
     },
-    type == '1' && {
+    type == '2' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.isThisCompanyProvideOffer')}</Header>,
       dataIndex: 'isThisCompanyProvideOffer',
       render: (record: any) => (
@@ -247,7 +247,7 @@ export const SuitableCompanies: React.FC = () => {
         </Space>
       ),
     },
-    type == '1' && {
+    type == '2' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.isThisBranchProvideOffer')}</Header>,
       dataIndex: 'isThisCompanyProvideOffer',
       render: (record: any) => (
