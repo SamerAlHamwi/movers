@@ -18,9 +18,11 @@ const getSuitableBranches = async (
 ) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.branches}/GetAll?GetCompaniesWithRequest=${
+    `${apiPrefix.branches}/GetAll?GetCompnyBranchesWithRequest=${
       type == '2' ? 'true' : 'false'
-    }&statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=true`,
+    }&statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=${
+      type == '2' ? 'false' : 'true'
+    }`,
   );
 };
 
