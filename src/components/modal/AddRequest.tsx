@@ -79,7 +79,7 @@ export const AddRequest: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-  const [valueRadio, setValueRadio] = useState(1);
+  const [valueRadio, setValueRadio] = useState(0);
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
   const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
@@ -246,8 +246,6 @@ export const AddRequest: React.FC = () => {
     setSelectedCheckboxes([]);
   }, [selectedSourceType]);
 
-  console.log(selectedCheckboxes);
-
   useEffect(() => {
     GetAllSourceType.refetch();
     AttributeForSourceTypesRefetch();
@@ -268,46 +266,16 @@ export const AddRequest: React.FC = () => {
 
   const steps = [
     {
-      title: 'Contact',
-      content: [
-        'Source',
-        'fullNameContactSource',
-        'phoneNumberSource',
-        'isCallAvailableSource',
-        'isWhatsAppAvailableSource',
-        'isTelegramAvailableSource',
-        'Destination',
-        'fullNameContactDestination',
-        'phoneNumberDestination',
-        'isCallAvailableDestination',
-        'isWhatsAppAvailableDestination',
-        'isTelegramAvailableDestination',
-      ],
+      title: 'SourceType',
     },
     {
       title: 'Location',
-      content: [
-        'Source',
-        'sourceCountry',
-        'sourceCity',
-        'sourceAddress',
-        'moveAtUtc',
-        'sourceLocation',
-        'Destination',
-        'destinationCountry',
-        'destinationCity',
-        'destinationAddress',
-        'arrivalAtUtc',
-        'destinationLocation',
-      ],
+    },
+    {
+      title: 'Contact',
     },
     {
       title: 'Services',
-      content: ['serviceType', 'services', 'comment'],
-    },
-    {
-      title: 'SourceType',
-      content: ['sourceTypeId', 'attributeForSourceTypeValues', 'attributeChoiceAndAttachments'],
     },
   ];
 
@@ -430,20 +398,20 @@ export const AddRequest: React.FC = () => {
       // dailCode: '+' + dialCodeS,
       dailCode: '+971',
       phoneNumber: phoneNumberS,
-      fullName: form.getFieldValue('fullNameContactSource'),
-      isCallAvailable: form.getFieldValue('isCallAvailableSource') == undefined ? false : true,
-      isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableSource') == undefined ? false : true,
-      isTelegramAvailable: form.getFieldValue('isTelegramAvailableSource') == undefined ? false : true,
+      fullName: form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']),
+      // isCallAvailable: form.getFieldValue('isCallAvailableSource') == undefined ? false : true,
+      // isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableSource') == undefined ? false : true,
+      // isTelegramAvailable: form.getFieldValue('isTelegramAvailableSource') == undefined ? false : true,
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
       // dailCode: '+' + dialCodeD,
       dailCode: '+971',
       phoneNumber: phoneNumberD,
-      fullName: form.getFieldValue('fullNameContactDestination'),
-      isCallAvailable: form.getFieldValue('isCallAvailableDestination') == undefined ? false : true,
-      isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableDestination') == undefined ? false : true,
-      isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
+      fullName: form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']),
+      // isCallAvailable: form.getFieldValue('isCallAvailableDestination') == undefined ? false : true,
+      // isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableDestination') == undefined ? false : true,
+      // isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
       requestForQuotationContactType: 2,
     };
     function extractServicesIds(input: any) {
@@ -512,18 +480,55 @@ export const AddRequest: React.FC = () => {
       userId: userId ? userId : '0',
     };
     setAttachmentIdsChanged(true);
+    console.log(attributeChoiceAndAttachmentsToSend);
+
+    if (attachmentIds.length == 0 && attributeChoiceAndAttachmentsToSend.length == 0) {
+      message.open({
+        content: <Alert message={t('addRequest.atLeastOneAttachment')} type={`error`} showIcon />,
+      });
+      setAttachmentIdsChanged(false);
+      return;
+    }
   };
 
   useEffect(() => {
     if (attachmentIdsChanged) {
-      if (requestServices.length == 0) {
+      const showError = (messageText: string) => {
         message.open({
-          content: <Alert message={t('requests.atLeastOneService')} type={`error`} showIcon />,
+          content: <Alert message={messageText} type={`error`} showIcon />,
         });
+        setAttachmentIdsChanged(false);
+      };
+
+      const checkField = (fieldName: any, messageText: string) => {
+        if (form.getFieldValue(fieldName) === undefined) {
+          showError(messageText);
+          return false;
+        }
+        return true;
+      };
+
+      if (selectedSourceType === '0') {
+        showError(t('addRequest.selectSourceType'));
+      } else if (requestServices.length === 0) {
+        showError(t('requests.atLeastOneService'));
+      } else if (valueRadio === 0) {
+        showError(t('addRequest.selectServiceType'));
+      } else if (
+        !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField('sourceAddress', t('addRequest.enterAddress')) ||
+        !checkField('destinationAddress', t('addRequest.enterAddress'))
+      ) {
         return;
+      } else if (cityId.source === '0' || cityId.destination === '0') {
+        showError(t('addRequest.enterCity'));
+      } else {
+        createRequestMutation.mutateAsync(requestData);
+        setAttachmentIdsChanged(false);
       }
-      createRequestMutation.mutateAsync(requestData);
-      setAttachmentIdsChanged(false);
     }
   }, [attachmentIdsChanged]);
 
@@ -645,13 +650,13 @@ export const AddRequest: React.FC = () => {
             title={t(`addRequest.${step.title}`)}
             icon={
               index === 0 ? (
-                <UserOutlined />
+                <BankOutlined />
               ) : index === 1 ? (
                 <PushpinOutlined />
               ) : index === 2 ? (
-                <ClearOutlined />
+                <UserOutlined />
               ) : index === 3 ? (
-                <BankOutlined />
+                <ClearOutlined />
               ) : undefined
             }
           />
@@ -665,438 +670,7 @@ export const AddRequest: React.FC = () => {
       >
         {current === 0 && (
           <>
-            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForSource')}:</h4>
-
-            <BaseForm.Item
-              name={['requestForQuotationContacts', 0, 'fullName']}
-              label={<LableText>{t('common.fullName')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-            >
-              <Input />
-            </BaseForm.Item>
-
-            <BaseButtonsForm.Item
-              name={['requestForQuotationContacts', 0, 'phoneNumber']}
-              $successText={t('auth.phoneNumberVerified')}
-              label={t('common.phoneNumber')}
-              rules={[
-                { required: true, message: t('common.requiredField') },
-                () => ({
-                  validator(_, value) {
-                    if (!value || isValidPhoneNumber(value)) {
-                      return Promise.resolve();
-                    }
-                    if (formattedPhoneNumber.length > 12) {
-                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
-                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                    }
-                  },
-                }),
-              ]}
-              style={
-                isDesktop || isTablet
-                  ? {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-                  : {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-              }
-            >
-              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-            </BaseButtonsForm.Item>
-
-            <Row
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-              }}
-            >
-              <Col>
-                <BaseForm.Item name={['requestForQuotationContacts', 0, 'isCallAvailable']} valuePropName="checked">
-                  <Checkbox>{t('requests.isCallAvailable')}</Checkbox>
-                </BaseForm.Item>
-              </Col>
-              <Col>
-                <BaseForm.Item name={['requestForQuotationContacts', 0, 'isTelegramAvailable']} valuePropName="checked">
-                  <Checkbox>{t('requests.isTelegramAvailable')}</Checkbox>
-                </BaseForm.Item>
-              </Col>
-              <Col>
-                <BaseForm.Item name={['requestForQuotationContacts', 0, 'isWhatsAppAvailable']} valuePropName="checked">
-                  <Checkbox>{t('requests.isWhatsAppAvailable')}</Checkbox>
-                </BaseForm.Item>
-              </Col>
-            </Row>
-
-            <h4 style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
-
-            <BaseForm.Item
-              name={['requestForQuotationContacts', 1, 'fullName']}
-              label={<LableText>{t('common.fullName')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-            >
-              <Input />
-            </BaseForm.Item>
-
-            <BaseButtonsForm.Item
-              name={['requestForQuotationContacts', 1, 'phoneNumber']}
-              $successText={t('auth.phoneNumberVerified')}
-              label={t('common.phoneNumber')}
-              rules={[
-                { required: true, message: t('common.requiredField') },
-                () => ({
-                  validator(_, value) {
-                    if (!value || isValidPhoneNumber(value)) {
-                      return Promise.resolve();
-                    }
-                    if (formattedPhoneNumber.length > 12) {
-                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
-                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                    }
-                  },
-                }),
-              ]}
-              style={
-                isDesktop || isTablet
-                  ? {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-                  : {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-              }
-            >
-              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-            </BaseButtonsForm.Item>
-
-            <Row
-              style={{
-                display: 'flex',
-                flexDirection: 'row',
-                justifyContent: 'space-evenly',
-              }}
-            >
-              <Col>
-                <BaseForm.Item name={['requestForQuotationContacts', 1, 'isCallAvailable']} valuePropName="checked">
-                  <Checkbox>{t('requests.isCallAvailable')}</Checkbox>
-                </BaseForm.Item>
-              </Col>
-              <Col>
-                <BaseForm.Item name={['requestForQuotationContacts', 1, 'isTelegramAvailable']} valuePropName="checked">
-                  <Checkbox>{t('requests.isTelegramAvailable')}</Checkbox>
-                </BaseForm.Item>
-              </Col>
-              <Col>
-                <BaseForm.Item name={['requestForQuotationContacts', 1, 'isWhatsAppAvailable']} valuePropName="checked">
-                  <Checkbox>{t('requests.isWhatsAppAvailable')}</Checkbox>
-                </BaseForm.Item>
-              </Col>
-            </Row>
-          </>
-        )}
-
-        {current === 1 && (
-          <>
-            <BaseForm.Item
-              label={<LableText>{t('addRequest.country')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
-            >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                filterSort={(optionA: any, optionB: any) =>
-                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                }
-                onChange={(e) => ChangeCountryHandler(e, 'source')}
-              >
-                {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
-                  return (
-                    <Option value={ele.id} key={ele?.id}>
-                      {ele.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </BaseForm.Item>
-            <BaseForm.Item
-              name={['sourceCityId']}
-              label={<LableText>{t('addRequest.city')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
-            >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                filterSort={(optionA: any, optionB: any) =>
-                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                }
-                onChange={(e) => ChangeCityHandler(e, 'source')}
-              >
-                {cityData?.data?.result?.items?.map((ele: any) => {
-                  return (
-                    <Option value={ele.id} key={ele?.id}>
-                      {ele.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </BaseForm.Item>
-            <BaseForm.Item
-              name="sourceAddress"
-              label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={
-                isDesktop || isTablet
-                  ? { width: '40%', margin: '0 2%', display: 'inline-block' }
-                  : isMobile
-                  ? { width: '100%', display: 'block' }
-                  : {}
-              }
-            >
-              <Input />
-            </BaseForm.Item>
-            <BaseForm.Item
-              label={<LableText>{t('addRequest.date')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={
-                isDesktop || isTablet
-                  ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                  : isMobile
-                  ? { width: '100%', marginBottom: '5rem' }
-                  : {}
-              }
-            >
-              <DatePicker style={{ width: '100%' }} />
-            </BaseForm.Item>
-            <div
-              style={
-                lang == 'en' && (isDesktop || isTablet)
-                  ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
-                  : lang == 'en' && isMobile
-                  ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
-                  : lang == 'ar' && (isDesktop || isTablet)
-                  ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
-                  : lang == 'ar' && isMobile
-                  ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
-                  : {}
-              }
-            >
-              <div style={{ width: '100%', height: '400px' }}>
-                <GoogleMap
-                  center={centerSource}
-                  zoom={12}
-                  mapContainerStyle={{ width: '100%', height: '100%' }}
-                  onClick={(event) => handleMapClick(event, 'source')}
-                >
-                  <Marker key="source" position={sourcePosition} />
-                </GoogleMap>
-              </div>
-            </div>
-
-            <BaseForm.Item
-              label={<LableText>{t('addRequest.country')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
-            >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                filterSort={(optionA: any, optionB: any) =>
-                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                }
-                onChange={(e) => ChangeCountryHandler(e, 'destination')}
-              >
-                {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
-                  return (
-                    <Option value={ele.id} key={ele?.id}>
-                      {ele.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </BaseForm.Item>
-            <BaseForm.Item
-              name={['destinationCityId']}
-              label={<LableText>{t('addRequest.city')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
-            >
-              <Select
-                showSearch
-                optionFilterProp="children"
-                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                filterSort={(optionA: any, optionB: any) =>
-                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                }
-                onChange={(e) => ChangeCityHandler(e, 'destination')}
-              >
-                {cityData?.data?.result?.items?.map((ele: any) => {
-                  return (
-                    <Option value={ele.id} key={ele?.id}>
-                      {ele.name}
-                    </Option>
-                  );
-                })}
-              </Select>
-            </BaseForm.Item>
-            <BaseForm.Item
-              name="destinationAddress"
-              label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={
-                isDesktop || isTablet
-                  ? { width: '40%', margin: '0 2%', display: 'inline-block' }
-                  : isMobile
-                  ? { width: '100%', display: 'block' }
-                  : {}
-              }
-            >
-              <Input />
-            </BaseForm.Item>
-            <BaseForm.Item
-              label={<LableText>{t('addRequest.date')}</LableText>}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-              style={
-                isDesktop || isTablet
-                  ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                  : isMobile
-                  ? { width: '100%', marginBottom: '5rem' }
-                  : {}
-              }
-            >
-              <DatePicker style={{ width: '100%' }} />
-            </BaseForm.Item>
-            <div
-              style={
-                lang == 'en' && (isDesktop || isTablet)
-                  ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
-                  : lang == 'en' && isMobile
-                  ? { right: '0', float: 'right', position: 'relative', width: '100%' }
-                  : lang == 'ar' && (isDesktop || isTablet)
-                  ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
-                  : lang == 'ar' && isMobile
-                  ? { left: '0', float: 'left', position: 'relative', width: '100%' }
-                  : {}
-              }
-            >
-              <div style={{ width: '100%', height: '400px' }}>
-                <GoogleMap
-                  center={centerDestination}
-                  zoom={12}
-                  mapContainerStyle={{ width: '100%', height: '100%' }}
-                  onClick={(event) => handleMapClick(event, 'destination')}
-                >
-                  <Marker key="destination" position={destinationPosition} />
-                </GoogleMap>
-              </div>
-            </div>
-          </>
-        )}
-
-        {current === 2 && (
-          <>
-            <BaseForm.Item
-              name={['serviceType']}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Radio.Group
-                style={{ display: 'flex', width: '100%' }}
-                onChange={(event) => {
-                  form.setFieldsValue({ ['serviceType']: event.target.value });
-                  setValueRadio(event.target.value);
-                }}
-              >
-                <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  {t('requests.Internal')}
-                </Radio>
-                <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  {t('requests.External')}
-                </Radio>
-              </Radio.Group>
-            </BaseForm.Item>
-
-            <BaseForm.Item name={['services']}>
-              {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
-                const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
-                return (
-                  <Tree
-                    key={serviceIndex}
-                    style={treeStyle}
-                    checkable
-                    defaultExpandAll={true}
-                    onExpand={onExpand}
-                    expandedKeys={expandedKeys}
-                    autoExpandParent={autoExpandParent}
-                    onCheck={(checkedKeysValue: any) => {
-                      for (const key of checkedKeysValue) {
-                        if (!requestServicesArray.includes(key)) {
-                          requestServicesArray.push(key);
-                        }
-                      }
-                      setSelectedServicesKeysMap((prevSelectedKeysMap) => {
-                        const updatedKeysMap = { ...prevSelectedKeysMap };
-                        updatedKeysMap[serviceIndex] = checkedKeysValue;
-                        return updatedKeysMap;
-                      });
-                    }}
-                    defaultCheckedKeys={serviceKeys}
-                    checkedKeys={serviceKeys}
-                    onSelect={onSelect}
-                    selectedKeys={selectedKeys}
-                    treeData={[serviceTreeData]}
-                  />
-                );
-              })}
-            </BaseForm.Item>
-
-            <BaseForm.Item name={['comment']}>
-              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
-            </BaseForm.Item>
-          </>
-        )}
-
-        {current === 3 && (
-          <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.whatMoving')}</h4>
             <BaseForm.Item
               name={['sourceTypeId']}
               label={<LableText>{t('addRequest.sourceType')}</LableText>}
@@ -1301,6 +875,390 @@ export const AddRequest: React.FC = () => {
               ) : (
                 ''
               )}
+            </BaseForm.Item>
+          </>
+        )}
+
+        {current === 1 && (
+          <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
+            <BaseForm.Item
+              name={['serviceType']}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Radio.Group
+                style={{ display: 'flex', width: '100%' }}
+                onChange={(event) => {
+                  form.setFieldsValue({ ['serviceType']: event.target.value });
+                  setValueRadio(event.target.value);
+                }}
+              >
+                <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                  {t('requests.Internal')}
+                </Radio>
+                <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                  {t('requests.External')}
+                </Radio>
+              </Radio.Group>
+            </BaseForm.Item>
+
+            <h4 style={{ margin: '4rem 0', fontWeight: '700' }}>{t('addRequest.sourceLocations')}:</h4>
+            <BaseForm.Item
+              label={<LableText>{t('addRequest.country')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
+            >
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                filterSort={(optionA: any, optionB: any) =>
+                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                }
+                onChange={(e) => ChangeCountryHandler(e, 'source')}
+              >
+                {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                  return (
+                    <Option value={ele.id} key={ele?.id}>
+                      {ele.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </BaseForm.Item>
+            <BaseForm.Item
+              name={['sourceCityId']}
+              label={<LableText>{t('addRequest.city')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
+            >
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                filterSort={(optionA: any, optionB: any) =>
+                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                }
+                onChange={(e) => ChangeCityHandler(e, 'source')}
+              >
+                {cityData?.data?.result?.items?.map((ele: any) => {
+                  return (
+                    <Option value={ele.id} key={ele?.id}>
+                      {ele.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </BaseForm.Item>
+            <BaseForm.Item
+              name="sourceAddress"
+              label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={
+                isDesktop || isTablet
+                  ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                  : isMobile
+                  ? { width: '100%', display: 'block' }
+                  : {}
+              }
+            >
+              <Input />
+            </BaseForm.Item>
+            <BaseForm.Item
+              label={<LableText>{t('addRequest.date')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={
+                isDesktop || isTablet
+                  ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                  : isMobile
+                  ? { width: '100%', marginBottom: '5rem' }
+                  : {}
+              }
+            >
+              <DatePicker style={{ width: '100%' }} />
+            </BaseForm.Item>
+            <div
+              style={
+                lang == 'en' && (isDesktop || isTablet)
+                  ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                  : lang == 'en' && isMobile
+                  ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
+                  : lang == 'ar' && (isDesktop || isTablet)
+                  ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                  : lang == 'ar' && isMobile
+                  ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
+                  : {}
+              }
+            >
+              <div style={{ width: '100%', height: '400px' }}>
+                <GoogleMap
+                  center={centerSource}
+                  zoom={12}
+                  mapContainerStyle={{ width: '100%', height: '100%' }}
+                  onClick={(event) => handleMapClick(event, 'source')}
+                >
+                  <Marker key="source" position={sourcePosition} />
+                </GoogleMap>
+              </div>
+            </div>
+
+            <h4 style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>{t('addRequest.destinationLocations')}:</h4>
+            <BaseForm.Item
+              label={<LableText>{t('addRequest.country')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
+            >
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                filterSort={(optionA: any, optionB: any) =>
+                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                }
+                onChange={(e) => ChangeCountryHandler(e, 'destination')}
+              >
+                {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                  return (
+                    <Option value={ele.id} key={ele?.id}>
+                      {ele.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </BaseForm.Item>
+            <BaseForm.Item
+              name={['destinationCityId']}
+              label={<LableText>{t('addRequest.city')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}}
+            >
+              <Select
+                showSearch
+                optionFilterProp="children"
+                filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                filterSort={(optionA: any, optionB: any) =>
+                  optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                }
+                onChange={(e) => ChangeCityHandler(e, 'destination')}
+              >
+                {cityData?.data?.result?.items?.map((ele: any) => {
+                  return (
+                    <Option value={ele.id} key={ele?.id}>
+                      {ele.name}
+                    </Option>
+                  );
+                })}
+              </Select>
+            </BaseForm.Item>
+            <BaseForm.Item
+              name="destinationAddress"
+              label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={
+                isDesktop || isTablet
+                  ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                  : isMobile
+                  ? { width: '100%', display: 'block' }
+                  : {}
+              }
+            >
+              <Input />
+            </BaseForm.Item>
+            <BaseForm.Item
+              label={<LableText>{t('addRequest.date')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={
+                isDesktop || isTablet
+                  ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                  : isMobile
+                  ? { width: '100%', marginBottom: '5rem' }
+                  : {}
+              }
+            >
+              <DatePicker style={{ width: '100%' }} />
+            </BaseForm.Item>
+            <div
+              style={
+                lang == 'en' && (isDesktop || isTablet)
+                  ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                  : lang == 'en' && isMobile
+                  ? { right: '0', float: 'right', position: 'relative', width: '100%' }
+                  : lang == 'ar' && (isDesktop || isTablet)
+                  ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                  : lang == 'ar' && isMobile
+                  ? { left: '0', float: 'left', position: 'relative', width: '100%' }
+                  : {}
+              }
+            >
+              <div style={{ width: '100%', height: '400px' }}>
+                <GoogleMap
+                  center={centerDestination}
+                  zoom={12}
+                  mapContainerStyle={{ width: '100%', height: '100%' }}
+                  onClick={(event) => handleMapClick(event, 'destination')}
+                >
+                  <Marker key="destination" position={destinationPosition} />
+                </GoogleMap>
+              </div>
+            </div>
+          </>
+        )}
+
+        {current === 2 && (
+          <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForSource')}:</h4>
+            <BaseForm.Item
+              name={['requestForQuotationContacts', 0, 'fullName']}
+              label={<LableText>{t('common.fullName')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+            >
+              <Input />
+            </BaseForm.Item>
+            <BaseButtonsForm.Item
+              name={['requestForQuotationContacts', 0, 'phoneNumber']}
+              $successText={t('auth.phoneNumberVerified')}
+              label={t('common.phoneNumber')}
+              rules={[
+                { required: true, message: t('common.requiredField') },
+                () => ({
+                  validator(_, value) {
+                    if (!value || isValidPhoneNumber(value)) {
+                      return Promise.resolve();
+                    }
+                    if (formattedPhoneNumber.length > 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                    } else if (formattedPhoneNumber.length < 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                    }
+                  },
+                }),
+              ]}
+              style={
+                isDesktop || isTablet
+                  ? {
+                      width: 'fit-content',
+                      margin: '2rem auto',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+                  : {
+                      width: 'fit-content',
+                      margin: '2rem auto',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+              }
+            >
+              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+            </BaseButtonsForm.Item>
+
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
+            <BaseForm.Item
+              name={['requestForQuotationContacts', 1, 'fullName']}
+              label={<LableText>{t('common.fullName')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+            >
+              <Input />
+            </BaseForm.Item>
+            <BaseButtonsForm.Item
+              name={['requestForQuotationContacts', 1, 'phoneNumber']}
+              $successText={t('auth.phoneNumberVerified')}
+              label={t('common.phoneNumber')}
+              rules={[
+                { required: true, message: t('common.requiredField') },
+                () => ({
+                  validator(_, value) {
+                    if (!value || isValidPhoneNumber(value)) {
+                      return Promise.resolve();
+                    }
+                    if (formattedPhoneNumber.length > 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                    } else if (formattedPhoneNumber.length < 12) {
+                      return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                    }
+                  },
+                }),
+              ]}
+              style={
+                isDesktop || isTablet
+                  ? {
+                      width: 'fit-content',
+                      margin: '2rem auto',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+                  : {
+                      width: 'fit-content',
+                      margin: '2rem auto',
+                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                    }
+              }
+            >
+              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
+            </BaseButtonsForm.Item>
+          </>
+        )}
+
+        {current === 3 && (
+          <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.selectService')} :</h4>
+            <BaseForm.Item name={['services']}>
+              {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
+                const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
+                return (
+                  <Tree
+                    key={serviceIndex}
+                    style={treeStyle}
+                    checkable
+                    defaultExpandAll={true}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onCheck={(checkedKeysValue: any) => {
+                      for (const key of checkedKeysValue) {
+                        if (!requestServicesArray.includes(key)) {
+                          requestServicesArray.push(key);
+                        }
+                      }
+                      setSelectedServicesKeysMap((prevSelectedKeysMap) => {
+                        const updatedKeysMap = { ...prevSelectedKeysMap };
+                        updatedKeysMap[serviceIndex] = checkedKeysValue;
+                        return updatedKeysMap;
+                      });
+                    }}
+                    defaultCheckedKeys={serviceKeys}
+                    checkedKeys={serviceKeys}
+                    onSelect={onSelect}
+                    selectedKeys={selectedKeys}
+                    treeData={[serviceTreeData]}
+                  />
+                );
+              })}
+            </BaseForm.Item>
+
+            <BaseForm.Item name={['comment']}>
+              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
             </BaseForm.Item>
           </>
         )}

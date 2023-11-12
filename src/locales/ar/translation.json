@@ -104,7 +104,8 @@
     "alreadyHaveAccount": "لديك حساب؟ قم بتسجيل الدخول من ",
     "privacyPolicy": "سياسة الخصوصية",
     "termOfUse": "شروط الاستخدام",
-
+    "phoneNumberIsShort": "رقم الموبايل قصير",
+    "phoneNumberIsLong": "رقم الموبايل طويل",
     "agree": "أنا أوافق على",
     "resetPassword": "إعادة تعيين كلمة المرور",
     "resetPasswordDescription": "أدخل عنوان بريدك الإلكتروني وسنرسل رمز تحقق لإعادة تعيين كلمة مرورك",
@@ -578,7 +579,19 @@
     "arrivalAtUtc": "وقت الوصول",
     "sourceType": "نوع مكان النقل",
     "chooseOption": "رجاءً إختر نوع مكان النقل من القائمة",
-    "sourceTypeDoesntHaveAttribute": "نوع مكان النقل هذا لا يحتوي على أي فئات"
+    "sourceTypeDoesntHaveAttribute": "نوع مكان النقل هذا لا يحتوي على أي فئات",
+    "whatMoving": "ما نوع المكان الذي تريد نقله؟",
+    "typeMove": "طريقة النقل",
+    "sourceLocations": "موقع المصدر",
+    "destinationLocations": "موقع الوجهة",
+    "selectService": "إختر الخدمات التي تريدها",
+    "selectServiceType": "رجاءً إختر طريقة النقل",
+    "enterPhoneNumber": "رجاءً أدخل رقم الموبايل",
+    "enterFullName": "رجاءً أدخل الإسم الكامل",
+    "enterCity": "رجاءً أدخل المدينة",
+    "enterAddress": "رجاءً أدخل العنوان",
+    "selectSourceType": "رجاءً إختر نوع مكان النقل",
+    "atLeastOneAttachment": "رجاءً إرقع صورة واحدة على الأقل"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
