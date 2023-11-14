@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Space, message } from 'antd';
+import { InputNumber, Modal, Space, message } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -107,6 +107,30 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="pointsToGiftToCompany"
+          label={<LableText>{t('sourceTypes.pointsToGiftToCompany')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="pointsToGiftMediator"
+          label={<LableText>{t('sourceTypes.pointsToGiftMediator')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="pointsToBuyRequest"
+          label={<LableText>{t('sourceTypes.pointsToBuyRequest')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
         </BaseForm.Item>
         <BaseForm.Item
           rules={[{ required: true, message: t('common.requiredImage') }]}
