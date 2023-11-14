@@ -328,7 +328,10 @@
     "editSourceTypeSuccessMessage": "The Moving Type Has Been Edited Successfully",
     "editSourceTypeModalTitle": "Edit Moving Type",
     "deleteSourceTypeModalTitle": "Delete Moving Type",
-    "deleteSourceTypeModalDescription": "Are You Sure To Delete This Moving Type?"
+    "deleteSourceTypeModalDescription": "Are You Sure To Delete This Moving Type?",
+    "pointsToGiftToCompany": "Number Of Points That Will Be Gifted To The Company Or Branch",
+    "pointsToGiftMediator": "Number Of Points That Will Be Gifted To The Broker",
+    "pointsToBuyRequest": "Number Of Points That Will Be Deducted For Purchasing Potential Customer Information"
   },
 
   "_comment9": "*********************************** tools ************************************************",
@@ -840,6 +843,9 @@
     "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
   },
 
+  "_comment29": "*********************************** editRequest ************************************************",
+  "editRequest": {},
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -883,7 +889,8 @@
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
     "possibleClients": "Possible Clients",
-    "Configurations": "Configurations"
+    "Configurations": "Configurations",
+    "editRequest": "Edit Request"
   },
 
   "header": {

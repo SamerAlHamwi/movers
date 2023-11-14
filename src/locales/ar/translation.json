@@ -328,7 +328,10 @@
     "editSourceTypeSuccessMessage": "تم تعديل معلومات نوع مكان للنقل",
     "editSourceTypeModalTitle": "تعديل معلومات نوع مكان للنقل",
     "deleteSourceTypeModalTitle": "حذف نوع مكان للنقل",
-    "deleteSourceTypeModalDescription": "هل أنت متأكد من حذف هذه نوع مكان للنقل"
+    "deleteSourceTypeModalDescription": "هل أنت متأكد من حذف هذه نوع مكان للنقل",
+    "pointsToGiftToCompany": "عدد النقاط التي ستُهدى للشركة أو الفرع",
+    "pointsToGiftMediator": "عدد النقاط التي ستُهدى للوسيط",
+    "pointsToBuyRequest": "عدد النقاط التي ستُخصم مقابل شراء معلومات العميل المحتمل"
   },
 
   "_comment9": "*********************************** tools ************************************************",
@@ -836,6 +839,9 @@
     "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح"
   },
 
+  "_comment29": "*********************************** editRequest ************************************************",
+  "editRequest": {},
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -878,7 +884,8 @@
     "Drafts": "الطلبات الغير مستكملة",
     "CompleteDraft": "إستكمال طلب نقل",
     "possibleClients": "العملاء المحتملين",
-    "Configurations": "الإعدادات"
+    "Configurations": "الإعدادات",
+    "editRequest": "تعديل طلب النقل"
   },
 
   "header": {
