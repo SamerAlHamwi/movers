@@ -157,8 +157,8 @@ export const Branches: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
+    // { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
+    // { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
@@ -176,19 +176,19 @@ export const Branches: React.FC = () => {
         );
       },
     },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-      dataIndex: 'services',
-      render: (record: any) => (
-        <Space style={{ display: 'grid' }}>
-          {record?.map((service: any) => (
-            <Tag key={service?.id} style={{ padding: '4px' }}>
-              {service?.name}
-            </Tag>
-          ))}
-        </Space>
-      ),
-    },
+    // {
+    //   title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
+    //   dataIndex: 'services',
+    //   render: (record: any) => (
+    //     <Space style={{ display: 'grid' }}>
+    //       {record?.map((service: any) => (
+    //         <Tag key={service?.id} style={{ padding: '4px' }}>
+    //           {service?.name}
+    //         </Tag>
+    //       ))}
+    //     </Space>
+    //   ),
+    // },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',

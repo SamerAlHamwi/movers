@@ -271,17 +271,17 @@ export const Requests: React.FC = () => {
         );
       },
     },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-      dataIndex: 'services',
-      render: (record: any) => (
-        <Space style={{ display: 'grid' }}>
-          {record?.map((service: any) => (
-            <Tag key={service?.id}>{service?.name}</Tag>
-          ))}
-        </Space>
-      ),
-    },
+    // {
+    //   title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
+    //   dataIndex: 'services',
+    //   render: (record: any) => (
+    //     <Space style={{ display: 'grid' }}>
+    //       {record?.map((service: any) => (
+    //         <Tag key={service?.id}>{service?.name}</Tag>
+    //       ))}
+    //     </Space>
+    //   ),
+    // },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.sourceType')}</Header>,
       dataIndex: 'sourceType',
@@ -443,8 +443,7 @@ export const Requests: React.FC = () => {
                 disabled={record.statues !== 1}
                 severity="info"
                 onClick={() => {
-                  setEditmodaldata(record);
-                  handleModalOpen('edit');
+                  Navigate(`/requests/${record.id}/EditRequest`);
                 }}
               >
                 <EditOutlined />
@@ -505,7 +504,7 @@ export const Requests: React.FC = () => {
           )}
 
           {/*    EDIT    */}
-          {modalState.edit && (
+          {/* {modalState.edit && (
             <EditRequest
               values={editmodaldata}
               visible={modalState.edit}
@@ -513,7 +512,7 @@ export const Requests: React.FC = () => {
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
               isLoading={editRequest.isLoading}
             />
-          )}
+          )} */}
 
           {/*    Delete    */}
           {modalState.delete && (

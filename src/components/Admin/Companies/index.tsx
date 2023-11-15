@@ -265,7 +265,7 @@ export const Companies: React.FC = () => {
       },
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
+    // { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
@@ -287,19 +287,19 @@ export const Companies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-      dataIndex: 'services',
-      render: (record: any) => (
-        <Space style={{ display: 'grid' }}>
-          {record?.map((service: any) => (
-            <Tag key={service?.id} style={{ padding: '4px' }}>
-              {service?.name}
-            </Tag>
-          ))}
-        </Space>
-      ),
-    },
+    // {
+    //   title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
+    //   dataIndex: 'services',
+    //   render: (record: any) => (
+    //     <Space style={{ display: 'grid' }}>
+    //       {record?.map((service: any) => (
+    //         <Tag key={service?.id} style={{ padding: '4px' }}>
+    //           {service?.name}
+    //         </Tag>
+    //       ))}
+    //     </Space>
+    //   ),
+    // },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
