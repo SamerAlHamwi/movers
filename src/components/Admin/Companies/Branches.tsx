@@ -5,9 +5,9 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, TagOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, TagOutlined, SnippetsOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { DeleteBranch, getAllBranches } from '@app/services/branches';
+import { ChangeAcceptRequestOrPossibleRequestForBranch, DeleteBranch, getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -22,6 +22,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
+import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 
 export const Branches: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -35,6 +36,7 @@ export const Branches: React.FC = () => {
     add: false,
     edit: false,
     delete: false,
+    acceptRequestOrPotentialClient: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -44,6 +46,8 @@ export const Branches: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
+  const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
+  const [isChanged, setIsChanged] = useState(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -54,7 +58,7 @@ export const Branches: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['getAllBranches', page, pageSize, isDelete, isEdit],
+    ['getAllBranches', page, pageSize, isDelete, isEdit, isChanged],
     () =>
       getAllBranches(companyId, page, pageSize, searchString)
         .then((data) => {
@@ -101,6 +105,35 @@ export const Branches: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteBranch.isLoading }));
   }, [deleteBranch.isLoading]);
 
+  const acceptRequestOrPotentialClient = useMutation((data: any) =>
+    ChangeAcceptRequestOrPossibleRequestForBranch(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsChanged(data.data?.success),
+          message.open({
+            content: (
+              <Alert message={t('companies.acceptRequestOrPotentialClientSuccessMessage')} type={`success`} showIcon />
+            ),
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleAcceptRequestOrPotentialClient = (data: any, id: number) => {
+    acceptRequestOrPotentialClient.mutateAsync({ ...data, id });
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({
+      ...prevModalState,
+      acceptRequestOrPotentialClient: acceptRequestOrPotentialClient.isLoading,
+    }));
+  }, [acceptRequestOrPotentialClient.isLoading]);
+
   useEffect(() => {
     if (isRefetching) {
       setLoading(true);
@@ -112,7 +145,7 @@ export const Branches: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, page, pageSize, searchString, language, refetch]);
+  }, [isDelete, isEdit, isChanged, page, pageSize, searchString, language, refetch]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {
@@ -201,6 +234,18 @@ export const Branches: React.FC = () => {
               </TableButton>
             </Tooltip>
 
+            <Tooltip placement="top" title={t('branch.ChangeAcceptRequestOrPotentialClient')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setAcceptRequestOrPotentialClientmodaldata(record);
+                  handleModalOpen('acceptRequestOrPotentialClient');
+                }}
+              >
+                <SnippetsOutlined />
+              </TableButton>
+            </Tooltip>
+
             <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"
@@ -252,6 +297,7 @@ export const Branches: React.FC = () => {
             >
               <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
             </Btn>
+
             <Btn
               style={{
                 margin: '1rem 1rem 1rem 0',
@@ -281,6 +327,21 @@ export const Branches: React.FC = () => {
               description={t('branch.deleteBranchModalDescription')}
               isDanger={true}
               isLoading={deleteBranch.isLoading}
+            />
+          )}
+
+          {/*    Accept Request Or Potential Clients    */}
+          {modalState.acceptRequestOrPotentialClient && (
+            <ChangeAcceptRequestOrPotentialClient
+              visible={modalState.acceptRequestOrPotentialClient}
+              onCancel={() => handleModalClose('acceptRequestOrPotentialClient')}
+              onEdit={(info) => {
+                acceptRequestOrPotentialClientmodaldata != undefined &&
+                  handleAcceptRequestOrPotentialClient(info, acceptRequestOrPotentialClientmodaldata.id);
+              }}
+              isLoading={acceptRequestOrPotentialClient.isLoading}
+              values={acceptRequestOrPotentialClientmodaldata}
+              title="branch"
             />
           )}
         </Row>

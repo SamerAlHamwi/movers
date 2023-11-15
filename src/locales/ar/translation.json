@@ -81,7 +81,9 @@
     "onlyNumbers": "يُسمح بإستخدام الأرقام فقط",
     "onlyEnglishCharacters": "يُسمح بإستخدام الأحرف الإنكليزية فقط",
     "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط",
-    "invalidEmail": "البريد الإلكتروني غير صحيح"
+    "invalidEmail": "البريد الإلكتروني غير صحيح",
+    "true": "نعم",
+    "false": "لا"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -300,7 +302,11 @@
     "totalPoints": "عدد النقاط الكلي",
     "possibleClientsList": "قائمة العملاء المحتملين",
     "possibleClientsInfo": "تفاصيل العملاء المحتملين",
-    "possibleClients": "العملاء المحتملين"
+    "possibleClients": "العملاء المحتملين",
+    "ChangeAcceptRequestOrPotentialClient": "إمكانية الشركة لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
+    "acceptRequests": "هل يمكنها إستقبال طلبات النقل؟",
+    "acceptPossibleRequests": "هل يمكنها شراء معلومات العملاء المحتملين؟",
+    "acceptRequestOrPotentialClientSuccessMessage": "تم التعديل بنجاح"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -610,7 +616,8 @@
     "region": "المنطقة",
     "branchInfo": "معلومات الفرع",
     "branchProfile": "بروفايل الفرع",
-    "details": "تفاصيل الفرع"
+    "details": "تفاصيل الفرع",
+    "ChangeAcceptRequestOrPotentialClient": "إمكانية الفرع لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

@@ -82,7 +82,9 @@
     "onlyNumbers": "Only Numbers are allowed",
     "onlyEnglishCharacters": "Only English Characters Are Accepted",
     "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
-    "invalidEmail": "Email Is Incorrect"
+    "invalidEmail": "Email Is Incorrect",
+    "true": "True",
+    "false": "False"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -300,7 +302,11 @@
     "branches": "Branches",
     "possibleClientsList": "Possible Clients List",
     "possibleClientsInfo": "Possible Clients Informations",
-    "possibleClients": "Possible Clients"
+    "possibleClients": "Possible Clients",
+    "ChangeAcceptRequestOrPotentialClient": "The Company's Ability To Receive Requests And Purchase Potential Clients Information",
+    "acceptRequests": "Can It Receive Requests?",
+    "acceptPossibleRequests": "Can It Buy Potential Clents Information?",
+    "acceptRequestOrPotentialClientSuccessMessage": "Edited Successfully"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -614,7 +620,8 @@
     "region": "Region",
     "branchInfo": "Branch Informations",
     "branchProfile": "Branch Profile",
-    "details": "Details"
+    "details": "Details",
+    "ChangeAcceptRequestOrPotentialClient": "The Branch's Ability To Receive Requests And Purchase Potential Clients Information"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

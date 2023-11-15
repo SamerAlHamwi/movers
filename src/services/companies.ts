@@ -42,6 +42,10 @@ const createCompany = async (data: CompanyModal) => {
   return await httpApi.post(`${apiPrefix.companies}/Create`, data);
 };
 
+const ChangeAcceptRequestOrPossibleRequestForCompany = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.companies}/ChangeAcceptRequestOrPossibleRequestForCompany`, data);
+};
+
 const updateCompany = async (data: CompanyModal) => {
   return await httpApi.put(`${apiPrefix.companies}/Update`, data);
 };
@@ -56,6 +60,7 @@ export {
   getCompanyById,
   GetReviewDetailsById,
   createCompany,
+  ChangeAcceptRequestOrPossibleRequestForCompany,
   updateCompany,
   DeleteCompany,
   confirmCompany,
