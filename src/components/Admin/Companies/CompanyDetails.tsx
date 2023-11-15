@@ -14,8 +14,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import { DollarOutlined, DropboxOutlined, GiftOutlined, LeftOutlined, UserOutlined } from '@ant-design/icons';
-import { TextBack } from '@app/components/GeneralStyles';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  DollarOutlined,
+  DropboxOutlined,
+  GiftOutlined,
+  LeftOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
+import { TableButton, TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
   name: string;
@@ -290,6 +298,44 @@ const CompanyDetails: React.FC = () => {
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{companyData?.numberOfTransfers}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.acceptRequests')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {companyData?.acceptRequests == true ? (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.acceptPossibleRequests')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {companyData?.acceptPossibleRequests == true ? (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
                 </ColStyle>
               </DetailsRow>
 
