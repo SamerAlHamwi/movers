@@ -28,6 +28,7 @@ export interface ModalProps {
   visible: boolean;
   isLoading?: boolean;
   onCancel: () => void;
+  title?: string;
 }
 
 export interface CreateUserModalProps extends ModalProps {
@@ -46,6 +47,12 @@ export interface CreateNumberModalProps extends ModalProps {
 
 export interface CreateRejectReasonModalProps extends ModalProps {
   onCreate: (info: RejectReason) => void;
+}
+
+export interface ChangeAcceptRequestOrPotentialClientProps extends ModalProps {
+  onEdit: (info: any) => void;
+  title: string;
+  values: any | undefined;
 }
 
 export interface CreatePointModalProps extends ModalProps {

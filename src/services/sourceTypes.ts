@@ -39,7 +39,7 @@ const getAllAttributeForSourceTypes = async (
   );
 };
 
-const getAttributeForSourceTypes = async (id: string | undefined) => {
+const getAttributeForSourceTypes = async (id: any) => {
   return await httpApi.get(`${apiPrefix.attributeForSourceType}/GetAll?SourceTypeId=${id}`);
 };
 

@@ -40,11 +40,13 @@ const SuitableCompanyPage = lazy(() => import('@app/pages/RequestsPages/Suitable
 const OfferPage = lazy(() => import('@app/pages/RequestsPages/OffersPage'));
 const OfferDetailsPage = lazy(() => import('@app/pages/RequestsPages/OfferDetailsPage'));
 const AddRequestPage = lazy(() => import('@app/pages/RequestsPages/AddRequestPage'));
+const EditRequestPage = lazy(() => import('@app/pages/RequestsPages/EditRequestPage'));
 const CompleteDraftPage = lazy(() => import('@app/pages/RequestsPages/CompleteDraftsPage'));
 const DraftPage = lazy(() => import('@app/pages/Drafts/DraftPage'));
 const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
+const EditCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/EditCompanyPage'));
 const PossibleClientsPage = lazy(() => import('@app/pages/CompaniesPages/PossibleClientsPage'));
 const BranchesPage = lazy(() => import('@app/pages/CompaniesPages/BranchPage'));
 const BranchDetailPage = lazy(() => import('@app/pages/CompaniesPages/BranchDetailsPage'));
@@ -58,6 +60,7 @@ const AskForHelpPage = lazy(() => import('@app/pages/OtherPages/HelpRequestsPage
 const FrequentlyQuestionPage = lazy(() => import('@app/pages/OtherPages/FrequentlyQuestionsPage'));
 const ConfigurationsPage = lazy(() => import('@app/pages/OtherPages/ConfigurationsPage'));
 const PointPage = lazy(() => import('@app/pages/PointsPages/PointPage'));
+const ReviewDetailsPage = lazy(() => import('@app/pages/CompaniesPages/ReviewsDetailsPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -87,11 +90,13 @@ const SuitableCompaniesPage = withLoading(SuitableCompanyPage);
 const OffersPage = withLoading(OfferPage);
 const OffersDetailsPage = withLoading(OfferDetailsPage);
 const AddRequestsPage = withLoading(AddRequestPage);
+const EditRequestsPage = withLoading(EditRequestPage);
 const CompleteDraftsPage = withLoading(CompleteDraftPage);
 const DraftsPage = withLoading(DraftPage);
 const CompanyPage = withLoading(Companiespage);
 const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
+const EditCompanyPage = withLoading(EditCompaniesPage);
 const PossibleClientPage = withLoading(PossibleClientsPage);
 const BranchPage = withLoading(BranchesPage);
 const BranchDetailsPage = withLoading(BranchDetailPage);
@@ -105,6 +110,7 @@ const AskForHelpsPage = withLoading(AskForHelpPage);
 const FrequentlyQuestionsPage = withLoading(FrequentlyQuestionPage);
 const ConfigurationPage = withLoading(ConfigurationsPage);
 const PointsPage = withLoading(PointPage);
+const ReviewsDetailsPage = withLoading(ReviewDetailsPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -198,6 +204,15 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path="requests/:requestId/EditRequest"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <EditRequestsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="requests/:requestId/suitableCompanies&Branches/:type"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
@@ -262,6 +277,15 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path="companies/:companyId/EditCompany"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <EditCompanyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="companies/:companyId/offers"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
@@ -302,6 +326,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <CompanyDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="companies/:companyId/details/reviewsDetails"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <ReviewsDetailsPage />
               </PrivateRoute>
             }
           />
@@ -348,6 +381,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <BranchDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="companies/:companyId/branches/:branchId/details/reviewsDetails"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <ReviewsDetailsPage />
               </PrivateRoute>
             }
           />

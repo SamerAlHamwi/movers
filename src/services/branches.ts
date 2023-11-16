@@ -30,8 +30,16 @@ const getBranch = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.branches}/Get?Id=${id}`);
 };
 
+const GetReviewDetailsByBranchId = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.branches}/GetReviewDetailsById?Id=${id}`);
+};
+
 const createBranch = async (data: BranchModel) => {
   return await httpApi.post(`${apiPrefix.branches}/Create`, data);
+};
+
+const ChangeAcceptRequestOrPossibleRequestForBranch = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.branches}/ChangeAcceptRequestOrPossibleRequestForCompanyBranch`, data);
 };
 
 const UpdateBranch = async (data: any) => {
@@ -42,4 +50,13 @@ const DeleteBranch = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.branches}/Delete?Id=${id}`);
 };
 
-export { getAllBranches, getSuitableBranches, getBranch, createBranch, UpdateBranch, DeleteBranch };
+export {
+  getAllBranches,
+  getSuitableBranches,
+  getBranch,
+  GetReviewDetailsByBranchId,
+  createBranch,
+  ChangeAcceptRequestOrPossibleRequestForBranch,
+  UpdateBranch,
+  DeleteBranch,
+};

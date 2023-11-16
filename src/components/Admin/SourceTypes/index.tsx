@@ -202,6 +202,18 @@ export const SourceType: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.pointsToGiftToCompany')}</Header>,
+      dataIndex: 'pointsToGiftToCompany',
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.pointsToGiftMediator')}</Header>,
+      dataIndex: 'pointsToGiftMediator',
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.pointsToBuyRequest')}</Header>,
+      dataIndex: 'pointsToBuyRequest',
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.attributeForSource')}</Header>,
       dataIndex: 'attributeForSource',
       render: (index: number, record: sourceTypes) => {

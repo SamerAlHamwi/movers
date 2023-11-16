@@ -30,7 +30,7 @@ const getCompanyById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
 };
 
-const GetReviewDetailsById = async (id: string | undefined) => {
+const GetReviewDetailsByCompanyId = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/GetReviewDetailsById?Id=${id}`);
 };
 
@@ -40,6 +40,10 @@ const DeleteCompany = async (id: number) => {
 
 const createCompany = async (data: CompanyModal) => {
   return await httpApi.post(`${apiPrefix.companies}/Create`, data);
+};
+
+const ChangeAcceptRequestOrPossibleRequestForCompany = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.companies}/ChangeAcceptRequestOrPossibleRequestForCompany`, data);
 };
 
 const updateCompany = async (data: CompanyModal) => {
@@ -54,8 +58,9 @@ export {
   getAllCompanies,
   getSuitableCompanies,
   getCompanyById,
-  GetReviewDetailsById,
+  GetReviewDetailsByCompanyId,
   createCompany,
+  ChangeAcceptRequestOrPossibleRequestForCompany,
   updateCompany,
   DeleteCompany,
   confirmCompany,
