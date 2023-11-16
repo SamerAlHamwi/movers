@@ -1,116 +1,1668 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Space } from 'antd';
-import { Button } from '../common/buttons/Button/Button';
-import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
+import { useTranslation } from 'react-i18next';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree, DatePicker, Spin } from 'antd';
+import { Button } from '@app/components/common/buttons/Button/Button';
+import { Card } from '@app/components/common/Card/Card';
+import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
 import { Input } from '../Admin/Translations';
-import { EditRequestProps } from './ModalProps';
-import { P1 } from '../common/typography/P1/P1';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { Checkbox } from '../common/Checkbox/Checkbox';
+import { BankOutlined, ClearOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { LableText } from '../GeneralStyles';
-import { FONT_SIZE } from '@app/styles/themes/constants';
-import { RequestModel } from '@app/interfaces/interfaces';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
+import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
+import { isValidPhoneNumber } from 'react-phone-number-input';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { TextArea } from '../Admin/Translations';
+import { useQuery } from 'react-query';
+import { getServices } from '@app/services/services';
+import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
+import type { DataNode } from 'antd/es/tree';
+import { createRequest, getRequestById } from '@app/services/requests';
+import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
+import { getCountries, getCities } from '@app/services/locations';
+import { Alert } from '../common/Alert/Alert';
+import { uploadAttachment, UploadMultiAttachment } from '@app/services/Attachment';
+import { PlusOutlined } from '@ant-design/icons';
+import { Modal, Upload } from 'antd';
+import { useNavigate, useParams } from 'react-router-dom';
+import type { RcFile } from 'antd/es/upload';
+import type { UploadFile } from 'antd/es/upload/interface';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { EditRequestProps } from './ModalProps';
+import { notificationController } from '@app/controllers/notificationController';
+import { RequestModel } from '@app/interfaces/interfaces';
+import moment from 'moment';
 
-export const EditRequest: React.FC<EditRequestProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
+const getBase64 = (file: RcFile): Promise<string> =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onload = () => resolve(reader.result as string);
+    reader.onerror = (error) => reject(error);
+  });
+
+const { Step } = Steps;
+let requestData = {};
+let requestServicesArray: any = [];
+const requestServices: any = [];
+const lang = localStorage.getItem('Go Movaro-lang');
+interface DisabledState {
+  [key: string]: boolean;
+}
+
+export const EditRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
-  const { isDesktop, isTablet } = useResponsive();
+  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
+  const { userId, requestId } = useParams();
+  const Navigate = useNavigate();
+  const { language } = useLanguage();
 
-  const onOk = () => {
-    form.submit();
+  const sourceLat = 25.15658048160557;
+  const sourceLng = 55.34100848084654;
+  const destinationLat = 25.180801685212185;
+  const destinationLng = 55.281956967174665;
+
+  const [RequestData, setRequestData] = useState<RequestModel>();
+  const [getRequest, setGetBranch] = useState<boolean>(true);
+  const [current, setCurrent] = useState(0);
+  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
+  const [sourcePosition, setSourcePosition] = useState({
+    lat: sourceLat,
+    lng: sourceLng,
+  });
+  const [destinationPosition, setDestinationPosition] = useState({ lat: destinationLat, lng: destinationLng });
+  const [centerSource, setCenterSource] = useState({
+    lat: 25.15658048160557,
+    lng: 55.34100848084654,
+  });
+  const [centerDestination, setCenterDestination] = useState({
+    lat: 25.15658048160557,
+    lng: 55.34100848084654,
+  });
+  const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
+  const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
+  const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [valueRadio, setValueRadio] = useState(0);
+  const [countryId, setCountryId] = useState<string>('0');
+  const [cityId, setCityId] = useState({ source: '0', destination: '0' });
+  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
+  const [selectedSourceType, setSelectedSourceType] = useState(RequestData?.sourceType?.id);
+  const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
+  const [disabledState, setDisabledState] = useState<DisabledState>({});
+  const [disabledUpload, setDisabledUpload] = useState<DisabledState>({});
+
+  const [previewOpen, setPreviewOpen] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [previewTitle, setPreviewTitle] = useState('');
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
+  const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>([]);
+  const [attributeForSourceTypeId, setAttributeForSourceTypeId] = useState(0);
+  const [imagesLists, setImagesLists] = useState<Array<Array<Array<any>>>>([]);
+  const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
+  const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
+  const [itemId, setItemId] = useState(0);
+  const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
+    Array<{ attributeChoiceId: number; attachmentIds: number[] }>
+  >([]);
+  const [fileListLength, setFileListLength] = useState(0);
+  const [picturesList, setPicturesList] = useState<any[]>([]);
+  const updatedAttributeChoiceAndAttachments = attributeChoiceAndAttachments.map((entry) => ({
+    ...entry,
+    statusOfAttributeChoiceId: disabledUpload[entry.attributeChoiceId] === true,
+  }));
+  const [test, setTest] = useState<any[]>([]);
+  const [maher, setMaher] = useState<any[]>([]);
+  const [Y, setY] = useState<any[]>([]);
+
+  // console.log(parentAttributeChoiceIdValue);
+
+  const outputArray = selectedCheckboxes.map((checkboxId) => ({
+    attributeForSourcTypeId: checkboxId,
+    attributeChoiceId: selectedRadios[checkboxId] || 0,
+  }));
+
+  const {
+    data,
+    status,
+    refetch: refetchRequest,
+    isRefetching: isRefetchingRequest,
+  } = useQuery(
+    ['GetBranchById'],
+    () =>
+      getRequestById(requestId)
+        .then((data) => {
+          const result = data.data?.result;
+          setRequestData(result);
+          setGetBranch(false);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: getRequest,
+    },
+  );
+
+  const setImagesListAtIndex = (
+    sourceTypeIndex: number,
+    parentAttributeChoiceIndex: number,
+    childAttributeChoiceIndex: number,
+    fileList: any[],
+  ) => {
+    setImagesLists((prevLists) => {
+      const newLists = [...prevLists];
+      if (!newLists[sourceTypeIndex]) {
+        newLists[sourceTypeIndex] = [];
+      }
+      if (!newLists[sourceTypeIndex][parentAttributeChoiceIndex]) {
+        newLists[sourceTypeIndex][parentAttributeChoiceIndex] = [];
+      }
+      newLists[sourceTypeIndex][parentAttributeChoiceIndex][childAttributeChoiceIndex] = fileList;
+      return newLists;
+    });
   };
 
-  const onFinish = (info: RequestModel) => {
-    info = Object.assign({}, info);
-    onEdit(info);
+  const handlePreview = (
+    sourceTypeIndex: number,
+    parentAttributeChoiceIndex: number,
+    childAttributeChoiceIndex: number,
+    file: any,
+  ) => {
+    const imagesListForComponent =
+      imagesLists[sourceTypeIndex]?.[parentAttributeChoiceIndex]?.[childAttributeChoiceIndex];
+    if (imagesListForComponent) {
+      const fileIndex = imagesListForComponent.findIndex((item: any) => item.uid === file.uid);
+      if (fileIndex !== -1) {
+        const fileToPreview = imagesListForComponent[fileIndex];
+        setPreviewOpen(true);
+        setPreviewImage(fileToPreview.url);
+        setPreviewTitle(fileToPreview.name);
+      }
+    }
   };
+
+  const [testMaher, setTestMaher] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    if (maher?.length > 0) {
+      console.log(maher);
+
+      if (
+        maher.filter((item) => item.isChange && !(item.isParentNotChecked === true) && !(item.isNotRepeat === true))
+          ?.length > 1
+      ) {
+        maher.map((item) => {
+          if (item.isChange)
+            getChildAttributeChoice(item.childId)
+              .then((data) => {
+                const items = data?.data?.result?.items || [];
+                setTestMaher((prev) => {
+                  return prev.concat([
+                    {
+                      id: item.childId,
+                      parentId: item.parentId,
+                      value: items,
+                    },
+                  ]);
+                });
+                setChildAttributeChoices(items);
+              })
+              .catch((error) => {
+                message.open(error);
+              });
+          return item;
+        });
+      } else {
+        const itemIsChange = maher.find((item) => item.isChange);
+        console.log('mmmmmmmmitemIsChangemmmmmmmmmmmmmmmmmmmmmm', itemIsChange);
+        (async () => {
+          try {
+            setIsLoading(true);
+            await getChildAttributeChoice(itemIsChange?.childId)
+              .then((data) => {
+                const items = data?.data?.result?.items || [];
+
+                setTestMaher((prev) => {
+                  return prev.map((record) => {
+                    if (record.parentId === itemIsChange.parentId) {
+                      record = {
+                        id: itemIsChange.childId,
+                        parentId: itemIsChange.parentId,
+                        value: items,
+                      };
+                    }
+                    return record;
+                  });
+                });
+                setChildAttributeChoices(items);
+              })
+              .catch((error) => {
+                message.open(error);
+              });
+          } catch (error) {
+            console.error();
+          } finally {
+            setIsLoading(false);
+          }
+        })();
+      }
+    }
+  }, [maher]);
+
+  console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm', testMaher);
+
+  const handleCancel = () => setPreviewOpen(false);
+
+  const handlePreviews = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+  };
+
+  const uploadImage = useMutation((data: any) => uploadAttachment(data), {
+    onSuccess: (data: any) => {
+      if (data.data.success) {
+        const newId = data.data.result?.id;
+        setPreviewImage(data.data.result?.url);
+        setAttributeChoiceAndAttachments((prevAttributes) => {
+          const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
+          if (existingObjectIndex !== -1) {
+            const updatedAttributes = [...prevAttributes];
+            const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
+            if (!attachmentIds.includes(newId)) {
+              attachmentIds.push(newId);
+            }
+            return updatedAttributes;
+          } else {
+            return [
+              ...prevAttributes,
+              {
+                attributeChoiceId: itemId,
+                attachmentIds: [newId],
+              },
+            ];
+          }
+        });
+      } else {
+        message.open({
+          content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
+        });
+      }
+    },
+    onError: (error: any) => {
+      message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
+    },
+  });
+
+  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
+  const GetAllCountry = useQuery('GetAllCountry', getCountries);
+  const {
+    data: cityData,
+    refetch,
+    isRefetching,
+  } = useQuery('GetAllCity', () => getCities(countryId), {
+    enabled: countryId != '0',
+  });
+
+  const {
+    data: attributeForSourceTypesData,
+    refetch: AttributeForSourceTypesRefetch,
+    isRefetching: attributeForSourceTypesIsRefetching,
+    isLoading: attributeForSourceTypesIsLoading,
+  } = useQuery('AttributeForSourceTypes', () => getAttributeForSourceTypes(RequestData?.sourceType?.id), {
+    refetchOnWindowFocus: false,
+    enabled: RequestData?.sourceType?.id != undefined,
+  });
+
+  useEffect(() => {
+    if (countryId != '0') refetch();
+  }, [countryId]);
+
+  // useEffect(() => {
+  //   AttributeForSourceTypesRefetch();
+  // }, [selectedSourceType, sourceType, disabledUpload]);
+
+  useEffect(() => {
+    setSelectedCheckboxes([]);
+  }, [selectedSourceType]);
+
+  // useEffect(() => {
+  //   GetAllSourceType.refetch();
+  //   AttributeForSourceTypesRefetch();
+  //   GetAllServices.refetch();
+  // }, [language]);
+
+  let y: any[] = [];
+
+  useEffect(() => {
+    setSourcePosition({
+      lat: RequestData?.sourceLatitude,
+      lng: RequestData?.sourceLongitude,
+    });
+    setDestinationPosition({
+      lat: RequestData?.destinationLatitude,
+      lng: RequestData?.destinationLongitude,
+    });
+
+    const requestDataAttachments = RequestData?.attachments || [];
+    const transformedAttachments = requestDataAttachments.map((attachment: any) => ({
+      status: 'done',
+      uid: attachment.id,
+      url: attachment.url || attachment.lowResolutionPhotoUrl,
+    }));
+
+    setFileList(transformedAttachments);
+
+    const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
+
+    const x = attributeAndAttachments.map((attributeAndAttachment: any) => {
+      return attributeAndAttachment;
+    });
+
+    y = x.map((transformedAttributeAttachment) => {
+      return transformedAttributeAttachment;
+    });
+
+    const z = y.find((obj) => obj.attributeChoice.id);
+
+    // const x = RequestData?.attributeChoiceAndAttachments
+    //   .map((attributeAndAttachment: any) => {
+    //     return attributeAndAttachment;
+    //   })
+    //   .map((transformedAttributeAttachment) => {
+    //     return transformedAttributeAttachment;
+    //   })
+    //   .map((obj) => {
+    //     return obj.attributeChoice.id;
+    //   });
+    // console.log(x);
+
+    // setImagesLists(transformedAttributeAttachments);
+    console.log(y);
+    setY(y);
+  }, [RequestData]);
+
+  // console.log(Y);
+  // console.log(imagesLists);
+
+  const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
+    if (event.latLng) {
+      const newLat = event.latLng.lat();
+      const newLng = event.latLng.lng();
+      if (positionType === 'source') {
+        setSourcePosition({ lat: newLat, lng: newLng });
+      } else if (positionType === 'destination') {
+        setDestinationPosition({ lat: newLat, lng: newLng });
+      }
+    }
+  };
+
+  const steps = [
+    {
+      title: 'SourceType',
+    },
+    {
+      title: 'Location',
+    },
+    {
+      title: 'Contact',
+    },
+    {
+      title: 'Services',
+    },
+  ];
+
+  // !!! old tre data
+  // const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+  //   const serviceNode: DataNode = {
+  //     title: (
+  //       <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //         <Image src={service?.attachment?.url} width={27} height={27} />
+  //         <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+  //       </span>
+  //     ),
+  //     key: `service${service?.id}`,
+  //     children: [],
+  //     disabled: service?.subServices?.length > 0 ? false : true,
+  //   };
+  //   if (service?.subServices?.length > 0) {
+  //     serviceNode.children = service.subServices.map((subService: any) => {
+  //       const subServiceNode = {
+  //         title: (
+  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //             <Image src={subService?.attachment?.url} width={27} height={27} />
+  //             {subService?.name}
+  //           </span>
+  //         ),
+  //         key:
+  //           subService?.tools?.length > 0 ? `${subService?.id}` : `onlySub service${service?.id} sub${subService?.id}`,
+  //         children: [],
+  //       };
+  //       if (subService?.tools?.length > 0) {
+  //         subServiceNode.children = subService.tools.map((tool: any) => ({
+  //           title: (
+  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+  //               <Image src={tool?.attachment?.url} width={27} height={27} />
+  //               {tool?.name}
+  //             </span>
+  //           ),
+  //           key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+  //         }));
+  //       }
+  //       return subServiceNode;
+  //     });
+  //   }
+  //   return serviceNode;
+  // });
+
+  const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
+    return {
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={16} height={16} />
+          <span style={{ fontWeight: 'bold' }}>
+            {service?.id}
+            {service?.name}
+          </span>
+        </span>
+      ),
+      key: `${service?.id}`,
+      serviceId: `${service?.id}`,
+      children:
+        service?.subServices?.length > 0
+          ? service?.subServices?.map((subService: any) => {
+              return {
+                title: (
+                  <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                    <Image src={service?.attachment?.url} width={16} height={16} />
+                    <span style={{ fontWeight: 'bold' }}>
+                      {subService?.id}
+                      {subService?.name}
+                    </span>
+                  </span>
+                ),
+                key: `${subService?.id}`,
+                serviceId: `${service?.id}`,
+                subServiceId: `${subService?.id}`,
+                children:
+                  subService?.tools?.length > 0
+                    ? subService?.tools?.map((tool: any) => {
+                        return {
+                          title: (
+                            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                              <Image src={tool?.attachment?.url} width={16} height={16} />
+                              <span style={{ fontWeight: 'bold' }}>
+                                {tool?.id}
+                                {tool?.name}
+                              </span>
+                            </span>
+                          ),
+                          key: `${tool?.id}`,
+                          serviceId: `${service?.id}`,
+                          subServiceId: `${subService?.id}`,
+                          toolId: `${tool?.id}`,
+                        };
+                      })
+                    : [],
+                disabled: service?.subServices?.length > 0 ? false : true,
+              };
+            })
+          : [],
+      disabled: service?.subServices?.length > 0 ? false : true,
+    };
+  });
+
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
+  };
+
+  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
+    setSelectedKeys(selectedKeysValue);
+  };
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const handleFormattedValueChange = (value: string) => {
+    setFormattedPhoneNumber(value);
+  };
+
+  const ChangeCountryHandler = (e: any, positionType: 'source' | 'destination') => {
+    setCountryId(e);
+    if (positionType === 'source') {
+      form.setFieldValue('sourceCityId', '');
+    } else if (positionType === 'destination') {
+      form.setFieldValue('destinationCityId', '');
+    }
+  };
+
+  const ChangeCityHandler = (e: any, positionType: 'source' | 'destination') => {
+    if (positionType === 'source') {
+      setCityId((prevCityId) => ({ ...prevCityId, source: e }));
+    } else if (positionType === 'destination') {
+      setCityId((prevCityId) => ({ ...prevCityId, destination: e }));
+    }
+  };
+
+  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
+    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
+    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
+    return {
+      dialCode,
+      phoneNumber,
+    };
+  };
+
+  const createRequestMutation = useMutation((id: any) =>
+    createRequest(id)
+      .then((data) => {
+        data.data?.success &&
+          message.open({
+            content: <Alert message={t('requests.addRequestSuccessMessage')} type={`success`} showIcon />,
+          });
+        requestServicesArray = [];
+        setAttributeChoiceAndAttachments([]);
+        Navigate(`/requests`);
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+        requestServicesArray = [];
+      }),
+  );
+
+  const onFinish = async (values: any) => {
+    const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
+      form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
+    );
+    const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
+      form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
+    );
+    const sourceContact = {
+      // dailCode: '+' + dialCodeS,
+      dailCode: '+971',
+      phoneNumber: phoneNumberS == undefined ? RequestData?.requestForQuotationContacts[0]?.phoneNumber : phoneNumberS,
+      fullName:
+        form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']) == undefined
+          ? RequestData?.requestForQuotationContacts[0]?.fullName
+          : form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']),
+      requestForQuotationContactType: 1,
+    };
+    const destinationContact = {
+      // dailCode: '+' + dialCodeD,
+      dailCode: '+971',
+      phoneNumber: phoneNumberD == undefined ? RequestData?.requestForQuotationContacts[1]?.phoneNumber : phoneNumberD,
+      fullName:
+        form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']) == undefined
+          ? RequestData?.requestForQuotationContacts[1]?.fullName
+          : form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']),
+      requestForQuotationContactType: 2,
+    };
+    function extractServicesIds(input: any) {
+      input.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          requestServices.push(result);
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          requestServices.push(result);
+        }
+        return result;
+      });
+    }
+    extractServicesIds(requestServicesArray);
+
+    const filteredAttributeChoiceAndAttachments = updatedAttributeChoiceAndAttachments.filter(
+      (entry) => entry.statusOfAttributeChoiceId === true,
+    );
+
+    const attributeChoiceAndAttachmentsToSend = filteredAttributeChoiceAndAttachments.map(
+      ({ statusOfAttributeChoiceId, ...rest }) => rest,
+    );
+
+    const attachmentIds = fileList.map((file) => file.uid);
+    const y = [
+      {
+        attributeChoiceId: null,
+        attachmentIds: attachmentIds,
+      },
+    ];
+
+    const allAttachments = [...y, ...attributeChoiceAndAttachmentsToSend];
+
+    requestData = {
+      sourceTypeId: selectedSourceType == undefined ? RequestData?.sourceType?.id : selectedSourceType,
+      requestForQuotationContacts: [sourceContact, destinationContact],
+      serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
+      // moveAtUtc:
+      //   form.getFieldValue('moveAtUtc') == undefined
+      //     ? RequestData?.moveAtUtc
+      //     : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
+      sourceAddress:
+        form.getFieldValue('sourceAddress') == undefined
+          ? RequestData?.sourceAddress
+          : form.getFieldValue('sourceAddress'),
+      // arrivalAtUtc:
+      //   form.getFieldValue('arrivalAtUtc') == undefined
+      //     ? RequestData?.arrivalAtUtc
+      //     : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity.id : cityId.destination,
+      destinationAddress:
+        form.getFieldValue('destinationAddress') == undefined
+          ? RequestData?.destinationAddress
+          : form.getFieldValue('destinationAddress'),
+      sourceLongitude: sourcePosition.lng,
+      sourceLatitude: sourcePosition.lat,
+      destinationLongitude: destinationPosition.lng,
+      destinationLatitude: destinationPosition.lat,
+
+      comment: form.getFieldValue('comment'),
+      services: requestServices,
+      attributeForSourceTypeValues: outputArray,
+      attributeChoiceAndAttachments: allAttachments,
+      userId: userId ? userId : '0',
+    };
+    setAttachmentIdsChanged(true);
+
+    if (attachmentIds.length == 0 && attributeChoiceAndAttachmentsToSend.length == 0) {
+      message.open({
+        content: <Alert message={t('addRequest.atLeastOneAttachment')} type={`error`} showIcon />,
+      });
+      setAttachmentIdsChanged(false);
+      return;
+    }
+
+    console.log(requestData);
+  };
+
+  useEffect(() => {
+    if (attachmentIdsChanged) {
+      const showError = (messageText: string) => {
+        message.open({
+          content: <Alert message={messageText} type={`error`} showIcon />,
+        });
+        setAttachmentIdsChanged(false);
+      };
+
+      const checkField = (fieldName: any, messageText: string) => {
+        if (form.getFieldValue(fieldName) === undefined) {
+          showError(messageText);
+          return false;
+        }
+        return true;
+      };
+
+      // if (selectedSourceType) {
+      //   showError(t('addRequest.selectSourceType'));
+      // } else if (requestServices.length === 0) {
+      //   showError(t('requests.atLeastOneService'));
+      // } else if (valueRadio === 0) {
+      //   showError(t('addRequest.selectServiceType'));
+      // } else if (
+      //   !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+      //   !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+      //   !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
+      //   !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
+      //   !checkField('sourceAddress', t('addRequest.enterAddress')) ||
+      //   !checkField('destinationAddress', t('addRequest.enterAddress'))
+      // ) {
+      //   return;
+      // } else if (cityId.source === '0' || cityId.destination === '0') {
+      //   showError(t('addRequest.enterCity'));
+      // } else {
+      createRequestMutation.mutateAsync(requestData);
+      setAttachmentIdsChanged(false);
+      // }
+    }
+  }, [attachmentIdsChanged]);
+
+  const uploadButtonForAttribute = (
+    <div>
+      <PlusOutlined />
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
+
+  const uploadButtonForAllRequest = (
+    <div onClick={() => setItemId(-10)}>
+      <PlusOutlined />
+      <div className="ant-upload-text">Upload</div>
+    </div>
+  );
+
+  const toggleDisable = (sourceTypeId: string) => {
+    setDisabledState((prevState) => ({
+      ...prevState,
+      [sourceTypeId]: prevState[sourceTypeId] === undefined ? true : !prevState[sourceTypeId],
+    }));
+  };
+
+  const uploadDisable = (itemId: string) => {
+    setDisabledUpload((prevState) => ({
+      ...prevState,
+      [itemId]: prevState[itemId] === undefined ? true : !prevState[itemId],
+    }));
+  };
+
+  const UploadAttachments = async (options: any) => {
+    const { file } = options;
+
+    if (typeof file?.uid === 'string') picturesList?.push(file);
+
+    if (picturesList?.length === fileListLength) {
+      const formData = new FormData();
+      picturesList?.forEach((item) => {
+        formData.append('files', item);
+      });
+      formData.append('RefType', '2');
+      const result = await UploadMultiAttachment(formData);
+      const x: any[] = [];
+      result?.data?.result?.map((res: any) => {
+        x.push({
+          uid: res?.id,
+          status: 'done',
+          url: res?.url,
+        });
+      });
+      setPicturesList([]);
+      setFileListLength(0);
+
+      setFileList(fileList.concat(x));
+    }
+  };
+
+  useEffect(() => {
+    const updateFormValues = async () => {
+      // Check if RequestData is not an empty object
+
+      console.log('Updating form with new RequestData:', RequestData);
+
+      const checkedKeysById: any[] = [];
+      RequestData?.services?.map((item: any) => {
+        item.subServices?.map((sub: any) => {
+          if (sub?.tools?.length === 0) {
+            checkedKeysById.push(`${sub.id}`);
+          } else
+            sub.tools.map((tool: any) => {
+              checkedKeysById.push(`${tool.id}`);
+            });
+        });
+      });
+
+      setTest(checkedKeysById);
+
+      await form.setFieldsValue(RequestData);
+    };
+
+    console.log('test', test);
+
+    updateFormValues();
+  }, [RequestData, form]);
+  useEffect(() => {
+    attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => {
+      sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => {
+        if (
+          RequestData?.attributeForSourceTypeValues.find(
+            (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
+          )?.attributeChoice.id === parentAttributeChoice.id
+        ) {
+          // setTestMaher([]);
+          setMaher((prev) => {
+            return prev.concat([
+              {
+                parentId: sourceTypeItem.id,
+                childId: parentAttributeChoice.id,
+                isChange: true,
+              },
+            ]);
+          });
+          setParentAttributeChoiceIdValue(parentAttributeChoice.id);
+        }
+      });
+    });
+  }, [attributeForSourceTypesData, RequestData]);
 
   return (
-    <Modal
-      style={{ marginTop: '0rem' }}
-      width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
-      open={visible}
-      title={
-        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('requests.editRequestModalTitle')}
-        </div>
-      }
-      onCancel={onCancel}
-      maskClosable={true}
-      footer={
-        <BaseForm.Item style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0' }}>
-          <Space>
-            <Button type="ghost" style={{ height: 'auto' }} onClick={onCancel}>
-              <P1>{t('common.cancel')}</P1>
-            </Button>
-            <Button type="primary" style={{ height: 'auto' }} loading={isLoading} onClick={onOk}>
-              <P1>{t('common.saveEdit')}</P1>
-            </Button>
-          </Space>
-        </BaseForm.Item>
-      }
-    >
-      <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="RequestsForm">
-        <>
-          <BaseForm.Item
-            name={['sourceCity', 'name']}
-            label={<LableText>{t('requests.sourceCity')}</LableText>}
-            style={{ marginTop: '-1rem' }}
-            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+    <Card title={t('editRequest.editRequest')} padding="1.25rem 1.25rem 1.25rem">
+      <Row justify={'end'} style={{ width: '100%' }}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+
+        {current > 0 && (
+          <Button
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => prev()}
           >
-            <Input />
-          </BaseForm.Item>
-          <BaseForm.Item
-            name="destinationCity"
-            label={<LableText>{t('requests.destinationCity')}</LableText>}
-            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-            style={{ marginTop: '-.5rem' }}
+            {t('common.prev')}
+          </Button>
+        )}
+        {current < steps.length - 1 && (
+          <Button
+            type="primary"
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => next()}
           >
-            <Input />
-          </BaseForm.Item>
-          <BaseForm.Item
-            name="serviceType"
-            label={<LableText>{t('requests.serviceType')}</LableText>}
-            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-            style={{ marginTop: '-.5rem' }}
+            <CreateButtonText>{t('common.next')}</CreateButtonText>
+          </Button>
+        )}
+        {current === steps.length - 1 && (
+          <Button
+            type="primary"
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={onFinish}
+            // onClick={() => onFinish(form.getFieldsValue())}
+            loading={createRequestMutation.isLoading || uploadImage.isLoading}
           >
-            <Input />
-          </BaseForm.Item>
-          <BaseForm.Item
-            name="services"
-            label={<LableText>{t('requests.services')}</LableText>}
-            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-            style={{ margin: '-.5rem 0 -.5rem 0' }}
-          >
-            <Select
-              mode="multiple"
-              showSearch
-              optionFilterProp="children"
-              filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-              filterSort={(optionA: any, optionB: any) =>
-                optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-              }
-            ></Select>
-          </BaseForm.Item>
-          <BaseForm.Item
-            name="sourceType"
-            label={<LableText>{t('requests.sourceType')}</LableText>}
-            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-            style={{ marginTop: '-.5rem' }}
-          >
-            <Input />
-          </BaseForm.Item>
-          <BaseForm.Item
-            name="comment"
-            label={<LableText>{t('requests.comment')}</LableText>}
-            rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-            style={{ marginTop: '-.5rem' }}
-          >
-            <Input />
-          </BaseForm.Item>
-        </>
-      </BaseForm>
-    </Modal>
+            {t('common.done')}
+          </Button>
+        )}
+      </Row>
+      <Steps current={current} style={{ margin: '10px 10px 30px 0', padding: '0px 40px' }}>
+        {steps.map((step, index) => (
+          <Step
+            key={index}
+            title={t(`addRequest.${step.title}`)}
+            icon={
+              index === 0 ? (
+                <BankOutlined />
+              ) : index === 1 ? (
+                <PushpinOutlined />
+              ) : index === 2 ? (
+                <UserOutlined />
+              ) : index === 3 ? (
+                <ClearOutlined />
+              ) : undefined
+            }
+          />
+        ))}
+      </Steps>
+
+      {status === 'success' && RequestData && (
+        <BaseForm
+          form={form}
+          onFinish={onFinish}
+          name="addRequestForm"
+          style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
+        >
+          {current === 0 && (
+            <>
+              <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.whatMoving')}</h4>
+              <BaseForm.Item
+                name={['sourceTypeId']}
+                label={<LableText>{t('addRequest.sourceType')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : isMobile ? { width: '100%' } : {}}
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  onChange={(e: any) => {
+                    setSelectedSourceType(e);
+                  }}
+                  defaultValue={RequestData?.sourceType?.name}
+                >
+                  {GetAllSourceType?.data?.data?.result?.items?.map((ele: any) => {
+                    return (
+                      <Option value={ele.id} key={ele?.id}>
+                        <Space>
+                          <span role="img" aria-label={ele.name} style={{ display: 'flex', alignItems: 'center' }}>
+                            <img src={ele?.icon?.url} width={27} height={27} style={{ margin: '0 1.5rem 0 0.3rem' }} />
+                            {ele.name}
+                          </span>
+                        </Space>
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </BaseForm.Item>
+
+              <BaseForm.Item name={['attributeForSourceTypeValues']}>
+                {attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
+                  <p>{t('addRequest.sourceTypeDoesntHaveAttribute')}</p>
+                ) : attributeForSourceTypesData?.data?.result?.items.length > 0 ? (
+                  <div>
+                    {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
+                      <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
+                        <div style={{ margin: '1rem' }}>
+                          <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>
+                            <BaseForm.Item name={sourceTypeItem.name} valuePropName="checked">
+                              <Checkbox
+                                key={sourceTypeItem.id}
+                                onClick={() => {
+                                  toggleDisable(sourceTypeItem.id);
+                                }}
+                                onChange={(CheckboxChangeEvent) => {
+                                  const isChecked = CheckboxChangeEvent.target.checked;
+                                  if (isChecked) {
+                                    setMaher((prev) => {
+                                      return prev.map((item) => {
+                                        if (item.parentId === sourceTypeItem.id)
+                                          return {
+                                            parentId: item.parentId,
+                                            childId: item.childId,
+                                            isChange: item.childId,
+                                            isNotRepeat: true,
+                                          };
+                                        else return item;
+                                      });
+                                    });
+                                    setSelectedCheckboxes((prevSelectedCheckboxes) => [
+                                      ...prevSelectedCheckboxes,
+                                      sourceTypeItem.id,
+                                    ]);
+                                  } else {
+                                    setMaher((prev) => {
+                                      return prev.map((item) => {
+                                        if (item.parentId === sourceTypeItem.id)
+                                          return {
+                                            ...item,
+                                            isParentNotChecked: true,
+                                          };
+                                        else return item;
+                                      });
+                                    });
+                                    setSelectedCheckboxes((prevSelectedCheckboxes) =>
+                                      prevSelectedCheckboxes.filter((id) => {
+                                        id !== sourceTypeItem.id;
+                                      }),
+                                    );
+                                  }
+                                }}
+                                defaultChecked={RequestData.attributeForSourceTypeValues.some(
+                                  (value) => value?.attributeForSourcType?.id === sourceTypeItem.id,
+                                )}
+                              >
+                                {sourceTypeItem.name}
+                              </Checkbox>
+                            </BaseForm.Item>
+                          </p>
+                          <Radio.Group
+                            className="radios"
+                            style={{ display: 'flex', justifyContent: 'space-around' }}
+                            onChange={(e) => {
+                              const sourceTypeId = sourceTypeItem.id;
+                              setAttributeForSourceTypeId(sourceTypeId);
+                              setSelectedChoices((prevSelectedChoices) => ({
+                                ...prevSelectedChoices,
+                                [sourceTypeId]: e.target.value,
+                              }));
+                              setSelectedRadios((prevSelectedRadios) => ({
+                                ...prevSelectedRadios,
+                                [sourceTypeId]: e.target.value.id,
+                              }));
+                            }}
+                            disabled={
+                              !RequestData.attributeForSourceTypeValues.some(
+                                (value) => value?.attributeForSourcType?.id === sourceTypeItem.id,
+                              )
+                                ? !disabledState[sourceTypeItem.id]
+                                : disabledState[sourceTypeItem.id]
+                            }
+                            defaultValue={
+                              RequestData?.attributeForSourceTypeValues.find(
+                                (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
+                              )?.attributeChoice.id
+                            }
+                          >
+                            {/* {console.log(
+                              RequestData?.attributeForSourceTypeValues.find(
+                                (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
+                              )?.attributeChoice.id,
+                            )} */}
+                            {selectedChoices[sourceTypeItem.id]}
+                            {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
+                              <>
+                                <Radio
+                                  key={parentAttributeChoice.id}
+                                  value={parentAttributeChoice.id}
+                                  onChange={(e) => {
+                                    // setTestMaher([]);
+
+                                    setMaher((prev) => {
+                                      return prev.map((item) => {
+                                        if (item.parentId === sourceTypeItem.id)
+                                          return {
+                                            ...item,
+                                            childId: e.target.value,
+                                            isChange: true,
+                                          };
+                                        else
+                                          return {
+                                            ...item,
+
+                                            isChange: false,
+                                          };
+                                      });
+                                    });
+
+                                    setParentAttributeChoiceIdValue(parentAttributeChoice.id);
+                                  }}
+                                  style={{ height: '30px' }}
+                                >
+                                  {parentAttributeChoice.name}
+                                </Radio>
+                                <Row style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                                  {testMaher.map((item) => {
+                                    if (item.id === parentAttributeChoice.id) {
+                                      return item?.value?.map(
+                                        (item: any, index: number) =>
+                                          parentAttributeChoice?.id === item?.attributeChociceParentId && (
+                                            <Spin spinning={isLoading} key={item?.attributeChociceParentId}>
+                                              <div
+                                                key={item.id}
+                                                style={{ margin: '1rem' }}
+                                                onClick={() => setItemId(item.id)}
+                                              >
+                                                <BaseForm.Item key={index} name={item.name} valuePropName="checked">
+                                                  <Checkbox
+                                                    onClick={() => {
+                                                      uploadDisable(item?.id);
+                                                    }}
+                                                    defaultChecked={RequestData.attributeChoiceAndAttachments.some(
+                                                      (value) => value?.attributeChoice?.id === item.id,
+                                                    )}
+                                                  >
+                                                    <p>{item.name}</p>
+                                                  </Checkbox>
+                                                </BaseForm.Item>
+                                                {/* {console.log(
+                                                  'uplooooooooad',
+                                                  Y.find((obj) => obj.attributeChoice.id == item.id)?.attributeChoice,
+                                                )}
+                                                {console.log('1131', Y)}
+                                                {console.log('1132', item.id)} */}
+
+                                                <Upload
+                                                  key={item.id}
+                                                  disabled={
+                                                    !RequestData.attributeChoiceAndAttachments.some(
+                                                      (value) => value?.attributeChoice?.id === item.id,
+                                                    )
+                                                      ? !disabledUpload[item?.id]
+                                                      : disabledUpload[item?.id]
+                                                  }
+                                                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                                                  accept=".jpeg,.png,.jpg"
+                                                  listType="picture-card"
+                                                  fileList={
+                                                    imagesLists[attributeForSourceTypeId]?.[
+                                                      parentAttributeChoiceIdValue
+                                                    ]?.[item.id]
+                                                  }
+                                                  onPreview={(file) =>
+                                                    handlePreview(
+                                                      attributeForSourceTypeId,
+                                                      parentAttributeChoiceIdValue,
+                                                      item.id,
+                                                      file,
+                                                    )
+                                                  }
+                                                  beforeUpload={(file) => {
+                                                    const formData = new FormData();
+                                                    formData.append('RefType', '2');
+                                                    formData.append('file', file);
+                                                    uploadImage.mutate(formData);
+
+                                                    return false;
+                                                  }}
+                                                  onChange={(e: any) => {
+                                                    setImagesListAtIndex(
+                                                      attributeForSourceTypeId,
+                                                      parentAttributeChoiceIdValue,
+                                                      item.id,
+                                                      e.fileList,
+                                                    );
+                                                  }}
+                                                  maxCount={20}
+                                                >
+                                                  {imagesLists[index]?.length >= 20 ? null : uploadButtonForAttribute}
+                                                </Upload>
+                                                <Modal
+                                                  open={previewOpen}
+                                                  title={previewTitle}
+                                                  footer={null}
+                                                  onCancel={handleCancel}
+                                                >
+                                                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                                                </Modal>
+                                              </div>
+                                            </Spin>
+                                          ),
+                                      );
+                                    }
+                                  })}
+                                </Row>
+                              </>
+                            ))}
+                          </Radio.Group>
+                        </div>
+                      </Card>
+                    ))}
+                    <Upload
+                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                      accept=".jpeg,.png,.jpg"
+                      listType="picture-card"
+                      fileList={fileList}
+                      onPreview={handlePreviews}
+                      maxCount={10}
+                      multiple
+                      onChange={(item) => {
+                        setFileListLength(item.fileList?.filter((item) => typeof item.uid === 'string')?.length);
+                      }}
+                      onRemove={(file) => {
+                        setFileList((prev: any[]) => {
+                          const test = prev.filter((item: any) => item?.uid !== file?.uid);
+
+                          return test;
+                        });
+                        return;
+                      }}
+                      customRequest={UploadAttachments}
+                    >
+                      {fileList.length >= 8 ? null : uploadButtonForAllRequest}
+                    </Upload>
+                    <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                    </Modal>
+                  </div>
+                ) : (
+                  ''
+                )}
+              </BaseForm.Item>
+            </>
+          )}
+
+          {current === 1 && (
+            <>
+              <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
+              <BaseForm.Item
+                name={['serviceType']}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+              >
+                <Radio.Group
+                  style={{ display: 'flex', width: '100%' }}
+                  onChange={(event) => {
+                    form.setFieldsValue({ ['serviceType']: event.target.value });
+                    setValueRadio(event.target.value);
+                  }}
+                  defaultValue={RequestData.serviceType}
+                >
+                  <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                    {t('requests.Internal')}
+                  </Radio>
+                  <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                    {t('requests.External')}
+                  </Radio>
+                </Radio.Group>
+              </BaseForm.Item>
+
+              <h4 style={{ margin: '4rem 0', fontWeight: '700' }}>{t('addRequest.sourceLocations')}:</h4>
+              <BaseForm.Item
+                label={<LableText>{t('addRequest.country')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                }
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                  filterSort={(optionA: any, optionB: any) =>
+                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                  }
+                  onChange={(e) => ChangeCountryHandler(e, 'source')}
+                  defaultValue={RequestData.sourceCity.country.name}
+                >
+                  {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                    return (
+                      <Option value={ele.id} key={ele?.id}>
+                        {ele.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </BaseForm.Item>
+              <BaseForm.Item
+                name={['sourceCityId']}
+                label={<LableText>{t('addRequest.city')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                }
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                  filterSort={(optionA: any, optionB: any) =>
+                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                  }
+                  onChange={(e) => ChangeCityHandler(e, 'source')}
+                  defaultValue={RequestData.sourceCity.name}
+                >
+                  {cityData?.data?.result?.items?.map((ele: any) => {
+                    return (
+                      <Select value={ele.id} key={ele?.id}>
+                        {ele.name}
+                      </Select>
+                    );
+                  })}
+                </Select>
+              </BaseForm.Item>
+              <BaseForm.Item
+                name="sourceAddress"
+                label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet
+                    ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                    : isMobile
+                    ? { width: '100%', display: 'block' }
+                    : {}
+                }
+              >
+                <Input defaultValue={RequestData.sourceAddress} />
+              </BaseForm.Item>
+              {/* <BaseForm.Item
+                name="moveAtUtc"
+                label={<LableText>{t('addRequest.date')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet
+                    ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                    : isMobile
+                    ? { width: '100%', marginBottom: '5rem' }
+                    : {}
+                }
+              >
+                <DatePicker
+                  style={{ width: '100%' }}
+                  defaultValue={RequestData?.moveAtUtc != null ? moment(RequestData.moveAtUtc) : undefined}
+                />
+              </BaseForm.Item> */}
+              <div
+                style={
+                  lang == 'en' && (isDesktop || isTablet)
+                    ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'en' && isMobile
+                    ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
+                    : lang == 'ar' && (isDesktop || isTablet)
+                    ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'ar' && isMobile
+                    ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
+                    : {}
+                }
+              >
+                <div style={{ width: '100%', height: '400px' }}>
+                  <GoogleMap
+                    center={centerSource}
+                    zoom={12}
+                    mapContainerStyle={{ width: '100%', height: '100%' }}
+                    onClick={(event) => handleMapClick(event, 'source')}
+                  >
+                    <Marker key="source" position={sourcePosition} />
+                  </GoogleMap>
+                </div>
+              </div>
+
+              <h4 style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>{t('addRequest.destinationLocations')}:</h4>
+              <BaseForm.Item
+                label={<LableText>{t('addRequest.country')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                }
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                  filterSort={(optionA: any, optionB: any) =>
+                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                  }
+                  onChange={(e) => ChangeCountryHandler(e, 'destination')}
+                  defaultValue={RequestData.destinationCity.country.name}
+                >
+                  {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                    return (
+                      <Option value={ele.id} key={ele?.id}>
+                        {ele.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </BaseForm.Item>
+              <BaseForm.Item
+                name={['destinationCityId']}
+                label={<LableText>{t('addRequest.city')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                }
+              >
+                <Select
+                  showSearch
+                  optionFilterProp="children"
+                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
+                  filterSort={(optionA: any, optionB: any) =>
+                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                  }
+                  onChange={(e) => ChangeCityHandler(e, 'destination')}
+                  defaultValue={RequestData.destinationCity.name}
+                >
+                  {cityData?.data?.result?.items?.map((ele: any) => {
+                    return (
+                      <Option value={ele.id} key={ele?.id}>
+                        {ele.name}
+                      </Option>
+                    );
+                  })}
+                </Select>
+              </BaseForm.Item>
+              <BaseForm.Item
+                name="destinationAddress"
+                label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet
+                    ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                    : isMobile
+                    ? { width: '100%', display: 'block' }
+                    : {}
+                }
+              >
+                <Input defaultValue={RequestData.destinationAddress} />
+              </BaseForm.Item>
+              {/* <BaseForm.Item
+                name="arrivalAtUtc"
+                label={<LableText>{t('addRequest.date')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={
+                  isDesktop || isTablet
+                    ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                    : isMobile
+                    ? { width: '100%', marginBottom: '5rem' }
+                    : {}
+                }
+              >
+                <DatePicker
+                  style={{ width: '100%' }}
+                  defaultValue={RequestData?.arrivalAtUtc != null ? moment(RequestData.arrivalAtUtc) : undefined}
+                />
+              </BaseForm.Item> */}
+              <div
+                style={
+                  lang == 'en' && (isDesktop || isTablet)
+                    ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'en' && isMobile
+                    ? { right: '0', float: 'right', position: 'relative', width: '100%' }
+                    : lang == 'ar' && (isDesktop || isTablet)
+                    ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                    : lang == 'ar' && isMobile
+                    ? { left: '0', float: 'left', position: 'relative', width: '100%' }
+                    : {}
+                }
+              >
+                <div style={{ width: '100%', height: '400px' }}>
+                  <GoogleMap
+                    center={centerDestination}
+                    zoom={12}
+                    mapContainerStyle={{ width: '100%', height: '100%' }}
+                    onClick={(event) => handleMapClick(event, 'destination')}
+                  >
+                    <Marker key="destination" position={destinationPosition} />
+                  </GoogleMap>
+                </div>
+              </div>
+            </>
+          )}
+
+          {current === 2 && (
+            <>
+              <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForSource')}:</h4>
+              <BaseForm.Item
+                name={['requestForQuotationContacts', 0, 'fullName']}
+                label={<LableText>{t('common.fullName')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              >
+                <Input defaultValue={RequestData.requestForQuotationContacts[0].fullName} />
+              </BaseForm.Item>
+              <BaseButtonsForm.Item
+                name={['requestForQuotationContacts', 0, 'phoneNumber']}
+                $successText={t('auth.phoneNumberVerified')}
+                label={t('common.phoneNumber')}
+                rules={[
+                  { required: true, message: t('common.requiredField') },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || isValidPhoneNumber(value)) {
+                        return Promise.resolve();
+                      }
+                      if (formattedPhoneNumber.length > 12) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                      } else if (formattedPhoneNumber.length < 12) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                      }
+                    },
+                  }),
+                ]}
+                style={
+                  isDesktop || isTablet
+                    ? {
+                        width: 'fit-content',
+                        margin: '2rem auto',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                      }
+                    : {
+                        width: 'fit-content',
+                        margin: '2rem auto',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                      }
+                }
+              >
+                <PhoneInput
+                  onChange={handleFormattedValueChange}
+                  country={'ae'}
+                  value={
+                    RequestData.requestForQuotationContacts[0]?.dailCode +
+                    RequestData.requestForQuotationContacts[0]?.phoneNumber
+                  }
+                />
+              </BaseButtonsForm.Item>
+
+              <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
+              <BaseForm.Item
+                name={['requestForQuotationContacts', 1, 'fullName']}
+                label={<LableText>{t('common.fullName')}</LableText>}
+                rules={[
+                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                ]}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              >
+                <Input defaultValue={RequestData.requestForQuotationContacts[1].fullName} />
+              </BaseForm.Item>
+              <BaseButtonsForm.Item
+                name={['requestForQuotationContacts', 1, 'phoneNumber']}
+                $successText={t('auth.phoneNumberVerified')}
+                label={t('common.phoneNumber')}
+                rules={[
+                  { required: true, message: t('common.requiredField') },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || isValidPhoneNumber(value)) {
+                        return Promise.resolve();
+                      }
+                      if (formattedPhoneNumber.length > 12) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                      } else if (formattedPhoneNumber.length < 12) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                      }
+                    },
+                  }),
+                ]}
+                style={
+                  isDesktop || isTablet
+                    ? {
+                        width: 'fit-content',
+                        margin: '2rem auto',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                      }
+                    : {
+                        width: 'fit-content',
+                        margin: '2rem auto',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
+                      }
+                }
+              >
+                <PhoneInput
+                  onChange={handleFormattedValueChange}
+                  country={'ae'}
+                  value={
+                    RequestData.requestForQuotationContacts[1]?.dailCode +
+                    RequestData.requestForQuotationContacts[1]?.phoneNumber
+                  }
+                />
+              </BaseButtonsForm.Item>
+            </>
+          )}
+
+          {current === 3 && (
+            <>
+              <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.selectService')} :</h4>
+              <BaseForm.Item key="100" name={['services']}>
+                {/* {treeData?.map((serviceTreeData: any, serviceIndex: number) => { */}
+                {/* const serviceKeys = selectedServicesKeysMap[serviceIndex] || []; */}
+                {/* return ( */}
+                <Tree
+                  // key={serviceIndex}
+                  style={treeStyle}
+                  checkable
+                  defaultExpandAll={true}
+                  onExpand={onExpand}
+                  expandedKeys={expandedKeys}
+                  autoExpandParent={autoExpandParent}
+                  onCheck={(checkedKeysValue: any, info: any) => {
+                    setTest(checkedKeysValue);
+                    console.log('info', info);
+                    console.log('checkedKeysValue', checkedKeysValue);
+
+                    console.log(
+                      'sssssssaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
+                      info.checkedNodes?.map((item: any) => {
+                        return {
+                          serviceId: item.serviceId,
+                          subServiceId: item.subServiceId,
+                          toolId: item.toolId,
+                        };
+                      }),
+                    );
+
+                    // for (const test of checkedKeysValue) {
+                    //   if (!requestServicesArray.includes(test)) {
+                    //     requestServicesArray.push(test);
+                    //     console.log('requestServicesArray', requestServicesArray);
+                    //   }
+                    // }
+                    // setSelectedServicesKeysMap((prevSelectedKeysMap) => {
+                    //   const updatedKeysMap = { ...prevSelectedKeysMap };
+                    //   updatedKeysMap[serviceIndex] = checkedKeysValue;
+                    //   return updatedKeysMap;
+                    // });
+                  }}
+                  defaultCheckedKeys={test}
+                  checkedKeys={test}
+                  onSelect={onSelect}
+                  selectedKeys={selectedKeys}
+                  treeData={treeData}
+                />
+                {/* );
+                })} */}
+              </BaseForm.Item>
+
+              <BaseForm.Item name={['comment']}>
+                <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
+              </BaseForm.Item>
+            </>
+          )}
+        </BaseForm>
+      )}
+    </Card>
   );
 };

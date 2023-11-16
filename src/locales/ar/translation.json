@@ -81,7 +81,9 @@
     "onlyNumbers": "يُسمح بإستخدام الأرقام فقط",
     "onlyEnglishCharacters": "يُسمح بإستخدام الأحرف الإنكليزية فقط",
     "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط",
-    "invalidEmail": "البريد الإلكتروني غير صحيح"
+    "invalidEmail": "البريد الإلكتروني غير صحيح",
+    "true": "نعم",
+    "false": "لا"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -104,7 +106,8 @@
     "alreadyHaveAccount": "لديك حساب؟ قم بتسجيل الدخول من ",
     "privacyPolicy": "سياسة الخصوصية",
     "termOfUse": "شروط الاستخدام",
-
+    "phoneNumberIsShort": "رقم الموبايل قصير",
+    "phoneNumberIsLong": "رقم الموبايل طويل",
     "agree": "أنا أوافق على",
     "resetPassword": "إعادة تعيين كلمة المرور",
     "resetPasswordDescription": "أدخل عنوان بريدك الإلكتروني وسنرسل رمز تحقق لإعادة تعيين كلمة مرورك",
@@ -299,7 +302,14 @@
     "totalPoints": "عدد النقاط الكلي",
     "possibleClientsList": "قائمة العملاء المحتملين",
     "possibleClientsInfo": "تفاصيل العملاء المحتملين",
-    "possibleClients": "العملاء المحتملين"
+    "possibleClients": "العملاء المحتملين",
+    "ChangeAcceptRequestOrPotentialClient": "إمكانية الشركة لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
+    "acceptRequests": "هل يمكنها إستقبال طلبات النقل؟",
+    "acceptPossibleRequests": "هل يمكنها شراء معلومات العملاء المحتملين؟",
+    "acceptRequestOrPotentialClientSuccessMessage": "تم التعديل بنجاح",
+    "reviewsDetails": "تفاصيل كافة مراجعات المستخدمين",
+    "companyEvaluation": "تقييم الشركة",
+    "noReviews": "لا يوجد مراجعات من المستخدمين"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -327,7 +337,10 @@
     "editSourceTypeSuccessMessage": "تم تعديل معلومات نوع مكان للنقل",
     "editSourceTypeModalTitle": "تعديل معلومات نوع مكان للنقل",
     "deleteSourceTypeModalTitle": "حذف نوع مكان للنقل",
-    "deleteSourceTypeModalDescription": "هل أنت متأكد من حذف هذه نوع مكان للنقل"
+    "deleteSourceTypeModalDescription": "هل أنت متأكد من حذف هذه نوع مكان للنقل",
+    "pointsToGiftToCompany": "عدد النقاط التي ستُهدى للشركة أو الفرع",
+    "pointsToGiftMediator": "عدد النقاط التي ستُهدى للوسيط",
+    "pointsToBuyRequest": "عدد النقاط التي ستُخصم مقابل شراء معلومات العميل المحتمل"
   },
 
   "_comment9": "*********************************** tools ************************************************",
@@ -578,7 +591,19 @@
     "arrivalAtUtc": "وقت الوصول",
     "sourceType": "نوع مكان النقل",
     "chooseOption": "رجاءً إختر نوع مكان النقل من القائمة",
-    "sourceTypeDoesntHaveAttribute": "نوع مكان النقل هذا لا يحتوي على أي فئات"
+    "sourceTypeDoesntHaveAttribute": "نوع مكان النقل هذا لا يحتوي على أي فئات",
+    "whatMoving": "ما نوع المكان الذي تريد نقله؟",
+    "typeMove": "طريقة النقل",
+    "sourceLocations": "موقع المصدر",
+    "destinationLocations": "موقع الوجهة",
+    "selectService": "إختر الخدمات التي تريدها",
+    "selectServiceType": "رجاءً إختر طريقة النقل",
+    "enterPhoneNumber": "رجاءً أدخل رقم الموبايل",
+    "enterFullName": "رجاءً أدخل الإسم الكامل",
+    "enterCity": "رجاءً أدخل المدينة",
+    "enterAddress": "رجاءً أدخل العنوان",
+    "selectSourceType": "رجاءً إختر نوع مكان النقل",
+    "atLeastOneAttachment": "رجاءً إرقع صورة واحدة على الأقل"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -594,7 +619,9 @@
     "region": "المنطقة",
     "branchInfo": "معلومات الفرع",
     "branchProfile": "بروفايل الفرع",
-    "details": "تفاصيل الفرع"
+    "details": "تفاصيل الفرع",
+    "ChangeAcceptRequestOrPotentialClient": "إمكانية الفرع لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
+    "branchEvaluation": "تقييم الفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -823,6 +850,9 @@
     "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح"
   },
 
+  "_comment29": "*********************************** editRequest ************************************************",
+  "editRequest": {},
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -865,7 +895,9 @@
     "Drafts": "الطلبات الغير مستكملة",
     "CompleteDraft": "إستكمال طلب نقل",
     "possibleClients": "العملاء المحتملين",
-    "Configurations": "الإعدادات"
+    "Configurations": "الإعدادات",
+    "editRequest": "تعديل طلب النقل",
+    "ReviewsDetails": "تفاصيل المراجعات"
   },
 
   "header": {

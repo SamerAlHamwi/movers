@@ -3,19 +3,27 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Tag, Space, Progress, Avatar, Segmented, Col, Card } from 'antd';
+import { Row, Tree, Image, Tag, Space, Progress, Avatar, Segmented, Tooltip } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { GetReviewDetailsById, getCompanyById } from '@app/services/companies';
+import { getCompanyById } from '@app/services/companies';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import { DollarOutlined, DropboxOutlined, GiftOutlined, LeftOutlined, UserOutlined } from '@ant-design/icons';
-import { TextBack } from '@app/components/GeneralStyles';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  CommentOutlined,
+  DollarOutlined,
+  DropboxOutlined,
+  GiftOutlined,
+  LeftOutlined,
+} from '@ant-design/icons';
+import { TableButton, TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
   name: string;
@@ -56,19 +64,6 @@ const CompanyDetails: React.FC = () => {
       .then((data) => {
         const result = data.data?.result;
         setCompanyData(result);
-        setLoading(!data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-        setLoading(false);
-      }),
-  );
-
-  const { refetch: refetchReview, isRefetching: isRefetchingReview } = useQuery(['GetReviewDetailsById'], () =>
-    GetReviewDetailsById(companyId)
-      .then((data) => {
-        const result = data.data?.result;
-        setCompanyReviewData(result);
         setLoading(!data.data?.success);
       })
       .catch((error) => {
@@ -295,6 +290,44 @@ const CompanyDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
+                  <DetailsTitle>{t('companies.acceptRequests')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {companyData?.acceptRequests == true ? (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.acceptPossibleRequests')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {companyData?.acceptPossibleRequests == true ? (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
                   <DetailsTitle>{t('companies.status')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
@@ -413,21 +446,27 @@ const CompanyDetails: React.FC = () => {
                 />
               </Space>
 
-              {/* <DetailsRow>
-                <ColStyle>
-                  <DetailsTitle>{t('companies.reviews')} :</DetailsTitle>
-                </ColStyle>
-                <ColStyle>
-                  {companyReviewData?.length > 0
-                    ? companyReviewData?.map((review: any, index: number) => (
-                        <DetailsValue key={review?.id}>
-                          {index + 1} - <span style={{ fontWeight: '600' }}>{review?.reviewDescription} </span>
-                          {' ( from ' + review?.user?.fullName + ' / ' + review?.user?.userName + ' )'}
-                        </DetailsValue>
-                      ))
-                    : '___'}
-                </ColStyle>
-              </DetailsRow> */}
+              <DetailsRow>
+                <DetailsTitle
+                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                >
+                  {t('companies.reviewsDetails')} :
+                </DetailsTitle>
+                <DetailsValue
+                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                >
+                  <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('companies.reviewsDetails')}>
+                    <TableButton
+                      severity="success"
+                      onClick={() => {
+                        Navigate(`reviewsDetails`);
+                      }}
+                    >
+                      <CommentOutlined />
+                    </TableButton>
+                  </Tooltip>
+                </DetailsValue>
+              </DetailsRow>
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.companyContact')} :

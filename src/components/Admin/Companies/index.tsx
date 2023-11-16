@@ -13,6 +13,7 @@ import {
   CloseOutlined,
   TagOutlined,
   TeamOutlined,
+  SnippetsOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
@@ -21,12 +22,19 @@ import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
 import { useNavigate } from 'react-router-dom';
-import { DeleteCompany, updateCompany, getAllCompanies, confirmCompany } from '@app/services/companies';
+import {
+  DeleteCompany,
+  updateCompany,
+  getAllCompanies,
+  confirmCompany,
+  ChangeAcceptRequestOrPossibleRequestForCompany,
+} from '@app/services/companies';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 
 export const Companies: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -40,6 +48,7 @@ export const Companies: React.FC = () => {
     delete: false,
     approve: false,
     reject: false,
+    acceptRequestOrPotentialClient: false,
   });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -48,10 +57,12 @@ export const Companies: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [editmodaldata, setEditmodaldata] = useState<CompanyModal | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CompanyModal | undefined>(undefined);
+  const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
   const [approvemodaldata, setApprovemodaldata] = useState<CompanyModal | undefined>(undefined);
   const [rejectmodaldata, setRejectmodaldata] = useState<CompanyModal | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
+  const [isChanged, setIsChanged] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
@@ -69,7 +80,7 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isRejected],
+    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
     () =>
       getAllCompanies(page, pageSize, searchString)
         .then((data) => {
@@ -98,7 +109,7 @@ export const Companies: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isApproved, isRejected, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, isEdit, isApproved, isChanged, isRejected, page, pageSize, language, searchString, refetch]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -130,6 +141,39 @@ export const Companies: React.FC = () => {
       deleteCompany.mutateAsync(id);
     }
   };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, delete: deleteCompany.isLoading }));
+  }, [deleteCompany.isLoading]);
+
+  const acceptRequestOrPotentialClient = useMutation((data: any) =>
+    ChangeAcceptRequestOrPossibleRequestForCompany(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsChanged(data.data?.success),
+          message.open({
+            content: (
+              <Alert message={t('companies.acceptRequestOrPotentialClientSuccessMessage')} type={`success`} showIcon />
+            ),
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleAcceptRequestOrPotentialClient = (data: any, id: number) => {
+    acceptRequestOrPotentialClient.mutateAsync({ ...data, id });
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({
+      ...prevModalState,
+      acceptRequestOrPotentialClient: acceptRequestOrPotentialClient.isLoading,
+    }));
+  }, [acceptRequestOrPotentialClient.isLoading]);
 
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteCompany.isLoading }));
@@ -201,7 +245,6 @@ export const Companies: React.FC = () => {
       });
   };
 
-  const pink = '#ff5252';
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -222,7 +265,7 @@ export const Companies: React.FC = () => {
       },
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
+    // { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
@@ -244,19 +287,19 @@ export const Companies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-      dataIndex: 'services',
-      render: (record: any) => (
-        <Space style={{ display: 'grid' }}>
-          {record?.map((service: any) => (
-            <Tag key={service?.id} style={{ padding: '4px' }}>
-              {service?.name}
-            </Tag>
-          ))}
-        </Space>
-      ),
-    },
+    // {
+    //   title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
+    //   dataIndex: 'services',
+    //   render: (record: any) => (
+    //     <Space style={{ display: 'grid' }}>
+    //       {record?.map((service: any) => (
+    //         <Tag key={service?.id} style={{ padding: '4px' }}>
+    //           {service?.name}
+    //         </Tag>
+    //       ))}
+    //     </Space>
+    //   ),
+    // },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
@@ -349,6 +392,18 @@ export const Companies: React.FC = () => {
               </TableButton>
             </Tooltip>
 
+            <Tooltip placement="top" title={t('companies.ChangeAcceptRequestOrPotentialClient')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setAcceptRequestOrPotentialClientmodaldata(record);
+                  handleModalOpen('acceptRequestOrPotentialClient');
+                }}
+              >
+                <SnippetsOutlined />
+              </TableButton>
+            </Tooltip>
+
             <Tooltip placement="top" title={t('companies.possibleClients')}>
               <TableButton
                 // severity="#f9a3a4"
@@ -372,16 +427,16 @@ export const Companies: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('common.edit')}>
+            {/* <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"
                 onClick={() => {
-                  // Navigate(`${record.id}/EditCom`, { replace: false });
+                  Navigate(`${record.id}/EditCompany`, { replace: false });
                 }}
               >
                 <EditOutlined />
               </TableButton>
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip placement="top" title={t('common.delete')}>
               <TableButton
@@ -449,6 +504,21 @@ export const Companies: React.FC = () => {
               description={t('companies.deletecompanyModalDescription')}
               isDanger={true}
               isLoading={deleteCompany.isLoading}
+            />
+          )}
+
+          {/*    Accept Request Or Potential Clients    */}
+          {modalState.acceptRequestOrPotentialClient && (
+            <ChangeAcceptRequestOrPotentialClient
+              visible={modalState.acceptRequestOrPotentialClient}
+              onCancel={() => handleModalClose('acceptRequestOrPotentialClient')}
+              onEdit={(info) => {
+                acceptRequestOrPotentialClientmodaldata != undefined &&
+                  handleAcceptRequestOrPotentialClient(info, acceptRequestOrPotentialClientmodaldata.id);
+              }}
+              isLoading={acceptRequestOrPotentialClient.isLoading}
+              values={acceptRequestOrPotentialClientmodaldata}
+              title="company"
             />
           )}
 

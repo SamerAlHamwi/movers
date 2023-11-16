@@ -82,7 +82,9 @@
     "onlyNumbers": "Only Numbers are allowed",
     "onlyEnglishCharacters": "Only English Characters Are Accepted",
     "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
-    "invalidEmail": "Email Is Incorrect"
+    "invalidEmail": "Email Is Incorrect",
+    "true": "True",
+    "false": "False"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -105,6 +107,8 @@
     "alreadyHaveAccount": "Already have an account? Log in ",
     "privacyPolicy": "Privacy Policy",
     "termOfUse": "Terms of Use",
+    "phoneNumberIsShort": "Phone Number Is Short",
+    "PphoneNumberIsLong": "Phone Number Is Long",
     "agree": "I agree to the",
     "resetPassword": "Reset Password",
     "resetPasswordDescription": "Enter your email address and we’ll send an verification code to reset your password",
@@ -298,7 +302,14 @@
     "branches": "Branches",
     "possibleClientsList": "Possible Clients List",
     "possibleClientsInfo": "Possible Clients Informations",
-    "possibleClients": "Possible Clients"
+    "possibleClients": "Possible Clients",
+    "ChangeAcceptRequestOrPotentialClient": "The Company's Ability To Receive Requests And Purchase Potential Clients Information",
+    "acceptRequests": "Can It Receive Requests?",
+    "acceptPossibleRequests": "Can It Buy Potential Clents Information?",
+    "acceptRequestOrPotentialClientSuccessMessage": "Edited Successfully",
+    "reviewsDetails": "Details Of All User Reviews",
+    "companyEvaluation": "Company Evaluation",
+    "noReviews": "There Are No Reviews From Clients"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -326,7 +337,10 @@
     "editSourceTypeSuccessMessage": "The Moving Type Has Been Edited Successfully",
     "editSourceTypeModalTitle": "Edit Moving Type",
     "deleteSourceTypeModalTitle": "Delete Moving Type",
-    "deleteSourceTypeModalDescription": "Are You Sure To Delete This Moving Type?"
+    "deleteSourceTypeModalDescription": "Are You Sure To Delete This Moving Type?",
+    "pointsToGiftToCompany": "Number Of Points That Will Be Gifted To The Company Or Branch",
+    "pointsToGiftMediator": "Number Of Points That Will Be Gifted To The Broker",
+    "pointsToBuyRequest": "Number Of Points That Will Be Deducted For Purchasing Potential Customer Information"
   },
 
   "_comment9": "*********************************** tools ************************************************",
@@ -580,8 +594,20 @@
     "moveAtUtc": "Move Time",
     "arrivalAtUtc": "Arrive Time",
     "sourceType": "Moving Type",
-    "chooseOption": "Please choose an option from the select",
-    "sourceTypeDoesntHaveAttribute": "This Moving Type doesn't have any Categories"
+    "chooseOption": "Please Choose An Option From The Select",
+    "sourceTypeDoesntHaveAttribute": "This Moving Type Doesn't Have Any Categories",
+    "whatMoving": "What Are You Moving?",
+    "typeMove": "Type Of Moving",
+    "sourceLocations": "Source Locations",
+    "destinationLocations": "Destination Locations",
+    "selectService": "Select Services That You Need",
+    "selectServiceType": "Please Choose The Type Of Moving",
+    "enterPhoneNumber": "Please Enter The Phone Number",
+    "enterFullName": "Please Enter The Full Name",
+    "enterCity": "Please Enter The City",
+    "enterAddress": "Please Enter The Address",
+    "selectSourceType": "Please Choose The Moving Type",
+    "atLeastOneAttachment": "At Least Upload One Attachment"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -597,7 +623,9 @@
     "region": "Region",
     "branchInfo": "Branch Informations",
     "branchProfile": "Branch Profile",
-    "details": "Details"
+    "details": "Details",
+    "ChangeAcceptRequestOrPotentialClient": "The Branch's Ability To Receive Requests And Purchase Potential Clients Information",
+    "branchEvaluation": "Branch Evaluation"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -826,6 +854,9 @@
     "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
   },
 
+  "_comment29": "*********************************** editRequest ************************************************",
+  "editRequest": {},
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -869,7 +900,9 @@
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
     "possibleClients": "Possible Clients",
-    "Configurations": "Configurations"
+    "Configurations": "Configurations",
+    "editRequest": "Edit Request",
+    "ReviewsDetails": "Reviews Details"
   },
 
   "header": {

@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Space, Progress, Avatar, Segmented } from 'antd';
+import { Row, Tree, Image, Space, Progress, Avatar, Segmented, Tooltip } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -14,8 +14,16 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { DollarOutlined, DropboxOutlined, GiftOutlined, LeftOutlined } from '@ant-design/icons';
-import { TextBack } from '@app/components/GeneralStyles';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  CommentOutlined,
+  DollarOutlined,
+  DropboxOutlined,
+  GiftOutlined,
+  LeftOutlined,
+} from '@ant-design/icons';
+import { TableButton, TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
   name: string;
@@ -255,6 +263,44 @@ const BranchDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.acceptRequests')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {branchData?.acceptRequests == true ? (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.acceptPossibleRequests')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {branchData?.acceptPossibleRequests == true ? (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.points')} :
               </h3>
@@ -350,21 +396,27 @@ const BranchDetails: React.FC = () => {
                 />
               </Space>
 
-              {/* <DetailsRow>
-                <ColStyle>
-                  <DetailsTitle>{t('companies.reviews')} :</DetailsTitle>
-                </ColStyle>
-                <ColStyle>
-                  {branchData?.reviews.length > 0
-                    ? branchData?.reviews.map((review: any, index: number) => (
-                        <DetailsValue key={review?.id}>
-                          {index + 1} - <span style={{ fontWeight: '600' }}>{review?.reviewDescription} </span>
-                          {' ( from ' + review?.user?.fullName + ' / ' + review?.user?.userName + ' )'}
-                        </DetailsValue>
-                      ))
-                    : '___'}
-                </ColStyle>
-              </DetailsRow> */}
+              <DetailsRow>
+                <DetailsTitle
+                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                >
+                  {t('companies.reviewsDetails')} :
+                </DetailsTitle>
+                <DetailsValue
+                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                >
+                  <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('companies.reviewsDetails')}>
+                    <TableButton
+                      severity="success"
+                      onClick={() => {
+                        Navigate(`reviewsDetails`);
+                      }}
+                    >
+                      <CommentOutlined />
+                    </TableButton>
+                  </Tooltip>
+                </DetailsValue>
+              </DetailsRow>
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.companyContact')} :
