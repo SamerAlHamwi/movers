@@ -480,7 +480,6 @@ export const AddRequest: React.FC = () => {
       userId: userId ? userId : '0',
     };
     setAttachmentIdsChanged(true);
-    console.log(attributeChoiceAndAttachmentsToSend);
 
     if (attachmentIds.length == 0 && attributeChoiceAndAttachmentsToSend.length == 0) {
       message.open({

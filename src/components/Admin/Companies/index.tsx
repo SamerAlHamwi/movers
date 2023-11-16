@@ -427,7 +427,7 @@ export const Companies: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('common.edit')}>
+            {/* <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"
                 onClick={() => {
@@ -436,7 +436,7 @@ export const Companies: React.FC = () => {
               >
                 <EditOutlined />
               </TableButton>
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip placement="top" title={t('common.delete')}>
               <TableButton

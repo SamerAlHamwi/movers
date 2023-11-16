@@ -438,7 +438,7 @@ export const Requests: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('common.edit')}>
+            {/* <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 disabled={record.statues !== 1}
                 severity="info"
@@ -448,7 +448,7 @@ export const Requests: React.FC = () => {
               >
                 <EditOutlined />
               </TableButton>
-            </Tooltip>
+            </Tooltip> */}
 
             <Tooltip placement="top" title={t('common.delete')}>
               <TableButton

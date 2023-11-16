@@ -249,6 +249,7 @@ export interface SourceTypeModel {
   attributeId?: any;
   sourceTypeIds?: any;
   attachment: any;
+  name?: string;
 }
 
 export interface RoleModel {
@@ -274,8 +275,23 @@ export interface RequestModel {
   id: number;
   name: string;
   sourceCity: any;
+  destinationCity: any;
+  sourceAddress: any;
+  destinationAddress: any;
   serviceType: number;
   statues?: number;
+  sourceType: SourceTypeModel;
+  attributeForSourceTypeValues: [{ attributeForSourcType: any; attributeChoice: any }];
+  requestForQuotationContacts: any;
+  moveAtUtc: Date;
+  arrivalAtUtc: Date;
+  sourceLongitude: any;
+  sourceLatitude: any;
+  destinationLongitude: any;
+  destinationLatitude: any;
+  attachments: [];
+  services: [];
+  attributeChoiceAndAttachments: any[];
 }
 
 export interface CountryModel {
