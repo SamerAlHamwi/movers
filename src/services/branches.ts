@@ -30,6 +30,10 @@ const getBranch = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.branches}/Get?Id=${id}`);
 };
 
+const GetReviewDetailsByBranchId = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.branches}/GetReviewDetailsById?Id=${id}`);
+};
+
 const createBranch = async (data: BranchModel) => {
   return await httpApi.post(`${apiPrefix.branches}/Create`, data);
 };
@@ -50,6 +54,7 @@ export {
   getAllBranches,
   getSuitableBranches,
   getBranch,
+  GetReviewDetailsByBranchId,
   createBranch,
   ChangeAcceptRequestOrPossibleRequestForBranch,
   UpdateBranch,

@@ -30,7 +30,7 @@ const getCompanyById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
 };
 
-const GetReviewDetailsById = async (id: string | undefined) => {
+const GetReviewDetailsByCompanyId = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/GetReviewDetailsById?Id=${id}`);
 };
 
@@ -58,7 +58,7 @@ export {
   getAllCompanies,
   getSuitableCompanies,
   getCompanyById,
-  GetReviewDetailsById,
+  GetReviewDetailsByCompanyId,
   createCompany,
   ChangeAcceptRequestOrPossibleRequestForCompany,
   updateCompany,

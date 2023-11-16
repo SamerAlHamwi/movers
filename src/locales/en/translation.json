@@ -306,7 +306,10 @@
     "ChangeAcceptRequestOrPotentialClient": "The Company's Ability To Receive Requests And Purchase Potential Clients Information",
     "acceptRequests": "Can It Receive Requests?",
     "acceptPossibleRequests": "Can It Buy Potential Clents Information?",
-    "acceptRequestOrPotentialClientSuccessMessage": "Edited Successfully"
+    "acceptRequestOrPotentialClientSuccessMessage": "Edited Successfully",
+    "reviewsDetails": "Details Of All User Reviews",
+    "companyEvaluation": "Company Evaluation",
+    "noReviews": "There Are No Reviews From Clients"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -621,7 +624,8 @@
     "branchInfo": "Branch Informations",
     "branchProfile": "Branch Profile",
     "details": "Details",
-    "ChangeAcceptRequestOrPotentialClient": "The Branch's Ability To Receive Requests And Purchase Potential Clients Information"
+    "ChangeAcceptRequestOrPotentialClient": "The Branch's Ability To Receive Requests And Purchase Potential Clients Information",
+    "branchEvaluation": "Branch Evaluation"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -897,7 +901,8 @@
     "CompleteDraft": "Complete Draft",
     "possibleClients": "Possible Clients",
     "Configurations": "Configurations",
-    "editRequest": "Edit Request"
+    "editRequest": "Edit Request",
+    "ReviewsDetails": "Reviews Details"
   },
 
   "header": {

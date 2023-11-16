@@ -306,7 +306,10 @@
     "ChangeAcceptRequestOrPotentialClient": "إمكانية الشركة لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
     "acceptRequests": "هل يمكنها إستقبال طلبات النقل؟",
     "acceptPossibleRequests": "هل يمكنها شراء معلومات العملاء المحتملين؟",
-    "acceptRequestOrPotentialClientSuccessMessage": "تم التعديل بنجاح"
+    "acceptRequestOrPotentialClientSuccessMessage": "تم التعديل بنجاح",
+    "reviewsDetails": "تفاصيل كافة مراجعات المستخدمين",
+    "companyEvaluation": "تقييم الشركة",
+    "noReviews": "لا يوجد مراجعات من المستخدمين"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -617,7 +620,8 @@
     "branchInfo": "معلومات الفرع",
     "branchProfile": "بروفايل الفرع",
     "details": "تفاصيل الفرع",
-    "ChangeAcceptRequestOrPotentialClient": "إمكانية الفرع لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين"
+    "ChangeAcceptRequestOrPotentialClient": "إمكانية الفرع لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
+    "branchEvaluation": "تقييم الفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -892,7 +896,8 @@
     "CompleteDraft": "إستكمال طلب نقل",
     "possibleClients": "العملاء المحتملين",
     "Configurations": "الإعدادات",
-    "editRequest": "تعديل طلب النقل"
+    "editRequest": "تعديل طلب النقل",
+    "ReviewsDetails": "تفاصيل المراجعات"
   },
 
   "header": {
