@@ -7,7 +7,7 @@ import { BranchModel } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Spin } from 'antd';
+import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Spin, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
@@ -87,6 +87,7 @@ export const EditBranch: React.FC = () => {
   const [valueRadio, setValueRadio] = useState(0);
   const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
+  const [enableEdit, setEableEdit] = useState(false);
 
   const { data, status, refetch, isRefetching, isLoading } = useQuery(
     ['GetBranchById'],
@@ -327,8 +328,11 @@ export const EditBranch: React.FC = () => {
       regionId: regionId != '0' ? regionId : branchData?.region?.id,
     };
     updatedFormData.translations = branchInfo.translations;
-    editBranch.mutate(branchInfo);
+    // editBranch.mutate(branchInfo);
     requestServicesArray = [];
+    setEableEdit(true);
+
+    console.log(branchInfo);
   };
 
   useEffect(() => {
@@ -349,6 +353,22 @@ export const EditBranch: React.FC = () => {
     };
     updateFormValues();
   }, [branchData, form]);
+
+  useEffect(() => {
+    if (enableEdit) {
+      const showError = (messageText: string) => {
+        message.open({
+          content: <Alert message={messageText} type={`error`} showIcon />,
+        });
+        setEableEdit(false);
+      };
+      if (requestServices.length === 0) {
+        showError(t('requests.atLeastOneService'));
+      } else {
+        editBranch.mutateAsync(branchInfo);
+      }
+    }
+  }, [enableEdit]);
 
   return (
     <Card title={t('branch.editBranch')} padding="1.25rem 1.25rem 1.25rem">
@@ -759,7 +779,7 @@ export const EditBranch: React.FC = () => {
                   >
                     {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
                       <Option key={country.id} value={country.id}>
-                        {country?.id} - {country?.name}
+                        {country?.name}
                       </Option>
                     ))}
                   </Select>
