@@ -6,7 +6,15 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { BankOutlined, ClearOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
+import {
+  BankOutlined,
+  ClearOutlined,
+  EyeInvisibleOutlined,
+  EyeTwoTone,
+  HomeOutlined,
+  LeftOutlined,
+  UserAddOutlined,
+} from '@ant-design/icons';
 import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Alert, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -22,6 +30,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import type { DataNode } from 'antd/es/tree';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -32,6 +41,9 @@ const steps = [
   },
   {
     title: 'companyUser',
+  },
+  {
+    title: 'typeMove',
   },
   {
     title: 'services',
@@ -81,7 +93,6 @@ export const AddBranch: React.FC = () => {
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
-  const [services, setServices] = useState([{ serviceId: '', subserviceId: '', toolId: '' }]);
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<CompanyModal>(branchInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
@@ -176,13 +187,6 @@ export const AddBranch: React.FC = () => {
       RegionsRefetch();
     }
   }, [cityId]);
-
-  const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
-    const value = ele.id;
-    const label = ele.name;
-    const option = { value, label };
-    return option;
-  });
 
   const SelectCountryForAvilableCities = (e: any) => {
     setCountryIdForCities(e);
@@ -388,6 +392,8 @@ export const AddBranch: React.FC = () => {
               ) : index === 1 ? (
                 <UserAddOutlined />
               ) : index === 2 ? (
+                <HomeOutlined />
+              ) : index === 3 ? (
                 <ClearOutlined />
               ) : undefined
             }
@@ -402,6 +408,7 @@ export const AddBranch: React.FC = () => {
       >
         {current === 0 && (
           <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('partners.generalInfo')}:</h4>
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
@@ -411,7 +418,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[\u0600-\u06FF ]+$/,
+                      pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                     },
                   ]}
@@ -427,7 +434,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -445,7 +452,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[\u0600-\u06FF ]+$/,
+                      pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                     },
                   ]}
@@ -461,7 +468,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -479,7 +486,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[\u0600-\u06FF ]+$/,
+                      pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                     },
                   ]}
@@ -495,7 +502,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -566,53 +573,6 @@ export const AddBranch: React.FC = () => {
                 margin: '3rem 5% 2rem',
               }}
             >
-              {t('companies.availableCities')}
-            </h2>
-
-            <BaseForm.Item
-              name="availableCountriesIds"
-              label={<LableText>{t('companies.country')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Select onChange={SelectCountryForAvilableCities}>
-                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
-                  <Option key={country.id} value={country.id}>
-                    {country?.name}
-                  </Option>
-                ))}
-              </Select>
-            </BaseForm.Item>
-
-            <BaseForm.Item
-              name="availableCitiesIds"
-              label={<LableText>{t('companies.availableCities')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Select mode="multiple" onChange={selectCities}>
-                {availableCitiesData?.data?.result?.items.map((city: any) => (
-                  <Select key={city.name} value={city.id}>
-                    {city?.name}
-                  </Select>
-                ))}
-              </Select>
-            </BaseForm.Item>
-
-            <h2
-              style={{
-                color: 'black',
-                paddingTop: '7px',
-                paddingBottom: '15px',
-                fontSize: FONT_SIZE.xxl,
-                fontWeight: 'Bold',
-                margin: '3rem 5% 2rem',
-              }}
-            >
               {t('companies.companyContact')}
             </h2>
 
@@ -641,7 +601,7 @@ export const AddBranch: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -769,12 +729,14 @@ export const AddBranch: React.FC = () => {
               ]}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <Auth.FormInputPassword placeholder={t('auth.password')} />
+              <CustomPasswordInput placeholder={t('auth.password')} />
             </Auth.FormItem>
           </>
         )}
         {current === 2 && (
           <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
+
             <BaseForm.Item key={10} name="serviceType">
               <Radio.Group
                 style={{ display: 'flex', width: '100%' }}
@@ -783,16 +745,56 @@ export const AddBranch: React.FC = () => {
                 }}
               >
                 <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Internal
+                  {t('requests.Internal')}
                 </Radio>
                 <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  External
+                  {t('requests.External')}
                 </Radio>
                 <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Both
+                  {t('requests.both')}
                 </Radio>
               </Radio.Group>
             </BaseForm.Item>
+
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.availableCities')}:</h4>
+
+            <BaseForm.Item
+              name="availableCountriesIds"
+              label={<LableText>{t('companies.country')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Select onChange={SelectCountryForAvilableCities}>
+                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                  <Option key={country.id} value={country.id}>
+                    {country?.name}
+                  </Option>
+                ))}
+              </Select>
+            </BaseForm.Item>
+
+            <BaseForm.Item
+              name="availableCitiesIds"
+              label={<LableText>{t('companies.availableCities')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Select mode="multiple" onChange={selectCities}>
+                {availableCitiesData?.data?.result?.items.map((city: any) => (
+                  <Select key={city.name} value={city.id}>
+                    {city?.name}
+                  </Select>
+                ))}
+              </Select>
+            </BaseForm.Item>
+          </>
+        )}
+        {current === 3 && (
+          <>
             <BaseForm.Item key="100" name="services">
               {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                 const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];

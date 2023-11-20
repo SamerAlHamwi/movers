@@ -1012,10 +1012,10 @@ export const CompleteDraft: React.FC = () => {
                   }}
                 >
                   <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    Internal
+                    {t('requests.Internal')}
                   </Radio>
                   <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    External
+                    {t('requests.External')}
                   </Radio>
                 </Radio.Group>
               </BaseForm.Item>

@@ -8,6 +8,7 @@ import { doSetNewPassword } from '@app/store/slices/authSlice';
 import * as S from './NewPasswordForm.styles';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { NewPasswordData } from '@app/services/auth';
+import CustomPasswordInput from '@app/components/common/inputs/InputPassword/CustomPasswordInput';
 
 export const NewPasswordForm: React.FC = () => {
   const { t } = useTranslation();
@@ -60,7 +61,7 @@ export const NewPasswordForm: React.FC = () => {
           label={t('auth.password')}
           rules={[{ required: true, message: t('common.requiredField') }]}
         >
-          <Auth.FormInputPassword placeholder={t('auth.password')} />
+          <CustomPasswordInput placeholder={t('auth.password')} />
         </Auth.FormItem>
 
         <BaseForm.Item noStyle>

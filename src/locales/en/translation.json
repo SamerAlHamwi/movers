@@ -108,7 +108,7 @@
     "privacyPolicy": "Privacy Policy",
     "termOfUse": "Terms of Use",
     "phoneNumberIsShort": "Phone Number Is Short",
-    "PphoneNumberIsLong": "Phone Number Is Long",
+    "phoneNumberIsLong": "Phone Number Is Long",
     "agree": "I agree to the",
     "resetPassword": "Reset Password",
     "resetPasswordDescription": "Enter your email address and we’ll send an verification code to reset your password",
@@ -244,7 +244,6 @@
   "_comment6": "*********************************** companies ***************************",
   "companies": {
     "companiesList": "Companies List",
-    "availableCityName": "Availabe Cities",
     "editCompany": "Edit Company",
     "logo": "Logo",
     "status": "Status",
@@ -300,16 +299,17 @@
     "numberOfGiftedPoints": "NO. Gifted Points",
     "totalPoints": "Total Points",
     "branches": "Branches",
-    "possibleClientsList": "Possible Clients List",
-    "possibleClientsInfo": "Possible Clients Informations",
-    "possibleClients": "Possible Clients",
+    "possibleClientsList": "Potential Clients List",
+    "possibleClientsInfo": "Potential Clients Informations",
+    "possibleClients": "Potential Clients",
     "ChangeAcceptRequestOrPotentialClient": "The Company's Ability To Receive Requests And Purchase Potential Clients Information",
     "acceptRequests": "Can It Receive Requests?",
     "acceptPossibleRequests": "Can It Buy Potential Clents Information?",
     "acceptRequestOrPotentialClientSuccessMessage": "Edited Successfully",
     "reviewsDetails": "Details Of All User Reviews",
     "companyEvaluation": "Company Evaluation",
-    "noReviews": "There Are No Reviews From Clients"
+    "noReviews": "There Are No Reviews From Clients",
+    "typeMove": "Type Of Moving"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -486,6 +486,7 @@
     "services": "Services",
     "Internal": "Internal",
     "External": "External",
+    "both": "Both",
     "status": "Status",
     "details": "Details",
     "addRequestSuccessMessage": "The Request Has Been Added Successfully",
@@ -625,7 +626,12 @@
     "branchProfile": "Branch Profile",
     "details": "Details",
     "ChangeAcceptRequestOrPotentialClient": "The Branch's Ability To Receive Requests And Purchase Potential Clients Information",
-    "branchEvaluation": "Branch Evaluation"
+    "branchEvaluation": "Branch Evaluation",
+    "editBranch": "Edit Branch Information",
+    "BranchInformation": "Branch Information",
+    "Services": "Services",
+    "typeMove": "Type Of Moving",
+    "selectService": "Select Services That You Provide"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -866,6 +872,7 @@
     "Managers": "Managers",
     "Partners": "Real Estate Management",
     "Brokers": "Brokers",
+    "BrokerDetails": "Broker Details",
     "Companies": "Companies",
     "CompanieDetails": "Company Details",
     "Services": "Services",
@@ -899,7 +906,7 @@
     "RejectReason": "Reject Reasons",
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
-    "possibleClients": "Possible Clients",
+    "possibleClients": "Potential Clients",
     "Configurations": "Configurations",
     "editRequest": "Edit Request",
     "ReviewsDetails": "Reviews Details"

@@ -10,6 +10,7 @@ import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { SignUpRequest } from '@app/services/auth';
 import { FormTitle } from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import styled from 'styled-components';
+import CustomPasswordInput from '@app/components/common/inputs/InputPassword/CustomPasswordInput';
 
 const Title = styled(FormTitle)`
   margin: -0.5rem 0 1rem;
@@ -80,7 +81,7 @@ export const SignUpForm: React.FC = () => {
           name="password"
           rules={[{ required: true, message: t('common.requiredField') }]}
         >
-          <Auth.FormInputPassword placeholder={t('auth.password')} />
+          <CustomPasswordInput placeholder={t('auth.password')} />
         </Auth.FormItem>
         <Auth.FormItem
           label={t('auth.confirmPassword')}

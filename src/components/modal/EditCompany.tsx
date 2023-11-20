@@ -853,6 +853,10 @@ export const EditCompany: React.FC = () => {
                         required: true,
                         message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                       },
+                      {
+                        type: 'email',
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                      },
                     ]}
                   >
                     <Input value={companyInfo?.companyContact?.emailAddress} />
@@ -965,13 +969,13 @@ export const EditCompany: React.FC = () => {
                   }}
                 >
                   <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    Internal
+                    {t('requests.Internal')}
                   </Radio>
                   <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    External
+                    {t('requests.External')}
                   </Radio>
                   <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    Both
+                    {t('requests.both')}
                   </Radio>
                 </Radio.Group>
               </BaseForm.Item>

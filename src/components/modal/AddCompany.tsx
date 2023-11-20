@@ -38,6 +38,7 @@ import { RcFile, UploadFile } from 'antd/es/upload';
 import type { DataNode } from 'antd/es/tree';
 import { useLanguage } from '@app/hooks/useLanguage';
 import CreatableSelect from 'react-select/creatable';
+import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -237,12 +238,12 @@ export const AddCompany: React.FC = () => {
     }
   }, [cityId]);
 
-  const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
-    const value = ele.id;
-    const label = ele.name;
-    const option = { value, label };
-    return option;
-  });
+  // const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
+  //   const value = ele.id;
+  //   const label = ele.name;
+  //   const option = { value, label };
+  //   return option;
+  // });
 
   const SelectCountryForAvilableCities = (e: any) => {
     setCountryIdForCities(e);
@@ -562,7 +563,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[\u0600-\u06FF ]+$/,
+                      pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                     },
                   ]}
@@ -578,7 +579,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -596,7 +597,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[\u0600-\u06FF ]+$/,
+                      pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                     },
                   ]}
@@ -612,7 +613,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -630,7 +631,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[\u0600-\u06FF ]+$/,
+                      pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                     },
                   ]}
@@ -646,7 +647,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -795,7 +796,7 @@ export const AddCompany: React.FC = () => {
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
-                      pattern: /^[A-Za-z ]+$/,
+                      pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                     },
                   ]}
@@ -918,7 +919,7 @@ export const AddCompany: React.FC = () => {
               ]}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <Auth.FormInputPassword placeholder={t('auth.password')} />
+              <CustomPasswordInput placeholder={t('auth.password')} />
             </Auth.FormItem>
           </>
         )}
@@ -932,13 +933,13 @@ export const AddCompany: React.FC = () => {
                 }}
               >
                 <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Internal
+                  {t('requests.Internal')}
                 </Radio>
                 <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  External
+                  {t('requests.External')}
                 </Radio>
                 <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                  Both
+                  {t('requests.both')}
                 </Radio>
               </Radio.Group>
             </BaseForm.Item>
