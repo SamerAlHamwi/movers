@@ -237,12 +237,12 @@ export const AddCompany: React.FC = () => {
     }
   }, [cityId]);
 
-  const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
-    const value = ele.id;
-    const label = ele.name;
-    const option = { value, label };
-    return option;
-  });
+  // const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
+  //   const value = ele.id;
+  //   const label = ele.name;
+  //   const option = { value, label };
+  //   return option;
+  // });
 
   const SelectCountryForAvilableCities = (e: any) => {
     setCountryIdForCities(e);

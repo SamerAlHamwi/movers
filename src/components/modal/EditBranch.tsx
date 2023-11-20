@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText, treeStyle } from '../GeneralStyles';
+import { CreateButtonText, LableText, TextBack, treeStyle } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { FONT_SIZE } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { BranchModel } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { BankOutlined, ClearOutlined, UserAddOutlined } from '@ant-design/icons';
-import { Button, Col, Input, Row, Steps, Image, Tree } from 'antd';
+import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
+import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
@@ -19,15 +19,17 @@ import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/Ba
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import type { DataNode } from 'antd/es/tree';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
 const { Step } = Steps;
-const requestServicesArray: any[] = [];
+let requestServicesArray: any = [];
 let requestServices: any[] = [];
-const keeey: any[] = [];
 const steps = [
   {
     title: 'BranchInformation',
+  },
+  {
+    title: 'typeMove',
   },
   {
     title: 'Services',
@@ -57,32 +59,36 @@ let branchInfo: any = {
     webSite: 'string',
     isForBranchCompany: false,
   },
+  availableCitiesIds: [],
 };
 
 export const EditBranch: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { companyId, branchId } = useParams();
   const queryClient = useQueryClient();
 
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
+  const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<BranchModel>(branchInfo);
   const [branchData, setbranchData] = useState<BranchModel>(branchInfo);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState(
     branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber,
   );
-  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [GetBranch, setGetBranch] = useState<boolean>(true);
+  const [selectedServices, setSelectedServices] = useState<any[]>([]);
+  const [valueRadio, setValueRadio] = useState(0);
+  const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
+  const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
 
-  const { data, status, refetch, isRefetching } = useQuery(
+  const { data, status, refetch, isRefetching, isLoading } = useQuery(
     ['GetBranchById'],
     () =>
       getBranch(branchId)
@@ -102,50 +108,54 @@ export const EditBranch: React.FC = () => {
   const GetAllServices = useQuery('getAllServices', getServices);
 
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
-    const serviceNode: DataNode = {
+    return {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <p>{service.id}</p>
-          <Image src={service?.attachment?.url} width={27} height={27} />
+          <Image src={service?.attachment?.url} width={16} height={16} />
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
       key: `service${service?.id}`,
-      children: [],
+      serviceId: `${service?.id}`,
+      children:
+        service?.subServices?.length > 0
+          ? service?.subServices?.map((subService: any) => {
+              return {
+                title: (
+                  <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                    <Image src={service?.attachment?.url} width={16} height={16} />
+                    <span style={{ fontWeight: 'bold' }}>{subService?.name}</span>
+                  </span>
+                ),
+                key:
+                  subService?.tools?.length > 0
+                    ? `sub${subService?.id}`
+                    : `onlySub service${service?.id} sub${subService?.id}`,
+                serviceId: `${service?.id}`,
+                subServiceId: `${subService?.id}`,
+                children:
+                  subService?.tools?.length > 0
+                    ? subService?.tools?.map((tool: any) => {
+                        return {
+                          title: (
+                            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                              <Image src={tool?.attachment?.url} width={16} height={16} />
+                              <span style={{ fontWeight: 'bold' }}>{tool?.name}</span>
+                            </span>
+                          ),
+                          key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+                          serviceId: `${service?.id}`,
+                          subServiceId: `${subService?.id}`,
+                          toolId: `${tool?.id}`,
+                        };
+                      })
+                    : [],
+                disabled: service?.subServices?.length > 0 ? false : true,
+              };
+            })
+          : [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
-    if (service?.subServices?.length > 0) {
-      serviceNode.children = service.subServices.map((subService: any) => {
-        const subServiceNode = {
-          title: (
-            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <p>{subService.id}</p>
-              <Image src={subService?.attachment?.url} width={27} height={27} />
-              {subService?.name}
-            </span>
-          ),
-          key:
-            subService?.tools?.length > 0
-              ? `service${service?.id} sub${subService?.id}`
-              : `onlySub service${service?.id} sub${subService?.id}`,
-          children: [],
-        };
-        if (subService?.tools?.length > 0) {
-          subServiceNode.children = subService.tools.map((tool: any) => ({
-            title: (
-              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-                <p>{tool.id}</p>
-                <Image src={tool?.attachment?.url} width={27} height={27} />
-                {tool?.name}
-              </span>
-            ),
-            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
-          }));
-        }
-        return subServiceNode;
-      });
-    }
-    return serviceNode;
   });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
@@ -158,12 +168,39 @@ export const EditBranch: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
-  const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
-    enabled: countryId !== '0',
+  const {
+    data: availableCitiesData,
+    refetch: availableCitiesRefetch,
+    isFetching: isLoadingAvailableCities,
+  } = useQuery('getCitiesForAvailabel', () => getCities(countryIdForAvailableCities), {
+    enabled: countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined,
   });
-  const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
-    enabled: cityId !== '0',
-  });
+
+  useEffect(() => {
+    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForAvailableCities]);
+  useEffect(() => {
+    if (branchData?.availableCities) {
+      setCountryIdForAvailableCities(branchData?.availableCities[0]?.countryId);
+    }
+  }, [branchData?.availableCities]);
+
+  const { data: citiesData, refetch: citiesRefetch } = useQuery(
+    'getCities',
+    () => getCities(countryId != '0' ? countryId : branchData?.region?.city?.country?.id),
+    {
+      enabled: countryId != '0' || branchData?.region?.city?.country?.id != undefined,
+    },
+  );
+  const { data: RegionsData, refetch: RegionsRefetch } = useQuery(
+    'getRegions',
+    () => getRegions(cityId != '0' ? cityId : branchData?.region?.city?.id),
+    {
+      enabled: cityId !== '0' || branchData?.region?.city?.id != undefined,
+    },
+  );
   useEffect(() => {
     if (countryId !== '0') {
       citiesRefetch();
@@ -179,7 +216,7 @@ export const EditBranch: React.FC = () => {
   const ChangeCountryHandler = (e: any) => {
     setCountryId(e);
     form.setFieldValue('cityId', '');
-    form.setFieldValue('regionId', '');
+    form.setFieldValue('regions', '');
   };
 
   const ChangeCityHandler = (e: any) => {
@@ -217,18 +254,19 @@ export const EditBranch: React.FC = () => {
       .then((data: any) => {
         notificationController.success({ message: t('branch.editBranchSuccessMessage') });
         queryClient.invalidateQueries('getAllBranches');
-        navigate(`/companies/${companyId}/branches`);
-        requestServices = [];
+        Navigate(`/companies/${companyId}/branches`);
+        requestServicesArray = [];
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
-        requestServices = [];
+        requestServicesArray = [];
       }),
   );
 
   const onFinish = (values: any) => {
     const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(formattedPhoneNumber);
     function extractServicesIds(input: any) {
+      requestServices = [];
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -238,21 +276,24 @@ export const EditBranch: React.FC = () => {
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: parseInt(parts[3].replace('tool', '')),
           };
-          requestServices.push(result);
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
         } else if (parts[0] == 'onlySub') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: null,
           };
-          requestServices.push(result);
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
         }
-        console.log(requestServices);
-
         return result;
       });
     }
-    extractServicesIds(requestServicesArray);
+    extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
+
     const updatedFormData = { ...formData };
     branchInfo = {
       ...branchInfo,
@@ -280,27 +321,51 @@ export const EditBranch: React.FC = () => {
         isForBranchCompany: true,
       },
       services: requestServices,
+      serviceType: valueRadio == 0 ? branchData?.serviceType : valueRadio,
+      availableCitiesIds:
+        selectedCityValues.length == 0 ? branchData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
       regionId: regionId != '0' ? regionId : branchData?.region?.id,
     };
     updatedFormData.translations = branchInfo.translations;
     editBranch.mutate(branchInfo);
+    requestServicesArray = [];
   };
 
-  {
-    status === 'success' &&
-      branchData &&
-      branchData?.services.map((service: any) => {
-        service?.subServices.map((subService: any) => {
-          subService?.tools.map((tool: any) => {
-            keeey.push(`withTool service${service.id} sub${subService?.id} tool${tool?.id}`);
-          });
+  useEffect(() => {
+    const updateFormValues = async () => {
+      const checkedKeysById: any[] = [];
+      branchData?.services?.map((service: any) => {
+        service.subServices?.map((subService: any) => {
+          if (subService?.tools?.length === 0) {
+            checkedKeysById.push(`onlySub service${service?.id} sub${subService?.id}`);
+          } else
+            subService.tools.map((tool: any) => {
+              checkedKeysById.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
+            });
         });
       });
-  }
+      setSelectedServices(checkedKeysById);
+      await form.setFieldsValue(branchData);
+    };
+    updateFormValues();
+  }, [branchData, form]);
 
   return (
     <Card title={t('branch.editBranch')} padding="1.25rem 1.25rem 1.25rem">
       <Row justify={'end'} style={{ width: '100%' }}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+
         {current > 0 && (
           <Button
             style={{
@@ -346,12 +411,12 @@ export const EditBranch: React.FC = () => {
         {steps.map((step, index) => (
           <Step
             key={index}
-            title={t(`companies.${step.title}`)}
+            title={t(`branch.${step.title}`)}
             icon={
               index === 0 ? (
                 <BankOutlined />
               ) : index === 1 ? (
-                <UserAddOutlined />
+                <HomeOutlined />
               ) : index === 2 ? (
                 <ClearOutlined />
               ) : undefined
@@ -359,334 +424,407 @@ export const EditBranch: React.FC = () => {
           />
         ))}
       </Steps>
-      {status === 'success' && branchData && (
-        <BaseForm
-          form={form}
-          onFinish={onFinish}
-          name="EditBranchForm"
-          style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
-          initialValues={{
-            ...branchData,
-            phonee: branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber,
-          }}
-        >
-          {current === 0 && (
-            <>
-              <Row>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    name={['translations', 0, 'name']}
-                    label={<LableText>{t('companies.CompanyNamear')}</LableText>}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[\u0600-\u06FF ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-                      },
-                    ]}
+      <Spin spinning={isLoading}>
+        {status === 'success' && branchData && (
+          <BaseForm
+            form={form}
+            onFinish={onFinish}
+            name="EditBranchForm"
+            style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
+            initialValues={{
+              ...branchData,
+              phonee: branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber,
+            }}
+          >
+            {current === 0 && (
+              <>
+                <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('partners.generalInfo')}:</h4>
+                <Row>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    name={['translations', 1, 'name']}
-                    label={<LableText>{t('companies.name')}</LableText>}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[A-Za-z ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    name={['translations', 0, 'bio']}
-                    label={<LableText>{t('companies.Companybioar')}</LableText>}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[\u0600-\u06FF ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    name={['translations', 1, 'bio']}
-                    label={<LableText>{t('companies.bio')}</LableText>}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[A-Za-z ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-              </Row>
-              <Row>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    name={['translations', 0, 'address']}
-                    label={<LableText>{t('companies.addressA')}</LableText>}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[\u0600-\u06FF ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    name={['translations', 1, 'address']}
-                    label={<LableText>{t('companies.address')}</LableText>}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[A-Za-z ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-              </Row>
-
-              <BaseForm.Item
-                label={<LableText>{t('companies.Country name')}</LableText>}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-              >
-                <Select onChange={ChangeCountryHandler} defaultValue={branchData?.region?.city?.country?.name}>
-                  {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
-                    <Option key={country.id} value={country.id}>
-                      {country?.name}
-                    </Option>
-                  ))}
-                </Select>
-              </BaseForm.Item>
-
-              <BaseForm.Item
-                name="cityId"
-                label={<LableText>{t('companies.City name')}</LableText>}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-              >
-                <Select onChange={ChangeCityHandler} defaultValue={branchData?.region?.city?.name}>
-                  {citiesData?.data?.result?.items.map((city: any) => (
-                    <Select key={city.name} value={city.id}>
-                      {city?.name}
-                    </Select>
-                  ))}
-                </Select>
-              </BaseForm.Item>
-
-              <BaseForm.Item
-                name="regionId"
-                label={<LableText>{t('companies.Regionname')}</LableText>}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-              >
-                <Select onChange={ChangeRegionHandler} defaultValue={branchData?.region?.name}>
-                  {RegionsData?.data?.result?.items.map((Region: any) => (
-                    <Select key={Region?.name} value={Region?.id}>
-                      {Region?.name}
-                    </Select>
-                  ))}
-                </Select>
-              </BaseForm.Item>
-
-              <h2
-                style={{
-                  color: 'black',
-                  paddingTop: '7px',
-                  paddingBottom: '15px',
-                  fontSize: FONT_SIZE.xxl,
-                  fontWeight: 'Bold',
-                  margin: '3rem 5% 2rem',
-                }}
-              >
-                {t('companies.Contact Information')}
-              </h2>
-
-              <Row>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    label={<LableText>{t('companies.CompanyEmail')}</LableText>}
-                    name={['companyContact', 'emailAddress']}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input />
-                  </BaseForm.Item>
-                </Col>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseForm.Item
-                    label={<LableText>{t('companies.website')}</LableText>}
-                    name={['companyContact', 'webSite']}
-                    style={{ marginTop: '-1rem' }}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                      {
-                        pattern: /^[A-Za-z ]+$/,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-                      },
-                    ]}
-                  >
-                    <Input value={branchInfo?.companyContact?.webSite} />
-                  </BaseForm.Item>
-                </Col>
-              </Row>
-
-              <Row style={{ justifyContent: 'space-around' }}>
-                <Col
-                  style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <BaseButtonsForm.Item
-                    key={current}
-                    $successText={t('auth.phoneNumberVerified')}
-                    label={t('common.phoneNumber')}
-                    rules={[
-                      { required: true, message: t('common.requiredField') },
-                      () => ({
-                        validator(_, value) {
-                          if (!value || isValidPhoneNumber(value)) {
-                            return Promise.resolve();
-                          }
-                          if (formattedPhoneNumber.length > 12) {
-                            return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                          } else if (formattedPhoneNumber.length < 12) {
-                            return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                          }
+                    <BaseForm.Item
+                      name={['translations', 0, 'name']}
+                      label={<LableText>{t('common.name_ar')}</LableText>}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
-                      }),
-                    ]}
-                    style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
+                        {
+                          pattern: /^[\u0600-\u06FF ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
-                    <PhoneInput
-                      value={branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber}
-                      key={1}
-                      onChange={handleFormattedValueChange}
-                      country={'ae'}
-                    />
-                  </BaseButtonsForm.Item>
-                </Col>
-              </Row>
-            </>
-          )}
+                    <BaseForm.Item
+                      name={['translations', 1, 'name']}
+                      label={<LableText>{t('common.name_en')}</LableText>}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                        {
+                          pattern: /^[A-Za-z ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseForm.Item
+                      name={['translations', 0, 'bio']}
+                      label={<LableText>{t('common.bio_ar')}</LableText>}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                        {
+                          pattern: /^[\u0600-\u06FF ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseForm.Item
+                      name={['translations', 1, 'bio']}
+                      label={<LableText>{t('common.bio_en')}</LableText>}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                        {
+                          pattern: /^[A-Za-z ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                </Row>
+                <Row>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseForm.Item
+                      name={['translations', 0, 'address']}
+                      label={<LableText>{t('common.address_ar')}</LableText>}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                        {
+                          pattern: /^[\u0600-\u06FF ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseForm.Item
+                      name={['translations', 1, 'address']}
+                      label={<LableText>{t('common.address_en')}</LableText>}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                        {
+                          pattern: /^[A-Za-z ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                </Row>
 
-          {current === 1 && (
-            <>
-              <BaseForm.Item key="100" name="services">
-                {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
-                  const serviceKeys = selectedServicesKeysMap[serviceIndex] || keeey;
+                <BaseForm.Item
+                  label={<LableText>{t('companies.country')}</LableText>}
+                  style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Select onChange={ChangeCountryHandler} defaultValue={branchData?.region?.city?.country?.name}>
+                    {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                      <Option key={country.id} value={country.id}>
+                        {country?.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </BaseForm.Item>
 
-                  return (
-                    <Tree
-                      key={serviceIndex}
-                      style={treeStyle}
-                      checkable
-                      defaultExpandAll={true}
-                      onExpand={onExpand}
-                      expandedKeys={expandedKeys}
-                      autoExpandParent={autoExpandParent}
-                      onCheck={(checkedKeysValue: any) => {
-                        for (const key of checkedKeysValue) {
-                          if (!requestServicesArray.includes(key)) {
-                            requestServicesArray.push(key);
-                          }
-                        }
+                <BaseForm.Item
+                  name="cityId"
+                  label={<LableText>{t('companies.city')}</LableText>}
+                  style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Select onChange={ChangeCityHandler} defaultValue={branchData?.region?.city?.name}>
+                    {citiesData?.data?.result?.items.map((city: any) => (
+                      <Option key={city.name} value={city.id}>
+                        {city?.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </BaseForm.Item>
 
-                        setSelectedServicesKeysMap((prevSelectedKeysMap) => {
-                          const updatedKeysMap = { ...prevSelectedKeysMap };
-                          updatedKeysMap[serviceIndex] = checkedKeysValue;
-                          return updatedKeysMap;
-                        });
+                <BaseForm.Item
+                  name={['regions']}
+                  label={<LableText>{t('companies.region')}</LableText>}
+                  style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Select onChange={ChangeRegionHandler} defaultValue={branchData?.region?.name}>
+                    {RegionsData?.data?.result?.items.map((Region: any) => (
+                      <Option key={Region?.name} value={Region.id}>
+                        {Region?.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </BaseForm.Item>
+
+                <h2
+                  style={{
+                    color: 'black',
+                    paddingTop: '7px',
+                    paddingBottom: '15px',
+                    fontSize: FONT_SIZE.xxl,
+                    fontWeight: 'Bold',
+                    margin: '3rem 5% 2rem',
+                  }}
+                >
+                  {t('companies.companyContact')}
+                </h2>
+
+                <Row>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseForm.Item
+                      label={<LableText>{t('common.emailAddress')}</LableText>}
+                      name={['companyContact', 'emailAddress']}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input />
+                    </BaseForm.Item>
+                  </Col>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseForm.Item
+                      label={<LableText>{t('companies.webSite')}</LableText>}
+                      name={['companyContact', 'webSite']}
+                      style={{ marginTop: '-1rem' }}
+                      rules={[
+                        {
+                          required: true,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                        },
+                        {
+                          pattern: /^[A-Za-z ]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+                        },
+                      ]}
+                    >
+                      <Input value={branchInfo?.companyContact?.webSite} />
+                    </BaseForm.Item>
+                  </Col>
+                </Row>
+
+                <Row style={{ justifyContent: 'space-around' }}>
+                  <Col
+                    style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <BaseButtonsForm.Item
+                      key={current}
+                      $successText={t('auth.phoneNumberVerified')}
+                      label={t('common.phoneNumber')}
+                      rules={[
+                        { required: true, message: t('common.requiredField') },
+                        () => ({
+                          validator(_, value) {
+                            if (!value || isValidPhoneNumber(value)) {
+                              return Promise.resolve();
+                            }
+                            if (formattedPhoneNumber.length > 12) {
+                              return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                            } else if (formattedPhoneNumber.length < 12) {
+                              return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                            }
+                          },
+                        }),
+                      ]}
+                      style={{
+                        margin: '2%',
+                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
                       }}
-                      defaultCheckedKeys={keeey}
-                      checkedKeys={serviceKeys}
-                      onSelect={onSelect}
-                      selectedKeys={selectedKeys}
-                      treeData={[serviceTreeData]}
-                    />
-                  );
-                })}
-              </BaseForm.Item>
-            </>
-          )}
-        </BaseForm>
-      )}
+                    >
+                      <PhoneInput
+                        value={branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber}
+                        key={1}
+                        onChange={handleFormattedValueChange}
+                        country={'ae'}
+                      />
+                    </BaseButtonsForm.Item>
+                  </Col>
+                </Row>
+              </>
+            )}
+
+            {current === 1 && (
+              <>
+                <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
+                <BaseForm.Item
+                  name={['serviceType']}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Radio.Group
+                    style={{ display: 'flex', width: '100%' }}
+                    onChange={(event) => {
+                      form.setFieldsValue({ ['serviceType']: event.target.value });
+                      setValueRadio(event.target.value);
+                    }}
+                    defaultValue={branchData.serviceType}
+                  >
+                    <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                      {t('requests.Internal')}
+                    </Radio>
+                    <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                      {t('requests.External')}
+                    </Radio>
+                  </Radio.Group>
+                </BaseForm.Item>
+
+                <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.availableCities')}:</h4>
+                <BaseForm.Item
+                  name="availableCountries"
+                  label={<LableText>{t('companies.country')}</LableText>}
+                  style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  rules={[
+                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+                  ]}
+                >
+                  <Select
+                    onChange={(e: any) => {
+                      setCountryIdForAvailableCities(e);
+                    }}
+                    defaultValue={branchData?.availableCities.map((city: any) => city?.country.name)}
+                  >
+                    {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                      <Option key={country.id} value={country.id}>
+                        {country?.id} - {country?.name}
+                      </Option>
+                    ))}
+                  </Select>
+                </BaseForm.Item>
+
+                <Spin spinning={isLoadingAvailableCities}>
+                  <BaseForm.Item
+                    label={<LableText>{t('companies.availableCities')}</LableText>}
+                    style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                  >
+                    {!isLoadingAvailableCities && (
+                      <Select
+                        mode="multiple"
+                        onChange={(cities: any) => setSelectedCityValues(cities)}
+                        defaultValue={
+                          countryIdForAvailableCities == branchData?.availableCities[0]?.countryId
+                            ? branchData?.availableCities.map((city: any) => city?.id)
+                            : []
+                        }
+                      >
+                        {availableCitiesData?.data?.result?.items.map((city: any) => (
+                          <Option key={city.id} value={city.id}>
+                            {city.name}
+                          </Option>
+                        ))}
+                      </Select>
+                    )}
+                  </BaseForm.Item>
+                </Spin>
+              </>
+            )}
+
+            {current === 2 && (
+              <>
+                <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('branch.selectService')} :</h4>
+                <BaseForm.Item key="100" name={['services']}>
+                  <Tree
+                    style={treeStyle}
+                    checkable
+                    defaultExpandAll={true}
+                    onExpand={onExpand}
+                    expandedKeys={expandedKeys}
+                    autoExpandParent={autoExpandParent}
+                    onCheck={(checkedKeysValue: any, info: any) => {
+                      setSelectedServices(checkedKeysValue);
+                      requestServicesArray = [...checkedKeysValue];
+                    }}
+                    defaultCheckedKeys={selectedServices}
+                    checkedKeys={selectedServices}
+                    onSelect={onSelect}
+                    selectedKeys={selectedKeys}
+                    treeData={treeData}
+                  />
+                </BaseForm.Item>
+              </>
+            )}
+          </BaseForm>
+        )}
+      </Spin>
     </Card>
   );
 };

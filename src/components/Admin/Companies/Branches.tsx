@@ -29,7 +29,7 @@ export const Branches: React.FC = () => {
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { language } = useLanguage();
-  const navigate = useNavigate();
+  const Navigate = useNavigate();
   const { companyId } = useParams();
 
   const [modalState, setModalState] = useState({
@@ -200,7 +200,7 @@ export const Branches: React.FC = () => {
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
-                navigate(`${record.id}/offers`, { state: record.name });
+                Navigate(`${record.id}/offers`, { state: record.name });
               }}
             >
               <div
@@ -227,7 +227,7 @@ export const Branches: React.FC = () => {
               <TableButton
                 severity="success"
                 onClick={() => {
-                  navigate(`${record.id}/details`, { state: record.name });
+                  Navigate(`${record.id}/details`, { state: record.name });
                 }}
               >
                 <TagOutlined />
@@ -246,16 +246,16 @@ export const Branches: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            {/* <Tooltip placement="top" title={t('common.edit')}>
+            <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"
                 onClick={() => {
-                  navigate(`/companies/${companyId}/branches/${record.id}/EditBranch`);
+                  Navigate(`/companies/${companyId}/branches/${record.id}/EditBranch`);
                 }}
               >
                 <EditOutlined />
               </TableButton>
-            </Tooltip> */}
+            </Tooltip>
 
             <Tooltip placement="top" title={t('common.delete')}>
               <TableButton
@@ -293,7 +293,7 @@ export const Branches: React.FC = () => {
                 width: 'auto',
                 height: 'auto',
               }}
-              onClick={() => navigate(`/companies/${companyId}/addBranch`)}
+              onClick={() => Navigate(`/companies/${companyId}/addBranch`)}
             >
               <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
             </Btn>
@@ -305,7 +305,7 @@ export const Branches: React.FC = () => {
                 height: 'auto',
               }}
               type="ghost"
-              onClick={() => navigate(-1)}
+              onClick={() => Navigate(-1)}
               icon={<LeftOutlined />}
             >
               <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>

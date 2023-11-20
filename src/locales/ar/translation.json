@@ -11,6 +11,8 @@
     "phoneNumber": "رقم الهاتف",
     "emailAddress": "عنوان البريد الإلكتروني",
     "bio": "الوصف",
+    "bio_ar": "الوصف بالعربية",
+    "bio_en": "الوصف بالإنكليزية",
     "name": "الاسم",
     "name_ar": "الاسم بالعربية",
     "name_en": "الاسم بالانكليزية",
@@ -621,7 +623,12 @@
     "branchProfile": "بروفايل الفرع",
     "details": "تفاصيل الفرع",
     "ChangeAcceptRequestOrPotentialClient": "إمكانية الفرع لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
-    "branchEvaluation": "تقييم الفرع"
+    "branchEvaluation": "تقييم الفرع",
+    "editBranch": "تعديل معلومات الفرع",
+    "BranchInformation": "معلومات الفرع",
+    "Services": "الخدمات",
+    "typeMove": "طريقة النقل",
+    "selectService": "إختر الخدمات التي تُخدّمها"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -862,6 +869,7 @@
     "Managers": "المدراء",
     "Partners": "الشركاء",
     "Brokers": "الوسطاء",
+    "BrokerDetails": "تفاصيل الوسيط",
     "Companies": "الشركات",
     "CompanieDetails": "تفاصيل الشركة",
     "Services": "الخدمات",
