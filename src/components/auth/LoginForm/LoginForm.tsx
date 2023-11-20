@@ -10,6 +10,7 @@ import { doLogin } from '@app/store/slices/authSlice';
 import { LoginRequest } from '@app/services/auth';
 import { Link } from 'react-router-dom';
 import { useAccessTokenCookie } from '@app/services/cookies';
+import CustomPasswordInput from '@app/components/common/inputs/InputPassword/CustomPasswordInput';
 
 const initValues: LoginRequest = {
   userNameOrEmailAddress: '',
@@ -65,7 +66,7 @@ export const LoginForm: React.FC = () => {
             },
           ]}
         >
-          <Auth.FormInputPassword placeholder={t('auth.password')} />
+          <CustomPasswordInput placeholder={t('auth.password')} />
         </Auth.FormItem>
 
         <Auth.ActionsWrapper>

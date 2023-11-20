@@ -108,7 +108,7 @@
     "privacyPolicy": "Privacy Policy",
     "termOfUse": "Terms of Use",
     "phoneNumberIsShort": "Phone Number Is Short",
-    "PphoneNumberIsLong": "Phone Number Is Long",
+    "phoneNumberIsLong": "Phone Number Is Long",
     "agree": "I agree to the",
     "resetPassword": "Reset Password",
     "resetPasswordDescription": "Enter your email address and we’ll send an verification code to reset your password",
@@ -308,7 +308,8 @@
     "acceptRequestOrPotentialClientSuccessMessage": "Edited Successfully",
     "reviewsDetails": "Details Of All User Reviews",
     "companyEvaluation": "Company Evaluation",
-    "noReviews": "There Are No Reviews From Clients"
+    "noReviews": "There Are No Reviews From Clients",
+    "typeMove": "Type Of Moving"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -485,6 +486,7 @@
     "services": "Services",
     "Internal": "Internal",
     "External": "External",
+    "both": "Both",
     "status": "Status",
     "details": "Details",
     "addRequestSuccessMessage": "The Request Has Been Added Successfully",

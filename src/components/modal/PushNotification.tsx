@@ -97,7 +97,7 @@ export const PushNotification: React.FC<CreateNotificationModalProps> = ({
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
-              pattern: /^[A-Za-z ]+$/,
+              pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
             },
           ]}
@@ -111,7 +111,7 @@ export const PushNotification: React.FC<CreateNotificationModalProps> = ({
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
-              pattern: /^[\u0600-\u06FF ]+$/,
+              pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
             },
           ]}

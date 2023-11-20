@@ -6,7 +6,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { BranchModel } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
+import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined } from '@ant-design/icons';
 import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Spin, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -87,7 +87,7 @@ export const EditBranch: React.FC = () => {
   const [valueRadio, setValueRadio] = useState(0);
   const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
-  const [enableEdit, setEableEdit] = useState(false);
+  const [enableEdit, setEnableEdit] = useState(false);
 
   const { data, status, refetch, isRefetching, isLoading } = useQuery(
     ['GetBranchById'],
@@ -256,11 +256,9 @@ export const EditBranch: React.FC = () => {
         notificationController.success({ message: t('branch.editBranchSuccessMessage') });
         queryClient.invalidateQueries('getAllBranches');
         Navigate(`/companies/${companyId}/branches`);
-        requestServicesArray = [];
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
-        requestServicesArray = [];
       }),
   );
 
@@ -328,11 +326,7 @@ export const EditBranch: React.FC = () => {
       regionId: regionId != '0' ? regionId : branchData?.region?.id,
     };
     updatedFormData.translations = branchInfo.translations;
-    // editBranch.mutate(branchInfo);
-    requestServicesArray = [];
-    setEableEdit(true);
-
-    console.log(branchInfo);
+    setEnableEdit(true);
   };
 
   useEffect(() => {
@@ -360,12 +354,12 @@ export const EditBranch: React.FC = () => {
         message.open({
           content: <Alert message={messageText} type={`error`} showIcon />,
         });
-        setEableEdit(false);
       };
-      if (requestServices.length === 0) {
+      if (requestServices.length === 0 && selectedServices.length === 0) {
         showError(t('requests.atLeastOneService'));
       } else {
         editBranch.mutateAsync(branchInfo);
+        setEnableEdit(false);
       }
     }
   }, [enableEdit]);
@@ -473,7 +467,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[\u0600-\u06FF ]+$/,
+                          pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                         },
                       ]}
@@ -494,7 +488,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[A-Za-z ]+$/,
+                          pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                         },
                       ]}
@@ -517,7 +511,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[\u0600-\u06FF ]+$/,
+                          pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                         },
                       ]}
@@ -538,7 +532,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[A-Za-z ]+$/,
+                          pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                         },
                       ]}
@@ -561,7 +555,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[\u0600-\u06FF ]+$/,
+                          pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
                         },
                       ]}
@@ -582,7 +576,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[A-Za-z ]+$/,
+                          pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                         },
                       ]}
@@ -668,6 +662,10 @@ export const EditBranch: React.FC = () => {
                           required: true,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
+                        {
+                          type: 'email',
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+                        },
                       ]}
                     >
                       <Input />
@@ -686,7 +684,7 @@ export const EditBranch: React.FC = () => {
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
                         },
                         {
-                          pattern: /^[A-Za-z ]+$/,
+                          pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                           message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                         },
                       ]}
@@ -739,6 +737,7 @@ export const EditBranch: React.FC = () => {
             {current === 1 && (
               <>
                 <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
+
                 <BaseForm.Item
                   name={['serviceType']}
                   rules={[
@@ -759,10 +758,14 @@ export const EditBranch: React.FC = () => {
                     <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
                       {t('requests.External')}
                     </Radio>
+                    <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+                      {t('requests.both')}
+                    </Radio>
                   </Radio.Group>
                 </BaseForm.Item>
 
                 <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.availableCities')}:</h4>
+
                 <BaseForm.Item
                   name="availableCountries"
                   label={<LableText>{t('companies.country')}</LableText>}
@@ -787,6 +790,7 @@ export const EditBranch: React.FC = () => {
 
                 <Spin spinning={isLoadingAvailableCities}>
                   <BaseForm.Item
+                    // name="available"
                     label={<LableText>{t('companies.availableCities')}</LableText>}
                     style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                     rules={[
