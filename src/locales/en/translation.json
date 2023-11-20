@@ -244,7 +244,6 @@
   "_comment6": "*********************************** companies ***************************",
   "companies": {
     "companiesList": "Companies List",
-    "availableCityName": "Availabe Cities",
     "editCompany": "Edit Company",
     "logo": "Logo",
     "status": "Status",
@@ -300,9 +299,9 @@
     "numberOfGiftedPoints": "NO. Gifted Points",
     "totalPoints": "Total Points",
     "branches": "Branches",
-    "possibleClientsList": "Possible Clients List",
-    "possibleClientsInfo": "Possible Clients Informations",
-    "possibleClients": "Possible Clients",
+    "possibleClientsList": "Potential Clients List",
+    "possibleClientsInfo": "Potential Clients Informations",
+    "possibleClients": "Potential Clients",
     "ChangeAcceptRequestOrPotentialClient": "The Company's Ability To Receive Requests And Purchase Potential Clients Information",
     "acceptRequests": "Can It Receive Requests?",
     "acceptPossibleRequests": "Can It Buy Potential Clents Information?",
@@ -625,7 +624,12 @@
     "branchProfile": "Branch Profile",
     "details": "Details",
     "ChangeAcceptRequestOrPotentialClient": "The Branch's Ability To Receive Requests And Purchase Potential Clients Information",
-    "branchEvaluation": "Branch Evaluation"
+    "branchEvaluation": "Branch Evaluation",
+    "editBranch": "Edit Branch Information",
+    "BranchInformation": "Branch Information",
+    "Services": "Services",
+    "typeMove": "Type Of Moving",
+    "selectService": "Select Services That You Provide"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
@@ -866,6 +870,7 @@
     "Managers": "Managers",
     "Partners": "Real Estate Management",
     "Brokers": "Brokers",
+    "BrokerDetails": "Broker Details",
     "Companies": "Companies",
     "CompanieDetails": "Company Details",
     "Services": "Services",
@@ -899,7 +904,7 @@
     "RejectReason": "Reject Reasons",
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
-    "possibleClients": "Possible Clients",
+    "possibleClients": "Potential Clients",
     "Configurations": "Configurations",
     "editRequest": "Edit Request",
     "ReviewsDetails": "Reviews Details"

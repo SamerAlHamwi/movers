@@ -270,6 +270,8 @@ export interface BranchModel {
   services: any[];
   translations: translation[];
   userDto?: UserDto;
+  serviceType: number;
+  availableCities: any[];
 }
 export interface RequestModel {
   id: number;
