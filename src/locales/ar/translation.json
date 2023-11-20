@@ -311,7 +311,8 @@
     "acceptRequestOrPotentialClientSuccessMessage": "تم التعديل بنجاح",
     "reviewsDetails": "تفاصيل كافة مراجعات المستخدمين",
     "companyEvaluation": "تقييم الشركة",
-    "noReviews": "لا يوجد مراجعات من المستخدمين"
+    "noReviews": "لا يوجد مراجعات من المستخدمين",
+    "typeMove": "طريقة النقل"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -484,6 +485,7 @@
     "services": "الخدمات",
     "Internal": "داخلي",
     "External": "خارجي",
+    "both": "كلاهما",
     "status": "حالة الطلب",
     "details": "تفاصيل الطلب",
     "addRequestSuccessMessage": "تمت إضافة طلب النقل بنجاح",
