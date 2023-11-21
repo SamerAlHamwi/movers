@@ -4,7 +4,7 @@ import { message, Row, Space, Popconfirm, Col, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
-import { DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { DeleteOutlined, LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import { getAllUsers, Delete, Activate, DeActivate } from '@app/services/users';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import styled from 'styled-components';
@@ -12,7 +12,7 @@ import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { LableText } from '../../GeneralStyles';
+import { LableText, TextBack } from '../../GeneralStyles';
 import { defineColorBySeverity } from '@app/utils/utils';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { UserModel } from '@app/interfaces/interfaces';
@@ -22,11 +22,15 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import { useNavigate, useParams } from 'react-router-dom';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
 export const User: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { type, codeBroker } = useParams();
+  const Navigate = useNavigate();
 
   const [page, setPage] = useState<number>(1);
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
@@ -49,7 +53,7 @@ export const User: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Users', page, pageSize, refetchOnAddUser, isDelete, isEdit, isActivate, isDeActivate],
     () =>
-      getAllUsers(page, pageSize, false, true, searchString, userType, userStatus)
+      getAllUsers(page, pageSize, false, true, searchString, userType, userStatus, codeBroker)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -225,16 +229,11 @@ export const User: React.FC = () => {
         );
       },
     },
-    {
+    codeBroker === undefined && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('users.usertype')}</Header>,
       dataIndex: 'type',
       render: (userType: number) => {
-        return (
-          <>
-            {userType === 3 ? t('common.company') : t('common.user')}{' '}
-            {console.log('userType', userType, 'userType', userType)}
-          </>
-        );
+        return <>{userType === 3 ? t('common.company') : t('common.user')}</>;
       },
       filterDropdown: () => {
         const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
@@ -283,7 +282,7 @@ export const User: React.FC = () => {
         );
       },
     },
-    {
+    codeBroker === undefined && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: UserModel) => {
@@ -394,7 +393,7 @@ export const User: React.FC = () => {
         );
       },
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <>
@@ -407,6 +406,19 @@ export const User: React.FC = () => {
         }
       >
         <Row justify={'end'}>
+          <Btn
+            style={{
+              margin: '1rem 1rem 1rem 0',
+              width: 'auto',
+              height: 'auto',
+            }}
+            type="ghost"
+            onClick={() => Navigate(-1)}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Btn>
+
           {/*    Delete    */}
           {isOpenDeleteModalForm && (
             <ActionModal

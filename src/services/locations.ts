@@ -5,11 +5,12 @@ import apiPrefix from '@app/constants/apiPrefix';
 // ------------ Countries
 const getAllCountries = async (page: number, pageSize: number, search: string, countryStatus?: number) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.countries}/GetAll?${
-      countryStatus ? `IsActive=${countryStatus}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
-  );
+  let url = `${apiPrefix.countries}/GetAll?`;
+  if (countryStatus !== undefined) {
+    url += `IsActive=${countryStatus}&`;
+  }
+  url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  return await httpApi.get(url);
 };
 
 const getCountries = async () => {
@@ -45,12 +46,14 @@ const getAllCities = async (
   countryStatus?: number,
 ) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.cities}/GetAll?CountryId=${id}&${
-      countryStatus ? `IsActive=${countryStatus}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
-  );
+  let url = `${apiPrefix.cities}/GetAll?CountryId=${id}&`;
+  if (countryStatus !== undefined) {
+    url += `IsActive=${countryStatus}&`;
+  }
+  url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  return await httpApi.get(url);
 };
+
 const getAllCity = async () => {
   return await httpApi.get(`${apiPrefix.cities}/GetAll`);
 };
@@ -88,11 +91,12 @@ const getAllRegions = async (
   countryStatus?: number,
 ) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.regions}/GetAll?CityId=${id}&${
-      countryStatus ? `IsActive=${countryStatus}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
-  );
+  let url = `${apiPrefix.regions}/GetAll?CityId=${id}&`;
+  if (countryStatus !== undefined) {
+    url += `IsActive=${countryStatus}&`;
+  }
+  url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  return await httpApi.get(url);
 };
 
 const getRegions = async (id: string | undefined) => {
