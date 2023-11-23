@@ -20,6 +20,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { TextArea } from '../Admin/Translations';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -222,7 +223,7 @@ export const EditBranch: React.FC = () => {
 
   const ChangeCityHandler = (e: any) => {
     setCityId(e);
-    form.setFieldValue('regionId', '');
+    form.setFieldValue('regions', '');
   };
 
   const ChangeRegionHandler = (e: any) => {
@@ -717,10 +718,9 @@ export const EditBranch: React.FC = () => {
                           },
                         }),
                       ]}
-                      style={{
-                        margin: '2%',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }}
+                      style={
+                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                      }
                     >
                       <PhoneInput
                         value={branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber}
@@ -790,7 +790,6 @@ export const EditBranch: React.FC = () => {
 
                 <Spin spinning={isLoadingAvailableCities}>
                   <BaseForm.Item
-                    // name="available"
                     label={<LableText>{t('companies.availableCities')}</LableText>}
                     style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                     rules={[

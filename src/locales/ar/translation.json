@@ -247,7 +247,6 @@
   "companies": {
     "companiesList": "قائمة الشركات",
     "availableCityName": "المدن المغطاة",
-    "editCompany": "تعديل الشركة",
     "logo": "شعار الشركة",
     "status": "حالة الشركة",
     "approveCompanySuccessMessage": "تمت الموافقة على هذه الشركة بنجاح",
@@ -312,7 +311,9 @@
     "reviewsDetails": "تفاصيل كافة مراجعات المستخدمين",
     "companyEvaluation": "تقييم الشركة",
     "noReviews": "لا يوجد مراجعات من المستخدمين",
-    "typeMove": "طريقة النقل"
+    "typeMove": "طريقة النقل",
+    "EditCompany": "تعديل معلومات الشركة",
+    "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -923,7 +924,8 @@
     "possibleClients": "العملاء المحتملين",
     "Configurations": "الإعدادات",
     "editRequest": "تعديل طلب النقل",
-    "ReviewsDetails": "تفاصيل المراجعات"
+    "ReviewsDetails": "تفاصيل المراجعات",
+    "EditCompany": "تعديل الشركة"
   },
 
   "header": {
