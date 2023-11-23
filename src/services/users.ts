@@ -10,13 +10,20 @@ const getAllUsers = async (
   search: string,
   userType?: any,
   isActive?: boolean,
+  MediatorCode?: string | undefined,
 ) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.users}/GetAll?${
-      isActive ? `IsActive=${isActive}&` : ''
-    }UserType=${userType}&SkipCount=${skip}&MaxResultCount=${pageSize}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&GetBasicUserAndCompanyUsers=${GetBasicUserAndCompanyUsers}&KeyWord=${search}`,
-  );
+  let url = `${apiPrefix.users}/GetAll?`;
+  if (MediatorCode !== undefined) {
+    url += `MediatorCode=${MediatorCode}&UserType=2&`;
+  } else {
+    url += `UserType=${userType}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&GetBasicUserAndCompanyUsers=${GetBasicUserAndCompanyUsers}&`;
+  }
+  url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  if (isActive !== undefined) {
+    url += `&IsActive=${isActive}`;
+  }
+  return await httpApi.get(url);
 };
 
 const getAllUsersForAddRequest = async (search: string) => {

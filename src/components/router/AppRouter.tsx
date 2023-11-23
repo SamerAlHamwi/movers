@@ -53,6 +53,7 @@ const BranchDetailPage = lazy(() => import('@app/pages/CompaniesPages/BranchDeta
 const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage'));
 const EditBranchPage = lazy(() => import('@app/pages/CompaniesPages/EditBranchPage'));
 const BrokerspPage = lazy(() => import('@app/pages/UsersPages/BrokersPage'));
+const BrokersDetailsPage = lazy(() => import('@app/pages/UsersPages/BrokerDetailsPage'));
 const RejectReasonsPage = lazy(() => import('@app/pages/RejectReason/RejectReasonsPage'));
 const Partnerspage = lazy(() => import('@app/pages/REMPages/PartnersPage'));
 const REMDetailPage = lazy(() => import('@app/pages/REMPages/REMDetailsPage'));
@@ -103,6 +104,7 @@ const BranchDetailsPage = withLoading(BranchDetailPage);
 const AddBranchesPage = withLoading(AddBranchPage);
 const EditBranchesPage = withLoading(EditBranchPage);
 const BrokerPage = withLoading(BrokerspPage);
+const BrokerDetailsPage = withLoading(BrokersDetailsPage);
 const RejectReasonPage = withLoading(RejectReasonsPage);
 const PartnerPage = withLoading(Partnerspage);
 const REMDetailsPage = withLoading(REMDetailPage);
@@ -417,6 +419,33 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <BrokerPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="Brokers/:brokerId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <BrokerDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="Brokers/:brokerId/details/requests/:type"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <RequestsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="Brokers/:brokerId/details/:codeBroker/clients/:type"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <UsersPage />
               </PrivateRoute>
             }
           />
