@@ -1,10 +1,18 @@
 import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllRequests = async (page: number, pageSize: number, search: string) => {
+const getAllRequests = async (
+  type: string | undefined,
+  brokerId: string | undefined,
+  page: number,
+  pageSize: number,
+  search: string,
+) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.requests}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+    `${apiPrefix.requests}/GetAll?${
+      type === 'viaBroker' && `ForBroker=true&BrokerId=${brokerId}&Statues=10`
+    }&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
   );
 };
 

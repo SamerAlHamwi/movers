@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, TagOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
@@ -16,15 +16,17 @@ import { Broker, UserModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { EditBroker } from '@app/components/modal/EditBroker';
 import { AddBrokr } from '@app/components/modal/AddBroker';
-import { CreateMediator, DeleteMediator, UpdateMediator, getAllMediators } from '../../../services/brokers';
+import { CreateBroker, DeleteBroker, UpdateBroker, getAllBrokers } from '../../../services/brokers';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
 
 export const Brokers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const { language } = useLanguage();
+  const Navigate = useNavigate();
 
   const [modalState, setModalState] = useState({
     add: false,
@@ -54,7 +56,7 @@ export const Brokers: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Brokers', page, pageSize, refetchOnAdd, isDelete, isEdit],
     () =>
-      getAllMediators(page, pageSize, searchString)
+      getAllBrokers(page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -91,7 +93,7 @@ export const Brokers: React.FC = () => {
   }, [page, dataSource]);
 
   const addBroker = useMutation((data: Broker) =>
-    CreateMediator(data)
+    CreateBroker(data)
       .then((data) => {
         notificationController.success({ message: t('brokers.addBrokerSuccessMessage') });
         setRefetchOnAdd(data.data?.success);
@@ -106,7 +108,7 @@ export const Brokers: React.FC = () => {
   }, [addBroker.isLoading]);
 
   const deleteBroker = useMutation((id: number) =>
-    DeleteMediator(id)
+    DeleteBroker(id)
       .then((data) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
@@ -134,7 +136,7 @@ export const Brokers: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteBroker.isLoading }));
   }, [deleteBroker.isLoading]);
 
-  const editBroker = useMutation((data: Broker) => UpdateMediator(data));
+  const editBroker = useMutation((data: Broker) => UpdateBroker(data));
 
   const handleEdit = (data: Broker, id: number) => {
     editBroker
@@ -183,6 +185,17 @@ export const Brokers: React.FC = () => {
       render: (index: number, record: Broker) => {
         return (
           <Space>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`${record.id}/details`);
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
+
             <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 severity="info"

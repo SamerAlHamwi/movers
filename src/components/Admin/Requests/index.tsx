@@ -6,31 +6,40 @@ import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, CheckOutlined, CloseOutlined, TagOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  CheckOutlined,
+  CloseOutlined,
+  TagOutlined,
+  LeftOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { Header, CreateButtonText } from '../../GeneralStyles';
+import { Header, CreateButtonText, TextBack } from '../../GeneralStyles';
 import { RequestModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import { SearchForUser } from '@app/components/modal/SearchForUser';
 import { checkPIN } from '@app/services/drafts';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const Navigate = useNavigate();
   const { language } = useLanguage();
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
+  const { type, brokerId } = useParams();
 
   const [modalState, setModalState] = useState({
     searchForUser: false,
@@ -46,7 +55,6 @@ export const Requests: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [editmodaldata, setEditmodaldata] = useState<RequestModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<RequestModel | undefined>(undefined);
-  const [approvemodaldata, setApprovemodaldata] = useState<RequestModel | undefined>(undefined);
   const [rejectmodaldata, setRejectmodaldata] = useState<RequestModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
@@ -64,9 +72,9 @@ export const Requests: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Requests', page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected],
+    ['Requests', type, brokerId, page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected],
     () =>
-      getAllRequests(page, pageSize, searchString)
+      getAllRequests(type, brokerId, page, pageSize, searchString)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -289,7 +297,7 @@ export const Requests: React.FC = () => {
         return <>{record?.name}</>;
       },
     },
-    {
+    type !== 'viaBroker' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.suitableCompanies&Branches')}</Header>,
       dataIndex: 'suitableCompanies&Branches',
       render: (index: number, record: any) => (
@@ -315,7 +323,7 @@ export const Requests: React.FC = () => {
         </Space>
       ),
     },
-    {
+    type !== 'viaBroker' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
       render: (index: number, record: any) => {
@@ -425,20 +433,22 @@ export const Requests: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('common.reject')}>
-              <TableButton
-                disabled={record.statues !== 1}
-                severity="error"
-                onClick={() => {
-                  setRejectmodaldata(record);
-                  handleModalOpen('reject');
-                }}
-              >
-                <CloseOutlined />
-              </TableButton>
-            </Tooltip>
+            {type !== 'viaBroker' && (
+              <Tooltip placement="top" title={t('common.reject')}>
+                <TableButton
+                  disabled={record.statues !== 1}
+                  severity="error"
+                  onClick={() => {
+                    setRejectmodaldata(record);
+                    handleModalOpen('reject');
+                  }}
+                >
+                  <CloseOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
-            {/* <Tooltip placement="top" title={t('common.edit')}>
+            {/* {type !== 'viaBroker' && <Tooltip placement="top" title={t('common.edit')}>
               <TableButton
                 disabled={record.statues !== 1}
                 severity="info"
@@ -448,24 +458,26 @@ export const Requests: React.FC = () => {
               >
                 <EditOutlined />
               </TableButton>
-            </Tooltip> */}
+            </Tooltip> }*/}
 
-            <Tooltip placement="top" title={t('common.delete')}>
-              <TableButton
-                severity="error"
-                onClick={() => {
-                  setDeletemodaldata(record);
-                  handleModalOpen('delete');
-                }}
-              >
-                <DeleteOutlined />
-              </TableButton>
-            </Tooltip>
+            {type !== 'viaBroker' && (
+              <Tooltip placement="top" title={t('common.delete')}>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setDeletemodaldata(record);
+                    handleModalOpen('delete');
+                  }}
+                >
+                  <DeleteOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
           </Space>
         );
       },
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <>
@@ -478,17 +490,33 @@ export const Requests: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => handleModalOpen('searchForUser')}
-          >
-            <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
-          </Button>
+          {type !== 'viaBroker' && (
+            <Button
+              type="primary"
+              style={{
+                marginBottom: '.5rem',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => handleModalOpen('searchForUser')}
+            >
+              <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
+            </Button>
+          )}
+          {type === 'viaBroker' && (
+            <Btn
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              type="ghost"
+              onClick={() => Navigate(-1)}
+              icon={<LeftOutlined />}
+            >
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+          )}
 
           {/*    Search For User Name    */}
           {modalState.searchForUser && (
@@ -529,24 +557,6 @@ export const Requests: React.FC = () => {
               description={t('requests.deleteRequestModalDescription')}
               isDanger={true}
               isLoading={deleteRequest.isLoading}
-            />
-          )}
-
-          {/*    Approve    */}
-          {modalState.approve && (
-            <ActionModal
-              visible={modalState.approve}
-              onCancel={() => handleModalClose('approve')}
-              onOK={() => {
-                approvemodaldata !== undefined && handleApprove(approvemodaldata.id);
-              }}
-              width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('requests.approveRequestModalTitle')}
-              okText={t('common.approve')}
-              cancelText={t('common.cancel')}
-              description={t('requests.approveRequestModalDescription')}
-              // isDanger={true}
-              isLoading={approveRequest.isLoading}
             />
           )}
 

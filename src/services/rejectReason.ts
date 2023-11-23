@@ -4,11 +4,12 @@ import apiPrefix from '@app/constants/apiPrefix';
 
 const getAllRejectReasons = async (page: number, pageSize: number, search: string, isActive?: boolean) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.rejectReason}/GetAll?${
-      isActive ? `IsActive=${isActive}&` : ''
-    }SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
-  );
+  let url = `${apiPrefix.rejectReason}/GetAll?`;
+  if (isActive !== undefined) {
+    url += `IsActive=${isActive}&`;
+  }
+  url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  return await httpApi.get(url);
 };
 
 const CreateRejectReason = async (data: RejectReason) => {
