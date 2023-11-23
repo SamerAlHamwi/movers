@@ -771,7 +771,7 @@ export const AddCompany: React.FC = () => {
             <Row>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.emailAddress')}</LableText>}
+                  label={<LableText>{t('common.emailAddress')}</LableText>}
                   name={['companyContact', 'emailAddress']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -794,7 +794,6 @@ export const AddCompany: React.FC = () => {
                   name={['companyContact', 'webSite']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
                       pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
@@ -805,6 +804,7 @@ export const AddCompany: React.FC = () => {
                 </BaseForm.Item>
               </Col>
             </Row>
+
             <BaseButtonsForm.Item
               key={current}
               name={['companyContact', 'phoneNumber']}

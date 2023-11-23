@@ -599,7 +599,6 @@ export const AddBranch: React.FC = () => {
                   name={['companyContact', 'webSite']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
                       pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
