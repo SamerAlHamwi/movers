@@ -244,7 +244,6 @@
   "_comment6": "*********************************** companies ***************************",
   "companies": {
     "companiesList": "Companies List",
-    "editCompany": "Edit Company",
     "logo": "Logo",
     "status": "Status",
     "approveCompanySuccessMessage": "The Company Has Been Approved Successfully",
@@ -264,8 +263,6 @@
     "availableCities": "Available Cities",
     "companyBranches": "Company Branches",
     "companyContact": "Contact Information",
-    "phoneNumber": "Phone Number",
-    "emailAddress": "Email Address",
     "webSite": "Website",
     "numberOfTransfers": "Number Of Transfers",
     "companyUser": "User Information",
@@ -309,7 +306,9 @@
     "reviewsDetails": "Details Of All User Reviews",
     "companyEvaluation": "Company Evaluation",
     "noReviews": "There Are No Reviews From Clients",
-    "typeMove": "Type Of Moving"
+    "typeMove": "Type Of Moving",
+    "EditCompany": "Edit Company Information",
+    "editeCompanySuccessMessage": "The Company Has Been Edited Successfully"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -925,7 +924,8 @@
     "possibleClients": "Potential Clients",
     "Configurations": "Configurations",
     "editRequest": "Edit Request",
-    "ReviewsDetails": "Reviews Details"
+    "ReviewsDetails": "Reviews Details",
+    "EditCompany": "Edit Company"
   },
 
   "header": {
