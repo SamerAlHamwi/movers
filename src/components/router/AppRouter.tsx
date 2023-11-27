@@ -11,6 +11,7 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import { PrivateRoute } from '@app/hocs/withAuthorization';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { UserRole } from '@app/constants/userRole';
+import DragAndDropBoard from '../Admin/Commission groups';
 
 const AuthLayout = lazy(() => import('@app/components/layouts/AuthLayout/AuthLayout'));
 const ServerErrorPage = lazy(() => import('@app/pages/ErrorsPages/ServerErrorPage'));
@@ -206,6 +207,15 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path="requests/:requestId/details/:type"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <CompanyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="requests/:requestId/EditRequest"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
@@ -333,10 +343,29 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path="requests/:requestId/details/:type/:companyId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <CompanyDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="companies/:companyId/details/reviewsDetails"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ReviewsDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Commission groups */}
+          <Route
+            path="commissionGroups"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <DragAndDropBoard />
               </PrivateRoute>
             }
           />

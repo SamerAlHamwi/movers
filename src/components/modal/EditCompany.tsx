@@ -959,19 +959,7 @@ export const EditCompany: React.FC = () => {
                   </Select>
                 </BaseForm.Item>
 
-                <h2
-                  style={{
-                    color: 'black',
-                    paddingTop: '7px',
-                    paddingBottom: '15px',
-                    fontSize: FONT_SIZE.xxl,
-                    fontWeight: 'Bold',
-                    margin: '3rem 5% 2rem',
-                  }}
-                >
-                  {t('companies.companyContact')}
-                </h2>
-
+                <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.companyContact')}:</h4>
                 <Row>
                   <Col
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -1003,8 +991,8 @@ export const EditCompany: React.FC = () => {
                       style={{ marginTop: '-1rem' }}
                       rules={[
                         {
-                          required: true,
-                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
+                          message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
                         },
                       ]}
                     >
@@ -1014,7 +1002,6 @@ export const EditCompany: React.FC = () => {
                 </Row>
                 <BaseButtonsForm.Item
                   key={current}
-                  name={['companyContact', 'phoneNumber']}
                   label={t('common.phoneNumber')}
                   rules={[
                     { required: true, message: t('common.requiredField') },
@@ -1033,7 +1020,12 @@ export const EditCompany: React.FC = () => {
                   ]}
                   style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                 >
-                  <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
+                  <PhoneInput
+                    value={companyData.companyContact?.dialCode + companyData.companyContact?.phoneNumber}
+                    key={1}
+                    onChange={handleFormattedValueChange}
+                    country={'ae'}
+                  />
                 </BaseButtonsForm.Item>
               </>
             )}

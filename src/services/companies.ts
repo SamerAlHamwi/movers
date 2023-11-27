@@ -2,11 +2,20 @@ import { httpApi } from '@app/api/httpApi';
 import { CompanyModal } from '@app/interfaces/interfaces';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllCompanies = async (page: number, pageSize: number, search: string) => {
+const getAllCompanies = async (
+  page: number,
+  pageSize: number,
+  search: string,
+  type?: string,
+  requestId?: string | undefined,
+) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
-  );
+
+  let apiUrl = `${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  if (type === 'companiesThatBoughtInfo') {
+    apiUrl += `&RequestId=${requestId}&WhichBoughtInfoContact=true`;
+  }
+  return await httpApi.get(apiUrl);
 };
 
 const getSuitableCompanies = async (

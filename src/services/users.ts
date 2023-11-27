@@ -13,6 +13,8 @@ const getAllUsers = async (
   MediatorCode?: string | undefined,
 ) => {
   const skip = (page - 1) * pageSize;
+  console.log('userType', userType);
+
   let url = `${apiPrefix.users}/GetAll?`;
   if (MediatorCode !== undefined) {
     url += `MediatorCode=${MediatorCode}&UserType=2&`;

@@ -579,7 +579,8 @@
     "isThisCompanyProvideOffer": "الشركة قدمت عرض سعر",
     "isThisBranchProvideOffer": "الفرع قدمت عرض سعر",
     "true": "نعم",
-    "false": "لا"
+    "false": "لا",
+    "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -890,6 +891,7 @@
     "Brokers": "الوسطاء",
     "BrokerDetails": "تفاصيل الوسيط",
     "Companies": "الشركات",
+    "commissionGroups": "مجموعات العمولة",
     "CompanieDetails": "تفاصيل الشركة",
     "Services": "الخدمات",
     "SubServices": "الخدمات الفرعية",

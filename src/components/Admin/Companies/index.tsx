@@ -14,6 +14,7 @@ import {
   TagOutlined,
   TeamOutlined,
   SnippetsOutlined,
+  LeftOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
@@ -21,7 +22,7 @@ import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   DeleteCompany,
   updateCompany,
@@ -31,10 +32,11 @@ import {
 } from '@app/services/companies';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
-import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
+import { TableButton, Header, Modal, Image, CreateButtonText, TextBack } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
 export const Companies: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -42,6 +44,7 @@ export const Companies: React.FC = () => {
   const Navigate = useNavigate();
   const { language } = useLanguage();
   const { desktopOnly, isTablet, isMobile, isDesktop, mobileOnly } = useResponsive();
+  const { type, requestId } = useParams();
 
   const [modalState, setModalState] = useState({
     edit: false,
@@ -55,7 +58,6 @@ export const Companies: React.FC = () => {
   const [dataSource, setDataSource] = useState<CompanyModal[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<CompanyModal | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CompanyModal | undefined>(undefined);
   const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
   const [approvemodaldata, setApprovemodaldata] = useState<CompanyModal | undefined>(undefined);
@@ -94,7 +96,26 @@ export const Companies: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined,
+      enabled: dataSource === undefined && type === undefined && requestId === undefined,
+    },
+  );
+
+  const allCompanies = useQuery(
+    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
+    () =>
+      getAllCompanies(page, pageSize, searchString, type, requestId)
+        .then((data) => {
+          const result = data.data?.result?.items;
+          setDataSource(result);
+          setTotalCount(data.data.result?.totalCount);
+          setLoading(!data.data?.success);
+        })
+        .catch((err) => {
+          setLoading(false);
+          notificationController.error({ message: err?.message || err.error?.message });
+        }),
+    {
+      enabled: type !== undefined && requestId !== undefined,
     },
   );
 
@@ -286,47 +307,35 @@ export const Companies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-      dataIndex: 'services',
-      render: (record: any) => (
-        <Space style={{ display: 'grid' }}>
-          {record?.map((service: any) => (
-            <Tag key={service?.id} style={{ padding: '4px' }}>
-              {service?.name}
-            </Tag>
-          ))}
-        </Space>
-      ),
-    },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
-      dataIndex: 'offers',
-      render: (index: number, record: any) => {
-        return (
-          <Space>
-            <Button
-              disabled={record.statues !== 2}
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
-              severity="info"
-              onClick={() => {
-                Navigate(`${record.id}/offers`, { state: record.name });
-              }}
-            >
-              <div
-                style={{
-                  fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                  fontWeight: FONT_WEIGHT.regular,
-                  width: 'auto',
+    type === undefined &&
+      requestId === undefined && {
+        title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
+        dataIndex: 'offers',
+        render: (index: number, record: any) => {
+          return (
+            <Space>
+              <Button
+                disabled={record.statues !== 2}
+                style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+                severity="info"
+                onClick={() => {
+                  Navigate(`${record.id}/offers`, { state: record.name });
                 }}
               >
-                {t('requests.offers')}
-              </div>
-            </Button>
-          </Space>
-        );
+                <div
+                  style={{
+                    fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                    fontWeight: FONT_WEIGHT.regular,
+                    width: 'auto',
+                  }}
+                >
+                  {t('requests.offers')}
+                </div>
+              </Button>
+            </Space>
+          );
+        },
       },
-    },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.status')}</Header>,
       dataIndex: 'status',
@@ -391,68 +400,72 @@ export const Companies: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('companies.ChangeAcceptRequestOrPotentialClient')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  setAcceptRequestOrPotentialClientmodaldata(record);
-                  handleModalOpen('acceptRequestOrPotentialClient');
-                }}
-              >
-                <SnippetsOutlined />
-              </TableButton>
-            </Tooltip>
+            {type === undefined && requestId === undefined && (
+              <>
+                <Tooltip placement="top" title={t('companies.ChangeAcceptRequestOrPotentialClient')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setAcceptRequestOrPotentialClientmodaldata(record);
+                      handleModalOpen('acceptRequestOrPotentialClient');
+                    }}
+                  >
+                    <SnippetsOutlined />
+                  </TableButton>
+                </Tooltip>
 
-            <Tooltip placement="top" title={t('companies.possibleClients')}>
-              <TableButton
-                // severity="#f9a3a4"
-                color="#f9a3a4"
-                onClick={() => {
-                  Navigate(`${record.id}/possibleClients`, { replace: false });
-                }}
-              >
-                <TeamOutlined />
-              </TableButton>
-            </Tooltip>
+                <Tooltip placement="top" title={t('companies.possibleClients')}>
+                  <TableButton
+                    // severity="#f9a3a4"
+                    color="#f9a3a4"
+                    onClick={() => {
+                      Navigate(`${record.id}/possibleClients`, { replace: false });
+                    }}
+                  >
+                    <TeamOutlined />
+                  </TableButton>
+                </Tooltip>
 
-            <Tooltip placement="top" title={t('companies.branches')}>
-              <TableButton
-                severity="warning"
-                onClick={() => {
-                  Navigate(`${record.id}/branches`, { replace: false });
-                }}
-              >
-                <ApartmentOutlined />
-              </TableButton>
-            </Tooltip>
+                <Tooltip placement="top" title={t('companies.branches')}>
+                  <TableButton
+                    severity="warning"
+                    onClick={() => {
+                      Navigate(`${record.id}/branches`, { replace: false });
+                    }}
+                  >
+                    <ApartmentOutlined />
+                  </TableButton>
+                </Tooltip>
 
-            <Tooltip placement="top" title={t('common.edit')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  Navigate(`${record.id}/EditCompany`, { replace: false });
-                }}
-              >
-                <EditOutlined />
-              </TableButton>
-            </Tooltip>
+                <Tooltip placement="top" title={t('common.edit')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      Navigate(`${record.id}/EditCompany`, { replace: false });
+                    }}
+                  >
+                    <EditOutlined />
+                  </TableButton>
+                </Tooltip>
 
-            <Tooltip placement="top" title={t('common.delete')}>
-              <TableButton
-                severity="error"
-                onClick={() => {
-                  setDeletemodaldata(record);
-                  handleModalOpen('delete');
-                }}
-              >
-                <DeleteOutlined />
-              </TableButton>
-            </Tooltip>
+                <Tooltip placement="top" title={t('common.delete')}>
+                  <TableButton
+                    severity="error"
+                    onClick={() => {
+                      setDeletemodaldata(record);
+                      handleModalOpen('delete');
+                    }}
+                  >
+                    <DeleteOutlined />
+                  </TableButton>
+                </Tooltip>
+              </>
+            )}
           </Space>
         );
       },
     },
-  ];
+  ].filter(Boolean);
 
   return (
     <>
@@ -465,28 +478,32 @@ export const Companies: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          <Button
+          {type !== undefined && requestId !== undefined && (
+            <Btn
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              type="ghost"
+              onClick={() => Navigate(-1)}
+              icon={<LeftOutlined />}
+            >
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+          )}
+
+          <Btn
             type="primary"
             style={{
-              marginBottom: '.5rem',
+              margin: '1rem 1rem 1rem 0',
               width: 'auto',
               height: 'auto',
             }}
             onClick={handleButtonClick}
           >
             <CreateButtonText>{t('companies.addCompany')}</CreateButtonText>
-          </Button>
-
-          {/*    EDIT    */}
-          {/* {modalState.edit && (
-            <EditCompany
-              Company_values={editmodaldata}
-              visible={modalState.edit}
-              onCancel={() => handleModalClose('edit')}
-              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id!)}
-              isLoading={editManager.isLoading}
-            />
-          )} */}
+          </Btn>
 
           {/*    Delete    */}
           {modalState.delete && (

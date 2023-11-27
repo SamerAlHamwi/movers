@@ -578,7 +578,8 @@
     "isThisCompanyProvideOffer": "Company Provided Offer",
     "isThisBranchProvideOffer": "Branch Provided Offer",
     "true": "True",
-    "false": "False"
+    "false": "False",
+    "companiesWitchBoughtInfo": "Companies That Have Purchased Potential Client Information"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -889,6 +890,7 @@
     "Brokers": "Brokers",
     "BrokerDetails": "Broker Details",
     "Companies": "Companies",
+    "commissionGroups": "Commission Groups",
     "CompanieDetails": "Company Details",
     "Services": "Services",
     "SubServices": "Sub Services",
