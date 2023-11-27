@@ -412,6 +412,16 @@ export const Requests: React.FC = () => {
                 {t('requests.canceled')}
               </Tag>
             )}
+            {record?.statues === 11 && (
+              <Tag key={record?.id} color="#f48024" style={{ padding: '4px' }}>
+                {t('requests.CanceledAfterRejectOffers')}
+              </Tag>
+            )}
+            {record?.statues === 11 && (
+              <Tag key={record?.id} color="#A5978B" style={{ padding: '4px' }}>
+                {t('requests.OutOfPossible')}
+              </Tag>
+            )}
           </>
         );
       },

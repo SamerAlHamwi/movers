@@ -550,6 +550,8 @@
     "NotFinishByUser": "Not Finish By User",
     "Finished": "Finished",
     "canceled": "Canceled By User",
+    "CanceledAfterRejectOffers": "Canceled After Rejecting All Offer",
+    "OutOfPossible": "Not Potential Client",
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "suitableCompanies": "Suitable Companies",
     "suitableBranches": "Suitable Branches",

@@ -551,6 +551,8 @@
     "NotFinishByUser": "لم يتم إنهاؤه من قبل المستخدم",
     "Finished": "تم التنفيذ",
     "canceled": "تم إلغاؤه من قبل المستخدم",
+    "CanceledAfterRejectOffers": "تم إلغاؤه بعد رفض جميع العروض",
+    "OutOfPossible": "ليس عميل محتمل",
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "suitableCompanies": "الشركات المناسبة",
     "suitableBranches": "الأفرع المناسبة",

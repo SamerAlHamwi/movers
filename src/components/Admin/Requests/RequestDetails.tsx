@@ -461,6 +461,16 @@ const RequestDetails: React.FC = () => {
                       {t('requests.canceled')}
                     </Tag>
                   )}
+                  {requestData?.statues === 12 && (
+                    <Tag key={requestData?.id} color="#f48024" style={{ padding: '4px' }}>
+                      {t('requests.CanceledAfterRejectOffers')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 13 && (
+                    <Tag key={requestData?.id} color="#A5978B" style={{ padding: '4px' }}>
+                      {t('requests.OutOfPossible')}
+                    </Tag>
+                  )}
                 </DetailsValue>
               </DetailsRow>
 
