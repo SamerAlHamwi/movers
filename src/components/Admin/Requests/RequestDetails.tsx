@@ -636,6 +636,16 @@ const RequestDetails: React.FC = () => {
                   <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
                 ))}
               </Card>
+
+              <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                <Row>
+                  {requestData?.finishedRequestAttachmentByCompany.map((attachmentByCompany: any) => (
+                    <Col span={6} key={attachmentByCompany?.id}>
+                      <Image key={attachmentByCompany?.id} src={attachmentByCompany?.url} style={{ width: '150px' }} />
+                    </Col>
+                  ))}
+                </Row>
+              </Card>
             </Details>
           </Spinner>
         </Cardd>
