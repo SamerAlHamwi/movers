@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Tag } from 'antd';
+import { Row, Tree, Image, Tag, Progress, Space } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -146,6 +146,11 @@ const OfferDetails: React.FC = () => {
     refetch();
   }, [refetch, language]);
 
+  const conicPinkColors = { '0%': '#ffba6f', '50%': '#ff6f61', '100%': '#ff4369' };
+  const conicGreenColors = { '0%': '#f6ff00', '50%': '#b3ff00', '100%': '#73d13d' };
+  const conicBlueColors = { '0%': '#a6dcef', '50%': '#2e93e5', '100%': '#0050b3' };
+  const conicRedColors = { '0%': '#ffbb96', '50%': '#ff6b45', '100%': '#e62b1d' };
+
   return (
     <>
       <PageTitle>{t('offers.offerInfo')}</PageTitle>
@@ -199,6 +204,50 @@ const OfferDetails: React.FC = () => {
                 </DetailsValue>
               </DetailsRow>
 
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('requests.statues')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  {offerData?.statues === 1 ? (
+                    <Tag color="#30af5b" style={{ padding: '4px' }}>
+                      {t('requests.checking')}
+                    </Tag>
+                  ) : offerData?.statues === 2 ? (
+                    <Tag color="#01509a" style={{ padding: '4px' }}>
+                      {t('requests.approved')}
+                    </Tag>
+                  ) : offerData?.statues === 3 ? (
+                    <Tag color="#ff5252" style={{ padding: '4px' }}>
+                      {t('requests.rejected')}
+                    </Tag>
+                  ) : offerData?.statues === 4 ? (
+                    <Tag color="#90ee7e" style={{ padding: '4px' }}>
+                      {t('offers.SelectedByUser')}
+                    </Tag>
+                  ) : offerData?.statues === 5 ? (
+                    <Tag color="#faad14" style={{ padding: '4px' }}>
+                      {t('offers.RejectedByUser')}
+                    </Tag>
+                  ) : offerData?.statues === 6 ? (
+                    <Tag color="#33b2df" style={{ padding: '4px' }}>
+                      {t('requests.Finished')}
+                    </Tag>
+                  ) : (
+                    ''
+                  )}
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('requests.comment')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{offerData?.note}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
               {treeData.length > 0 ? (
                 <>
                   <DetailsTitle style={{ margin: '0 2%' }}>{t('offers.services')}</DetailsTitle>
@@ -229,7 +278,7 @@ const OfferDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
-              {offerData?.selectedCompanies?.company?.name && (
+              {offerData?.selectedCompanies?.company?.id && (
                 <>
                   <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                     {t('offers.selectedCompany')} :
@@ -261,10 +310,60 @@ const OfferDetails: React.FC = () => {
                       <DetailsValue>{offerData?.selectedCompanies?.company?.address}</DetailsValue>
                     </ColStyle>
                   </DetailsRow>
+
+                  <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                    {t('companies.evaluation')} :
+                  </h3>
+
+                  <ColStyle>
+                    <DetailsTitle>{t('companies.generalRating')} :</DetailsTitle>
+                  </ColStyle>
+                  <Space wrap style={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: '3rem' }}>
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.company?.generalRating?.quality * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.quality')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicBlueColors}
+                    />
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.company?.generalRating?.overallRating * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.overallRating')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicPinkColors}
+                    />
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.company?.generalRating?.customerService * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.customerService')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicGreenColors}
+                    />
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.company?.generalRating?.valueOfServiceForMoney * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.valueOfServiceForMoney')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicRedColors}
+                    />
+                  </Space>
                 </>
               )}
 
-              {offerData?.selectedCompanies?.companyBranch?.name && (
+              {offerData?.selectedCompanies?.companyBranch?.id && (
                 <>
                   <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                     {t('offers.selectedBranch')} :
@@ -296,6 +395,56 @@ const OfferDetails: React.FC = () => {
                       <DetailsValue>{offerData?.selectedCompanies?.companyBranch?.address}</DetailsValue>
                     </ColStyle>
                   </DetailsRow>
+
+                  <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                    {t('companies.evaluation')} :
+                  </h3>
+
+                  <ColStyle>
+                    <DetailsTitle>{t('companies.generalRating')} :</DetailsTitle>
+                  </ColStyle>
+                  <Space wrap style={{ display: 'flex', justifyContent: 'space-evenly', marginBottom: '3rem' }}>
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.companyBranch?.generalRating?.quality * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.quality')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicBlueColors}
+                    />
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.companyBranch?.generalRating?.overallRating * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.overallRating')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicPinkColors}
+                    />
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.companyBranch?.generalRating?.customerService * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.customerService')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicGreenColors}
+                    />
+                    <Progress
+                      type="circle"
+                      percent={offerData?.selectedCompanies?.companyBranch?.generalRating?.valueOfServiceForMoney * 10}
+                      format={(percent) => (
+                        <p>
+                          {percent} <h6> {t('companies.valueOfServiceForMoney')} </h6>
+                        </p>
+                      )}
+                      strokeColor={conicRedColors}
+                    />
+                  </Space>
                 </>
               )}
 

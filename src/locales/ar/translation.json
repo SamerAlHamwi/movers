@@ -85,7 +85,9 @@
     "onlyArabicCharacters": "يُسمح بإستخدام الأحرف العربية فقط",
     "invalidEmail": "البريد الإلكتروني غير صحيح",
     "true": "نعم",
-    "false": "لا"
+    "false": "لا",
+    "branch": "فرع",
+    "broker": "وسيط"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -118,11 +120,12 @@
     "securityCodeTitle": "تحقق من بريدك",
     "securityCodeDescription": "لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني",
     "newPassword": "كلمة مرور جديدة",
-
     "newPasswordtitle": "أنشئ كلمة مرور جديدة",
     "newPasswordDescription": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة",
     "newPasswordSuccessMessage": "تم تعيين كلمة مرور جديدة",
-    "newPasswordSuccessDescription": "من فضلك، استخدم بريدك الإلكتروني مع كلمة مرور جديدة لتسجيل الدخول"
+    "newPasswordSuccessDescription": "من فضلك، استخدم بريدك الإلكتروني مع كلمة مرور جديدة لتسجيل الدخول",
+    "passwordAdmin": "كلمة سر الادمن",
+    "passwordUser": "كلمة سر المستخدم"
   },
 
   "_comment1": "*********************************** users ************************************************",
@@ -139,7 +142,9 @@
     "activateUserSuccessMessage": "تم تفعيل المستخدم",
     "deactivateUserSuccessMessage": "تم إلغاء تفعيل المستخدم",
     "deleteUserModalTitle": "حذف مستخدم",
-    "deleteUserModalDescription": "هل أنت متأكد من رغبتك في حذف هذا المستخدم؟"
+    "deleteUserModalDescription": "هل أنت متأكد من رغبتك في حذف هذا المستخدم؟",
+    "changePasswordModalTitle": "تغيير كلمة السر للمستخدم",
+    "changPasswordForUserSuccessMessage": "تم تغيير كلمة السر بنجاح"
   },
 
   "_comment2": "*********************************** managers ************************************************",
@@ -551,6 +556,8 @@
     "NotFinishByUser": "لم يتم إنهاؤه من قبل المستخدم",
     "Finished": "تم التنفيذ",
     "canceled": "تم إلغاؤه من قبل المستخدم",
+    "CanceledAfterRejectOffers": "تم إلغاؤه بعد رفض جميع العروض",
+    "OutOfPossible": "ليس عميل محتمل",
     "suitableCompanies&Branches": "الشركات والأفرع المناسبة",
     "suitableCompanies": "الشركات المناسبة",
     "suitableBranches": "الأفرع المناسبة",
@@ -572,7 +579,7 @@
     "checkPINForUserModal": "إرسال رمز ال PIN",
     "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل",
     "sendRejectReason": "إرسال سبب الرفض للمستخدم",
-    "reasonRefuse": "سبب الرفض",
+    "reasonRefuse": "سبب رفض طلب النقل",
     "additionalAttachments": "صور إضافية",
     "noAttachments": "لم يتم رفع صور لهذا العنصر",
     "offerDetails": "تفاصيل عرض السعر",
@@ -580,7 +587,9 @@
     "isThisBranchProvideOffer": "الفرع قدمت عرض سعر",
     "true": "نعم",
     "false": "لا",
-    "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل"
+    "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل",
+    "attachmentsFromCompany": "صور إنهاء الطلب من الشركة",
+    "rejectedoffers": "العروض المرفوضة"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -756,7 +765,9 @@
     "userInfo": "معلومات مُقدّم الطلب",
     "fullName": "الإسم الكامل",
     "userName": "إسم المستخدم",
-    "emailAddress": "عنوان البريد الإلكتروني"
+    "emailAddress": "عنوان البريد الإلكتروني",
+    "SelectedByUser": "تم إختياره من قبل المستخدم",
+    "RejectedByUser": "تم رفضه من قبل المستخدم"
   },
 
   "_comment24": "*********************************** points ************************************************",

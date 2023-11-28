@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Modal, Form, InputNumber, Radio } from 'antd';
+import { Space, Modal, Form, InputNumber, Radio, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../Admin/Translations';
@@ -29,6 +29,8 @@ const formItemLayout = {
   },
 };
 
+const { Option } = Select;
+
 export const AddCodesForREM: React.FC<CreateCodeModalProps> = ({ visible, onCancel, onCreateCode, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
@@ -40,6 +42,19 @@ export const AddCodesForREM: React.FC<CreateCodeModalProps> = ({ visible, onCanc
   const onOk = () => {
     form.submit();
   };
+
+  const selectAfter = (
+    <Select
+      defaultValue={1}
+      style={{ width: 60 }}
+      onChange={(event) => {
+        setValueRadio(event);
+      }}
+    >
+      <Option value={1}>%</Option>
+      <Option value={2}>AED</Option>
+    </Select>
+  );
 
   const onFinish = (info: Code) => {
     const phoneNumbers = info?.phoneNumbers == undefined ? [] : info.phoneNumbers;
@@ -86,30 +101,10 @@ export const AddCodesForREM: React.FC<CreateCodeModalProps> = ({ visible, onCanc
               pattern: /^[0-9]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
             },
-            // {
-            //   max: 8,
-            //   message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('brokers.tooManyNumbers')}</p>,
-            // },
           ]}
           style={{ marginTop: '-.5rem' }}
         >
           <Input onChange={(e: any) => setCode(e.target.value)} />
-        </BaseForm.Item>
-
-        <BaseForm.Item key={10} name="codeType">
-          <Radio.Group
-            style={{ display: 'flex', width: '100%' }}
-            onChange={(event) => {
-              setValueRadio(event.target.value);
-            }}
-          >
-            <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-              {t('partners.percentage')}
-            </Radio>
-            <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-              {t('partners.fixedValue')}
-            </Radio>
-          </Radio.Group>
         </BaseForm.Item>
 
         <BaseForm.Item
@@ -118,7 +113,7 @@ export const AddCodesForREM: React.FC<CreateCodeModalProps> = ({ visible, onCanc
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+          <InputNumber addonAfter={selectAfter} defaultValue={0} />
         </BaseForm.Item>
 
         <Form.List name="phoneNumbers">

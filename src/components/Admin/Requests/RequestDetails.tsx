@@ -14,7 +14,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
-import { BankOutlined, CheckOutlined, CloseOutlined, TagOutlined } from '@ant-design/icons';
+import { BankOutlined, CheckOutlined, CloseOutlined, StopOutlined, TagOutlined } from '@ant-design/icons';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
@@ -164,9 +164,6 @@ const RequestDetails: React.FC = () => {
       },
     );
   }
-
-  console.log(requestId);
-  console.log(possibleClientId);
 
   return (
     <>
@@ -461,6 +458,16 @@ const RequestDetails: React.FC = () => {
                       {t('requests.canceled')}
                     </Tag>
                   )}
+                  {requestData?.statues === 12 && (
+                    <Tag key={requestData?.id} color="#f48024" style={{ padding: '4px' }}>
+                      {t('requests.CanceledAfterRejectOffers')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 13 && (
+                    <Tag key={requestData?.id} color="#A5978B" style={{ padding: '4px' }}>
+                      {t('requests.OutOfPossible')}
+                    </Tag>
+                  )}
                 </DetailsValue>
               </DetailsRow>
 
@@ -577,6 +584,39 @@ const RequestDetails: React.FC = () => {
                   </DetailsRow>
                 )}
 
+              {/* Rejected offers  */}
+              {(requestData?.statues == 4 ||
+                requestData?.statues == 6 ||
+                requestData?.statues == 7 ||
+                requestData?.statues == 8 ||
+                requestData?.statues == 9 ||
+                requestData?.statues == 10 ||
+                requestData?.statues == 12 ||
+                requestData?.statues == 13) && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.rejectedoffers')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('requests.rejectedoffers')}>
+                      <TableButton
+                        severity="error"
+                        onClick={() => {
+                          Navigate(`offers/rejectedoffers`);
+                        }}
+                      >
+                        <StopOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :
               </h3>
@@ -626,6 +666,25 @@ const RequestDetails: React.FC = () => {
                   <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
                 ))}
               </Card>
+
+              {requestData?.finishedRequestAttachmentByCompany.length > 0 && (
+                <>
+                  <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('requests.attachmentsFromCompany')} :</h3>
+                  <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                    <Row>
+                      {requestData?.finishedRequestAttachmentByCompany.map((attachmentByCompany: any) => (
+                        <Col span={6} key={attachmentByCompany?.id}>
+                          <Image
+                            key={attachmentByCompany?.id}
+                            src={attachmentByCompany?.url}
+                            style={{ width: '150px' }}
+                          />
+                        </Col>
+                      ))}
+                    </Row>
+                  </Card>
+                </>
+              )}
             </Details>
           </Spinner>
         </Cardd>
