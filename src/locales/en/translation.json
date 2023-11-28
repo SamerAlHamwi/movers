@@ -575,7 +575,7 @@
     "checkPINForUserModal": "Enter The PIN Code",
     "atLeastOneService": "At Least One Service Must Be Selected",
     "sendRejectReason": "Send Reject Reason To User",
-    "reasonRefuse": "Reject Reason",
+    "reasonRefuse": "The Reason For Rejecting The Application",
     "additionalAttachments": "Additional Attachments",
     "noAttachments": "There Are No Attachments For This Item",
     "offerDetails": "Offer Details",
@@ -584,7 +584,8 @@
     "true": "True",
     "false": "False",
     "companiesWitchBoughtInfo": "Companies That Have Purchased Potential Client Information",
-    "attachmentsFromCompany": "Photos Of Completing The Order From The Company"
+    "attachmentsFromCompany": "Photos Of Completing The Order From The Company",
+    "rejectedoffers": "Rejected Offers"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",

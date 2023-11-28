@@ -576,7 +576,7 @@
     "checkPINForUserModal": "إرسال رمز ال PIN",
     "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل",
     "sendRejectReason": "إرسال سبب الرفض للمستخدم",
-    "reasonRefuse": "سبب الرفض",
+    "reasonRefuse": "سبب رفض طلب النقل",
     "additionalAttachments": "صور إضافية",
     "noAttachments": "لم يتم رفع صور لهذا العنصر",
     "offerDetails": "تفاصيل عرض السعر",
@@ -585,7 +585,8 @@
     "true": "نعم",
     "false": "لا",
     "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل",
-    "attachmentsFromCompany": "صور إنهاء الطلب من الشركة"
+    "attachmentsFromCompany": "صور إنهاء الطلب من الشركة",
+    "rejectedoffers": "العروض المرفوضة"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",

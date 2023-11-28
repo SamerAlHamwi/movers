@@ -223,11 +223,11 @@ const OfferDetails: React.FC = () => {
                     </Tag>
                   ) : offerData?.statues === 4 ? (
                     <Tag color="#90ee7e" style={{ padding: '4px' }}>
-                      {t('Offers.SelectedByUser')}
+                      {t('offers.SelectedByUser')}
                     </Tag>
                   ) : offerData?.statues === 5 ? (
                     <Tag color="#faad14" style={{ padding: '4px' }}>
-                      {t('Offers.RejectedByUser')}
+                      {t('offers.RejectedByUser')}
                     </Tag>
                   ) : offerData?.statues === 6 ? (
                     <Tag color="#33b2df" style={{ padding: '4px' }}>

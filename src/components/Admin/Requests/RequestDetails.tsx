@@ -14,7 +14,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
-import { BankOutlined, CheckOutlined, CloseOutlined, TagOutlined } from '@ant-design/icons';
+import { BankOutlined, CheckOutlined, CloseOutlined, StopOutlined, TagOutlined } from '@ant-design/icons';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
@@ -164,9 +164,6 @@ const RequestDetails: React.FC = () => {
       },
     );
   }
-
-  console.log(requestId);
-  console.log(possibleClientId);
 
   return (
     <>
@@ -586,6 +583,39 @@ const RequestDetails: React.FC = () => {
                     </DetailsValue>
                   </DetailsRow>
                 )}
+
+              {/* Rejected offers  */}
+              {(requestData?.statues == 4 ||
+                requestData?.statues == 6 ||
+                requestData?.statues == 7 ||
+                requestData?.statues == 8 ||
+                requestData?.statues == 9 ||
+                requestData?.statues == 10 ||
+                requestData?.statues == 12 ||
+                requestData?.statues == 13) && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.rejectedoffers')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('requests.rejectedoffers')}>
+                      <TableButton
+                        severity="error"
+                        onClick={() => {
+                          Navigate(`offers/rejectedoffers`);
+                        }}
+                      >
+                        <StopOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  </DetailsValue>
+                </DetailsRow>
+              )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :

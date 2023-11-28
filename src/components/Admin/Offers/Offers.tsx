@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
 import { useQuery, useMutation } from 'react-query';
-import { getAllOffers, sendForUser } from '@app/services/offers';
+import { getAllOffers, getrejectedOffers, sendForUser } from '@app/services/offers';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -28,7 +28,7 @@ export const Offers: React.FC = () => {
   const Navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
-  const { requestId, companyId, branchId } = useParams();
+  const { requestId, companyId, branchId, type } = useParams();
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -59,11 +59,28 @@ export const Offers: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined,
+      enabled: dataSource === undefined && type === undefined,
     },
   );
 
-  console.log(companyId);
+  const allRejectedOffers = useQuery(
+    ['Offers', page, pageSize],
+    () =>
+      getrejectedOffers(page, pageSize, searchString, requestId)
+        .then((data) => {
+          const result = data.data?.result?.items;
+          setDataSource(result);
+          setTotalCount(data.data.result?.totalCount);
+          setLoading(!data.data?.success);
+        })
+        .catch((err) => {
+          setLoading(false);
+          notificationController.error({ message: err?.message || err.error?.message });
+        }),
+    {
+      enabled: dataSource === undefined && type === 'rejectedoffers',
+    },
+  );
 
   useEffect(() => {
     if (isRefetching) setLoading(true);
@@ -105,7 +122,7 @@ export const Offers: React.FC = () => {
 
   const columns = [
     requestId !== undefined &&
-      companyId === undefined && {
+      type === undefined && {
         title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
         dataIndex: 'id',
         render: (id: any) => (
@@ -204,7 +221,7 @@ export const Offers: React.FC = () => {
         />
       </Card>
 
-      {requestId !== undefined && companyId === undefined && (
+      {requestId !== undefined && type === undefined && (
         <Button
           type="primary"
           style={{
