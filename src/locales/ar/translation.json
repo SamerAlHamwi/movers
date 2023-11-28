@@ -582,7 +582,8 @@
     "isThisBranchProvideOffer": "الفرع قدمت عرض سعر",
     "true": "نعم",
     "false": "لا",
-    "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل"
+    "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل",
+    "attachmentsFromCompany": "صور إنهاء الطلب من الشركة"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
