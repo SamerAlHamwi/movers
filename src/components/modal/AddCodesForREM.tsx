@@ -45,6 +45,7 @@ export const AddCodesForREM: React.FC<CreateCodeModalProps> = ({ visible, onCanc
 
   const selectAfter = (
     <Select
+      className="discountPercentage"
       defaultValue={1}
       style={{ width: 60 }}
       onChange={(event) => {
