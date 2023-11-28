@@ -233,7 +233,19 @@ export const User: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('users.usertype')}</Header>,
       dataIndex: 'type',
       render: (userType: number) => {
-        return <>{userType === 3 ? t('common.company') : t('common.user')}</>;
+        return (
+          <>
+            {userType === 2
+              ? t('common.user')
+              : userType === 3
+              ? t('common.company')
+              : userType === 5
+              ? t('common.branch')
+              : userType === 6
+              ? t('common.broker')
+              : ''}
+          </>
+        );
       },
       filterDropdown: () => {
         const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
@@ -251,6 +263,12 @@ export const User: React.FC = () => {
               </Radio>
               <Radio style={{ display: 'block', fontSize }} value={3}>
                 {t('common.company')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={5}>
+                {t('common.branch')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={6}>
+                {t('common.broker')}
               </Radio>
             </RadioGroup>
             <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
@@ -272,7 +290,7 @@ export const User: React.FC = () => {
                   size="small"
                   type="primary"
                   style={{ fontSize, fontWeight: '400' }}
-                  onClick={() => setUserType(temp === 2 ? 2 : 3)}
+                  onClick={() => setUserType(temp)}
                 >
                   {t('common.apply')}
                 </Button>

@@ -84,7 +84,9 @@
     "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
     "invalidEmail": "Email Is Incorrect",
     "true": "True",
-    "false": "False"
+    "false": "False",
+    "branch": "Branch",
+    "broker": "Broker"
   },
 
   "_comment0": "*********************************** auth ************************************************",

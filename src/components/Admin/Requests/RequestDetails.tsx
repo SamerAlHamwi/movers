@@ -639,9 +639,7 @@ const RequestDetails: React.FC = () => {
 
               {requestData?.finishedRequestAttachmentByCompany.length > 0 && (
                 <>
-                  <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
-                    {t('requests.attachmentsFromCompany')} :
-                  </h3>
+                  <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('requests.attachmentsFromCompany')} :</h3>
                   <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
                     <Row>
                       {requestData?.finishedRequestAttachmentByCompany.map((attachmentByCompany: any) => (

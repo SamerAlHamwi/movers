@@ -13,13 +13,12 @@ const getAllUsers = async (
   MediatorCode?: string | undefined,
 ) => {
   const skip = (page - 1) * pageSize;
-  console.log('userType', userType);
 
   let url = `${apiPrefix.users}/GetAll?`;
   if (MediatorCode !== undefined) {
     url += `MediatorCode=${MediatorCode}&UserType=2&`;
   } else {
-    url += `UserType=${userType}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&GetBasicUserAndCompanyUsers=${GetBasicUserAndCompanyUsers}&`;
+    url += `UserType=${userType}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&`;
   }
   url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
   if (isActive !== undefined) {
