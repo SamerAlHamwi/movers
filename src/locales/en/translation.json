@@ -760,7 +760,9 @@
     "userInfo": "User Information",
     "fullName": "Full Name",
     "userName": "User Name",
-    "emailAddress": "Email Address"
+    "emailAddress": "Email Address",
+    "SelectedByUser": "Selected By User",
+    "RejectedByUser": "Rejected By User"
   },
 
   "_comment24": "*********************************** points ************************************************",
