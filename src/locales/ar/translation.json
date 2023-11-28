@@ -120,11 +120,12 @@
     "securityCodeTitle": "تحقق من بريدك",
     "securityCodeDescription": "لقد أرسلنا رمز التحقق إلى بريدك الإلكتروني",
     "newPassword": "كلمة مرور جديدة",
-
     "newPasswordtitle": "أنشئ كلمة مرور جديدة",
     "newPasswordDescription": "يجب أن تكون كلمة المرور الجديدة مختلفة عن كلمة المرور السابقة",
     "newPasswordSuccessMessage": "تم تعيين كلمة مرور جديدة",
-    "newPasswordSuccessDescription": "من فضلك، استخدم بريدك الإلكتروني مع كلمة مرور جديدة لتسجيل الدخول"
+    "newPasswordSuccessDescription": "من فضلك، استخدم بريدك الإلكتروني مع كلمة مرور جديدة لتسجيل الدخول",
+    "passwordAdmin": "كلمة سر الادمن",
+    "passwordUser": "كلمة سر المستخدم"
   },
 
   "_comment1": "*********************************** users ************************************************",
@@ -141,7 +142,9 @@
     "activateUserSuccessMessage": "تم تفعيل المستخدم",
     "deactivateUserSuccessMessage": "تم إلغاء تفعيل المستخدم",
     "deleteUserModalTitle": "حذف مستخدم",
-    "deleteUserModalDescription": "هل أنت متأكد من رغبتك في حذف هذا المستخدم؟"
+    "deleteUserModalDescription": "هل أنت متأكد من رغبتك في حذف هذا المستخدم؟",
+    "changePasswordModalTitle": "تغيير كلمة السر للمستخدم",
+    "changPasswordForUserSuccessMessage": "تم تغيير كلمة السر بنجاح"
   },
 
   "_comment2": "*********************************** managers ************************************************",

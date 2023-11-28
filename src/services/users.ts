@@ -35,6 +35,10 @@ const Delete = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.users}/Delete?Id=${id}`);
 };
 
+const changePasswordForUser = async (data: UserModel) => {
+  return await httpApi.post(`${apiPrefix.users}/ResetPassword`, data);
+};
+
 const Create = async (data: UserModel) => {
   return await httpApi.post(`${apiPrefix.users}/Create`, data);
 };
@@ -51,4 +55,4 @@ const DeActivate = async (id: number) => {
   return await httpApi.post(`${apiPrefix.users}/DeActivate`, { id });
 };
 
-export { getAllUsers, getAllUsersForAddRequest, Create, Update, Delete, Activate, DeActivate };
+export { getAllUsers, getAllUsersForAddRequest, Create, changePasswordForUser, Update, Delete, Activate, DeActivate };

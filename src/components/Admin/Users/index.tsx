@@ -4,8 +4,8 @@ import { message, Row, Space, Popconfirm, Col, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
-import { DeleteOutlined, LeftOutlined, LoadingOutlined } from '@ant-design/icons';
-import { getAllUsers, Delete, Activate, DeActivate } from '@app/services/users';
+import { DeleteOutlined, IdcardOutlined, LeftOutlined, LoadingOutlined, LockOutlined } from '@ant-design/icons';
+import { getAllUsers, Delete, Activate, DeActivate, changePasswordForUser } from '@app/services/users';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import styled from 'styled-components';
 import { Table } from '@app/components/common/Table/Table';
@@ -24,6 +24,7 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { ChangePasswordForUser } from '@app/components/modal/ChangePasswordForUser';
 
 export const User: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -32,6 +33,9 @@ export const User: React.FC = () => {
   const { type, codeBroker } = useParams();
   const Navigate = useNavigate();
 
+  const [modalState, setModalState] = useState({
+    changePassword: false,
+  });
   const [page, setPage] = useState<number>(1);
   const [dataSource, setDataSource] = useState<UserModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
@@ -49,6 +53,16 @@ export const User: React.FC = () => {
   const [temp, setTemp] = useState<any>();
   const [userStatus, setUserStatus] = useState<boolean | undefined>(undefined);
   const [userType, setUserType] = useState<number | string>('');
+  const [changePasswordData, setChangePasswordData] = useState<any>(undefined);
+
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
+    console.log(modalState);
+  };
+
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const { refetch, isRefetching } = useQuery(
     ['Users', page, pageSize, refetchOnAddUser, isDelete, isEdit, isActivate, isDeActivate],
@@ -132,6 +146,22 @@ export const User: React.FC = () => {
   useEffect(() => {
     setIsOpenDeleteModalForm(deleteUser.isLoading);
   }, [deleteUser.isLoading]);
+
+  const changPasswordForUser = useMutation((data: any) =>
+    changePasswordForUser(data)
+      .then((data) => {
+        notificationController.success({ message: t('users.changPasswordForUserSuccessMessage') });
+      })
+      .catch((error) => {
+        console.log(error);
+
+        notificationController.error({ message: error?.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, changePassword: changPasswordForUser.isLoading }));
+  }, [changPasswordForUser.isLoading]);
 
   const activateUser = useMutation((id: number) =>
     Activate(id)
@@ -318,6 +348,18 @@ export const User: React.FC = () => {
               </TableButton>
             </Tooltip>
 
+            <Tooltip placement="top" title={t('users.changePasswordModalTitle')}>
+              <TableButton
+                severity="warning"
+                onClick={() => {
+                  setChangePasswordData(record);
+                  handleModalOpen('changePassword');
+                }}
+              >
+                <LockOutlined />
+              </TableButton>
+            </Tooltip>
+
             {record.isActive === true ? (
               <Tooltip placement="top" title={t('common.deactivate')}>
                 <Popconfirm
@@ -456,6 +498,19 @@ export const User: React.FC = () => {
           )}
         </Row>
 
+        {/*    Change Password    */}
+        {modalState.changePassword && (
+          <ChangePasswordForUser
+            visible={modalState.changePassword}
+            onCancel={() => handleModalClose('changePassword')}
+            onCreateCode={(info: any) => {
+              const data = { id: changePasswordData.id, ...info };
+              changPasswordForUser.mutateAsync(data);
+            }}
+            isLoading={changPasswordForUser.isLoading}
+          />
+        )}
+
         <Table
           pagination={{
             showSizeChanger: true,
@@ -470,7 +525,6 @@ export const User: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            // showTotal: (total) => `Total ${total} managers`,
             hideOnSinglePage: true,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}

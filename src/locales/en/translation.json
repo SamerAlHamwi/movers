@@ -122,7 +122,9 @@
     "newPasswordtitle": "Create new password",
     "newPasswordDescription": "Your new password must be different from previous password",
     "newPasswordSuccessMessage": "New password was set",
-    "newPasswordSuccessDescription": "Please, use your email with a new password to log in"
+    "newPasswordSuccessDescription": "Please, use your email with a new password to log in",
+    "passwordAdmin": "Admin Password",
+    "passwordUser": "User Password"
   },
 
   "_comment1": "*********************************** users ************************************************",
@@ -139,7 +141,9 @@
     "activateUserSuccessMessage": "Activate User Successfully!",
     "deactivateUserSuccessMessage": "Deactivate User Successfully!",
     "deleteUserModalTitle": "Delete User",
-    "deleteUserModalDescription": "Are You Sure To Delete This User?"
+    "deleteUserModalDescription": "Are You Sure To Delete This User?",
+    "changePasswordModalTitle": "Change Password For User",
+    "changPasswordForUserSuccessMessage": "User Password Changed Successfully"
   },
 
   "_comment2": "*********************************** managers ************************************************",
