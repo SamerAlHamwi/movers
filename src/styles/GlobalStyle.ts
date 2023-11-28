@@ -327,7 +327,7 @@ export default createGlobalStyle`
     width: 100%
   }
 
-  .ant-select-show-arrow {
+  .discountPercentage {
     width: 80px !important
   }
 `;
