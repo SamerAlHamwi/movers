@@ -322,4 +322,12 @@ export default createGlobalStyle`
   .cebviy .ant-card-body {
     padding: 10px 30px !important;
   }
+
+  .ant-input-number-group-wrapper {
+    width: 100%
+  }
+
+  .ant-select-show-arrow {
+    width: 80px !important
+  }
 `;

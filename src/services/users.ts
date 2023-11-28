@@ -13,11 +13,12 @@ const getAllUsers = async (
   MediatorCode?: string | undefined,
 ) => {
   const skip = (page - 1) * pageSize;
+
   let url = `${apiPrefix.users}/GetAll?`;
   if (MediatorCode !== undefined) {
     url += `MediatorCode=${MediatorCode}&UserType=2&`;
   } else {
-    url += `UserType=${userType}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&GetBasicUserAndCompanyUsers=${GetBasicUserAndCompanyUsers}&`;
+    url += `UserType=${userType}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&`;
   }
   url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
   if (isActive !== undefined) {
@@ -32,6 +33,10 @@ const getAllUsersForAddRequest = async (search: string) => {
 
 const Delete = async (id: number) => {
   return await httpApi.delete(`${apiPrefix.users}/Delete?Id=${id}`);
+};
+
+const changePasswordForUser = async (data: UserModel) => {
+  return await httpApi.post(`${apiPrefix.users}/ResetPassword`, data);
 };
 
 const Create = async (data: UserModel) => {
@@ -50,4 +55,4 @@ const DeActivate = async (id: number) => {
   return await httpApi.post(`${apiPrefix.users}/DeActivate`, { id });
 };
 
-export { getAllUsers, getAllUsersForAddRequest, Create, Update, Delete, Activate, DeActivate };
+export { getAllUsers, getAllUsersForAddRequest, Create, changePasswordForUser, Update, Delete, Activate, DeActivate };

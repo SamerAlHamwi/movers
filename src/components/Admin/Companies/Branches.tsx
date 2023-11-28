@@ -287,18 +287,6 @@ export const Branches: React.FC = () => {
         <Row justify={'end'}>
           <>
             <Btn
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => Navigate(`/companies/${companyId}/addBranch`)}
-            >
-              <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
-            </Btn>
-
-            <Btn
               style={{
                 margin: '1rem 1rem 1rem 0',
                 width: 'auto',
@@ -309,6 +297,18 @@ export const Branches: React.FC = () => {
               icon={<LeftOutlined />}
             >
               <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+
+            <Btn
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => Navigate(`/companies/${companyId}/addBranch`)}
+            >
+              <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
             </Btn>
           </>
 

@@ -84,7 +84,9 @@
     "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
     "invalidEmail": "Email Is Incorrect",
     "true": "True",
-    "false": "False"
+    "false": "False",
+    "branch": "Branch",
+    "broker": "Broker"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -120,7 +122,9 @@
     "newPasswordtitle": "Create new password",
     "newPasswordDescription": "Your new password must be different from previous password",
     "newPasswordSuccessMessage": "New password was set",
-    "newPasswordSuccessDescription": "Please, use your email with a new password to log in"
+    "newPasswordSuccessDescription": "Please, use your email with a new password to log in",
+    "passwordAdmin": "Admin Password",
+    "passwordUser": "User Password"
   },
 
   "_comment1": "*********************************** users ************************************************",
@@ -137,7 +141,9 @@
     "activateUserSuccessMessage": "Activate User Successfully!",
     "deactivateUserSuccessMessage": "Deactivate User Successfully!",
     "deleteUserModalTitle": "Delete User",
-    "deleteUserModalDescription": "Are You Sure To Delete This User?"
+    "deleteUserModalDescription": "Are You Sure To Delete This User?",
+    "changePasswordModalTitle": "Change Password For User",
+    "changPasswordForUserSuccessMessage": "User Password Changed Successfully"
   },
 
   "_comment2": "*********************************** managers ************************************************",
@@ -244,7 +250,6 @@
   "_comment6": "*********************************** companies ***************************",
   "companies": {
     "companiesList": "Companies List",
-    "editCompany": "Edit Company",
     "logo": "Logo",
     "status": "Status",
     "approveCompanySuccessMessage": "The Company Has Been Approved Successfully",
@@ -264,8 +269,6 @@
     "availableCities": "Available Cities",
     "companyBranches": "Company Branches",
     "companyContact": "Contact Information",
-    "phoneNumber": "Phone Number",
-    "emailAddress": "Email Address",
     "webSite": "Website",
     "numberOfTransfers": "Number Of Transfers",
     "companyUser": "User Information",
@@ -309,7 +312,9 @@
     "reviewsDetails": "Details Of All User Reviews",
     "companyEvaluation": "Company Evaluation",
     "noReviews": "There Are No Reviews From Clients",
-    "typeMove": "Type Of Moving"
+    "typeMove": "Type Of Moving",
+    "EditCompany": "Edit Company Information",
+    "editeCompanySuccessMessage": "The Company Has Been Edited Successfully"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -551,6 +556,8 @@
     "NotFinishByUser": "Not Finish By User",
     "Finished": "Finished",
     "canceled": "Canceled By User",
+    "CanceledAfterRejectOffers": "Canceled After Rejecting All Offer",
+    "OutOfPossible": "Not Potential Client",
     "suitableCompanies&Branches": "Suitable Companies & Branches",
     "suitableCompanies": "Suitable Companies",
     "suitableBranches": "Suitable Branches",
@@ -572,14 +579,17 @@
     "checkPINForUserModal": "Enter The PIN Code",
     "atLeastOneService": "At Least One Service Must Be Selected",
     "sendRejectReason": "Send Reject Reason To User",
-    "reasonRefuse": "Reject Reason",
+    "reasonRefuse": "The Reason For Rejecting The Application",
     "additionalAttachments": "Additional Attachments",
     "noAttachments": "There Are No Attachments For This Item",
     "offerDetails": "Offer Details",
     "isThisCompanyProvideOffer": "Company Provided Offer",
     "isThisBranchProvideOffer": "Branch Provided Offer",
     "true": "True",
-    "false": "False"
+    "false": "False",
+    "companiesWitchBoughtInfo": "Companies That Have Purchased Potential Client Information",
+    "attachmentsFromCompany": "Photos Of Completing The Order From The Company",
+    "rejectedoffers": "Rejected Offers"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -755,7 +765,9 @@
     "userInfo": "User Information",
     "fullName": "Full Name",
     "userName": "User Name",
-    "emailAddress": "Email Address"
+    "emailAddress": "Email Address",
+    "SelectedByUser": "Selected By User",
+    "RejectedByUser": "Rejected By User"
   },
 
   "_comment24": "*********************************** points ************************************************",
@@ -890,6 +902,7 @@
     "Brokers": "Brokers",
     "BrokerDetails": "Broker Details",
     "Companies": "Companies",
+    "commissionGroups": "Commission Groups",
     "CompanieDetails": "Company Details",
     "Services": "Services",
     "SubServices": "Sub Services",
@@ -925,7 +938,8 @@
     "possibleClients": "Potential Clients",
     "Configurations": "Configurations",
     "editRequest": "Edit Request",
-    "ReviewsDetails": "Reviews Details"
+    "ReviewsDetails": "Reviews Details",
+    "EditCompany": "Edit Company"
   },
 
   "header": {

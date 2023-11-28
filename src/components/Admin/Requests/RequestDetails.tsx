@@ -14,7 +14,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { TableButton } from '@app/components/GeneralStyles';
 import { DataNode } from 'antd/es/tree';
-import { CheckOutlined, CloseOutlined, TagOutlined } from '@ant-design/icons';
+import { BankOutlined, CheckOutlined, CloseOutlined, StopOutlined, TagOutlined } from '@ant-design/icons';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
@@ -165,9 +165,6 @@ const RequestDetails: React.FC = () => {
     );
   }
 
-  console.log(requestId);
-  console.log(possibleClientId);
-
   return (
     <>
       {requestId && <PageTitle>{t('requests.requestInfo')}</PageTitle>}
@@ -244,129 +241,6 @@ const RequestDetails: React.FC = () => {
                   );
                 })}
               </DetailsRow>
-
-              {/* <DetailsRow>
-                {requestData?.requestForQuotationContacts.map((request: any) => {
-                  return (
-                    <>
-                      {request?.requestForQuotationContactType == '1' && (
-                        <ColStyle>
-                          <DetailsTitle>{t('requests.isCallAvailable')}</DetailsTitle>
-                          <DetailsValue style={{ padding: '0.5rem' }}>
-                            {request?.isCallAvailable === true ? (
-                              <TableButton severity="info">
-                                <CheckOutlined />
-                              </TableButton>
-                            ) : (
-                              <TableButton severity="error">
-                                <CloseOutlined />
-                              </TableButton>
-                            )}
-                          </DetailsValue>
-                        </ColStyle>
-                      )}
-                      {request?.requestForQuotationContactType == '2' && (
-                        <ColStyle>
-                          <DetailsTitle>{t('requests.isCallAvailable')}</DetailsTitle>
-                          <DetailsValue style={{ padding: '0.5rem' }}>
-                            {request?.isCallAvailable === true ? (
-                              <TableButton severity="info">
-                                <CheckOutlined />
-                              </TableButton>
-                            ) : (
-                              <TableButton severity="error">
-                                <CloseOutlined />
-                              </TableButton>
-                            )}
-                          </DetailsValue>
-                        </ColStyle>
-                      )}
-                    </>
-                  );
-                })}
-              </DetailsRow>
-
-              <DetailsRow>
-                {requestData?.requestForQuotationContacts.map((request: any) => {
-                  return (
-                    <>
-                      {request?.requestForQuotationContactType == '1' && (
-                        <ColStyle>
-                          <DetailsTitle>{t('requests.isTelegramAvailable')}</DetailsTitle>
-                          <DetailsValue style={{ padding: '0.5rem' }}>
-                            {request?.isTelegramAvailable === true ? (
-                              <TableButton severity="info">
-                                <CheckOutlined />
-                              </TableButton>
-                            ) : (
-                              <TableButton severity="error">
-                                <CloseOutlined />
-                              </TableButton>
-                            )}
-                          </DetailsValue>
-                        </ColStyle>
-                      )}
-                      {request?.requestForQuotationContactType == '2' && (
-                        <ColStyle>
-                          <DetailsTitle>{t('requests.isTelegramAvailable')}</DetailsTitle>
-                          <DetailsValue style={{ padding: '0.5rem' }}>
-                            {request?.isTelegramAvailable === true ? (
-                              <TableButton severity="info">
-                                <CheckOutlined />
-                              </TableButton>
-                            ) : (
-                              <TableButton severity="error">
-                                <CloseOutlined />
-                              </TableButton>
-                            )}
-                          </DetailsValue>
-                        </ColStyle>
-                      )}
-                    </>
-                  );
-                })}
-              </DetailsRow>
-
-              <DetailsRow>
-                {requestData?.requestForQuotationContacts.map((request: any) => {
-                  return (
-                    <>
-                      {request?.requestForQuotationContactType == '1' && (
-                        <ColStyle>
-                          <DetailsTitle>{t('requests.isWhatsAppAvailable')}</DetailsTitle>
-                          <DetailsValue style={{ padding: '0.5rem' }}>
-                            {request?.isWhatsAppAvailable === true ? (
-                              <TableButton severity="info">
-                                <CheckOutlined />
-                              </TableButton>
-                            ) : (
-                              <TableButton severity="error">
-                                <CloseOutlined />
-                              </TableButton>
-                            )}
-                          </DetailsValue>
-                        </ColStyle>
-                      )}
-                      {request?.requestForQuotationContactType == '2' && (
-                        <ColStyle>
-                          <DetailsTitle>{t('requests.isWhatsAppAvailable')}</DetailsTitle>
-                          <DetailsValue style={{ padding: '0.5rem' }}>
-                            {request?.isWhatsAppAvailable === true ? (
-                              <TableButton severity="info">
-                                <CheckOutlined />
-                              </TableButton>
-                            ) : (
-                              <TableButton severity="error">
-                                <CloseOutlined />
-                              </TableButton>
-                            )}
-                          </DetailsValue>
-                        </ColStyle>
-                      )}
-                    </>
-                  );
-                })}
-              </DetailsRow> */}
 
               <DetailsRow>
                 <ColStyle>
@@ -584,9 +458,49 @@ const RequestDetails: React.FC = () => {
                       {t('requests.canceled')}
                     </Tag>
                   )}
+                  {requestData?.statues === 12 && (
+                    <Tag key={requestData?.id} color="#f48024" style={{ padding: '4px' }}>
+                      {t('requests.CanceledAfterRejectOffers')}
+                    </Tag>
+                  )}
+                  {requestData?.statues === 13 && (
+                    <Tag key={requestData?.id} color="#A5978B" style={{ padding: '4px' }}>
+                      {t('requests.OutOfPossible')}
+                    </Tag>
+                  )}
                 </DetailsValue>
               </DetailsRow>
 
+              {/* companiesThatBoughtInfo */}
+              {requestData?.statues === 4 && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.companiesWitchBoughtInfo')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Tooltip
+                      placement={language == 'en' ? 'right' : 'left'}
+                      title={t('requests.companiesWitchBoughtInfo')}
+                    >
+                      <TableButton
+                        severity="success"
+                        onClick={() => {
+                          Navigate(`companiesThatBoughtInfo`);
+                        }}
+                      >
+                        <BankOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
+              {/* suitableCompanies&Branches */}
               {requestData?.statues != 1 && requestData?.statues != 3 && requestData?.statues != 11 && (
                 <DetailsRow>
                   <DetailsTitle
@@ -608,13 +522,14 @@ const RequestDetails: React.FC = () => {
                           Navigate(`wasSent/2`);
                         }}
                       >
-                        <TagOutlined />
+                        <BankOutlined />
                       </TableButton>
                     </Tooltip>
                   </DetailsValue>
                 </DetailsRow>
               )}
 
+              {/* reasonRefuse */}
               {requestData?.statues == 3 && requestData?.reasonRefuse && (
                 <DetailsRow>
                   <DetailsTitle
@@ -635,6 +550,7 @@ const RequestDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
+              {/* offers */}
               {(requestData?.statues == 6 ||
                 requestData?.statues == 7 ||
                 requestData?.statues == 8 ||
@@ -667,6 +583,39 @@ const RequestDetails: React.FC = () => {
                     </DetailsValue>
                   </DetailsRow>
                 )}
+
+              {/* Rejected offers  */}
+              {(requestData?.statues == 4 ||
+                requestData?.statues == 6 ||
+                requestData?.statues == 7 ||
+                requestData?.statues == 8 ||
+                requestData?.statues == 9 ||
+                requestData?.statues == 10 ||
+                requestData?.statues == 12 ||
+                requestData?.statues == 13) && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.rejectedoffers')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('requests.rejectedoffers')}>
+                      <TableButton
+                        severity="error"
+                        onClick={() => {
+                          Navigate(`offers/rejectedoffers`);
+                        }}
+                      >
+                        <StopOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  </DetailsValue>
+                </DetailsRow>
+              )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :
@@ -717,6 +666,25 @@ const RequestDetails: React.FC = () => {
                   <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
                 ))}
               </Card>
+
+              {requestData?.finishedRequestAttachmentByCompany.length > 0 && (
+                <>
+                  <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('requests.attachmentsFromCompany')} :</h3>
+                  <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                    <Row>
+                      {requestData?.finishedRequestAttachmentByCompany.map((attachmentByCompany: any) => (
+                        <Col span={6} key={attachmentByCompany?.id}>
+                          <Image
+                            key={attachmentByCompany?.id}
+                            src={attachmentByCompany?.url}
+                            style={{ width: '150px' }}
+                          />
+                        </Col>
+                      ))}
+                    </Row>
+                  </Card>
+                </>
+              )}
             </Details>
           </Spinner>
         </Cardd>

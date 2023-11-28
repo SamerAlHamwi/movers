@@ -12,12 +12,13 @@ import {
   BankOutlined,
   ClearOutlined,
   FileAddOutlined,
+  HomeOutlined,
   InboxOutlined,
   LoadingOutlined,
   PictureOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image } from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image, Spin } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
@@ -49,6 +50,9 @@ const steps = [
   },
   {
     title: 'companyUser',
+  },
+  {
+    title: 'typeMove',
   },
   {
     title: 'services',
@@ -139,6 +143,7 @@ export const AddCompany: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
 
   const { data, refetch, isRefetching } = useQuery('getAllServices', getServices);
 
@@ -208,24 +213,20 @@ export const AddCompany: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
-  const { data: availableCitiesData, refetch: availableCitiesRefetch } = useQuery(
-    'getCities',
-    () => getCities(countryIdForCities),
-    {
-      enabled: countryIdForCities !== '0',
-    },
-  );
+  const {
+    data: availableCitiesData,
+    refetch: availableCitiesRefetch,
+    isFetching: isLoadingAvailableCities,
+  } = useQuery('getCitiesForAvailabel', () => getCities(countryIdForAvailableCities), {
+    enabled: countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined,
+  });
   const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
-    enabled: countryId !== '0',
+    enabled: countryId != '0',
   });
   const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
     enabled: cityId !== '0',
   });
-  useEffect(() => {
-    if (countryIdForCities !== '0') {
-      availableCitiesRefetch();
-    }
-  }, [countryIdForCities]);
+
   useEffect(() => {
     if (countryId !== '0') {
       citiesRefetch();
@@ -237,13 +238,11 @@ export const AddCompany: React.FC = () => {
       RegionsRefetch();
     }
   }, [cityId]);
-
-  // const options = availableCitiesData?.data?.result?.items.map((ele: any) => {
-  //   const value = ele.id;
-  //   const label = ele.name;
-  //   const option = { value, label };
-  //   return option;
-  // });
+  useEffect(() => {
+    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForAvailableCities]);
 
   const SelectCountryForAvilableCities = (e: any) => {
     setCountryIdForCities(e);
@@ -511,8 +510,10 @@ export const AddCompany: React.FC = () => {
               ) : index === 1 ? (
                 <UserAddOutlined />
               ) : index === 2 ? (
-                <ClearOutlined />
+                <HomeOutlined />
               ) : index === 3 ? (
+                <ClearOutlined />
+              ) : index === 4 ? (
                 <PictureOutlined />
               ) : undefined
             }
@@ -527,6 +528,7 @@ export const AddCompany: React.FC = () => {
       >
         {current === 0 && (
           <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('partners.generalInfo')}:</h4>
             <Row style={{ display: 'flex', justifyContent: 'space-around', margin: '0 0 2rem' }}>
               <Col>
                 <Upload
@@ -656,7 +658,6 @@ export const AddCompany: React.FC = () => {
                 </BaseForm.Item>
               </Col>
             </Row>
-
             <BaseForm.Item
               name="countryId"
               label={<LableText>{t('companies.country')}</LableText>}
@@ -673,7 +674,6 @@ export const AddCompany: React.FC = () => {
                 ))}
               </Select>
             </BaseForm.Item>
-
             <BaseForm.Item
               name="cityId"
               label={<LableText>{t('companies.city')}</LableText>}
@@ -690,7 +690,6 @@ export const AddCompany: React.FC = () => {
                 ))}
               </Select>
             </BaseForm.Item>
-
             <BaseForm.Item
               name="regionId"
               label={<LableText>{t('companies.region')}</LableText>}
@@ -707,71 +706,11 @@ export const AddCompany: React.FC = () => {
                 ))}
               </Select>
             </BaseForm.Item>
-
-            <h2
-              style={{
-                color: 'black',
-                paddingTop: '7px',
-                paddingBottom: '15px',
-                fontSize: FONT_SIZE.xxl,
-                fontWeight: 'Bold',
-                margin: '3rem 5% 2rem',
-              }}
-            >
-              {t('companies.availableCities')}
-            </h2>
-
-            <BaseForm.Item
-              name="availableCountriesIds"
-              label={<LableText>{t('companies.country')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Select onChange={SelectCountryForAvilableCities}>
-                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
-                  <Option key={country.id} value={country.id}>
-                    {country?.name}
-                  </Option>
-                ))}
-              </Select>
-            </BaseForm.Item>
-
-            <BaseForm.Item
-              name="availableCitiesIds"
-              label={<LableText>{t('companies.availableCities')}</LableText>}
-              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-              rules={[
-                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-              ]}
-            >
-              <Select mode="multiple" onChange={selectCities}>
-                {availableCitiesData?.data?.result?.items.map((city: any) => (
-                  <Select key={city.name} value={city.id}>
-                    {city?.name}
-                  </Select>
-                ))}
-              </Select>
-            </BaseForm.Item>
-
-            <h2
-              style={{
-                color: 'black',
-                paddingTop: '7px',
-                paddingBottom: '15px',
-                fontSize: FONT_SIZE.xxl,
-                fontWeight: 'Bold',
-                margin: '3rem 5% 2rem',
-              }}
-            >
-              {t('companies.companyContact')}
-            </h2>
-
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.companyContact')}:</h4>
             <Row>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.emailAddress')}</LableText>}
+                  label={<LableText>{t('common.emailAddress')}</LableText>}
                   name={['companyContact', 'emailAddress']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -794,7 +733,6 @@ export const AddCompany: React.FC = () => {
                   name={['companyContact', 'webSite']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
-                    { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                     {
                       pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
                       message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
@@ -832,18 +770,7 @@ export const AddCompany: React.FC = () => {
         )}
         {current === 1 && (
           <>
-            <h2
-              style={{
-                color: 'black',
-                paddingTop: '7px',
-                paddingBottom: '15px',
-                fontSize: FONT_SIZE.xxl,
-                fontWeight: 'Bold',
-                margin: '3rem 5% 2rem',
-              }}
-            >
-              {t('companies.companyUser')}
-            </h2>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.companyUser')}:</h4>
             <BaseButtonsForm.Item
               key={current}
               name={['userDto', 'phoneNumber']}
@@ -882,7 +809,7 @@ export const AddCompany: React.FC = () => {
             </BaseButtonsForm.Item>
 
             <BaseForm.Item
-              label={<LableText>{t('companies.emailAddress')}</LableText>}
+              label={<LableText>{t('common.emailAddress')}</LableText>}
               name={['userDto', 'emailAddress']}
               style={
                 isDesktop || isTablet
@@ -925,10 +852,18 @@ export const AddCompany: React.FC = () => {
         )}
         {current === 2 && (
           <>
-            <BaseForm.Item key={10} name="serviceType">
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
+
+            <BaseForm.Item
+              name={['serviceType']}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
               <Radio.Group
                 style={{ display: 'flex', width: '100%' }}
                 onChange={(event) => {
+                  form.setFieldsValue({ ['serviceType']: event.target.value });
                   setValueRadio(event.target.value);
                 }}
               >
@@ -943,6 +878,57 @@ export const AddCompany: React.FC = () => {
                 </Radio>
               </Radio.Group>
             </BaseForm.Item>
+
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.availableCities')}:</h4>
+
+            <BaseForm.Item
+              name="availableCountries"
+              label={<LableText>{t('companies.country')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+            >
+              <Select
+                onChange={(e: any) => {
+                  setCountryIdForAvailableCities(e);
+                }}
+              >
+                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                  <Option key={country.id} value={country.id}>
+                    {country?.name}
+                  </Option>
+                ))}
+              </Select>
+            </BaseForm.Item>
+
+            <Spin spinning={isLoadingAvailableCities}>
+              <BaseForm.Item
+                label={<LableText>{t('companies.availableCities')}</LableText>}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                rules={[
+                  {
+                    required: true,
+                    message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                  },
+                ]}
+              >
+                {!isLoadingAvailableCities && (
+                  <Select mode="multiple" onChange={(cities: any) => setSelectedCityValues(cities)}>
+                    {availableCitiesData?.data?.result?.items.map((city: any) => (
+                      <Option key={city.id} value={city.id}>
+                        {city.name}
+                      </Option>
+                    ))}
+                  </Select>
+                )}
+              </BaseForm.Item>
+            </Spin>
+          </>
+        )}
+        {current === 3 && (
+          <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('branch.selectService')} :</h4>
             <BaseForm.Item key="100" name="services">
               {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
                 const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
@@ -976,10 +962,15 @@ export const AddCompany: React.FC = () => {
                 );
               })}
             </BaseForm.Item>
+
+            <BaseForm.Item key={88} name="comment">
+              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
+            </BaseForm.Item>
           </>
         )}
-        {current === 3 && (
+        {current === 4 && (
           <>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.attachments')} :</h4>
             <Text
               style={{
                 color: '#01509A',
@@ -1165,10 +1156,6 @@ export const AddCompany: React.FC = () => {
                 </Modal>
               </Col>
             </Row>
-
-            <BaseForm.Item key={88} name="comment">
-              <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
-            </BaseForm.Item>
           </>
         )}
       </BaseForm>

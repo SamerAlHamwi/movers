@@ -21,6 +21,8 @@ import {
   DollarOutlined,
   StopOutlined,
   SettingOutlined,
+  GroupOutlined,
+  AppstoreOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -66,6 +68,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     url: '/companies',
     icon: <BankOutlined />,
   },
+  // {
+  //   title: 'sidebarNavigation.commissionGroups',
+  //   key: 'commissionGroups',
+  //   url: '/commissionGroups',
+  //   icon: <AppstoreOutlined />,
+  // },
   {
     title: 'sidebarNavigation.Points',
     key: 'Points',
