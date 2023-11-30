@@ -8,7 +8,14 @@ import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyl
 import { Input } from '../Admin/Translations';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
-import { BankOutlined, ClearOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  BankOutlined,
+  ClearOutlined,
+  HomeOutlined,
+  LeftOutlined,
+  PushpinOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -19,7 +26,7 @@ import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
-import type { DataNode } from 'antd/es/tree';
+// import type { DataNode } from 'antd/es/tree';
 import { createRequest, getRequestById } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
@@ -33,10 +40,10 @@ import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditRequestProps } from './ModalProps';
+// import { EditRequestProps } from './ModalProps';
 import { notificationController } from '@app/controllers/notificationController';
 import { RequestModel } from '@app/interfaces/interfaces';
-import moment from 'moment';
+// import moment from 'moment';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -49,7 +56,7 @@ const getBase64 = (file: RcFile): Promise<string> =>
 const { Step } = Steps;
 let requestData = {};
 let requestServicesArray: any = [];
-const requestServices: any = [];
+let requestServices: any = [];
 const lang = localStorage.getItem('Go Movaro-lang');
 interface DisabledState {
   [key: string]: boolean;
@@ -91,7 +98,7 @@ export const EditRequest: React.FC = () => {
   const [valueRadio, setValueRadio] = useState(0);
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
-  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
+  // const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
   const [selectedSourceType, setSelectedSourceType] = useState(RequestData?.sourceType?.id);
   const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
   const [disabledState, setDisabledState] = useState<DisabledState>({});
@@ -194,7 +201,7 @@ export const EditRequest: React.FC = () => {
 
   useEffect(() => {
     if (maher?.length > 0) {
-      console.log(maher);
+      // console.log(maher);
 
       if (
         maher.filter((item) => item.isChange && !(item.isParentNotChecked === true) && !(item.isNotRepeat === true))
@@ -223,7 +230,7 @@ export const EditRequest: React.FC = () => {
         });
       } else {
         const itemIsChange = maher.find((item) => item.isChange);
-        console.log('mmmmmmmmitemIsChangemmmmmmmmmmmmmmmmmmmmmm', itemIsChange);
+        // console.log('mmmmmmmmitemIsChangemmmmmmmmmmmmmmmmmmmmmm', itemIsChange);
         (async () => {
           try {
             setIsLoading(true);
@@ -258,7 +265,7 @@ export const EditRequest: React.FC = () => {
     }
   }, [maher]);
 
-  console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm', testMaher);
+  // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm', testMaher);
 
   const handleCancel = () => setPreviewOpen(false);
 
@@ -391,7 +398,7 @@ export const EditRequest: React.FC = () => {
     // console.log(x);
 
     // setImagesLists(transformedAttributeAttachments);
-    console.log(y);
+    // console.log(y);
     setY(y);
   }, [RequestData]);
 
@@ -425,49 +432,6 @@ export const EditRequest: React.FC = () => {
     },
   ];
 
-  // !!! old tre data
-  // const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
-  //   const serviceNode: DataNode = {
-  //     title: (
-  //       <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //         <Image src={service?.attachment?.url} width={27} height={27} />
-  //         <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
-  //       </span>
-  //     ),
-  //     key: `service${service?.id}`,
-  //     children: [],
-  //     disabled: service?.subServices?.length > 0 ? false : true,
-  //   };
-  //   if (service?.subServices?.length > 0) {
-  //     serviceNode.children = service.subServices.map((subService: any) => {
-  //       const subServiceNode = {
-  //         title: (
-  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //             <Image src={subService?.attachment?.url} width={27} height={27} />
-  //             {subService?.name}
-  //           </span>
-  //         ),
-  //         key:
-  //           subService?.tools?.length > 0 ? `${subService?.id}` : `onlySub service${service?.id} sub${subService?.id}`,
-  //         children: [],
-  //       };
-  //       if (subService?.tools?.length > 0) {
-  //         subServiceNode.children = subService.tools.map((tool: any) => ({
-  //           title: (
-  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //               <Image src={tool?.attachment?.url} width={27} height={27} />
-  //               {tool?.name}
-  //             </span>
-  //           ),
-  //           key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
-  //         }));
-  //       }
-  //       return subServiceNode;
-  //     });
-  //   }
-  //   return serviceNode;
-  // });
-
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
     return {
       title: (
@@ -479,7 +443,7 @@ export const EditRequest: React.FC = () => {
           </span>
         </span>
       ),
-      key: `${service?.id}`,
+      key: `service${service?.id}`,
       serviceId: `${service?.id}`,
       children:
         service?.subServices?.length > 0
@@ -494,7 +458,10 @@ export const EditRequest: React.FC = () => {
                     </span>
                   </span>
                 ),
-                key: `${subService?.id}`,
+                key:
+                  subService?.tools?.length > 0
+                    ? `sub${subService?.id}`
+                    : `onlySub service${service?.id} sub${subService?.id}`,
                 serviceId: `${service?.id}`,
                 subServiceId: `${subService?.id}`,
                 children:
@@ -510,7 +477,7 @@ export const EditRequest: React.FC = () => {
                               </span>
                             </span>
                           ),
-                          key: `${tool?.id}`,
+                          key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
                           serviceId: `${service?.id}`,
                           subServiceId: `${subService?.id}`,
                           toolId: `${tool?.id}`,
@@ -619,6 +586,9 @@ export const EditRequest: React.FC = () => {
       requestForQuotationContactType: 2,
     };
     function extractServicesIds(input: any) {
+      requestServices = [];
+      // console.log(requestServicesArray);
+      // console.log(input);
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -628,19 +598,26 @@ export const EditRequest: React.FC = () => {
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: parseInt(parts[3].replace('tool', '')),
           };
-          requestServices.push(result);
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
         } else if (parts[0] == 'onlySub') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: null,
           };
-          requestServices.push(result);
+          // console.log(requestServices);
+          // console.log(result);
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
         }
         return result;
       });
     }
-    extractServicesIds(requestServicesArray);
+    extractServicesIds(requestServices.length == 0 ? test : requestServicesArray);
+    // console.log(requestServices);
 
     const filteredAttributeChoiceAndAttachments = updatedAttributeChoiceAndAttachments.filter(
       (entry) => entry.statusOfAttributeChoiceId === true,
@@ -686,9 +663,9 @@ export const EditRequest: React.FC = () => {
       sourceLatitude: sourcePosition.lat,
       destinationLongitude: destinationPosition.lng,
       destinationLatitude: destinationPosition.lat,
+      services: requestServices,
 
       comment: form.getFieldValue('comment'),
-      services: requestServices,
       attributeForSourceTypeValues: outputArray,
       attributeChoiceAndAttachments: allAttachments,
       userId: userId ? userId : '0',
@@ -702,9 +679,11 @@ export const EditRequest: React.FC = () => {
       setAttachmentIdsChanged(false);
       return;
     }
-
-    console.log(requestData);
+    // console.log(requestData);
+    requestServicesArray = [];
   };
+
+  // console.log(requestServicesArray);
 
   useEffect(() => {
     if (attachmentIdsChanged) {
@@ -778,7 +757,11 @@ export const EditRequest: React.FC = () => {
   const UploadAttachments = async (options: any) => {
     const { file } = options;
 
+    console.log(typeof file?.uid === 'string');
+
     if (typeof file?.uid === 'string') picturesList?.push(file);
+    console.log('picturesList', picturesList);
+    console.log(picturesList?.length, fileListLength);
 
     if (picturesList?.length === fileListLength) {
       const formData = new FormData();
@@ -804,31 +787,23 @@ export const EditRequest: React.FC = () => {
 
   useEffect(() => {
     const updateFormValues = async () => {
-      // Check if RequestData is not an empty object
-
-      console.log('Updating form with new RequestData:', RequestData);
-
       const checkedKeysById: any[] = [];
-      RequestData?.services?.map((item: any) => {
-        item.subServices?.map((sub: any) => {
-          if (sub?.tools?.length === 0) {
-            checkedKeysById.push(`${sub.id}`);
+      RequestData?.services?.map((service: any) => {
+        service.subServices?.map((subService: any) => {
+          if (subService?.tools?.length === 0) {
+            checkedKeysById.push(`onlySub service${service?.id} sub${subService?.id}`);
           } else
-            sub.tools.map((tool: any) => {
-              checkedKeysById.push(`${tool.id}`);
+            subService.tools.map((tool: any) => {
+              checkedKeysById.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
             });
         });
       });
-
       setTest(checkedKeysById);
-
       await form.setFieldsValue(RequestData);
     };
-
-    console.log('test', test);
-
     updateFormValues();
   }, [RequestData, form]);
+
   useEffect(() => {
     attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => {
       sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => {
@@ -917,7 +892,7 @@ export const EditRequest: React.FC = () => {
             title={t(`addRequest.${step.title}`)}
             icon={
               index === 0 ? (
-                <BankOutlined />
+                <HomeOutlined />
               ) : index === 1 ? (
                 <PushpinOutlined />
               ) : index === 2 ? (
@@ -1607,11 +1582,7 @@ export const EditRequest: React.FC = () => {
             <>
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.selectService')} :</h4>
               <BaseForm.Item key="100" name={['services']}>
-                {/* {treeData?.map((serviceTreeData: any, serviceIndex: number) => { */}
-                {/* const serviceKeys = selectedServicesKeysMap[serviceIndex] || []; */}
-                {/* return ( */}
                 <Tree
-                  // key={serviceIndex}
                   style={treeStyle}
                   checkable
                   defaultExpandAll={true}
@@ -1620,31 +1591,7 @@ export const EditRequest: React.FC = () => {
                   autoExpandParent={autoExpandParent}
                   onCheck={(checkedKeysValue: any, info: any) => {
                     setTest(checkedKeysValue);
-                    console.log('info', info);
-                    console.log('checkedKeysValue', checkedKeysValue);
-
-                    console.log(
-                      'sssssssaaaaaaaaaaaaaaaaaaaaaaaaaaaa',
-                      info.checkedNodes?.map((item: any) => {
-                        return {
-                          serviceId: item.serviceId,
-                          subServiceId: item.subServiceId,
-                          toolId: item.toolId,
-                        };
-                      }),
-                    );
-
-                    // for (const test of checkedKeysValue) {
-                    //   if (!requestServicesArray.includes(test)) {
-                    //     requestServicesArray.push(test);
-                    //     console.log('requestServicesArray', requestServicesArray);
-                    //   }
-                    // }
-                    // setSelectedServicesKeysMap((prevSelectedKeysMap) => {
-                    //   const updatedKeysMap = { ...prevSelectedKeysMap };
-                    //   updatedKeysMap[serviceIndex] = checkedKeysValue;
-                    //   return updatedKeysMap;
-                    // });
+                    requestServicesArray = [...checkedKeysValue];
                   }}
                   defaultCheckedKeys={test}
                   checkedKeys={test}
@@ -1652,8 +1599,6 @@ export const EditRequest: React.FC = () => {
                   selectedKeys={selectedKeys}
                   treeData={treeData}
                 />
-                {/* );
-                })} */}
               </BaseForm.Item>
 
               <BaseForm.Item name={['comment']}>
