@@ -3,6 +3,7 @@ import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautif
 import './DragAndDropBoard.css';
 import { Button, Modal, Input } from 'antd';
 import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { createGroup } from '@app/services/commissionGroups';
 
 interface Task {
   id: string;
@@ -54,7 +55,7 @@ const initialData: InitialData = {
   },
 };
 
-const DragAndDropBoard = () => {
+const DragAndDrop = () => {
   const [data, setData] = useState(initialData);
   const [isAddColumnModalOpen, setIsAddColumnModalOpen] = useState(false);
   const [newColumnTitle, setNewColumnTitle] = useState('');
@@ -63,7 +64,7 @@ const DragAndDropBoard = () => {
   const [editedColumnTitle, setEditedColumnTitle] = useState('');
 
   const onDragEnd = (result: DropResult) => {
-    console.log(result);
+    console.log('onDragEnd called', result);
 
     const { destination, source, draggableId } = result;
 
@@ -211,6 +212,8 @@ const DragAndDropBoard = () => {
     }
   };
 
+  console.log(Object.keys(data.columns));
+
   return (
     <div className="drag-and-drop-board">
       <DragDropContext onDragEnd={onDragEnd}>
@@ -317,4 +320,4 @@ const DragAndDropBoard = () => {
   );
 };
 
-export default DragAndDropBoard;
+export default DragAndDrop;

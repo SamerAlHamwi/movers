@@ -11,7 +11,7 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import { PrivateRoute } from '@app/hocs/withAuthorization';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { UserRole } from '@app/constants/userRole';
-import DragAndDropBoard from '../Admin/Commission groups';
+import DragAndDropBoard from '../Admin/CommissionGroups';
 
 const AuthLayout = lazy(() => import('@app/components/layouts/AuthLayout/AuthLayout'));
 const ServerErrorPage = lazy(() => import('@app/pages/ErrorsPages/ServerErrorPage'));
