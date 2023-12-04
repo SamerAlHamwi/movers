@@ -59,6 +59,10 @@ export interface CreatePointModalProps extends ModalProps {
   onCreate: (info: Point) => void;
 }
 
+export interface CreateGroupModalProps extends ModalProps {
+  onCreate: (info: any) => void;
+}
+
 export interface CreateCodeModalProps extends ModalProps {
   onCreateCode: (CodeInfo: Code) => void;
 }
@@ -144,6 +148,11 @@ export interface EditPartnerProps extends ModalProps {
 export interface EditPointProps extends ModalProps {
   values: Point | undefined;
   onEdit: (data: Point) => void;
+}
+
+export interface EditGroupProps extends ModalProps {
+  values: any | undefined;
+  onEdit: (data: any) => void;
 }
 
 export interface EditRejectReasonProps extends ModalProps {

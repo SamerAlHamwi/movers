@@ -10,6 +10,7 @@
   border-radius: 4px;
   padding: 8px;
   width: 250px;
+  margin-bottom: 2rem;
 }
 
 .task-list {
@@ -26,11 +27,9 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: rgb(128, 168, 205);
   }
 }
-
-/* ... (existing styles) */
 
 .remove-button {
   background-color: #e74c3c;
