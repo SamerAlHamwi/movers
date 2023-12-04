@@ -9,4 +9,12 @@ const createGroup = async (data: any) => {
   return await httpApi.post(`${apiPrefix.commissionGroups}/Create`, data);
 };
 
-export { getAllGroups, createGroup };
+const updateGroup = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.commissionGroups}/Update`, data);
+};
+
+const SwipeCompany = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.commissionGroups}/SwipeCompanyFromGroupToAnother`, data);
+};
+
+export { getAllGroups, createGroup, updateGroup, SwipeCompany };

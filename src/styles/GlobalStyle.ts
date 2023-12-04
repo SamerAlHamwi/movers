@@ -330,4 +330,48 @@ export default createGlobalStyle`
   .discountPercentage {
     width: 80px !important
   }
+
+  /* DragAndDropBoard.css */
+
+  .groupCard {
+    box-shadow: 1px 2px 10px rgba(0,0,0,0.3);
+    transition: box-shadow 0.3s ease-in-out; 
+  }
+
+  .groupCard:hover {
+    box-shadow: 1px 8px 12px rgba(0, 0, 0, 0.5);
+  }
+
+  .groupCard .ant-card-extra {
+    width: 50%;
+  }
+
+  .groupCard .ant-card-extra .ant-row {
+    display: flex;
+    justify-content: space-evenly;
+  }
+  
+  .groupCard .ant-card-head-title {
+    font-size: 25px;
+  }
+  
+  .groupCard .ant-card-body {
+    padding: 15px 20px;
+  }
+  
+  .drag-and-drop-board .ant-spin-container {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-around;
+    gap: 2rem;
+  }
+  
+  .drag-and-drop-board .ant-spin-nested-loading {
+    width: 100%; 
+  }
+  
+  .drag-and-drop-board .ant-spin-nested-loading > div {
+    width: 100%; 
+  }
 `;

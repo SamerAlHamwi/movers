@@ -4,19 +4,20 @@
   padding: 20px;
 }
 
-.group {
+.column {
   background-color: #f4f4f4;
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 8px;
   width: 250px;
+  margin-bottom: 2rem;
 }
 
-.company-list {
+.task-list {
   min-height: 100px;
 }
 
-.company {
+.task {
   background-color: #fff;
   border: 1px solid #ddd;
   border-radius: 4px;
@@ -26,7 +27,7 @@
   transition: background-color 0.2s ease;
 
   &:hover {
-    background-color: #f0f0f0;
+    background-color: rgb(128, 168, 205);
   }
 }
 

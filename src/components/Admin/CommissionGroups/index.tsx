@@ -1,40 +1,65 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import './DragAndDropBoard.css';
-import { Button, Modal, Input, Spin } from 'antd';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
-import { getAllGroups, createGroup } from '@app/services/commissionGroups';
-import { useQuery } from 'react-query';
+import { Button, Spin, Badge, Row, Tooltip, Col } from 'antd';
+import { DeleteOutlined, EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import { getAllGroups, createGroup, updateGroup, SwipeCompany } from '@app/services/commissionGroups';
+import { useMutation, useQuery } from 'react-query';
 import { notificationController } from '@app/controllers/notificationController';
+import { useTranslation } from 'react-i18next';
+import { AddCommissionGroup } from '@app/components/modal/AddCommissionGroup';
+import { EditCommissionGroup } from '@app/components/modal/EditCommissionGroup';
+import { Card } from '@app/components/common/Card/Card';
+import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { CreateButtonText, TableButton } from '@app/components/GeneralStyles';
+import { useLanguage } from '@app/hooks/useLanguage';
 
 interface Company {
-  id: string;
+  bio: string;
   name: string;
+  address: string;
+  translations: {
+    name: string;
+    bio: string;
+    address: string;
+    language: string;
+  }[];
+  companyContact: any;
+  generalRating: any;
+  reviews: any;
+  numberOfTransfers: number;
+  id: number;
 }
 
 interface Group {
-  id: string;
   name: string;
-  companies: any[];
+  companies: Company[];
   isDefault: boolean;
-}
-
-interface InitialData {
-  groups: Record<string, Group>;
-  companies: Record<string, Company>;
+  id: any;
 }
 
 const DragAndDropBoard = () => {
-  const [dataGroup, setDataGroup] = useState<Group[]>();
-  const [dataCompany, setDataCompany] = useState<any[]>();
-  const [data, setData] = useState<InitialData>({ groups: {}, companies: {} });
-  const [isAddColumnModalOpen, setIsAddColumnModalOpen] = useState(false);
-  const [newColumnTitle, setNewColumnTitle] = useState('');
-  const [isEditColumnModalOpen, setIsEditColumnModalOpen] = useState(false);
-  const [editedColumnId, setEditedColumnId] = useState('');
-  const [editedColumnTitle, setEditedColumnTitle] = useState('');
-  const [dataSource, setDataSource] = useState<any[] | undefined>(undefined);
+  const { t } = useTranslation();
+  const { language } = useLanguage();
+
+  const [modalState, setModalState] = useState({
+    add: false,
+    edit: false,
+    delete: false,
+  });
+  const [dataGroup, setDataGroup] = useState<Group[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [editmodaldata, setEditmodaldata] = useState<any | undefined>(undefined);
+  const [isEdit, setIsEdit] = useState(false);
+
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
+  };
+
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const { refetch, isRefetching } = useQuery(
     ['AllGroups'],
@@ -42,7 +67,7 @@ const DragAndDropBoard = () => {
       getAllGroups()
         .then((data) => {
           const result = data.data?.result?.items;
-          setDataSource(result);
+          setDataGroup(result);
           setLoading(!data.data?.success);
         })
         .catch((err) => {
@@ -50,221 +75,198 @@ const DragAndDropBoard = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined,
+      enabled: dataGroup === undefined,
     },
   );
 
-  useEffect(() => {
-    if (dataSource) {
-      const Groups = dataSource?.map((group) => ({
-        id: `${group.id}`,
-        name: group.name,
-        companies: group.companies.map((company: any) => company),
-        isDefault: group.isDefault,
-      }));
+  const handleSwipeCompany = (oldGroupId: any, newGroupId: any, companyId: any) => {
+    if (oldGroupId != newGroupId)
+      SwipeCompanyFromGroupToAnother.mutate({
+        oldGroupId: oldGroupId,
+        newGroupId: newGroupId,
+        companyId: companyId,
+      });
+  };
 
-      setDataGroup(Groups);
-    }
-  }, [dataSource]);
+  const SwipeCompanyFromGroupToAnother = useMutation((data: any) =>
+    SwipeCompany(data)
+      .then((data) => {
+        setLoading(true);
+        notificationController.success({ message: t('groups.SwipeCompanySuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+    setIsEdit(false);
+    setRefetchOnAdd(false);
+  }, [language, refetchOnAdd, isEdit]);
+
+  const addGroup = useMutation((data: any) =>
+    createGroup(data)
+      .then((data) => {
+        notificationController.success({ message: t('groups.addGroupSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, add: addGroup.isLoading }));
+  }, [addGroup.isLoading]);
+
+  const editGroup = useMutation((data: any) => updateGroup(data));
+
+  const handleEdit = (data: any, id: number) => {
+    editGroup
+      .mutateAsync({ name: data, id })
+      .then((data) => {
+        setIsEdit(data.data?.success);
+        notificationController.success({ message: t('groups.editGroupSuccessMessage') });
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      });
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editGroup.isLoading }));
+  }, [editGroup.isLoading]);
 
   const onDragEnd = (result: DropResult) => {
-    const { destination, source, draggableId } = result;
-
-    console.log('onDragEnd called', result);
-
-    // If there's no destination or the item was dropped back into its original position
-    if (!destination || (destination.droppableId === source.droppableId && destination.index === source.index)) {
-      console.log('false');
-
-      return;
-    }
-
-    if (!dataGroup) {
-      // Handle the case where dataGroup is undefined
-      console.log('falseeeee');
-
-      return;
-    }
-
-    const startGroupIndex = dataGroup.findIndex((group) => group.id === source.droppableId);
-    const endGroupIndex = dataGroup.findIndex((group) => group.id === destination.droppableId);
-
-    const updatedDataGroup = [...dataGroup];
-    const draggedCompany = updatedDataGroup[startGroupIndex]?.companies[source.index];
-
-    if (!draggedCompany) {
-      // Handle the case where draggedCompany is undefined
-      return;
-    }
-
-    // Remove the company from the source group
-    updatedDataGroup[startGroupIndex]?.companies.splice(source.index, 1);
-
-    // Add the company to the destination group
-    updatedDataGroup[endGroupIndex]?.companies.splice(destination.index, 0, draggedCompany);
-
-    // Update the state with the new data
-    setDataGroup(updatedDataGroup);
+    setLoading(true);
+    handleSwipeCompany(result.source.droppableId, result.destination?.droppableId, result.draggableId);
   };
 
-  const removeTask = (companyId: string) => {
-    console.log('nnn');
-
-    // const newData = { ...data };
-    // const defaultColumnId = 'default-group';
-
-    // Object.keys(newData.groups).forEach((companyId) => {
-    //   newData.groups[companyId].companiesIds = newData.groups[companyId].companiesIds.filter((id) => id !== companyId);
-    // });
-
-    // // Move the removed task to the default group
-    // newData.groups[defaultColumnId].companiesIds.push(companyId);
-
-    // setData(newData);
-  };
-
-  const removeGroup = (groupId: string) => {
-    console.log('groupId', groupId);
-
-    // if (groupId === 'default-group') {
-    //   // Prevent removing the default group
-    //   return;
-    // }
-
-    // const newData = { ...data };
-    // const defaultColumnId = 'default-group';
-
-    // // Move tasks from the removed group to the default group
-    // newData.groups[groupId].companiesIds.forEach((companyId) => {
-    //   newData.groups[defaultColumnId].companiesIds.push(companyId);
-    // });
-
-    // // Remove the group
-    // delete newData.groups[groupId];
-
-    // setData(newData);
-  };
-
-  // const addGroup = () => {
-  //   const newData = { ...data };
-  //   const newGroupId = `group-${Object.keys(data.groups).length + 1}`; // Generate a new group ID
-  //   const newTitle = newColumnTitle; // Set a default name for the new group
-
-  //   newData.groups[newGroupId] = {
-  //     id: newGroupId,
-  //     name: newTitle,
-  //     companiesIds: [], // Initially, no tasks in the new group
-  //   };
-
-  //   setData(newData);
-  // };
-
-  // const openAddGroupModal = () => {
-  //   setIsAddColumnModalOpen(true);
-  // };
-
-  // const closeAddGroupModal = () => {
-  //   setIsAddColumnModalOpen(false);
-  //   setNewColumnTitle(''); // Reset the name when the modal is closed
-  // };
-
-  // const handleAddColumn = () => {
-  //   if (newColumnTitle.trim() !== '') {
-  //     addGroup();
-  //     closeAddGroupModal();
-  //   }
-  // };
-
-  const openEditColumnModal = (companyId: string, companyName: string) => {
-    console.log('companyId', companyId, 'companyName', companyName);
-
-    // setEditedColumnId(companyId);
-    // setEditedColumnTitle(columnTitle);
-    // setIsEditColumnModalOpen(true);
-  };
-
-  // const closeEditColumnModal = () => {
-  //   setEditedColumnId('');
-  //   setEditedColumnTitle('');
-  //   setIsEditColumnModalOpen(false);
-  // };
-
-  // const handleEditColumn = () => {
-  //   if (editedColumnTitle.trim() !== '') {
-  //     const newData = { ...data };
-  //     newData.groups[editedColumnId].name = editedColumnTitle;
-
-  //     setData(newData);
-  //     closeEditColumnModal();
-  //   }
-  // };
-
-  return (
-    <div className="drag-and-drop-board">
-      <DragDropContext onDragEnd={onDragEnd}>
-        <div className="add-column-button-container">
-          <Button
-            type="primary"
-            // onClick={openAddGroupModal}
-            className="add-column-button"
-          >
-            Add Group
-          </Button>
-        </div>
-
-        <Spin spinning={loading}>
-          {dataGroup?.map((group) => {
-            return (
-              <div className="group" key={group.id}>
-                <div className="column-header">
-                  <h2>{group.name}</h2>
-                  {!group.isDefault && (
-                    <Button onClick={() => removeGroup(group.id)} className="remove-column-button">
-                      <DeleteOutlined />
-                    </Button>
-                  )}
-
-                  {!group.isDefault && (
-                    <Button onClick={() => openEditColumnModal(group.id, group.name)} className="edit-column-button">
-                      <EditOutlined />
-                    </Button>
-                  )}
-                </div>
-
-                <Droppable droppableId={group.id} key={group.id}>
+  const commonContent = (group: Group) => (
+    <Card
+      className="groupCard"
+      title={`${group.name} %`}
+      bordered={false}
+      extra={
+        !group.isDefault && (
+          <Row>
+            <Col>
+              <Tooltip placement="top" title={t('common.edit')}>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    handleModalOpen('edit');
+                    setEditmodaldata(group);
+                  }}
+                >
+                  <EditOutlined />
+                </TableButton>
+              </Tooltip>
+            </Col>
+            {/* <Col>
+              <Tooltip placement="top" title={t('common.delete')}>
+                <TableButton severity="error">
+                  <DeleteOutlined />
+                </TableButton>
+              </Tooltip>
+            </Col> */}
+          </Row>
+        )
+      }
+    >
+      <div className="column" key={group.id}>
+        <Droppable droppableId={group.id.toString()} key={group.id.toString()}>
+          {(provided) => (
+            <div className="task-list" ref={provided.innerRef} {...provided.droppableProps}>
+              {group.companies?.map((company, index) => (
+                <Draggable key={company.id.toString()} draggableId={company.id.toString()} index={index}>
                   {(provided) => (
-                    <div className="company-list" ref={provided.innerRef} {...provided.droppableProps}>
-                      {group.companies?.map((company, index) => (
-                        <Draggable key={company.id} draggableId={company.id} index={index}>
-                          {(provided) => (
-                            <div
-                              className="company"
-                              ref={provided.innerRef}
-                              {...provided.draggableProps}
-                              {...provided.dragHandleProps}
-                            >
-                              <div>{company.name}</div>
+                    <div
+                      className="task"
+                      ref={provided.innerRef}
+                      {...provided.draggableProps}
+                      {...provided.dragHandleProps}
+                    >
+                      <div>{company.name}</div>
 
-                              {!group.isDefault && (
-                                <button onClick={() => removeTask(company.id)} className="remove-button">
-                                  Reset
-                                </button>
-                              )}
-                            </div>
-                          )}
-                        </Draggable>
-                      ))}
-
-                      {provided.placeholder}
+                      {/* {!group.isDefault && (
+                              <button onClick={() => removeTask(company.id)} className="remove-button">
+                                Reset
+                              </button>
+                            )} */}
                     </div>
                   )}
-                </Droppable>
-              </div>
-            );
-          })}
-        </Spin>
-      </DragDropContext>
-    </div>
+                </Draggable>
+              ))}
+              {provided.placeholder}
+            </div>
+          )}
+        </Droppable>
+      </div>
+    </Card>
+  );
+
+  return (
+    <Card title={t('groups.groupsList')} padding={'1.25rem 1.25rem 0'}>
+      <Row justify={'end'}>
+        <Btn
+          type="primary"
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() => handleModalOpen('add')}
+        >
+          <CreateButtonText>{t('groups.addGroup')}</CreateButtonText>
+        </Btn>
+      </Row>
+      <div className="drag-and-drop-board">
+        <Row>
+          <DragDropContext onDragEnd={onDragEnd}>
+            <Spin spinning={loading || isRefetching}>
+              {dataGroup?.map((group) => {
+                return !group.isDefault ? (
+                  commonContent(group)
+                ) : (
+                  <Badge.Ribbon text={t('groups.default')} key={group.id}>
+                    {commonContent(group)}
+                  </Badge.Ribbon>
+                );
+              })}
+            </Spin>
+          </DragDropContext>
+        </Row>
+
+        {/*    Add Group   */}
+        {modalState.add && (
+          <AddCommissionGroup
+            visible={modalState.add}
+            onCancel={() => handleModalClose('add')}
+            onCreate={(info) => {
+              addGroup.mutateAsync(info);
+            }}
+            isLoading={addGroup.isLoading}
+          />
+        )}
+
+        {/*    EDIT    */}
+        {modalState.edit && (
+          <EditCommissionGroup
+            values={editmodaldata}
+            visible={modalState.edit}
+            onCancel={() => handleModalClose('edit')}
+            onEdit={(data) => {
+              editmodaldata !== undefined && handleEdit(data.name, data.id);
+            }}
+            isLoading={editGroup.isLoading}
+          />
+        )}
+      </div>
+    </Card>
   );
 };
 
