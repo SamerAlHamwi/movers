@@ -888,8 +888,18 @@
     "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
   },
 
-  "_comment29": "*********************************** editRequest ************************************************",
-  "editRequest": {},
+  "_comment29": "*********************************** groups ************************************************",
+  "groups": {
+    "groupsList": "Commission Groups List",
+    "addGroupModalTitle": "Add Commission Group",
+    "addGroupSuccessMessage": "The Commission Group Has Been Added Successfully",
+    "editGroupModalTitle": "Edit Commission Group",
+    "editGroupSuccessMessage": "The Commission Group Title Has Been Edited Successfully",
+    "default": "Default",
+    "SwipeCompanySuccessMessage": "The Company Has Been Successfully Assigned To The Commission Group",
+    "addGroup": "Add Commission Group",
+    "only3Number": "only 3 Numbers Are Allowed"
+  },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {

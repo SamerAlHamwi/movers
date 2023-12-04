@@ -30,4 +30,5 @@ export default {
   attachment: '/api/services/app/Attachment',
   statictics: '/api/services/app/Statictics',
   configurations: '/api/services/app/Configuration',
+  commissionGroups: '/api/services/app/CommissionGroup',
 };

@@ -888,8 +888,18 @@
     "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح"
   },
 
-  "_comment29": "*********************************** editRequest ************************************************",
-  "editRequest": {},
+  "_comment29": "*********************************** groups ************************************************",
+  "groups": {
+    "groupsList": "قائمة مجموعات العمولة",
+    "addGroupModalTitle": "إضافة مجموعة عمولة",
+    "addGroupSuccessMessage": "تم إضافة مجموعة العمولة بنجاح",
+    "editGroupModalTitle": "تعديل عنوان مجموعة العمولة",
+    "editGroupSuccessMessage": "تم تعديل عنوان مجموعة العمولة بنجاح",
+    "default": "الإفتراضية",
+    "SwipeCompanySuccessMessage": "تم إسناد الشركة إلى مجموعة العمولة بنجاح",
+    "addGroup": "إضافة مجموعة عمولة",
+    "only3Number": "يُسمح فقط ب 3 أرقام"
+  },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
