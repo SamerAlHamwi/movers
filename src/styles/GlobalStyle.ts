@@ -376,7 +376,7 @@ export default createGlobalStyle`
   }
 
   .feature-row {
-    background-color: #bfe4f2;
+    background-color: #d3fcc2;
   }
   
 `;

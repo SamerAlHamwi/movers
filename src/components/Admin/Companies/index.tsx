@@ -38,6 +38,11 @@ import { useSelector } from 'react-redux';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 
+interface CompanyRecord {
+  id: number;
+  isFeature: boolean;
+}
+
 export const Companies: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
@@ -414,18 +419,6 @@ export const Companies: React.FC = () => {
                   </TableButton>
                 </Tooltip>
 
-                <Tooltip placement="top" title={t('companies.possibleClients')}>
-                  <TableButton
-                    // severity="#f9a3a4"
-                    color="#f9a3a4"
-                    onClick={() => {
-                      Navigate(`${record.id}/possibleClients`, { replace: false });
-                    }}
-                  >
-                    <TeamOutlined />
-                  </TableButton>
-                </Tooltip>
-
                 <Tooltip placement="top" title={t('companies.branches')}>
                   <TableButton
                     severity="warning"
@@ -434,6 +427,17 @@ export const Companies: React.FC = () => {
                     }}
                   >
                     <ApartmentOutlined />
+                  </TableButton>
+                </Tooltip>
+
+                <Tooltip placement="top" title={t('companies.possibleClients')}>
+                  <TableButton
+                    severity="success"
+                    onClick={() => {
+                      Navigate(`${record.id}/possibleClients`, { replace: false });
+                    }}
+                  >
+                    <TeamOutlined />
                   </TableButton>
                 </Tooltip>
 
@@ -614,6 +618,8 @@ export const Companies: React.FC = () => {
           loading={loading}
           dataSource={dataSource}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+          rowKey={(record: CompanyRecord) => record.id.toString()}
+          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
     </>
