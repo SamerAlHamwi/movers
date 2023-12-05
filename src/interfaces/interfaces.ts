@@ -318,6 +318,10 @@ export interface Partner {
   discountPercentage: number;
 }
 
+export interface FileSizeConfig {
+  fileSize: string;
+}
+
 export interface EmailConfig {
   message: string;
   messageForResetPassword: string;

@@ -887,7 +887,10 @@
     "smsPassword": "User Name",
     "serviceAccountSID": "The Service Identifier",
     "editSmsSetting": "Edit SMS Setting",
-    "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
+    "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully",
+    "FileSizeSetting": "Files Size Setting",
+    "fileSize": "File Size",
+    "editFileSizeSetting": "Edit Files Size"
   },
 
   "_comment29": "*********************************** groups ************************************************",
