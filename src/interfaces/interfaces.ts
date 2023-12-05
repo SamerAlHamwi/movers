@@ -294,6 +294,7 @@ export interface RequestModel {
   attachments: [];
   services: [];
   attributeChoiceAndAttachments: any[];
+  isFeature: boolean;
 }
 
 export interface CountryModel {

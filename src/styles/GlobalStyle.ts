@@ -374,4 +374,9 @@ export default createGlobalStyle`
   .drag-and-drop-board .ant-spin-nested-loading > div {
     width: 100%; 
   }
+
+  .feature-row {
+    background-color: #bfe4f2;
+  }
+  
 `;
