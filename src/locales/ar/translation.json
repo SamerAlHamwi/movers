@@ -787,7 +787,9 @@
     "activatePartnerSuccessMessage": "تم تفعيل الباقة",
     "deactivatePartnerSuccessMessage": "تم إلغاء تفعيل الباقة",
     "deactivatePartnerConfirm": "إلغاء تفعيل حالة الباقة؟",
-    "activatePartnerConfirm": "تفعيل حالة الباقة؟"
+    "activatePartnerConfirm": "تفعيل حالة الباقة؟",
+    "featuredList": "قائمة الباقات المُمَيِزة",
+    "numberInMonths": "عدد الأشهر"
   },
 
   "_comment25": "*********************************** rejectReasons ************************************************",
@@ -940,7 +942,7 @@
     "offers": "عروض الأسعار",
     "OfferDeails": "تفاصيل العرض",
     "PartnersDetails": "تفاصيل الشريك",
-    "Points": "الباقات",
+    "Points": "باقات النقاط",
     "RejectReason": "أسباب الرفض",
     "Drafts": "الطلبات الغير مستكملة",
     "CompleteDraft": "إستكمال طلب نقل",
@@ -948,7 +950,9 @@
     "Configurations": "الإعدادات",
     "editRequest": "تعديل طلب النقل",
     "ReviewsDetails": "تفاصيل المراجعات",
-    "EditCompany": "تعديل الشركة"
+    "EditCompany": "تعديل الشركة",
+    "CommissionGroups": "مجموعات العمولة",
+    "FeaturedBundles": "الباقات المُمَيِزة"
   },
 
   "header": {
