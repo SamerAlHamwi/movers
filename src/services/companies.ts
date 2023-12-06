@@ -18,6 +18,12 @@ const getAllCompanies = async (
   return await httpApi.get(apiUrl);
 };
 
+const getAllSuitableCompanies = async (type: string | undefined, requestId: string | undefined) => {
+  return await httpApi.get(
+    `${apiPrefix.companies}/GetAll?GetCompaniesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true`,
+  );
+};
+
 const getSuitableCompanies = async (
   type: string | undefined,
   page: number,
@@ -65,6 +71,7 @@ const confirmCompany = async (data: any) => {
 
 export {
   getAllCompanies,
+  getAllSuitableCompanies,
   getSuitableCompanies,
   getCompanyById,
   GetReviewDetailsByCompanyId,

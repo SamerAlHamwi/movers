@@ -23,6 +23,7 @@ import {
   SettingOutlined,
   GroupOutlined,
   AppstoreOutlined,
+  StarOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -79,6 +80,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     key: 'Points',
     url: '/Points',
     icon: <DollarOutlined style={{ marginBottom: '-7px' }} />,
+  },
+  {
+    title: 'sidebarNavigation.FeaturedBundles',
+    key: 'FeaturedBundles',
+    url: '/FeaturedBundles',
+    icon: <StarOutlined />,
   },
   {
     title: 'sidebarNavigation.AskForHelp',

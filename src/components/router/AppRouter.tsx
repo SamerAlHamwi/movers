@@ -63,6 +63,8 @@ const FrequentlyQuestionPage = lazy(() => import('@app/pages/OtherPages/Frequent
 const ConfigurationsPage = lazy(() => import('@app/pages/OtherPages/ConfigurationsPage'));
 const PointPage = lazy(() => import('@app/pages/PointsPages/PointPage'));
 const ReviewDetailsPage = lazy(() => import('@app/pages/CompaniesPages/ReviewsDetailsPage'));
+const CommissionGroupPage = lazy(() => import('@app/pages/CommissionGroupsPage/CommissionGroupsPage'));
+const FeaturedBundlePage = lazy(() => import('@app/pages/PointsPages/FeaturedBundlesPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -114,6 +116,8 @@ const FrequentlyQuestionsPage = withLoading(FrequentlyQuestionPage);
 const ConfigurationPage = withLoading(ConfigurationsPage);
 const PointsPage = withLoading(PointPage);
 const ReviewsDetailsPage = withLoading(ReviewDetailsPage);
+const CommissionGroupsPage = withLoading(CommissionGroupPage);
+const FeaturedBundlesPage = withLoading(FeaturedBundlePage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -383,7 +387,17 @@ export const AppRouter: React.FC = () => {
             path="commissionGroups"
             element={
               <PrivateRoute allowedRoles={[UserRole[1]]}>
-                <DragAndDropBoard />
+                <CommissionGroupsPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Featured Bundles */}
+          <Route
+            path="FeaturedBundles"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <FeaturedBundlesPage />
               </PrivateRoute>
             }
           />

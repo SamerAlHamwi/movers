@@ -348,7 +348,7 @@ export const User: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('users.changePasswordModalTitle')}>
+            {/* <Tooltip placement="top" title={t('users.changePasswordModalTitle')}>
               <TableButton
                 severity="warning"
                 onClick={() => {
@@ -358,7 +358,7 @@ export const User: React.FC = () => {
               >
                 <LockOutlined />
               </TableButton>
-            </Tooltip>
+            </Tooltip> */}
 
             {record.isActive === true ? (
               <Tooltip placement="top" title={t('common.deactivate')}>

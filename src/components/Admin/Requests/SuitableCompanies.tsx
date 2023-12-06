@@ -13,8 +13,8 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useSelector } from 'react-redux';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getSuitableCompanies } from '@app/services/companies';
-import { getSuitableBranches } from '@app/services/branches';
+import { getAllSuitableCompanies, getSuitableCompanies } from '@app/services/companies';
+import { getAllSuitableBranches, getSuitableBranches } from '@app/services/branches';
 import { suitableForRequest } from '@app/services/requests';
 import { Checkbox } from '@app/components/common/Checkbox/Checkbox';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
@@ -30,6 +30,11 @@ interface ForRequest {
     companyIds: number[];
     companyBranchIds: number[];
   };
+}
+
+interface CompanyRecord {
+  id: number;
+  isFeature: boolean;
 }
 
 export const SuitableCompanies: React.FC = () => {
@@ -55,6 +60,22 @@ export const SuitableCompanies: React.FC = () => {
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
   const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
 
+  const companies = useQuery(['AllSuitableCompanies'], () =>
+    getAllSuitableCompanies(type, requestId)
+      .then((data) => {
+        const result = data.data?.result?.items;
+
+        const defaultSelectedCompanies = result
+          ?.filter((record: CompanyRecord) => record.isFeature)
+          .map((record: CompanyRecord) => record.id);
+        setSelectedCompanies(defaultSelectedCompanies);
+      })
+      .catch((err) => {
+        setLoadingCompany(false);
+        notificationController.error({ message: err?.message || err.error?.message });
+      }),
+  );
+
   const { refetch: refetchCompanies, isRefetching: isRefetchingCompanies } = useQuery(
     ['SuitableCompanies', pageCompany, pageSizeCompany],
     () =>
@@ -71,6 +92,27 @@ export const SuitableCompanies: React.FC = () => {
         }),
     {
       enabled: dataCompany === undefined,
+    },
+  );
+
+  const branches = useQuery(
+    ['AllSuitableBranches'],
+    () =>
+      getAllSuitableBranches(type, requestId)
+        .then((data) => {
+          const result = data.data?.result?.items;
+
+          const defaultSelectedCompanies = result
+            ?.filter((record: CompanyRecord) => record.isFeature)
+            .map((record: CompanyRecord) => record.id);
+          setSelectedBranches(defaultSelectedCompanies);
+        })
+        .catch((err) => {
+          setLoadingBranch(false);
+          notificationController.error({ message: err?.message || err.error?.message });
+        }),
+    {
+      enabled: dataBranch === undefined,
     },
   );
 
@@ -158,10 +200,13 @@ export const SuitableCompanies: React.FC = () => {
   const columnsCompany = [
     type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
-      dataIndex: 'id',
-      render: (id: any) => (
-        <Checkbox onChange={() => handleCheckboxChangeForCompanies(id)} checked={selectedCompanies.includes(id)} />
-      ),
+      render: (record: any) =>
+        record && (
+          <Checkbox
+            onChange={() => handleCheckboxChangeForCompanies(record.id)}
+            checked={selectedCompanies.includes(record.id)}
+          />
+        ),
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
@@ -222,9 +267,11 @@ export const SuitableCompanies: React.FC = () => {
   const columnsBranch = [
     type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
-      dataIndex: 'id',
-      render: (id: any) => (
-        <Checkbox onChange={() => handleCheckboxChangeForBranches(id)} checked={selectedBranches.includes(id)} />
+      render: (record: any) => (
+        <Checkbox
+          onChange={() => handleCheckboxChangeForBranches(record.id)}
+          checked={selectedBranches.includes(record.id)}
+        />
       ),
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -265,6 +312,9 @@ export const SuitableCompanies: React.FC = () => {
       ),
     },
   ].filter(Boolean);
+
+  console.log(selectedCompanies);
+  console.log(selectedBranches);
 
   return (
     <>
@@ -312,6 +362,7 @@ export const SuitableCompanies: React.FC = () => {
             </Modal>
           ) : null}
         </Row>
+
         <Table
           pagination={{
             showSizeChanger: true,
@@ -332,6 +383,8 @@ export const SuitableCompanies: React.FC = () => {
           loading={loadingCompany}
           dataSource={dataCompany}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+          rowKey={(record: CompanyRecord) => record.id.toString()}
+          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
 
@@ -366,6 +419,8 @@ export const SuitableCompanies: React.FC = () => {
           loading={loadingBranch}
           dataSource={dataBranch}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+          rowKey={(record: CompanyRecord) => record.id.toString()}
+          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
 

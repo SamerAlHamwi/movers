@@ -79,7 +79,7 @@
     "details": "Details",
     "phoneNumbers": "Phone Numbers",
     "code": "Codes",
-    "onlyNumbers": "Only Numbers are allowed",
+    "onlyNumbers": "Only Numbers Are Allowed",
     "onlyEnglishCharacters": "Only English Characters Are Accepted",
     "onlyArabicCharacters": "Only Arabic Characters Are Accepted",
     "invalidEmail": "Email Is Incorrect",
@@ -787,7 +787,9 @@
     "activatePartnerSuccessMessage": "Activate Bundle Successfully!",
     "deactivatePartnerSuccessMessage": "Deactivate Bundle Successfully!",
     "deactivatePartnerConfirm": "Deactivate  Bundle?",
-    "activatePartnerConfirm": "Activate Bundle?"
+    "activatePartnerConfirm": "Activate Bundle?",
+    "featuredList": "Featured Bundles List",
+    "numberInMonths": "Number Of Months"
   },
 
   "_comment25": "*********************************** rejectReasons ************************************************",
@@ -885,7 +887,10 @@
     "smsPassword": "User Name",
     "serviceAccountSID": "The Service Identifier",
     "editSmsSetting": "Edit SMS Setting",
-    "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully"
+    "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully",
+    "FileSizeSetting": "Files Size Setting",
+    "fileSize": "File Size",
+    "editFileSizeSetting": "Edit Files Size"
   },
 
   "_comment29": "*********************************** groups ************************************************",
@@ -941,7 +946,7 @@
     "offers": "Offers",
     "OfferDeails": "Offer Details",
     "PartnersDetails": "REM Details",
-    "Points": "Bundles",
+    "Points": "Points Bundles",
     "RejectReason": "Reject Reasons",
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
@@ -949,7 +954,9 @@
     "Configurations": "Configurations",
     "editRequest": "Edit Request",
     "ReviewsDetails": "Reviews Details",
-    "EditCompany": "Edit Company"
+    "EditCompany": "Edit Company",
+    "CommissionGroups": "Commission Groups",
+    "FeaturedBundles": "Featured Bundles"
   },
 
   "header": {

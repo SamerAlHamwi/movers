@@ -9,6 +9,12 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
   );
 };
 
+const getAllSuitableBranches = async (type: string | undefined, requestId: string | undefined) => {
+  return await httpApi.get(
+    `${apiPrefix.branches}/GetAll?GetCompnyBranchesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true`,
+  );
+};
+
 const getSuitableBranches = async (
   type: string | undefined,
   page: number,
@@ -52,6 +58,7 @@ const DeleteBranch = async (id: number) => {
 
 export {
   getAllBranches,
+  getAllSuitableBranches,
   getSuitableBranches,
   getBranch,
   GetReviewDetailsByBranchId,
