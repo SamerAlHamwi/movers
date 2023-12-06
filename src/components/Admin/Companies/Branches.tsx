@@ -24,6 +24,11 @@ import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 
+interface CompanyRecord {
+  id: number;
+  isFeature: boolean;
+}
+
 export const Branches: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
@@ -366,6 +371,8 @@ export const Branches: React.FC = () => {
           loading={loading}
           dataSource={data}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+          rowKey={(record: CompanyRecord) => record.id.toString()}
+          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
     </>

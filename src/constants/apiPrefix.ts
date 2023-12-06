@@ -31,4 +31,5 @@ export default {
   statictics: '/api/services/app/Statictics',
   configurations: '/api/services/app/Configuration',
   commissionGroups: '/api/services/app/CommissionGroup',
+  FeaturedBundles: '/api/services/app/Point',
 };

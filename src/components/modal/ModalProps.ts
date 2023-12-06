@@ -19,6 +19,7 @@ import {
   RejectReason,
   EmailConfig,
   SmsConfig,
+  FileSizeConfig,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -177,6 +178,11 @@ export interface EditCountryProps extends ModalProps {
 export interface EditCityProps extends ModalProps {
   city_values: CityModel | undefined;
   onEdit: (data: CityModel) => void;
+}
+
+export interface EditFileSizeSettingProps extends ModalProps {
+  values: FileSizeConfig | undefined;
+  onEdit: (data: FileSizeConfig) => void;
 }
 
 export interface EditEmailSettingProps extends ModalProps {
