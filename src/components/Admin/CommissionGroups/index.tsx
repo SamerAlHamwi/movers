@@ -2,7 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import './DragAndDropBoard.css';
 import { Button, Spin, Badge, Row, Tooltip, Col } from 'antd';
-import { DeleteOutlined, EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  EditOutlined,
+  EllipsisOutlined,
+  RetweetOutlined,
+  RollbackOutlined,
+  SettingOutlined,
+} from '@ant-design/icons';
 import { getAllGroups, createGroup, updateGroup, SwipeCompany } from '@app/services/commissionGroups';
 import { useMutation, useQuery } from 'react-query';
 import { notificationController } from '@app/controllers/notificationController';
@@ -52,6 +59,7 @@ const DragAndDropBoard = () => {
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<any | undefined>(undefined);
   const [isEdit, setIsEdit] = useState(false);
+  const [isDefault, setIsDefault] = useState(0);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -79,15 +87,6 @@ const DragAndDropBoard = () => {
     },
   );
 
-  const handleSwipeCompany = (oldGroupId: any, newGroupId: any, companyId: any) => {
-    if (oldGroupId != newGroupId)
-      SwipeCompanyFromGroupToAnother.mutate({
-        oldGroupId: oldGroupId,
-        newGroupId: newGroupId,
-        companyId: companyId,
-      });
-  };
-
   const SwipeCompanyFromGroupToAnother = useMutation((data: any) =>
     SwipeCompany(data)
       .then((data) => {
@@ -106,6 +105,13 @@ const DragAndDropBoard = () => {
     setIsEdit(false);
     setRefetchOnAdd(false);
   }, [language, refetchOnAdd, isEdit]);
+
+  useEffect(() => {
+    if (dataGroup) {
+      const defaultGroup = dataGroup?.find((group) => group.isDefault === true)?.id;
+      setIsDefault(defaultGroup);
+    }
+  }, [dataGroup != undefined]);
 
   const addGroup = useMutation((data: any) =>
     createGroup(data)
@@ -140,9 +146,41 @@ const DragAndDropBoard = () => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editGroup.isLoading }));
   }, [editGroup.isLoading]);
 
-  const onDragEnd = (result: DropResult) => {
-    setLoading(true);
-    handleSwipeCompany(result.source.droppableId, result.destination?.droppableId, result.draggableId);
+  const onDragEnd = async (result: DropResult) => {
+    const { source, destination, draggableId } = result;
+    if (!destination || (source.droppableId === destination.droppableId && source.index === destination.index)) {
+      return;
+    }
+    const sourceGroupId: string = source.droppableId;
+    const companyId: any = draggableId;
+
+    try {
+      setLoading(true);
+      if (sourceGroupId != destination.droppableId) {
+        await SwipeCompanyFromGroupToAnother.mutateAsync({
+          oldGroupId: sourceGroupId,
+          newGroupId: destination.droppableId,
+          companyId: companyId,
+        });
+      }
+    } catch (error) {
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleResetCompany = async (sourceGroupId: string, companyId: number) => {
+    try {
+      setLoading(true);
+      await SwipeCompanyFromGroupToAnother.mutateAsync({
+        oldGroupId: sourceGroupId,
+        newGroupId: isDefault,
+        companyId: companyId,
+      });
+      setLoading(false);
+    } catch (error) {
+      setLoading(false);
+    }
   };
 
   const commonContent = (group: Group) => (
@@ -192,11 +230,13 @@ const DragAndDropBoard = () => {
                     >
                       <div>{company.name}</div>
 
-                      {/* {!group.isDefault && (
-                              <button onClick={() => removeTask(company.id)} className="remove-button">
-                                Reset
-                              </button>
-                            )} */}
+                      {!group.isDefault && (
+                        <Tooltip placement="top" title={t('common.reset')}>
+                          <TableButton severity="success" onClick={() => handleResetCompany(group.id, company.id)}>
+                            <RollbackOutlined />
+                          </TableButton>
+                        </Tooltip>
+                      )}
                     </div>
                   )}
                 </Draggable>
