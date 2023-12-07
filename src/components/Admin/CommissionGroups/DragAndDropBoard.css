@@ -25,6 +25,9 @@
   padding: 8px;
   user-select: none;
   transition: background-color 0.2s ease;
+  word-break: break-word;
+  display: flex;
+  justify-content: space-between;
 
   &:hover {
     background-color: rgb(128, 168, 205);

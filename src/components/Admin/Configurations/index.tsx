@@ -21,7 +21,6 @@ export const Configurations: React.FC = () => {
         <Col span={isDesktop || isTablet ? 12 : 24} style={{ marginBottom: '2rem' }}>
           <FileSizeSetting />
         </Col>
-        {console.log('test')}
       </Row>
       {/* </Card> */}
     </>
