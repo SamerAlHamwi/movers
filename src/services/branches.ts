@@ -11,7 +11,7 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
 
 const getAllSuitableBranches = async (type: string | undefined, requestId: string | undefined) => {
   return await httpApi.get(
-    `${apiPrefix.branches}/GetAll?GetCompnyBranchesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true`,
+    `${apiPrefix.branches}/GetAll?GetCompnyBranchesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true&AcceptRequests=true`,
   );
 };
 
@@ -26,7 +26,7 @@ const getSuitableBranches = async (
   return await httpApi.get(
     `${apiPrefix.branches}/GetAll?GetCompnyBranchesWithRequest=${
       type == '2' ? 'true' : 'false'
-    }&statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&IsForFilter=${
+    }&statues=2&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&AcceptRequests=true&RequestId=${requestId}&IsForFilter=${
       type == '2' ? 'false' : 'true'
     }`,
   );

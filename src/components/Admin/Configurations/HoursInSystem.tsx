@@ -1,27 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Tooltip } from 'antd';
+import { Col, message, Row, Tooltip } from 'antd';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { SmsConfig } from '@app/interfaces/interfaces';
+import { HoursInSystemConfig } from '@app/interfaces/interfaces';
 import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { GetSmsSetting, UpdateSmsSetting } from '@app/services/configurations';
-import { EditSmsSetting } from '@app/components/modal/EditSmsSetting';
+import { GetHoursInSystemSetting, UpdateHoursInSystemSetting } from '@app/services/configurations';
+import { EditFileSizeSetting } from '@app/components/modal/EditFileSizeSetting';
 
-export const SmsSetting: React.FC = () => {
+export const HoursInSystemSetting: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const [modalState, setModalState] = useState({
     edit: false,
   });
-  const [SmsData, setSmsData] = useState<SmsConfig | undefined>(undefined);
+  const [hoursInSystemData, setHoursInSystemData] = useState<HoursInSystemConfig | undefined>(undefined);
   const [isEdit, setIsEdit] = useState(false);
-  const [editmodaldata, setEditmodaldata] = useState<SmsConfig | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<HoursInSystemConfig | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const handleModalOpen = (modalType: any) => {
@@ -33,12 +33,12 @@ export const SmsSetting: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['GetSmsSetting'],
+    ['GetHoursInSystemSetting'],
     () =>
-      GetSmsSetting()
+      GetHoursInSystemSetting()
         .then((data) => {
           const result = data.data?.result;
-          setSmsData(result);
+          setHoursInSystemData(result);
           setLoading(!data.data?.success);
         })
         .catch((err) => {
@@ -46,7 +46,7 @@ export const SmsSetting: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: SmsData === undefined,
+      enabled: hoursInSystemData === undefined,
     },
   );
 
@@ -61,15 +61,15 @@ export const SmsSetting: React.FC = () => {
     setIsEdit(false);
   }, [isEdit, refetch, language]);
 
-  const editSmsSetting = useMutation((data: SmsConfig) => UpdateSmsSetting(data));
+  const editHoursInSystemSetting = useMutation((data: HoursInSystemConfig) => UpdateHoursInSystemSetting(data));
 
-  const handleEdit = (data: SmsConfig) => {
-    editSmsSetting
+  const handleEdit = (data: HoursInSystemConfig) => {
+    editHoursInSystemSetting
       .mutateAsync({ ...data })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`config.editSmsSettingSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`config.editHoursInSystemSettingSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -78,27 +78,26 @@ export const SmsSetting: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editSmsSetting.isLoading }));
-  }, [editSmsSetting.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editHoursInSystemSetting.isLoading }));
+  }, [editHoursInSystemSetting.isLoading]);
 
   return (
     <>
       <Row justify={'end'}>
         {/*    EDIT    */}
-        {modalState.edit && (
-          <EditSmsSetting
+        {/* {modalState.edit && (
+          <EditFileSizeSetting
             values={editmodaldata}
             visible={modalState.edit}
             onCancel={() => handleModalClose('edit')}
             onEdit={(data: any) => editmodaldata !== undefined && handleEdit(data)}
-            isLoading={editSmsSetting.isLoading}
+            isLoading={editHoursInSystemSetting.isLoading}
           />
-        )}
+        )} */}
       </Row>
 
       <Card
-        style={{ height: '55%', marginBottom: '10%' }}
-        title={t('config.SmsSetting')}
+        title={t('config.HoursInSystemSetting')}
         bordered={false}
         extra={
           <Tooltip placement="top" title={t('common.edit')}>
@@ -106,7 +105,7 @@ export const SmsSetting: React.FC = () => {
               severity="info"
               onClick={() => {
                 setModalState;
-                setEditmodaldata(SmsData);
+                setEditmodaldata(hoursInSystemData);
                 handleModalOpen('edit');
               }}
             >
@@ -118,16 +117,13 @@ export const SmsSetting: React.FC = () => {
       >
         <Details>
           <DetailsRow key={1}>
-            <DetailsTitle>{t('config.smsUserName')}</DetailsTitle>
-            <DetailsValue>{SmsData?.smsUserName}</DetailsValue>
+            <DetailsTitle style={{ width: '100%' }}>{t('config.hoursToWaitUser')}</DetailsTitle>
+            <DetailsValue>{hoursInSystemData?.hoursToWaitUser}</DetailsValue>
           </DetailsRow>
-          <DetailsRow key={2}>
-            <DetailsTitle> {t('config.smsPassword')} </DetailsTitle>
-            <DetailsValue>{SmsData?.smsPassword}</DetailsValue>
-          </DetailsRow>
-          <DetailsRow key={3}>
-            <DetailsTitle> {t('config.serviceAccountSID')} </DetailsTitle>
-            <DetailsValue>{SmsData?.serviceAccountSID}</DetailsValue>
+
+          <DetailsRow key={1}>
+            <DetailsTitle style={{ width: '100%' }}>{t('config.hoursToConvertRequestToOutOfPossible')}</DetailsTitle>
+            <DetailsValue>{hoursInSystemData?.hoursToConvertRequestToOutOfPossible}</DetailsValue>
           </DetailsRow>
         </Details>
       </Card>
