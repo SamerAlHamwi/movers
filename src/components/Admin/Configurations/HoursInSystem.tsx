@@ -10,7 +10,7 @@ import { HoursInSystemConfig } from '@app/interfaces/interfaces';
 import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { GetHoursInSystemSetting, UpdateHoursInSystemSetting } from '@app/services/configurations';
-import { EditFileSizeSetting } from '@app/components/modal/EditFileSizeSetting';
+import { EditHoursInSystemSetting } from '@app/components/modal/EditHoursInSystemSetting';
 
 export const HoursInSystemSetting: React.FC = () => {
   const { t } = useTranslation();
@@ -85,15 +85,15 @@ export const HoursInSystemSetting: React.FC = () => {
     <>
       <Row justify={'end'}>
         {/*    EDIT    */}
-        {/* {modalState.edit && (
-          <EditFileSizeSetting
+        {modalState.edit && (
+          <EditHoursInSystemSetting
             values={editmodaldata}
             visible={modalState.edit}
             onCancel={() => handleModalClose('edit')}
             onEdit={(data: any) => editmodaldata !== undefined && handleEdit(data)}
             isLoading={editHoursInSystemSetting.isLoading}
           />
-        )} */}
+        )}
       </Row>
 
       <Card

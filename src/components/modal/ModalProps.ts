@@ -20,6 +20,7 @@ import {
   EmailConfig,
   SmsConfig,
   FileSizeConfig,
+  HoursConfig,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -183,6 +184,11 @@ export interface EditCityProps extends ModalProps {
 export interface EditFileSizeSettingProps extends ModalProps {
   values: FileSizeConfig | undefined;
   onEdit: (data: FileSizeConfig) => void;
+}
+
+export interface EditHoursInSystemSettingProps extends ModalProps {
+  values: HoursConfig | undefined;
+  onEdit: (data: HoursConfig) => void;
 }
 
 export interface EditEmailSettingProps extends ModalProps {
