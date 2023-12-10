@@ -890,7 +890,10 @@
     "editSmsSettingSuccessMessage": "The Sms Setting Has Been Edited Successfully",
     "FileSizeSetting": "Files Size Setting",
     "fileSize": "File Size",
-    "editFileSizeSetting": "Edit Files Size"
+    "editFileSizeSetting": "Edit Files Size",
+    "HoursInSystemSetting": "Hours In System Setting",
+    "hoursToWaitUser": "Number Of Hours Given To The User To Choose An Offer Or Reject All Offers",
+    "hoursToConvertRequestToOutOfPossible": "Number Of Hours Available To Remain As A Potential Client"
   },
 
   "_comment29": "*********************************** groups ************************************************",

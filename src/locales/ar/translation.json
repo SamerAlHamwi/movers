@@ -890,7 +890,10 @@
     "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح",
     "FileSizeSetting": "إعدادات حجم الملفات",
     "fileSize": "حجم الملف",
-    "editFileSizeSetting": "تعديل حجم الملفات"
+    "editFileSizeSetting": "تعديل حجم الملفات",
+    "HoursInSystemSetting": "إعدادات عدد الساعات في النظام",
+    "hoursToWaitUser": "عدد الساعات الممنوحة للمستخدم لإختيار عرض أو رفض كافة العروض",
+    "hoursToConvertRequestToOutOfPossible": "عدد الساعات المتاحة للبقاء كعميل محتمل"
   },
 
   "_comment29": "*********************************** groups ************************************************",
