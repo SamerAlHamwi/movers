@@ -294,6 +294,7 @@ export interface RequestModel {
   attachments: [];
   services: [];
   attributeChoiceAndAttachments: any[];
+  isFeature: boolean;
 }
 
 export interface CountryModel {
@@ -315,6 +316,15 @@ export interface Partner {
   partnerPhoneNumber: string;
   isActive?: boolean | string;
   discountPercentage: number;
+}
+
+export interface HoursInSystemConfig {
+  hoursToWaitUser: number;
+  hoursToConvertRequestToOutOfPossible: number;
+}
+
+export interface FileSizeConfig {
+  fileSize: string;
 }
 
 export interface EmailConfig {

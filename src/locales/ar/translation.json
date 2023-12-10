@@ -787,7 +787,9 @@
     "activatePartnerSuccessMessage": "تم تفعيل الباقة",
     "deactivatePartnerSuccessMessage": "تم إلغاء تفعيل الباقة",
     "deactivatePartnerConfirm": "إلغاء تفعيل حالة الباقة؟",
-    "activatePartnerConfirm": "تفعيل حالة الباقة؟"
+    "activatePartnerConfirm": "تفعيل حالة الباقة؟",
+    "featuredList": "قائمة الباقات المُمَيِزة",
+    "numberInMonths": "عدد الأشهر"
   },
 
   "_comment25": "*********************************** rejectReasons ************************************************",
@@ -885,7 +887,13 @@
     "smsPassword": "كلمة المرور",
     "serviceAccountSID": "المعرف الخاص بالخدمة",
     "editSmsSetting": "تعديل إعدادات الرسائل النصية",
-    "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح"
+    "editSmsSettingSuccessMessage": "تم تعديل إعدادات الرسائل النصية بنجاح",
+    "FileSizeSetting": "إعدادات حجم الملفات",
+    "fileSize": "حجم الملف",
+    "editFileSizeSetting": "تعديل حجم الملفات",
+    "HoursInSystemSetting": "إعدادات عدد الساعات في النظام",
+    "hoursToWaitUser": "عدد الساعات الممنوحة للمستخدم لإختيار عرض أو رفض كافة العروض",
+    "hoursToConvertRequestToOutOfPossible": "عدد الساعات المتاحة للبقاء كعميل محتمل"
   },
 
   "_comment29": "*********************************** groups ************************************************",
@@ -940,7 +948,7 @@
     "offers": "عروض الأسعار",
     "OfferDeails": "تفاصيل العرض",
     "PartnersDetails": "تفاصيل الشريك",
-    "Points": "الباقات",
+    "Points": "باقات النقاط",
     "RejectReason": "أسباب الرفض",
     "Drafts": "الطلبات الغير مستكملة",
     "CompleteDraft": "إستكمال طلب نقل",
@@ -948,7 +956,9 @@
     "Configurations": "الإعدادات",
     "editRequest": "تعديل طلب النقل",
     "ReviewsDetails": "تفاصيل المراجعات",
-    "EditCompany": "تعديل الشركة"
+    "EditCompany": "تعديل الشركة",
+    "CommissionGroups": "مجموعات العمولة",
+    "FeaturedBundles": "الباقات المُمَيِزة"
   },
 
   "header": {
