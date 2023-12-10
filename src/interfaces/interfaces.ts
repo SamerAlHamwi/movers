@@ -318,6 +318,11 @@ export interface Partner {
   discountPercentage: number;
 }
 
+export interface HoursInSystemConfig {
+  hoursToWaitUser: number;
+  hoursToConvertRequestToOutOfPossible: number;
+}
+
 export interface FileSizeConfig {
   fileSize: string;
 }
