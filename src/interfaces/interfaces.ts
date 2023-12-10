@@ -327,6 +327,11 @@ export interface FileSizeConfig {
   fileSize: string;
 }
 
+export interface HoursConfig {
+  hoursToWaitUser: number;
+  hoursToConvertRequestToOutOfPossible: number;
+}
+
 export interface EmailConfig {
   message: string;
   messageForResetPassword: string;

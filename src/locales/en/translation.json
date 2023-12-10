@@ -893,7 +893,9 @@
     "editFileSizeSetting": "Edit Files Size",
     "HoursInSystemSetting": "Hours In System Setting",
     "hoursToWaitUser": "Number Of Hours Given To The User To Choose An Offer Or Reject All Offers",
-    "hoursToConvertRequestToOutOfPossible": "Number Of Hours Available To Remain As A Potential Client"
+    "hoursToConvertRequestToOutOfPossible": "Number Of Hours Available To Remain As A Potential Client",
+    "editHoursSetting": "Edit Hours Setting",
+    "editHoursInSystemSettingSuccessMessage": "The Hours Setting Has Been Edited Successfully"
   },
 
   "_comment29": "*********************************** groups ************************************************",

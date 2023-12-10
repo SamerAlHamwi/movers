@@ -893,7 +893,9 @@
     "editFileSizeSetting": "تعديل حجم الملفات",
     "HoursInSystemSetting": "إعدادات عدد الساعات في النظام",
     "hoursToWaitUser": "عدد الساعات الممنوحة للمستخدم لإختيار عرض أو رفض كافة العروض",
-    "hoursToConvertRequestToOutOfPossible": "عدد الساعات المتاحة للبقاء كعميل محتمل"
+    "hoursToConvertRequestToOutOfPossible": "عدد الساعات المتاحة للبقاء كعميل محتمل",
+    "editHoursSetting": "تعديل إعدادات الساعات",
+    "editHoursInSystemSettingSuccessMessage": "تم تعديل إعدادات الساعات بنجاح"
   },
 
   "_comment29": "*********************************** groups ************************************************",

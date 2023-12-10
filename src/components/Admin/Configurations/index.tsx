@@ -19,7 +19,6 @@ export const Configurations: React.FC = () => {
           <SmsSetting />
           <FileSizeSetting />
         </Col>
-        {/* <Col span={isDesktop || isTablet ? 12 : 24} style={{ marginBottom: '2rem' }}></Col> */}
         <Col span={24} style={{ marginBottom: '2rem' }}>
           <HoursInSystemSetting />
         </Col>
