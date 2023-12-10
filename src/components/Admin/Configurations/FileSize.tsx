@@ -118,7 +118,7 @@ export const FileSizeSetting: React.FC = () => {
       >
         <Details>
           <DetailsRow key={1}>
-            <DetailsTitle>{t('config.fileSize')}</DetailsTitle>
+            <DetailsTitle style={{ width: '100%' }}>{t('config.fileSize')}</DetailsTitle>
             <DetailsValue>{fileSizeData?.fileSize}</DetailsValue>
           </DetailsRow>
         </Details>
