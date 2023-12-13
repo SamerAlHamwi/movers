@@ -535,6 +535,21 @@ export const Requests: React.FC = () => {
                 </TableButton>
               </Tooltip>
             )}
+
+            {type !== 'viaBroker' && (
+              <Tooltip placement="top" title={t('common.edit')}>
+                <TableButton
+                  disabled={record.statues !== 1}
+                  severity="info"
+                  onClick={() => {
+                    Navigate(`/requests/${record.id}/EditRequest`);
+                  }}
+                >
+                  <EditOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
+
             {type !== 'viaBroker' && (
               <Tooltip placement="top" title={t('common.delete')}>
                 <TableButton
