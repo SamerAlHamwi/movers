@@ -32,6 +32,7 @@ import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radi
 import { defineColorBySeverity } from '@app/utils/utils';
 import { LableText } from '@app/components/GeneralStyles';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type regions = {
   id: number;
@@ -67,6 +68,7 @@ export const Region: React.FC = () => {
   const [dataSource, setDataSource] = useState<RegionModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<RegionModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<RegionModel | undefined>(undefined);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(
     ['RegionsById', page, pageSize],
@@ -101,7 +103,19 @@ export const Region: React.FC = () => {
     setRefetchOnAdd(false);
     setIsActivate(false);
     setIsDeActivate(false);
-  }, [isDelete, isEdit, refetchOnAdd, isActivate, isDeActivate, regionStatus, page, pageSize, searchString, refetch]);
+  }, [
+    isDelete,
+    isEdit,
+    refetchOnAdd,
+    isActivate,
+    isDeActivate,
+    regionStatus,
+    page,
+    pageSize,
+    searchString,
+    refetch,
+    refetchData,
+  ]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -207,7 +221,7 @@ export const Region: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [regionStatus, page, pageSize, language, refetch]);
+  }, [regionStatus, page, pageSize, language, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && Data?.length === 0) setPage(1);
@@ -414,7 +428,7 @@ export const Region: React.FC = () => {
             : '1.25rem 1.25rem 0rem'
         }
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           {/*    ADD    */}
           {isOpenAddModalForm && (
             <AddRegion
@@ -459,31 +473,30 @@ export const Region: React.FC = () => {
               isLoading={deleteRegion.isLoading}
             />
           )}
-          <>
-            <Button
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => setIsOpenAddModalForm(true)}
-            >
-              <CreateButtonText>{t('locations.addRegion')}</CreateButtonText>
-            </Button>
-            <Button
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              type="ghost"
-              onClick={navigateBack}
-              icon={<LeftOutlined />}
-            >
-              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-            </Button>
-          </>
+
+          <Button
+            style={{
+              margin: '0 .5rem .5rem 0',
+              width: 'auto',
+            }}
+            type="ghost"
+            onClick={navigateBack}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Button>
+          <Button
+            type="primary"
+            style={{
+              margin: '0 0 .5rem 0',
+              width: 'auto',
+            }}
+            onClick={() => setIsOpenAddModalForm(true)}
+          >
+            <CreateButtonText>{t('locations.addRegion')}</CreateButtonText>
+          </Button>
+
+          <ReloadBtn setRefetchData={setRefetchData} />
         </Row>
         <Table
           dataSource={Data}
@@ -503,7 +516,7 @@ export const Region: React.FC = () => {
             showQuickJumper: true,
             total: totalCount || 0,
             pageSizeOptions: [5, 10, 15, 20],
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           loading={loading}
           scroll={{ x: isTablet || isMobile ? 850 : '' }}

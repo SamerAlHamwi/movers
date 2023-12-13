@@ -11,13 +11,14 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Deleteprivacy, Updateprivacy, createPrivacy, getAllprivacy } from '../../../services/privacy';
 import { AddPrivacyPolicy } from '@app/components/modal/AddPrivacyPolicy';
 import { EditPrivacyPolicy } from '@app/components/modal/EditPrivacyPolicy';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type Translation = {
   title: string;
@@ -57,6 +58,7 @@ export const PrivacyPolicy: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<PrivacyPolicy | undefined>(undefined);
   const { isTablet, isMobile, isDesktop } = useResponsive();
   const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const user = useAppSelector((state) => state.user.user);
 
@@ -99,7 +101,7 @@ export const PrivacyPolicy: React.FC = () => {
     setIsDelete(false);
     setIsEdit(false);
     setRefetchOnAddNotification(false);
-  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, language, searchString, refetch, refetchData]);
 
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
     createPrivacy(data)
@@ -279,6 +281,7 @@ export const PrivacyPolicy: React.FC = () => {
           >
             <CreateButtonText>{t('privacyPolicy.sendp')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
           {isOpenEditModalForm ? (
             <EditPrivacyPolicy
               Priv_values={editmodaldata}
@@ -330,7 +333,7 @@ export const PrivacyPolicy: React.FC = () => {
             showQuickJumper: true,
             showTitle: false,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
             responsive: true,
             showLessItems: true,
             // showTotal: (total) => `Total ${total} notifications`,

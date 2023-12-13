@@ -6,7 +6,7 @@ import { AddManager } from '@app/components/modal/AddManager';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { EditManager } from '@app/components/modal/EditManager';
 import { getAllUsers, Create, Update, Delete, Activate, DeActivate } from '@app/services/users';
@@ -25,6 +25,7 @@ import { Dates } from '@app/constants/Dates';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const Manager: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -56,10 +57,10 @@ export const Manager: React.FC = () => {
   const [temp1, setTemp1] = useState<any>();
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
   const [managerType, setManagerType] = useState<number | string>('');
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -116,6 +117,7 @@ export const Manager: React.FC = () => {
     language,
     searchString,
     refetch,
+    refetchData,
   ]);
 
   useEffect(() => {
@@ -476,7 +478,7 @@ export const Manager: React.FC = () => {
             : '1.25rem 1.25rem 0'
         }
       >
-        <Row justify={'end'}>
+        <Row gutter={[10, 10]} justify={'end'}>
           <Button
             type="primary"
             style={{
@@ -488,6 +490,7 @@ export const Manager: React.FC = () => {
           >
             <CreateButtonText>{t('managers.addManager')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
           {modalState.add && (
@@ -545,7 +548,7 @@ export const Manager: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

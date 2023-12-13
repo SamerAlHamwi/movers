@@ -20,6 +20,7 @@ import { CreateBroker, DeleteBroker, UpdateBroker, getAllBrokers } from '../../.
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const Brokers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -43,10 +44,10 @@ export const Brokers: React.FC = () => {
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -84,7 +85,7 @@ export const Brokers: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -248,6 +249,8 @@ export const Brokers: React.FC = () => {
             <CreateButtonText>{t('brokers.addBroker')}</CreateButtonText>
           </Button>
 
+          <ReloadBtn setRefetchData={setRefetchData} />
+
           {/*    Add    */}
           {modalState.add && (
             <AddBrokr
@@ -304,7 +307,7 @@ export const Brokers: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

@@ -1,19 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  TagOutlined,
-  LeftOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CloseOutlined, TagOutlined, LeftOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
@@ -32,6 +24,8 @@ import { SearchForUser } from '@app/components/modal/SearchForUser';
 import { checkPIN } from '@app/services/drafts';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { RadioGroup } from '@app/components/common/Radio/Radio';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -40,6 +34,7 @@ export const Requests: React.FC = () => {
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { type, brokerId } = useParams();
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const [modalState, setModalState] = useState({
     searchForUser: false,
@@ -62,6 +57,9 @@ export const Requests: React.FC = () => {
   const [isRejected, setIsRejected] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [userId, setUserId] = useState<number>(0);
+  const [requestStatus, setRequestStatus] = useState<any>();
+
+  const [temp, setTemp] = useState<any>();
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -74,7 +72,7 @@ export const Requests: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['Requests', type, brokerId, page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected],
     () =>
-      getAllRequests(type, brokerId, page, pageSize, searchString)
+      getAllRequests(type, brokerId, page, pageSize, searchString, requestStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -103,7 +101,19 @@ export const Requests: React.FC = () => {
     setRefetchOnAdd(false);
     setIsApproved(false);
     setIsRejected(false);
-  }, [isDelete, refetchOnAdd, isEdit, isApproved, isRejected, page, pageSize, language, searchString]);
+  }, [
+    isDelete,
+    refetchOnAdd,
+    isEdit,
+    isApproved,
+    isRejected,
+    page,
+    pageSize,
+    language,
+    searchString,
+    requestStatus,
+    refetchData,
+  ]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -279,17 +289,6 @@ export const Requests: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-    //   dataIndex: 'services',
-    //   render: (record: any) => (
-    //     <Space style={{ display: 'grid' }}>
-    //       {record?.map((service: any) => (
-    //         <Tag key={service?.id}>{service?.name}</Tag>
-    //       ))}
-    //     </Space>
-    //   ),
-    // },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.sourceType')}</Header>,
       dataIndex: 'sourceType',
@@ -425,6 +424,85 @@ export const Requests: React.FC = () => {
           </>
         );
       },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              <Radio style={{ display: 'block', fontSize }} value={1}>
+                {t('requests.checking')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={2}>
+                {t('requests.approved')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={3}>
+                {t('requests.rejected')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={4}>
+                {t('requests.possible')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={5}>
+                {t('requests.hasOffers')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={6}>
+                {t('requests.inProcess')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={7}>
+                {t('requests.FinishByCompany')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={8}>
+                {t('requests.FinishByUser')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={9}>
+                {t('requests.NotFinishByUser')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={10}>
+                {t('requests.Finished')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={11}>
+                {t('requests.canceled')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={12}>
+                {t('requests.CanceledAfterRejectOffers')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={13}>
+                {t('requests.OutOfPossible')}
+              </Radio>
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  // disabled={userType === undefined ? true : false}
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setRequestStatus(undefined);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setRequestStatus(temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
     },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
@@ -501,19 +579,21 @@ export const Requests: React.FC = () => {
             : '1.25rem 1.25rem 0'
         }
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           {type !== 'viaBroker' && (
-            <Button
-              type="primary"
-              style={{
-                marginBottom: '.5rem',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => handleModalOpen('searchForUser')}
-            >
-              <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
-            </Button>
+            <>
+              <Button
+                type="primary"
+                style={{
+                  marginBottom: '.5rem',
+                  width: 'auto',
+                }}
+                onClick={() => handleModalOpen('searchForUser')}
+              >
+                <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
+              </Button>
+              <ReloadBtn setRefetchData={setRefetchData} />
+            </>
           )}
           {type === 'viaBroker' && (
             <Btn
@@ -601,7 +681,7 @@ export const Requests: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}
