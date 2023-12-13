@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, TagOutlined, SnippetsOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, TagOutlined, SnippetsOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { ChangeAcceptRequestOrPossibleRequestForBranch, DeleteBranch, getAllBranches } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
@@ -23,6 +23,7 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 interface CompanyRecord {
   id: number;
@@ -53,6 +54,7 @@ export const Branches: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
   const [isChanged, setIsChanged] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -150,7 +152,7 @@ export const Branches: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isChanged, page, pageSize, searchString, language, refetch]);
+  }, [isDelete, isEdit, isChanged, page, pageSize, searchString, language, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {
@@ -181,19 +183,7 @@ export const Branches: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header style={{ wordBreak: 'normal' }}>{t('requests.services')}</Header>,
-    //   dataIndex: 'services',
-    //   render: (record: any) => (
-    //     <Space style={{ display: 'grid' }}>
-    //       {record?.map((service: any) => (
-    //         <Tag key={service?.id} style={{ padding: '4px' }}>
-    //           {service?.name}
-    //         </Tag>
-    //       ))}
-    //     </Space>
-    //   ),
-    // },
+
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
@@ -289,33 +279,31 @@ export const Branches: React.FC = () => {
             : '1.25rem 1.25rem 0'
         }
       >
-        <Row justify={'end'}>
-          <>
-            <Btn
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              type="ghost"
-              onClick={() => Navigate(-1)}
-              icon={<LeftOutlined />}
-            >
-              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-            </Btn>
+        <Row justify={'end'} align={'middle'}>
+          <Btn
+            style={{
+              margin: '0 .5rem .5rem 0',
+              width: 'auto',
+            }}
+            type="ghost"
+            onClick={() => Navigate(-1)}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Btn>
 
-            <Btn
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => Navigate(`/companies/${companyId}/addBranch`)}
-            >
-              <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
-            </Btn>
-          </>
+          <Btn
+            type="primary"
+            style={{
+              margin: '0 0 .5rem 0',
+              width: 'auto',
+            }}
+            onClick={() => Navigate(`/companies/${companyId}/addBranch`)}
+          >
+            <CreateButtonText>{t('branch.addBranch')}</CreateButtonText>
+          </Btn>
+
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Delete    */}
           {modalState.delete && (
@@ -365,7 +353,7 @@ export const Branches: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

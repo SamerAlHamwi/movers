@@ -7,12 +7,13 @@ const getAllRequests = async (
   page: number,
   pageSize: number,
   search: string,
+  Statues?: number,
 ) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
     `${apiPrefix.requests}/GetAll?${
       type === 'viaBroker' && `ForBroker=true&BrokerId=${brokerId}&Statues=10`
-    }&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+    }&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&Statues=${Statues ? Statues : ''}`,
   );
 };
 

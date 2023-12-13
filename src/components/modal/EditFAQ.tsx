@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
@@ -10,12 +10,34 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { faqModel, LanguageType } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
+import { AR } from '@app/constants/appConstants';
 
 export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
 
+  useEffect(() => {
+    if (values) {
+      const firstElement = values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [values]);
   const onOk = () => {
     form.submit();
   };
@@ -60,7 +82,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
     >
       <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="FAQForm">
         <BaseForm.Item
-          name={['translations', 0, 'question']}
+          name={['translations', lang.en, 'question']}
           label={<LableText>{t('faq.question_en')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -74,7 +96,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 0, 'answer']}
+          name={['translations', lang.en, 'answer']}
           label={<LableText>{t('faq.answer_en')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -89,7 +111,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 1, 'question']}
+          name={['translations', lang.ar, 'question']}
           label={<LableText>{t('faq.question_ar')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -103,7 +125,7 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'answer']}
+          name={['translations', lang.ar, 'answer']}
           label={<LableText>{t('faq.answer_ar')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },

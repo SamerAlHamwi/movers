@@ -21,6 +21,7 @@ import { EditService } from '@app/components/modal/EditService';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type services = {
   id: number;
@@ -56,10 +57,10 @@ export const Services: React.FC = () => {
   const [editmodaldata, setEditmodaldata] = useState<ServiceModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<ServiceModel | undefined>(undefined);
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -97,7 +98,7 @@ export const Services: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAddService(false);
-  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -192,8 +193,6 @@ export const Services: React.FC = () => {
               onClick={() => {
                 setIsOpenSliderImage(true);
                 setAttachmentData(record);
-
-                console.log(record);
               }}
             />
           </>
@@ -286,6 +285,7 @@ export const Services: React.FC = () => {
           >
             <CreateButtonText>{t('services.addService')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
           {modalState.add && (
@@ -363,7 +363,7 @@ export const Services: React.FC = () => {
             showQuickJumper: true,
             total: totalCount || 0,
             pageSizeOptions: [5, 10, 15, 20],
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           loading={loading}
           scroll={{ x: isTablet || isMobile ? 850 : '' }}

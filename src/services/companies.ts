@@ -8,14 +8,19 @@ const getAllCompanies = async (
   search: string,
   type?: string,
   requestId?: string | undefined,
+  statues?: number,
 ) => {
   const skip = (page - 1) * pageSize;
-
-  let apiUrl = `${apiPrefix.companies}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
-  if (type === 'companiesThatBoughtInfo') {
-    apiUrl += `&RequestId=${requestId}&WhichBoughtInfoContact=true`;
-  }
-  return await httpApi.get(apiUrl);
+  return await httpApi.get(`${apiPrefix.companies}/GetAll`, {
+    params: {
+      KeyWord: search,
+      SkipCount: skip,
+      MaxResultCount: pageSize,
+      statues: statues,
+      RequestId: type === 'companiesThatBoughtInfo' ? requestId : undefined,
+      WhichBoughtInfoContact: type === 'companiesThatBoughtInfo' ? true : false,
+    },
+  });
 };
 
 const getAllSuitableCompanies = async (type: string | undefined, requestId: string | undefined) => {

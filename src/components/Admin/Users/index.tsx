@@ -4,7 +4,14 @@ import { message, Row, Space, Popconfirm, Col, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
-import { DeleteOutlined, IdcardOutlined, LeftOutlined, LoadingOutlined, LockOutlined } from '@ant-design/icons';
+import {
+  DeleteOutlined,
+  IdcardOutlined,
+  LeftOutlined,
+  LoadingOutlined,
+  LockOutlined,
+  ReloadOutlined,
+} from '@ant-design/icons';
 import { getAllUsers, Delete, Activate, DeActivate, changePasswordForUser } from '@app/services/users';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import styled from 'styled-components';
@@ -25,6 +32,7 @@ import { useSelector } from 'react-redux';
 import { useNavigate, useParams } from 'react-router-dom';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { ChangePasswordForUser } from '@app/components/modal/ChangePasswordForUser';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const User: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -54,10 +62,10 @@ export const User: React.FC = () => {
   const [userStatus, setUserStatus] = useState<boolean | undefined>(undefined);
   const [userType, setUserType] = useState<number | string>('');
   const [changePasswordData, setChangePasswordData] = useState<any>(undefined);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -110,6 +118,7 @@ export const User: React.FC = () => {
     searchString,
     language,
     refetch,
+    refetchData,
   ]);
 
   useEffect(() => {
@@ -153,8 +162,6 @@ export const User: React.FC = () => {
         notificationController.success({ message: t('users.changPasswordForUserSuccessMessage') });
       })
       .catch((error) => {
-        console.log(error);
-
         notificationController.error({ message: error?.message || error.error?.message });
       }),
   );
@@ -465,10 +472,10 @@ export const User: React.FC = () => {
             : '1.25rem 1.25rem 0'
         }
       >
-        <Row justify={'end'}>
+        <Row align={'middle'} justify={'end'}>
           <Btn
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 .5rem .5rem 0',
               width: 'auto',
               height: 'auto',
             }}
@@ -478,6 +485,7 @@ export const User: React.FC = () => {
           >
             <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
           </Btn>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Delete    */}
           {isOpenDeleteModalForm && (
@@ -525,7 +533,7 @@ export const User: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}
