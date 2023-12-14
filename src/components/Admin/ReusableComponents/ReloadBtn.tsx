@@ -1,8 +1,8 @@
 import { ReloadOutlined } from '@ant-design/icons';
 import { TableButton } from '@app/components/GeneralStyles';
-import { Button, Tooltip } from 'antd';
+import { Tooltip } from 'antd';
 import { SetStateAction } from 'jotai';
-import React, { Dispatch, FC } from 'react';
+import { Dispatch, FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ReloadBtnProps {
@@ -26,16 +26,6 @@ const ReloadBtn: FC<ReloadBtnProps> = ({ setRefetchData }) => {
         <ReloadOutlined />
       </TableButton>
     </Tooltip>
-
-    // <Button
-    //   type="primary"
-    //   style={{
-    //     width: '50px',
-    //     margin: '0 .5rem .5rem .5rem',
-    //   }}
-    //   onClick={() => setRefetchData((prev: any) => setRefetchData(!prev))}
-    //   icon={<ReloadOutlined />}
-    // />
   );
 };
 
