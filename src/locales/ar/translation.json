@@ -87,7 +87,8 @@
     "true": "نعم",
     "false": "لا",
     "branch": "فرع",
-    "broker": "وسيط"
+    "broker": "وسيط",
+    "refetch": "إعادة تحميل"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -911,6 +912,32 @@
     "only3Number": "يُسمح فقط ب 3 أرقام"
   },
 
+  "_comment30": "*********************************** applicationsVersions ************************************************",
+  "applicationsVersions": {
+    "ApplicationsVersionsList": "قائمة إصدارات تطبيقات الموبايل",
+    "addApplicationsVersions": "إضافة إصدار",
+    "addApplicationsVersionsModalTitle": "إضافة إصدار",
+    "addApplicationsVersionsSuccessMessage": "تم إضافة الإصدار بنجاح",
+    "editApplicationsVersionsSuccessMessage": "تم تعديل معلومات الإصدار بنجاح",
+    "editApplicationVersionFormModalTitle": "تعديل معلومات الإصدار",
+    "appType": "نوع التطبيق",
+    "systemType": "نوع المتجر",
+    "Basic": "غو موفارو",
+    "Partner": " شركاء عو موفارو",
+    "Android": "غوغل بلاي",
+    "IOS": "أبّل ستور",
+    "versionCode": "رقم النسخة",
+    "versionNumber": "رقم الإصدار",
+    "necessaryToUpdate": "ضرورة تحديث التطبيق",
+    "Optional": "إختياري",
+    "Mandatory": "ضروري",
+    "Nothing": "لاشيء",
+    "changeApplicationsVersionsSuccessMessage": "تم تعديل ضرورة التحديث بنجاح",
+    "ChangeNecessaryToUpdateModalTitle": "تعديل ضرورة التحديث",
+    "updateOptions": "ضرورة التحديث",
+    "change": "تعديل ضرورة التحديث"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -960,7 +987,8 @@
     "ReviewsDetails": "تفاصيل المراجعات",
     "EditCompany": "تعديل الشركة",
     "CommissionGroups": "مجموعات العمولة",
-    "FeaturedBundles": "الباقات المُمَيِزة"
+    "FeaturedBundles": "الباقات المُمَيِزة",
+    "ApplicationsVersions": "إصدارات التطبيقات"
   },
 
   "header": {

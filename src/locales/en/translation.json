@@ -86,7 +86,8 @@
     "true": "True",
     "false": "False",
     "branch": "Branch",
-    "broker": "Broker"
+    "broker": "Broker",
+    "refetch": "Refetch Data"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -911,6 +912,32 @@
     "only3Number": "only 3 Numbers Are Allowed"
   },
 
+  "_comment30": "*********************************** applicationsVersions ************************************************",
+  "applicationsVersions": {
+    "ApplicationsVersionsList": "Applications Versions List",
+    "addApplicationsVersions": "Add Application Version",
+    "addApplicationsVersionsModalTitle": "Add Application Version",
+    "addApplicationsVersionsSuccessMessage": "The Application Version Has Been Added Successfully",
+    "editApplicationsVersionsSuccessMessage": "The Application Version Has Been Edited Successfully",
+    "editApplicationVersionFormModalTitle": "Edit Application Version",
+    "appType": "Application Type",
+    "systemType": "Store Type",
+    "Basic": "Go Movaro",
+    "Partner": "Go Movaro Partner",
+    "Android": "Google Play",
+    "IOS": "Apple Store",
+    "versionCode": "Version Code",
+    "versionNumber": "Version Number",
+    "necessaryToUpdate": "Necessary To Update",
+    "Optional": "Optional",
+    "Mandatory": "Mandatory",
+    "Nothing": "Nothing",
+    "changeApplicationsVersionsSuccessMessage": "The Necessary To Update Has Been Edited Successfully",
+    "ChangeNecessaryToUpdateModalTitle": "Edit The Necessary To Update",
+    "updateOptions": "Update Necessary",
+    "change": "Update Necessary"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -961,7 +988,8 @@
     "ReviewsDetails": "Reviews Details",
     "EditCompany": "Edit Company",
     "CommissionGroups": "Commission Groups",
-    "FeaturedBundles": "Featured Bundles"
+    "FeaturedBundles": "Featured Bundles",
+    "ApplicationsVersions": "Applications Versions"
   },
 
   "header": {
