@@ -16,12 +16,13 @@ import { Attachment, ServiceModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddSubService } from '@app/components/modal/AddSubService';
-import { EditOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LeftOutlined, ReloadOutlined } from '@ant-design/icons';
 import { Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import { EditSubService } from '@app/components/modal/EditSubService';
 import { TextBack, Header, TableButton } from '../../GeneralStyles';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type services = {
   id: number;
@@ -56,6 +57,7 @@ export const SubServices: React.FC = () => {
   const [editmodaldata, setEditmodaldata] = useState<ServiceModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<ServiceModel | undefined>(undefined);
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const navigateBack = () => {
     navigate(-1);
@@ -101,7 +103,7 @@ export const SubServices: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAddService(false);
-  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -277,7 +279,7 @@ export const SubServices: React.FC = () => {
             : '1.25rem 1.25rem 0rem'
         }
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           {/*    ADD    */}
           {modalState.add && (
             <AddSubService
@@ -340,31 +342,28 @@ export const SubServices: React.FC = () => {
             </Modal>
           ) : null}
 
-          <>
-            <Button
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => handleModalOpen('add')}
-            >
-              <CreateButtonText>{t('subServices.addSubService')}</CreateButtonText>
-            </Button>
-            <Button
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              type="ghost"
-              onClick={navigateBack}
-              icon={<LeftOutlined />}
-            >
-              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-            </Button>
-          </>
+          <Button
+            style={{
+              margin: '0rem .5rem .5rem 0',
+              width: 'auto',
+            }}
+            type="ghost"
+            onClick={navigateBack}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Button>
+          <Button
+            type="primary"
+            style={{
+              margin: '0rem 0rem .5rem 0',
+            }}
+            onClick={() => handleModalOpen('add')}
+          >
+            <CreateButtonText>{t('subServices.addSubService')}</CreateButtonText>
+          </Button>
+
+          <ReloadBtn setRefetchData={setRefetchData} />
         </Row>
 
         <Table
@@ -384,7 +383,7 @@ export const SubServices: React.FC = () => {
             showQuickJumper: true,
             total: totalCount || 0,
             pageSizeOptions: [5, 10, 15, 20],
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           loading={loading}
           scroll={{ x: isTablet || isMobile ? 850 : '' }}

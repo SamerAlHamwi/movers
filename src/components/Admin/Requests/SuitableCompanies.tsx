@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Row, Space, message } from 'antd';
+import { Alert, Row, Space, Tooltip, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
@@ -8,7 +8,7 @@ import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { notificationController } from '@app/controllers/notificationController';
 import { RequestModel } from '@app/interfaces/interfaces';
-import { CreateButtonText, Header, Image, Modal } from '../../GeneralStyles';
+import { CreateButtonText, Header, Image, Modal, TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useSelector } from 'react-redux';
@@ -20,9 +20,10 @@ import { Checkbox } from '@app/components/common/Checkbox/Checkbox';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
 import Button from 'antd/es/button/button';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined } from '@ant-design/icons';
+import { LeftOutlined, ReloadOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 interface ForRequest {
   id: string | undefined;
@@ -59,6 +60,7 @@ export const SuitableCompanies: React.FC = () => {
   const [attachmentData, setAttachmentData] = useState<any>();
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
   const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const companies = useQuery(['AllSuitableCompanies'], () =>
     getAllSuitableCompanies(type, requestId)
@@ -148,12 +150,12 @@ export const SuitableCompanies: React.FC = () => {
   useEffect(() => {
     setLoadingCompany(true);
     refetchCompanies();
-  }, [pageCompany, pageSizeCompany, language, searchString, refetchCompanies]);
+  }, [pageCompany, pageSizeCompany, language, searchString, refetchCompanies, refetchData]);
 
   useEffect(() => {
     setLoadingBranch(true);
     reetchBranch();
-  }, [pageBranch, pageSizeBranch, language, searchString, reetchBranch]);
+  }, [pageBranch, pageSizeBranch, language, searchString, reetchBranch, refetchData]);
 
   useEffect(() => {
     if (pageCompany > 1 && dataCompany?.length === 0) {
@@ -262,6 +264,26 @@ export const SuitableCompanies: React.FC = () => {
         </Space>
       ),
     },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
+      dataIndex: 'actions',
+      render: (index: any, record: any) => {
+        return (
+          <Space>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`/companies/${record?.id}/details`, { state: record.name });
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
+          </Space>
+        );
+      },
+    },
   ].filter(Boolean);
 
   const columnsBranch = [
@@ -311,10 +333,27 @@ export const SuitableCompanies: React.FC = () => {
         </Space>
       ),
     },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
+      dataIndex: 'actions',
+      render: (index: any, record: any) => {
+        return (
+          <Space>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`/companies/${record?.company?.id}/branches/${record?.id}/details`, { state: record.name });
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
+          </Space>
+        );
+      },
+    },
   ].filter(Boolean);
-
-  console.log(selectedCompanies);
-  console.log(selectedBranches);
 
   return (
     <>
@@ -329,12 +368,11 @@ export const SuitableCompanies: React.FC = () => {
         }
         style={{ height: 'auto', marginBottom: '70px' }}
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           <Btn
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 .5rem .5rem 0',
               width: 'auto',
-              height: 'auto',
             }}
             type="ghost"
             onClick={() => Navigate(-1)}
@@ -342,6 +380,7 @@ export const SuitableCompanies: React.FC = () => {
           >
             <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
           </Btn>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Image    */}
           {isOpenSliderImage ? (
@@ -377,7 +416,7 @@ export const SuitableCompanies: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCountCompany || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columnsCompany.map((col) => ({ ...col, width: 'auto' }))}
           loading={loadingCompany}
@@ -413,7 +452,7 @@ export const SuitableCompanies: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCountBranch || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columnsBranch.map((col) => ({ ...col, width: 'auto' }))}
           loading={loadingBranch}

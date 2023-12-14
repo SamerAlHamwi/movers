@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Tag, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Row, Space, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -37,6 +37,8 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
+import { RadioGroup } from '@app/components/common/Radio/Radio';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 interface CompanyRecord {
   id: number;
@@ -74,6 +76,9 @@ export const Companies: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
+  const [temp, setTemp] = useState<any>();
+  const [companyStatus, setCompanyStatus] = useState<any>();
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleButtonClick = () => {
     Navigate('/addCompany', { replace: false });
@@ -87,9 +92,9 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
+    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected, companyStatus],
     () =>
-      getAllCompanies(page, pageSize, searchString)
+      getAllCompanies(page, pageSize, searchString, undefined, undefined, companyStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -108,7 +113,7 @@ export const Companies: React.FC = () => {
   const allCompanies = useQuery(
     ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
     () =>
-      getAllCompanies(page, pageSize, searchString, type, requestId)
+      getAllCompanies(page, pageSize, searchString, type, requestId, companyStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -135,7 +140,20 @@ export const Companies: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isApproved, isChanged, isRejected, page, pageSize, language, searchString, refetch]);
+  }, [
+    isDelete,
+    isEdit,
+    isApproved,
+    isChanged,
+    isRejected,
+    page,
+    pageSize,
+    language,
+    searchString,
+    refetch,
+    companyStatus,
+    refetchData,
+  ]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -387,6 +405,54 @@ export const Companies: React.FC = () => {
           </>
         );
       },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              <Radio style={{ display: 'block', fontSize }} value={2}>
+                {t('companies.approved')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={3}>
+                {t('companies.rejected')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={1}>
+                {t('companies.checking')}
+              </Radio>
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setCompanyStatus(undefined);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setCompanyStatus(temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
     },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
@@ -481,7 +547,7 @@ export const Companies: React.FC = () => {
             : '1.25rem 1.25rem 0'
         }
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           {type !== undefined && requestId !== undefined && (
             <Btn
               style={{
@@ -500,14 +566,14 @@ export const Companies: React.FC = () => {
           <Btn
             type="primary"
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 .5rem .5rem 0',
               width: 'auto',
-              height: 'auto',
             }}
             onClick={handleButtonClick}
           >
             <CreateButtonText>{t('companies.addCompany')}</CreateButtonText>
           </Btn>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Delete    */}
           {modalState.delete && (
@@ -612,7 +678,7 @@ export const Companies: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

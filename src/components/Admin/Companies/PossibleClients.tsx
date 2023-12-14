@@ -17,6 +17,7 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { getPossibleClients } from '@app/services/requests';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const PossibleClients: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -31,6 +32,7 @@ export const PossibleClients: React.FC = () => {
   const [data, setData] = useState<BranchModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(
     ['getPossibleClients', page, pageSize],
@@ -60,7 +62,7 @@ export const PossibleClients: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [page, pageSize, searchString, language, refetch]);
+  }, [page, pageSize, searchString, language, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {
@@ -151,13 +153,12 @@ export const PossibleClients: React.FC = () => {
             : '1.25rem 1.25rem 0'
         }
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           <>
             <Btn
               style={{
                 margin: '1rem 1rem 1rem 0',
                 width: 'auto',
-                height: 'auto',
               }}
               type="ghost"
               onClick={() => Navigate(-1)}
@@ -165,6 +166,7 @@ export const PossibleClients: React.FC = () => {
             >
               <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
             </Btn>
+            <ReloadBtn setRefetchData={setRefetchData} />
           </>
         </Row>
 
@@ -182,7 +184,7 @@ export const PossibleClients: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

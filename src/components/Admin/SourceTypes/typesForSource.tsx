@@ -17,7 +17,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, SourceTypeModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined, LeftOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LeftOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddAttributeForSourceType } from '@app/components/modal/AddAttributeForSourceType';
 import { EditAttributeForSourceType } from '@app/components/modal/EditAttributeForSourceType';
@@ -25,6 +25,7 @@ import { TableButton, Header, Modal, Image, TextBack, CreateButtonText } from '.
 import { useNavigate, useParams } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type sourceTypes = {
   id: number;
@@ -58,10 +59,10 @@ export const TypesForSource: React.FC = () => {
   const [dataSource, setDataSource] = useState<SourceTypeModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<SourceTypeModel | undefined>(undefined);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -99,7 +100,7 @@ export const TypesForSource: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -193,7 +194,7 @@ export const TypesForSource: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [page, pageSize, language, refetch]);
+  }, [page, pageSize, language, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && Data?.length === 0) setPage(1);
@@ -275,7 +276,7 @@ export const TypesForSource: React.FC = () => {
             : '1.25rem 1.25rem 0rem'
         }
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           {/*    ADD    */}
           {modalState.add && (
             <AddAttributeForSourceType
@@ -319,31 +320,29 @@ export const TypesForSource: React.FC = () => {
             />
           )}
 
-          <>
-            <Button
-              type="primary"
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              onClick={() => handleModalOpen('add')}
-            >
-              <CreateButtonText>{t('attributeForSourceTypes.addAttributeForSourceType')}</CreateButtonText>
-            </Button>
-            <Button
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              type="ghost"
-              onClick={() => navigate(-1)}
-              icon={<LeftOutlined />}
-            >
-              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-            </Button>
-          </>
+          <Button
+            style={{
+              margin: '0 .5rem .5rem 0',
+              width: 'auto',
+            }}
+            type="ghost"
+            onClick={() => navigate(-1)}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Button>
+          <Button
+            type="primary"
+            style={{
+              margin: '0 0 .5rem 0',
+              width: 'auto',
+            }}
+            onClick={() => handleModalOpen('add')}
+          >
+            <CreateButtonText>{t('attributeForSourceTypes.addAttributeForSourceType')}</CreateButtonText>
+          </Button>
+
+          <ReloadBtn setRefetchData={setRefetchData} />
         </Row>
         <Table
           dataSource={Data}
@@ -362,7 +361,7 @@ export const TypesForSource: React.FC = () => {
             showQuickJumper: true,
             total: totalCount || 0,
             pageSizeOptions: [5, 10, 15, 20],
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           loading={loading}
           scroll={{ x: isTablet || isMobile ? 850 : '' }}
