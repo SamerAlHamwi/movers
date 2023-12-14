@@ -474,7 +474,7 @@ const CompanyDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.phoneNumber')}</DetailsTitle>
+                  <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>
@@ -485,7 +485,7 @@ const CompanyDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.emailAddress')}</DetailsTitle>
+                  <DetailsTitle>{t('common.emailAddress')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{companyData?.companyContact?.emailAddress}</DetailsValue>
@@ -518,7 +518,7 @@ const CompanyDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.emailAddress')}</DetailsTitle>
+                  <DetailsTitle>{t('common.emailAddress')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{companyData?.user?.emailAddress}</DetailsValue>
@@ -527,7 +527,7 @@ const CompanyDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.phoneNumber')}</DetailsTitle>
+                  <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{companyData?.user?.phoneNumber}</DetailsValue>
