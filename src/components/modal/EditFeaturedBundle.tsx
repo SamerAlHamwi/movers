@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
@@ -10,11 +10,34 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { LanguageType, Point } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
+import { AR } from '@app/constants/appConstants';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 
 export const EditFeaturedBundle: React.FC<EditPointProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
+
+  useEffect(() => {
+    if (values) {
+      const firstElement = values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [values]);
 
   const onOk = () => {
     form.submit();
@@ -58,7 +81,7 @@ export const EditFeaturedBundle: React.FC<EditPointProps> = ({ visible, onCancel
     >
       <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="EditBundleForm">
         <BaseForm.Item
-          name={['translations', 0, 'name']}
+          name={['translations', lang.en, 'name']}
           label={<LableText>{t(`common.name_en`)}</LableText>}
           rules={[
             {
@@ -76,7 +99,7 @@ export const EditFeaturedBundle: React.FC<EditPointProps> = ({ visible, onCancel
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 1, 'name']}
+          name={['translations', lang.ar, 'name']}
           label={<LableText>{t(`common.name_ar`)}</LableText>}
           rules={[
             {

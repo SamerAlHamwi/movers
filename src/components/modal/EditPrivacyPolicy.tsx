@@ -12,6 +12,8 @@ import { useAppSelector } from '@app/hooks/reduxHooks';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { AR } from '@app/constants/appConstants';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 
 export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
   visible,
@@ -26,6 +28,28 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
   const [current, setCurrent] = useState(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
   const [attachments, setAttachments] = useState<any[]>([]);
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
+
+  useEffect(() => {
+    if (Priv_values) {
+      console.log(Priv_values);
+      const firstElement = Priv_values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [Priv_values]);
 
   useEffect(() => {
     isLoading ? '' : Priv_values !== undefined && form.setFieldsValue(Priv_values);
@@ -74,7 +98,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
     >
       <BaseForm form={form} layout="vertical" onFinish={onFinish} name="userForm">
         <BaseForm.Item
-          name={['translations', 0, 'title']}
+          name={['translations', lang.en, 'title']}
           label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -89,7 +113,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 0, 'description']}
+          name={['translations', lang.en, 'description']}
           label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -103,7 +127,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'title']}
+          name={['translations', lang.ar, 'title']}
           label={<LableText>{t(`notifications.arabictitle`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -117,7 +141,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'description']}
+          name={['translations', lang.ar, 'description']}
           label={<LableText>{t(`notifications.arabicdiscription`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },

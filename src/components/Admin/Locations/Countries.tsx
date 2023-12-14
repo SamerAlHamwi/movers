@@ -22,7 +22,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { CountryModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddCountry } from '@app/components/modal/AddCountry';
@@ -32,6 +32,7 @@ import { LableText } from '../../GeneralStyles';
 import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radio/Radio';
 import { defineColorBySeverity } from '@app/utils/utils';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type countries = {
   id: number;
@@ -66,6 +67,7 @@ export const Country: React.FC = () => {
   const [dataSource, setDataSource] = useState<CountryModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<CountryModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CountryModel | undefined>(undefined);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(
     ['Countries', countryPage, countryPageSize],
@@ -111,6 +113,7 @@ export const Country: React.FC = () => {
     countryPageSize,
     searchString,
     refetch,
+    refetchData,
   ]);
 
   useEffect(() => {
@@ -460,6 +463,7 @@ export const Country: React.FC = () => {
           >
             <CreateButtonText>{t('locations.addCountry')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
           {isOpenAddModalForm && (
@@ -520,7 +524,7 @@ export const Country: React.FC = () => {
             showQuickJumper: true,
             total: totalCount || 0,
             pageSizeOptions: [5, 10, 15, 20],
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           loading={loading}
           scroll={{ x: isTablet || isMobile ? 850 : '' }}

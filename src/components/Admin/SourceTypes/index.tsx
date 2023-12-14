@@ -12,7 +12,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, SourceTypeModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddSourceType } from '@app/components/modal/AddSourceType';
 import { EditSourceType } from '@app/components/modal/EditSourceType';
@@ -21,6 +21,7 @@ import { useNavigate } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Header, TableButton, Modal, Image, CreateButtonText } from '../../GeneralStyles';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type sourceTypes = {
   id: number;
@@ -54,10 +55,10 @@ export const SourceType: React.FC = () => {
   const [editmodaldata, setEditmodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -95,7 +96,7 @@ export const SourceType: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -298,6 +299,7 @@ export const SourceType: React.FC = () => {
           >
             <CreateButtonText>{t('sourceTypes.addSourceType')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
           {modalState.add && (
@@ -377,7 +379,7 @@ export const SourceType: React.FC = () => {
             showQuickJumper: true,
             total: totalCount || 0,
             pageSizeOptions: [5, 10, 15, 20],
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           loading={loading}
           scroll={{ x: isTablet || isMobile ? 850 : '' }}

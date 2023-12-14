@@ -19,8 +19,9 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined, TagOutlined } from '@ant-design/icons';
+import { LeftOutlined, ReloadOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const Offers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -36,6 +37,7 @@ export const Offers: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(
     ['Offers', page, pageSize],
@@ -90,7 +92,7 @@ export const Offers: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [page, pageSize, language, searchString, refetch]);
+  }, [page, pageSize, language, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -184,12 +186,11 @@ export const Offers: React.FC = () => {
         }
         style={{ height: 'auto', marginBottom: '70px' }}
       >
-        <Row justify={'end'}>
+        <Row justify={'end'} align={'middle'}>
           <Btn
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 .5rem .5rem 0',
               width: 'auto',
-              height: 'auto',
             }}
             type="ghost"
             onClick={() => Navigate(-1)}
@@ -197,6 +198,7 @@ export const Offers: React.FC = () => {
           >
             <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
           </Btn>
+          <ReloadBtn setRefetchData={setRefetchData} />
         </Row>
         <Table
           pagination={{
@@ -212,7 +214,7 @@ export const Offers: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

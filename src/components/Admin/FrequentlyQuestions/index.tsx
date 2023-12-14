@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { message, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { EditRequest } from '@app/components/modal/EditRequest';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
@@ -19,13 +18,14 @@ import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText } from '../../GeneralStyles';
-import { RequestModel, faqModel } from '@app/interfaces/interfaces';
+import { faqModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useNavigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 import { AddFAQ } from '@app/components/modal/AddFAQ';
 import { EditFAQ } from '@app/components/modal/EditFAQ';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const FrequentlyQuestions: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -49,6 +49,7 @@ export const FrequentlyQuestions: React.FC = () => {
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -88,7 +89,7 @@ export const FrequentlyQuestions: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, refetchOnAdd, isEdit, page, pageSize, language, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -233,6 +234,7 @@ export const FrequentlyQuestions: React.FC = () => {
           >
             <CreateButtonText>{t('faq.addFAQ')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
           {modalState.add && (
@@ -292,7 +294,7 @@ export const FrequentlyQuestions: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

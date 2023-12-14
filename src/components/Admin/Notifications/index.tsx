@@ -22,6 +22,7 @@ import { DeleteOutlined, RedoOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type Translation = {
   message: string;
@@ -52,6 +53,7 @@ export const Notifications: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [deletemodaldata, setDeletemodaldata] = useState<Notification | undefined>(undefined);
   const [resendmodaldata, setResendmodaldata] = useState<Notification | undefined>(undefined);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
   const { isTablet, isMobile, isDesktop } = useResponsive();
 
   const user = useAppSelector((state) => state.user.user);
@@ -90,7 +92,7 @@ export const Notifications: React.FC = () => {
     setIsDelete(false);
     setIsResend(false);
     setRefetchOnAddNotification(false);
-  }, [isDelete, isResend, refetchOnAddNotification, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, isResend, refetchOnAddNotification, page, pageSize, language, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (isRefetching) setIsLoading(true);
@@ -267,6 +269,8 @@ export const Notifications: React.FC = () => {
             <CreateButtonText>{t('notifications.send')}</CreateButtonText>
           </Button>
 
+          <ReloadBtn setRefetchData={setRefetchData} />
+
           {isOpenResendModalForm ? (
             <ActionModal
               visible={isOpenResendModalForm}
@@ -327,7 +331,7 @@ export const Notifications: React.FC = () => {
             showQuickJumper: true,
             showTitle: false,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
             responsive: true,
             showLessItems: true,
             pageSizeOptions: [5, 10, 15, 20],

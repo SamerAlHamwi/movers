@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
@@ -10,11 +10,34 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { CountryModel, LanguageType } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
+import { AR } from '@app/constants/appConstants';
 
 export const EditCountry: React.FC<EditCountryProps> = ({ visible, onCancel, country_values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
+
+  useEffect(() => {
+    if (country_values) {
+      const firstElement = country_values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [country_values]);
 
   const onOk = () => {
     form.submit();
@@ -63,7 +86,7 @@ export const EditCountry: React.FC<EditCountryProps> = ({ visible, onCancel, cou
     >
       <BaseForm form={form} initialValues={country_values} layout="vertical" onFinish={onFinish} name="CountriesForm">
         <BaseForm.Item
-          name={['translations', 1, 'name']}
+          name={['translations', lang.en, 'name']}
           label={<LableText>{t('common.name_en')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -77,7 +100,7 @@ export const EditCountry: React.FC<EditCountryProps> = ({ visible, onCancel, cou
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 0, 'name']}
+          name={['translations', lang.ar, 'name']}
           label={<LableText>{t('common.name_ar')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },

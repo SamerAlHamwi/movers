@@ -6,16 +6,14 @@ import { BaseForm } from '../common/forms/BaseForm/BaseForm';
 import { Button } from '../common/buttons/Button/Button';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { P1 } from '../common/typography/P1/P1';
-import { LableText, Text } from '@app/components/GeneralStyles';
-import { Select, Option } from '@app/components/common/selects/Select/Select';
+import { LableText } from '@app/components/GeneralStyles';
 import { TextArea } from '../Admin/Translations';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
-import { Notification } from '@app/components/Admin/Notifications';
-import { LanguageType, NotModal } from '@app/interfaces/interfaces';
-import { useMutation } from 'react-query';
-import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { LanguageType } from '@app/interfaces/interfaces';
 import { Term } from '../Admin/Terms';
+import { AR } from '@app/constants/appConstants';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 
 export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, Term_values, isLoading }) => {
   const { t } = useTranslation();
@@ -24,6 +22,28 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
   const [current, setCurrent] = useState(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
   const [attachments, setAttachments] = useState<any[]>([]);
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
+
+  useEffect(() => {
+    if (Term_values) {
+      console.log(Term_values);
+      const firstElement = Term_values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [Term_values]);
 
   useEffect(() => {
     isLoading ? '' : Term_values !== undefined && form.setFieldsValue(Term_values);
@@ -74,7 +94,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
     >
       <BaseForm form={form} layout="vertical" onFinish={onFinish} name="userForm">
         <BaseForm.Item
-          name={['translations', 0, 'title']}
+          name={['translations', lang.en, 'title']}
           label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -89,7 +109,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 0, 'description']}
+          name={['translations', lang.en, 'description']}
           label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -103,7 +123,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'title']}
+          name={['translations', lang.ar, 'title']}
           label={<LableText>{t(`notifications.arabictitle`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -117,7 +137,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
           <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 1, 'description']}
+          name={['translations', lang.ar, 'description']}
           label={<LableText>{t(`notifications.arabicdiscription`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },

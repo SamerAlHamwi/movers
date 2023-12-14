@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
 import { Card } from 'components/common/Card/Card';
-import { CreateButtonText, Header, TableButton } from '../../GeneralStyles';
+import { Header, TableButton } from '../../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { notificationController } from '@app/controllers/notificationController';
@@ -18,6 +18,7 @@ import { ActionModal } from '@app/components/modal/ActionModal';
 import { useNavigate } from 'react-router-dom';
 import { checkPIN } from '@app/services/drafts';
 import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 type User = {
   id: number;
@@ -55,6 +56,7 @@ export const AskForHelp: React.FC = () => {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [userId, setUserId] = useState<number>(0);
   const [userName, setUserName] = useState<string>('0');
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -111,7 +113,7 @@ export const AskForHelp: React.FC = () => {
   useEffect(() => {
     setIsLoading(true);
     refetch();
-  }, [isConfirmed, statusType, page, pageSize, language, searchString, refetch]);
+  }, [isConfirmed, statusType, page, pageSize, language, searchString, refetch, refetchData]);
 
   const confirm = useMutation((data) =>
     checkPIN(data)
@@ -341,17 +343,7 @@ export const AskForHelp: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          {/* <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => handleModalOpen('checkPINForUser')}
-          >
-            <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
-          </Button> */}
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Check PIN For User    */}
           {modalState.checkPINForUser && (
@@ -396,7 +388,7 @@ export const AskForHelp: React.FC = () => {
             showQuickJumper: true,
             showTitle: false,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
             responsive: true,
             showLessItems: true,
             pageSizeOptions: [5, 10, 15, 20],
