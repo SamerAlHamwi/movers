@@ -1,21 +1,14 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space, Tree, DatePicker, Spin } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree, Tag } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
 import { Input } from '../Admin/Translations';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { Checkbox } from '../common/Checkbox/Checkbox';
-import {
-  BankOutlined,
-  ClearOutlined,
-  HomeOutlined,
-  LeftOutlined,
-  PushpinOutlined,
-  UserOutlined,
-} from '@ant-design/icons';
+import _ from 'lodash';
+import { ClearOutlined, HomeOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -26,8 +19,7 @@ import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
-// import type { DataNode } from 'antd/es/tree';
-import { createRequest, getRequestById } from '@app/services/requests';
+import { UpdateRequest, getRequestById } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
 import { getCountries, getCities } from '@app/services/locations';
@@ -40,10 +32,9 @@ import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { useLanguage } from '@app/hooks/useLanguage';
-// import { EditRequestProps } from './ModalProps';
 import { notificationController } from '@app/controllers/notificationController';
 import { RequestModel } from '@app/interfaces/interfaces';
-// import moment from 'moment';
+import UploadImageRequest, { IUploadImage } from './upload-image';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -58,25 +49,21 @@ let requestData = {};
 let requestServicesArray: any = [];
 let requestServices: any = [];
 const lang = localStorage.getItem('Go Movaro-lang');
-interface DisabledState {
-  [key: string]: boolean;
-}
+const sourceLat = 25.15658048160557;
+const sourceLng = 55.34100848084654;
+const destinationLat = 25.180801685212185;
+const destinationLng = 55.281956967174665;
 
 export const EditRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const { userId, requestId } = useParams();
-  const Navigate = useNavigate();
   const { language } = useLanguage();
-
-  const sourceLat = 25.15658048160557;
-  const sourceLng = 55.34100848084654;
-  const destinationLat = 25.180801685212185;
-  const destinationLng = 55.281956967174665;
+  const Navigate = useNavigate();
 
   const [RequestData, setRequestData] = useState<RequestModel>();
-  const [getRequest, setGetBranch] = useState<boolean>(true);
+  const [getRequest, setGetRequest] = useState<boolean>(true);
   const [current, setCurrent] = useState(0);
   const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
   const [sourcePosition, setSourcePosition] = useState({
@@ -92,63 +79,64 @@ export const EditRequest: React.FC = () => {
     lat: 25.15658048160557,
     lng: 55.34100848084654,
   });
+  // tree state (services)
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [defaultCheckedServices, setDefaultCheckedServices] = useState<any[]>([]);
+  // service type state
   const [valueRadio, setValueRadio] = useState(0);
+  // location state
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
-  // const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
-  const [selectedSourceType, setSelectedSourceType] = useState(RequestData?.sourceType?.id);
-  const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
-  const [disabledState, setDisabledState] = useState<DisabledState>({});
-  const [disabledUpload, setDisabledUpload] = useState<DisabledState>({});
-
+  // select attributeChoice state
+  const [selectedRadio, setSelectedRadio] = useState<
+    Array<{ attributeForSourcTypeId: number; attributeChoiceId: number }>
+  >([]);
+  // images state
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState<any[]>([]);
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
-  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
-  const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>([]);
-  const [attributeForSourceTypeId, setAttributeForSourceTypeId] = useState(0);
-  const [imagesLists, setImagesLists] = useState<Array<Array<Array<any>>>>([]);
-  const [selectedCheckboxes, setSelectedCheckboxes] = useState<number[]>([]);
-  const [selectedRadios, setSelectedRadios] = useState<{ [key: number]: number }>({});
-  const [itemId, setItemId] = useState(0);
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
     Array<{ attributeChoiceId: number; attachmentIds: number[] }>
   >([]);
+  // multiple attachment in request level state
   const [fileListLength, setFileListLength] = useState(0);
   const [picturesList, setPicturesList] = useState<any[]>([]);
-  const updatedAttributeChoiceAndAttachments = attributeChoiceAndAttachments.map((entry) => ({
-    ...entry,
-    statusOfAttributeChoiceId: disabledUpload[entry.attributeChoiceId] === true,
-  }));
-  const [test, setTest] = useState<any[]>([]);
-  const [maher, setMaher] = useState<any[]>([]);
-  const [Y, setY] = useState<any[]>([]);
 
-  // console.log(parentAttributeChoiceIdValue);
-
-  const outputArray = selectedCheckboxes.map((checkboxId) => ({
-    attributeForSourcTypeId: checkboxId,
-    attributeChoiceId: selectedRadios[checkboxId] || 0,
-  }));
+  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
 
   const {
-    data,
+    data: dataRequest,
     status,
     refetch: refetchRequest,
     isRefetching: isRefetchingRequest,
+    isLoading,
   } = useQuery(
-    ['GetBranchById'],
+    ['GetRequestById'],
     () =>
       getRequestById(requestId)
         .then((data) => {
           const result = data.data?.result;
+          const imageRequest = data.data?.result.attributeChoiceAndAttachments.map((item: any) => {
+            return {
+              attachmentIds: item.attachments.map((attachment: any) => attachment.id),
+              attributeChoiceId: item.attributeChoice.id,
+            };
+          });
+          setSelectedRadio(
+            data.data?.result.attributeForSourceTypeValues.map((item: any) => {
+              return {
+                attributeForSourcTypeId: item.attributeForSourcType.id,
+                attributeChoiceId: item.attributeChoice.id,
+              };
+            }),
+          );
+          setAttributeChoiceAndAttachments(imageRequest ?? []);
           setRequestData(result);
-          setGetBranch(false);
+          setGetRequest(false);
         })
         .catch((error) => {
           notificationController.error({ message: error.message || error.error?.message });
@@ -158,114 +146,21 @@ export const EditRequest: React.FC = () => {
     },
   );
 
-  const setImagesListAtIndex = (
-    sourceTypeIndex: number,
-    parentAttributeChoiceIndex: number,
-    childAttributeChoiceIndex: number,
-    fileList: any[],
-  ) => {
-    setImagesLists((prevLists) => {
-      const newLists = [...prevLists];
-      if (!newLists[sourceTypeIndex]) {
-        newLists[sourceTypeIndex] = [];
-      }
-      if (!newLists[sourceTypeIndex][parentAttributeChoiceIndex]) {
-        newLists[sourceTypeIndex][parentAttributeChoiceIndex] = [];
-      }
-      newLists[sourceTypeIndex][parentAttributeChoiceIndex][childAttributeChoiceIndex] = fileList;
-      return newLists;
-    });
-  };
-
-  const handlePreview = (
-    sourceTypeIndex: number,
-    parentAttributeChoiceIndex: number,
-    childAttributeChoiceIndex: number,
-    file: any,
-  ) => {
-    const imagesListForComponent =
-      imagesLists[sourceTypeIndex]?.[parentAttributeChoiceIndex]?.[childAttributeChoiceIndex];
-    if (imagesListForComponent) {
-      const fileIndex = imagesListForComponent.findIndex((item: any) => item.uid === file.uid);
-      if (fileIndex !== -1) {
-        const fileToPreview = imagesListForComponent[fileIndex];
-        setPreviewOpen(true);
-        setPreviewImage(fileToPreview.url);
-        setPreviewTitle(fileToPreview.name);
-      }
-    }
-  };
-
-  const [testMaher, setTestMaher] = useState<any[]>([]);
-  const [isLoading, setIsLoading] = useState(false);
-
   useEffect(() => {
-    if (maher?.length > 0) {
-      // console.log(maher);
-
-      if (
-        maher.filter((item) => item.isChange && !(item.isParentNotChecked === true) && !(item.isNotRepeat === true))
-          ?.length > 1
-      ) {
-        maher.map((item) => {
-          if (item.isChange)
-            getChildAttributeChoice(item.childId)
-              .then((data) => {
-                const items = data?.data?.result?.items || [];
-                setTestMaher((prev) => {
-                  return prev.concat([
-                    {
-                      id: item.childId,
-                      parentId: item.parentId,
-                      value: items,
-                    },
-                  ]);
-                });
-                setChildAttributeChoices(items);
-              })
-              .catch((error) => {
-                message.open(error);
-              });
-          return item;
-        });
-      } else {
-        const itemIsChange = maher.find((item) => item.isChange);
-        // console.log('mmmmmmmmitemIsChangemmmmmmmmmmmmmmmmmmmmmm', itemIsChange);
-        (async () => {
-          try {
-            setIsLoading(true);
-            await getChildAttributeChoice(itemIsChange?.childId)
-              .then((data) => {
-                const items = data?.data?.result?.items || [];
-
-                setTestMaher((prev) => {
-                  return prev.map((record) => {
-                    if (record.parentId === itemIsChange.parentId) {
-                      record = {
-                        id: itemIsChange.childId,
-                        parentId: itemIsChange.parentId,
-                        value: items,
-                      };
-                    }
-                    return record;
-                  });
-                });
-                setChildAttributeChoices(items);
-              })
-              .catch((error) => {
-                message.open(error);
-              });
-          } catch (error) {
-            console.error();
-          } finally {
-            setIsLoading(false);
-          }
-        })();
-      }
+    if (selectedRadio?.length > 0) {
+      selectedRadio.map((item) => {
+        getChildAttributeChoice(item.attributeChoiceId)
+          .then((data) => {
+            const items = data?.data?.result?.items || [];
+            setChildAttributeChoices(items);
+          })
+          .catch((error) => {
+            message.open(error);
+          });
+        return item;
+      });
     }
-  }, [maher]);
-
-  // console.log('mmmmmmmmmmmmmmmmmmmmmmmmmmmmmm', testMaher);
+  }, [selectedRadio]);
 
   const handleCancel = () => setPreviewOpen(false);
 
@@ -279,42 +174,41 @@ export const EditRequest: React.FC = () => {
   };
 
   const uploadImage = useMutation((data: any) => uploadAttachment(data), {
-    onSuccess: (data: any) => {
-      if (data.data.success) {
-        const newId = data.data.result?.id;
-        setPreviewImage(data.data.result?.url);
-        setAttributeChoiceAndAttachments((prevAttributes) => {
-          const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
-          if (existingObjectIndex !== -1) {
-            const updatedAttributes = [...prevAttributes];
-            const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
-            if (!attachmentIds.includes(newId)) {
-              attachmentIds.push(newId);
-            }
-            return updatedAttributes;
-          } else {
-            return [
-              ...prevAttributes,
-              {
-                attributeChoiceId: itemId,
-                attachmentIds: [newId],
-              },
-            ];
-          }
-        });
-      } else {
-        message.open({
-          content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
-        });
-      }
-    },
-    onError: (error: any) => {
-      message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-    },
+    // onSuccess: (data: any) => {
+    //   if (data.data.success) {
+    //     const newId = data.data.result?.id;
+    //     setPreviewImage(data.data.result?.url);
+    //     setAttributeChoiceAndAttachments((prevAttributes) => {
+    //       const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
+    //       if (existingObjectIndex !== -1) {
+    //         const updatedAttributes = [...prevAttributes];
+    //         const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
+    //         if (!attachmentIds.includes(newId)) {
+    //           attachmentIds.push(newId);
+    //         }
+    //         return updatedAttributes;
+    //       } else {
+    //         return [
+    //           ...prevAttributes,
+    //           {
+    //             attributeChoiceId: itemId,
+    //             attachmentIds: [newId],
+    //           },
+    //         ];
+    //       }
+    //     });
+    //   } else {
+    //     message.open({
+    //       content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
+    //     });
+    //   }
+    // },
+    // onError: (error: any) => {
+    //   message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
+    // },
   });
 
   const GetAllServices = useQuery('getAllServices', getServices);
-  const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
   const {
     data: cityData,
@@ -326,11 +220,10 @@ export const EditRequest: React.FC = () => {
 
   const {
     data: attributeForSourceTypesData,
-    refetch: AttributeForSourceTypesRefetch,
+    refetch: attributeForSourceTypesRefetch,
     isRefetching: attributeForSourceTypesIsRefetching,
     isLoading: attributeForSourceTypesIsLoading,
-  } = useQuery('AttributeForSourceTypes', () => getAttributeForSourceTypes(RequestData?.sourceType?.id), {
-    refetchOnWindowFocus: false,
+  } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
     enabled: RequestData?.sourceType?.id != undefined,
   });
 
@@ -338,21 +231,10 @@ export const EditRequest: React.FC = () => {
     if (countryId != '0') refetch();
   }, [countryId]);
 
-  // useEffect(() => {
-  //   AttributeForSourceTypesRefetch();
-  // }, [selectedSourceType, sourceType, disabledUpload]);
-
   useEffect(() => {
-    setSelectedCheckboxes([]);
-  }, [selectedSourceType]);
-
-  // useEffect(() => {
-  //   GetAllSourceType.refetch();
-  //   AttributeForSourceTypesRefetch();
-  //   GetAllServices.refetch();
-  // }, [language]);
-
-  let y: any[] = [];
+    attributeForSourceTypesRefetch();
+    GetAllServices.refetch();
+  }, [language, RequestData?.sourceType?.id]);
 
   useEffect(() => {
     setSourcePosition({
@@ -370,40 +252,38 @@ export const EditRequest: React.FC = () => {
       uid: attachment.id,
       url: attachment.url || attachment.lowResolutionPhotoUrl,
     }));
-
     setFileList(transformedAttachments);
 
     const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
-
-    const x = attributeAndAttachments.map((attributeAndAttachment: any) => {
-      return attributeAndAttachment;
+    const transformedAttributeAttachments = attributeAndAttachments.map((attribute: any) => {
+      return {
+        attributeId: attribute.attributeChoice.id,
+        attachment: attribute.attachments.map((attachment: any) => ({
+          status: 'done',
+          uid: attachment.id,
+          url: attachment.url || attachment.lowResolutionPhotoUrl,
+          name: attachment.url ?? '',
+        })),
+      };
     });
-
-    y = x.map((transformedAttributeAttachment) => {
-      return transformedAttributeAttachment;
-    });
-
-    const z = y.find((obj) => obj.attributeChoice.id);
-
-    // const x = RequestData?.attributeChoiceAndAttachments
-    //   .map((attributeAndAttachment: any) => {
-    //     return attributeAndAttachment;
-    //   })
-    //   .map((transformedAttributeAttachment) => {
-    //     return transformedAttributeAttachment;
-    //   })
-    //   .map((obj) => {
-    //     return obj.attributeChoice.id;
-    //   });
-    // console.log(x);
-
-    // setImagesLists(transformedAttributeAttachments);
-    // console.log(y);
-    setY(y);
+    // setImagesList(transformedAttributeAttachments);
   }, [RequestData]);
 
-  // console.log(Y);
-  // console.log(imagesLists);
+  const filterImage = (attributeId: number) => {
+    const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
+    let imagesData: Array<any> = [];
+    attributeAndAttachments.map((attribute: any) => {
+      if (attribute.attributeChoice.id === attributeId) {
+        const temp = attribute.attachments.map((attachment: any) => ({
+          attributeId: attributeId,
+          id: attachment.id,
+          url: attachment.url || attachment.lowResolutionPhotoUrl,
+        }));
+        imagesData = temp;
+      }
+    });
+    return imagesData;
+  };
 
   const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
     if (event.latLng) {
@@ -420,6 +300,9 @@ export const EditRequest: React.FC = () => {
   const steps = [
     {
       title: 'SourceType',
+    },
+    {
+      title: 'Attachment',
     },
     {
       title: 'Location',
@@ -530,17 +413,17 @@ export const EditRequest: React.FC = () => {
     }
   };
 
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
+  // const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
+  //   const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
+  //   const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
+  //   return {
+  //     dialCode,
+  //     phoneNumber,
+  //   };
+  // };
 
-  const createRequestMutation = useMutation((id: any) =>
-    createRequest(id)
+  const updateRequestMutation = useMutation((id: any) =>
+    UpdateRequest(id)
       .then((data) => {
         data.data?.success &&
           message.open({
@@ -559,16 +442,20 @@ export const EditRequest: React.FC = () => {
   );
 
   const onFinish = async (values: any) => {
-    const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
-    );
-    const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
-    );
+    // requestForQuotationContacts
+
+    // const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
+    //   form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
+    // );
+    // const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
+    //   form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
+    // );
+
     const sourceContact = {
       // dailCode: '+' + dialCodeS,
+      // phoneNumber: phoneNumberS == undefined ? RequestData?.requestForQuotationContacts[0]?.phoneNumber : phoneNumberS,
       dailCode: '+971',
-      phoneNumber: phoneNumberS == undefined ? RequestData?.requestForQuotationContacts[0]?.phoneNumber : phoneNumberS,
+      phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
       fullName:
         form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']) == undefined
           ? RequestData?.requestForQuotationContacts[0]?.fullName
@@ -577,18 +464,19 @@ export const EditRequest: React.FC = () => {
     };
     const destinationContact = {
       // dailCode: '+' + dialCodeD,
+      // phoneNumber: phoneNumberD == undefined ? RequestData?.requestForQuotationContacts[1]?.phoneNumber : phoneNumberD,
       dailCode: '+971',
-      phoneNumber: phoneNumberD == undefined ? RequestData?.requestForQuotationContacts[1]?.phoneNumber : phoneNumberD,
+      phoneNumber: form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
       fullName:
         form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']) == undefined
           ? RequestData?.requestForQuotationContacts[1]?.fullName
           : form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']),
       requestForQuotationContactType: 2,
     };
+
+    // services
     function extractServicesIds(input: any) {
       requestServices = [];
-      // console.log(requestServicesArray);
-      // console.log(input);
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -607,8 +495,6 @@ export const EditRequest: React.FC = () => {
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: null,
           };
-          // console.log(requestServices);
-          // console.log(result);
           if (!requestServices.includes(result)) {
             requestServices.push(result);
           }
@@ -616,17 +502,9 @@ export const EditRequest: React.FC = () => {
         return result;
       });
     }
-    extractServicesIds(requestServices.length == 0 ? test : requestServicesArray);
-    // console.log(requestServices);
+    extractServicesIds(requestServices.length == 0 ? defaultCheckedServices : requestServicesArray);
 
-    const filteredAttributeChoiceAndAttachments = updatedAttributeChoiceAndAttachments.filter(
-      (entry) => entry.statusOfAttributeChoiceId === true,
-    );
-
-    const attributeChoiceAndAttachmentsToSend = filteredAttributeChoiceAndAttachments.map(
-      ({ statusOfAttributeChoiceId, ...rest }) => rest,
-    );
-
+    // attributeChoiceAndAttachments
     const attachmentIds = fileList.map((file) => file.uid);
     const y = [
       {
@@ -634,26 +512,25 @@ export const EditRequest: React.FC = () => {
         attachmentIds: attachmentIds,
       },
     ];
-
-    const allAttachments = [...y, ...attributeChoiceAndAttachmentsToSend];
+    const allAttachments = [...y, ...attributeChoiceAndAttachments];
 
     requestData = {
-      sourceTypeId: selectedSourceType == undefined ? RequestData?.sourceType?.id : selectedSourceType,
+      sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
-      // moveAtUtc:
-      //   form.getFieldValue('moveAtUtc') == undefined
-      //     ? RequestData?.moveAtUtc
-      //     : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      moveAtUtc:
+        form.getFieldValue('moveAtUtc') == undefined
+          ? RequestData?.moveAtUtc
+          : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
       sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
       sourceAddress:
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
           : form.getFieldValue('sourceAddress'),
-      // arrivalAtUtc:
-      //   form.getFieldValue('arrivalAtUtc') == undefined
-      //     ? RequestData?.arrivalAtUtc
-      //     : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      arrivalAtUtc:
+        form.getFieldValue('arrivalAtUtc') == undefined
+          ? RequestData?.arrivalAtUtc
+          : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
       destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity.id : cityId.destination,
       destinationAddress:
         form.getFieldValue('destinationAddress') == undefined
@@ -666,24 +543,14 @@ export const EditRequest: React.FC = () => {
       services: requestServices,
 
       comment: form.getFieldValue('comment'),
-      attributeForSourceTypeValues: outputArray,
+      attributeForSourceTypeValues: selectedRadio,
       attributeChoiceAndAttachments: allAttachments,
-      userId: userId ? userId : '0',
+      userId: userId ?? '0',
+      id: requestId,
     };
     setAttachmentIdsChanged(true);
-
-    if (attachmentIds.length == 0 && attributeChoiceAndAttachmentsToSend.length == 0) {
-      message.open({
-        content: <Alert message={t('addRequest.atLeastOneAttachment')} type={`error`} showIcon />,
-      });
-      setAttachmentIdsChanged(false);
-      return;
-    }
-    // console.log(requestData);
     requestServicesArray = [];
   };
-
-  // console.log(requestServicesArray);
 
   useEffect(() => {
     if (attachmentIdsChanged) {
@@ -720,48 +587,23 @@ export const EditRequest: React.FC = () => {
       // } else if (cityId.source === '0' || cityId.destination === '0') {
       //   showError(t('addRequest.enterCity'));
       // } else {
-      createRequestMutation.mutateAsync(requestData);
+      updateRequestMutation.mutateAsync(requestData);
       setAttachmentIdsChanged(false);
       // }
     }
   }, [attachmentIdsChanged]);
 
-  const uploadButtonForAttribute = (
+  const uploadButtonForAllRequest = (
     <div>
       <PlusOutlined />
       <div className="ant-upload-text">Upload</div>
     </div>
   );
 
-  const uploadButtonForAllRequest = (
-    <div onClick={() => setItemId(-10)}>
-      <PlusOutlined />
-      <div className="ant-upload-text">Upload</div>
-    </div>
-  );
-
-  const toggleDisable = (sourceTypeId: string) => {
-    setDisabledState((prevState) => ({
-      ...prevState,
-      [sourceTypeId]: prevState[sourceTypeId] === undefined ? true : !prevState[sourceTypeId],
-    }));
-  };
-
-  const uploadDisable = (itemId: string) => {
-    setDisabledUpload((prevState) => ({
-      ...prevState,
-      [itemId]: prevState[itemId] === undefined ? true : !prevState[itemId],
-    }));
-  };
-
   const UploadAttachments = async (options: any) => {
     const { file } = options;
 
-    console.log(typeof file?.uid === 'string');
-
     if (typeof file?.uid === 'string') picturesList?.push(file);
-    console.log('picturesList', picturesList);
-    console.log(picturesList?.length, fileListLength);
 
     if (picturesList?.length === fileListLength) {
       const formData = new FormData();
@@ -798,7 +640,7 @@ export const EditRequest: React.FC = () => {
             });
         });
       });
-      setTest(checkedKeysById);
+      setDefaultCheckedServices(checkedKeysById);
       await form.setFieldsValue(RequestData);
     };
     updateFormValues();
@@ -812,21 +654,82 @@ export const EditRequest: React.FC = () => {
             (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
           )?.attributeChoice.id === parentAttributeChoice.id
         ) {
-          // setTestMaher([]);
-          setMaher((prev) => {
-            return prev.concat([
-              {
-                parentId: sourceTypeItem.id,
-                childId: parentAttributeChoice.id,
-                isChange: true,
-              },
-            ]);
-          });
-          setParentAttributeChoiceIdValue(parentAttributeChoice.id);
+          // setMaher((prev) => {
+          //   return prev.concat([
+          //     {
+          //       parentId: sourceTypeItem.id,
+          //       childId: parentAttributeChoice.id,
+          //       isChange: true,
+          //     },
+          //   ]);
+          // });
         }
       });
     });
   }, [attributeForSourceTypesData, RequestData]);
+
+  const addImageToState = (data: any) => {
+    const tempAttribute = _.cloneDeep(attributeChoiceAndAttachments);
+    const findAttribute = tempAttribute.findIndex((item) => item.attributeChoiceId === data.attributeId);
+    if (findAttribute !== -1) {
+      tempAttribute[findAttribute].attachmentIds.push(data.id);
+    } else {
+      tempAttribute.push({
+        attachmentIds: [data.id],
+        attributeChoiceId: data.attributeId,
+      });
+    }
+    setAttributeChoiceAndAttachments(tempAttribute);
+  };
+
+  const uploadImageAction = (
+    file: any,
+    url: Array<IUploadImage>,
+    setUrl: Dispatch<SetStateAction<Array<IUploadImage>>>,
+    attributeId: number,
+  ) => {
+    const tempImage = _.cloneDeep(url);
+    const formData = new FormData();
+    formData.append('file', file.file);
+    formData.append('RefType', '2');
+    uploadImage.mutate(formData, {
+      onSuccess(data) {
+        if (data.data.success) {
+          tempImage.push({
+            id: data.data.result.id,
+            attributeId: attributeId,
+            url: data.data.result.url,
+            status: 'done',
+          });
+          addImageToState({
+            id: data.data.result.id,
+            attributeId: attributeId,
+            url: data.data.result.url,
+          });
+          setUrl(tempImage);
+        }
+      },
+    });
+  };
+
+  const handleDeleteImage = (
+    attributeId: number,
+    imageId: number,
+    url: Array<IUploadImage>,
+    setUrl: Dispatch<SetStateAction<Array<IUploadImage>>>,
+  ) => {
+    const tempAttachment = _.cloneDeep(attributeChoiceAndAttachments);
+    const tempUrl = _.cloneDeep(url);
+
+    const attributeIndex = tempAttachment.findIndex((item) => item.attributeChoiceId === attributeId);
+    if (attributeIndex !== -1) {
+      const newAttachments = tempAttachment[attributeIndex].attachmentIds.filter((item) => item !== imageId);
+      tempAttachment[attributeIndex].attachmentIds = newAttachments;
+      const filteredUrl = tempUrl.filter((item) => item.id !== imageId);
+      setUrl(filteredUrl);
+      setAttributeChoiceAndAttachments(tempAttachment);
+    }
+  };
 
   return (
     <Card title={t('editRequest.editRequest')} padding="1.25rem 1.25rem 1.25rem">
@@ -878,8 +781,7 @@ export const EditRequest: React.FC = () => {
               height: 'auto',
             }}
             onClick={onFinish}
-            // onClick={() => onFinish(form.getFieldsValue())}
-            loading={createRequestMutation.isLoading || uploadImage.isLoading}
+            loading={updateRequestMutation.isLoading || uploadImage.isLoading}
           >
             {t('common.done')}
           </Button>
@@ -895,9 +797,11 @@ export const EditRequest: React.FC = () => {
                 <HomeOutlined />
               ) : index === 1 ? (
                 <PushpinOutlined />
-              ) : index === 2 ? (
-                <UserOutlined />
+              ) : 2 ? (
+                <PushpinOutlined />
               ) : index === 3 ? (
+                <UserOutlined />
+              ) : index === 4 ? (
                 <ClearOutlined />
               ) : undefined
             }
@@ -909,43 +813,12 @@ export const EditRequest: React.FC = () => {
         <BaseForm
           form={form}
           onFinish={onFinish}
-          name="addRequestForm"
+          name="editRequestForm"
           style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
         >
           {current === 0 && (
             <>
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.whatMoving')}</h4>
-              <BaseForm.Item
-                name={['sourceTypeId']}
-                label={<LableText>{t('addRequest.sourceType')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : isMobile ? { width: '100%' } : {}}
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  onChange={(e: any) => {
-                    setSelectedSourceType(e);
-                  }}
-                  defaultValue={RequestData?.sourceType?.name}
-                >
-                  {GetAllSourceType?.data?.data?.result?.items?.map((ele: any) => {
-                    return (
-                      <Option value={ele.id} key={ele?.id}>
-                        <Space>
-                          <span role="img" aria-label={ele.name} style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={ele?.icon?.url} width={27} height={27} style={{ margin: '0 1.5rem 0 0.3rem' }} />
-                            {ele.name}
-                          </span>
-                        </Space>
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </BaseForm.Item>
-
               <BaseForm.Item name={['attributeForSourceTypeValues']}>
                 {attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
                   <p>{t('addRequest.sourceTypeDoesntHaveAttribute')}</p>
@@ -954,246 +827,54 @@ export const EditRequest: React.FC = () => {
                     {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
                       <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
                         <div style={{ margin: '1rem' }}>
-                          <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>
-                            <BaseForm.Item name={sourceTypeItem.name} valuePropName="checked">
-                              <Checkbox
-                                key={sourceTypeItem.id}
-                                onClick={() => {
-                                  toggleDisable(sourceTypeItem.id);
-                                }}
-                                onChange={(CheckboxChangeEvent) => {
-                                  const isChecked = CheckboxChangeEvent.target.checked;
-                                  if (isChecked) {
-                                    setMaher((prev) => {
-                                      return prev.map((item) => {
-                                        if (item.parentId === sourceTypeItem.id)
-                                          return {
-                                            parentId: item.parentId,
-                                            childId: item.childId,
-                                            isChange: item.childId,
-                                            isNotRepeat: true,
-                                          };
-                                        else return item;
-                                      });
-                                    });
-                                    setSelectedCheckboxes((prevSelectedCheckboxes) => [
-                                      ...prevSelectedCheckboxes,
-                                      sourceTypeItem.id,
-                                    ]);
-                                  } else {
-                                    setMaher((prev) => {
-                                      return prev.map((item) => {
-                                        if (item.parentId === sourceTypeItem.id)
-                                          return {
-                                            ...item,
-                                            isParentNotChecked: true,
-                                          };
-                                        else return item;
-                                      });
-                                    });
-                                    setSelectedCheckboxes((prevSelectedCheckboxes) =>
-                                      prevSelectedCheckboxes.filter((id) => {
-                                        id !== sourceTypeItem.id;
-                                      }),
-                                    );
-                                  }
-                                }}
-                                defaultChecked={RequestData.attributeForSourceTypeValues.some(
-                                  (value) => value?.attributeForSourcType?.id === sourceTypeItem.id,
-                                )}
-                              >
-                                {sourceTypeItem.name}
-                              </Checkbox>
-                            </BaseForm.Item>
-                          </p>
+                          {sourceTypeItem.id} - {sourceTypeItem.name}
                           <Radio.Group
                             className="radios"
                             style={{ display: 'flex', justifyContent: 'space-around' }}
                             onChange={(e) => {
-                              const sourceTypeId = sourceTypeItem.id;
-                              setAttributeForSourceTypeId(sourceTypeId);
-                              setSelectedChoices((prevSelectedChoices) => ({
-                                ...prevSelectedChoices,
-                                [sourceTypeId]: e.target.value,
-                              }));
-                              setSelectedRadios((prevSelectedRadios) => ({
-                                ...prevSelectedRadios,
-                                [sourceTypeId]: e.target.value.id,
-                              }));
+                              setSelectedRadio((prevSelectedChoices) => {
+                                const existingIndex = prevSelectedChoices.findIndex(
+                                  (choice) => choice.attributeForSourcTypeId === sourceTypeItem.id,
+                                );
+                                if (existingIndex !== -1) {
+                                  return [
+                                    ...prevSelectedChoices.slice(0, existingIndex),
+                                    {
+                                      attributeForSourcTypeId: sourceTypeItem.id,
+                                      attributeChoiceId: e.target.value,
+                                    },
+                                    ...prevSelectedChoices.slice(existingIndex + 1),
+                                  ];
+                                } else {
+                                  return [
+                                    ...prevSelectedChoices,
+                                    {
+                                      attributeForSourcTypeId: sourceTypeItem.id,
+                                      attributeChoiceId: e.target.value,
+                                    },
+                                  ];
+                                }
+                              });
                             }}
-                            disabled={
-                              !RequestData.attributeForSourceTypeValues.some(
-                                (value) => value?.attributeForSourcType?.id === sourceTypeItem.id,
-                              )
-                                ? !disabledState[sourceTypeItem.id]
-                                : disabledState[sourceTypeItem.id]
-                            }
                             defaultValue={
                               RequestData?.attributeForSourceTypeValues.find(
                                 (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
                               )?.attributeChoice.id
                             }
                           >
-                            {/* {console.log(
-                              RequestData?.attributeForSourceTypeValues.find(
-                                (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
-                              )?.attributeChoice.id,
-                            )} */}
-                            {selectedChoices[sourceTypeItem.id]}
                             {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
-                              <>
-                                <Radio
-                                  key={parentAttributeChoice.id}
-                                  value={parentAttributeChoice.id}
-                                  onChange={(e) => {
-                                    // setTestMaher([]);
-
-                                    setMaher((prev) => {
-                                      return prev.map((item) => {
-                                        if (item.parentId === sourceTypeItem.id)
-                                          return {
-                                            ...item,
-                                            childId: e.target.value,
-                                            isChange: true,
-                                          };
-                                        else
-                                          return {
-                                            ...item,
-
-                                            isChange: false,
-                                          };
-                                      });
-                                    });
-
-                                    setParentAttributeChoiceIdValue(parentAttributeChoice.id);
-                                  }}
-                                  style={{ height: '30px' }}
-                                >
-                                  {parentAttributeChoice.name}
-                                </Radio>
-                                <Row style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                                  {testMaher.map((item) => {
-                                    if (item.id === parentAttributeChoice.id) {
-                                      return item?.value?.map(
-                                        (item: any, index: number) =>
-                                          parentAttributeChoice?.id === item?.attributeChociceParentId && (
-                                            <Spin spinning={isLoading} key={item?.attributeChociceParentId}>
-                                              <div
-                                                key={item.id}
-                                                style={{ margin: '1rem' }}
-                                                onClick={() => setItemId(item.id)}
-                                              >
-                                                <BaseForm.Item key={index} name={item.name} valuePropName="checked">
-                                                  <Checkbox
-                                                    onClick={() => {
-                                                      uploadDisable(item?.id);
-                                                    }}
-                                                    defaultChecked={RequestData.attributeChoiceAndAttachments.some(
-                                                      (value) => value?.attributeChoice?.id === item.id,
-                                                    )}
-                                                  >
-                                                    <p>{item.name}</p>
-                                                  </Checkbox>
-                                                </BaseForm.Item>
-                                                {/* {console.log(
-                                                  'uplooooooooad',
-                                                  Y.find((obj) => obj.attributeChoice.id == item.id)?.attributeChoice,
-                                                )}
-                                                {console.log('1131', Y)}
-                                                {console.log('1132', item.id)} */}
-
-                                                <Upload
-                                                  key={item.id}
-                                                  disabled={
-                                                    !RequestData.attributeChoiceAndAttachments.some(
-                                                      (value) => value?.attributeChoice?.id === item.id,
-                                                    )
-                                                      ? !disabledUpload[item?.id]
-                                                      : disabledUpload[item?.id]
-                                                  }
-                                                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                                                  accept=".jpeg,.png,.jpg"
-                                                  listType="picture-card"
-                                                  fileList={
-                                                    imagesLists[attributeForSourceTypeId]?.[
-                                                      parentAttributeChoiceIdValue
-                                                    ]?.[item.id]
-                                                  }
-                                                  onPreview={(file) =>
-                                                    handlePreview(
-                                                      attributeForSourceTypeId,
-                                                      parentAttributeChoiceIdValue,
-                                                      item.id,
-                                                      file,
-                                                    )
-                                                  }
-                                                  beforeUpload={(file) => {
-                                                    const formData = new FormData();
-                                                    formData.append('RefType', '2');
-                                                    formData.append('file', file);
-                                                    uploadImage.mutate(formData);
-
-                                                    return false;
-                                                  }}
-                                                  onChange={(e: any) => {
-                                                    setImagesListAtIndex(
-                                                      attributeForSourceTypeId,
-                                                      parentAttributeChoiceIdValue,
-                                                      item.id,
-                                                      e.fileList,
-                                                    );
-                                                  }}
-                                                  maxCount={20}
-                                                >
-                                                  {imagesLists[index]?.length >= 20 ? null : uploadButtonForAttribute}
-                                                </Upload>
-                                                <Modal
-                                                  open={previewOpen}
-                                                  title={previewTitle}
-                                                  footer={null}
-                                                  onCancel={handleCancel}
-                                                >
-                                                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                                                </Modal>
-                                              </div>
-                                            </Spin>
-                                          ),
-                                      );
-                                    }
-                                  })}
-                                </Row>
-                              </>
+                              <Radio
+                                key={parentAttributeChoice.id}
+                                value={parentAttributeChoice.id}
+                                style={{ height: '30px' }}
+                              >
+                                {parentAttributeChoice.name}
+                              </Radio>
                             ))}
                           </Radio.Group>
                         </div>
                       </Card>
                     ))}
-                    <Upload
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".jpeg,.png,.jpg"
-                      listType="picture-card"
-                      fileList={fileList}
-                      onPreview={handlePreviews}
-                      maxCount={10}
-                      multiple
-                      onChange={(item) => {
-                        setFileListLength(item.fileList?.filter((item) => typeof item.uid === 'string')?.length);
-                      }}
-                      onRemove={(file) => {
-                        setFileList((prev: any[]) => {
-                          const test = prev.filter((item: any) => item?.uid !== file?.uid);
-
-                          return test;
-                        });
-                        return;
-                      }}
-                      customRequest={UploadAttachments}
-                    >
-                      {fileList.length >= 8 ? null : uploadButtonForAllRequest}
-                    </Upload>
-                    <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                    </Modal>
                   </div>
                 ) : (
                   ''
@@ -1203,6 +884,55 @@ export const EditRequest: React.FC = () => {
           )}
 
           {current === 1 && (
+            <Row className="fullContent" justify={'center'}>
+              {childAttributeChoices.map((item: any) => {
+                return (
+                  <Col key={item.id} span={12}>
+                    <UploadImageRequest
+                      item={item}
+                      uploadImageAction={uploadImageAction}
+                      images={filterImage(item.id)}
+                      handleDeleteImage={handleDeleteImage}
+                      previewOpen={previewOpen}
+                      previewTitle={previewTitle}
+                      handleCancel={handleCancel}
+                      previewImage={previewImage}
+                      handlePreviews={handlePreviews}
+                    />
+                  </Col>
+                );
+              })}
+              <Row>
+                <p> add additional attachments for your request: </p>
+                <Upload
+                  accept=".jpeg,.png,.jpg"
+                  listType="picture-card"
+                  fileList={fileList}
+                  onPreview={handlePreviews}
+                  maxCount={10}
+                  multiple
+                  onChange={(item) => {
+                    setFileListLength(item.fileList?.filter((item) => typeof item.uid === 'string')?.length);
+                  }}
+                  onRemove={(file) => {
+                    setFileList((prev: any[]) => {
+                      const data = prev.filter((item: any) => item?.uid !== file?.uid);
+                      return data;
+                    });
+                    return;
+                  }}
+                  customRequest={UploadAttachments}
+                >
+                  {fileList.length >= 8 ? null : uploadButtonForAllRequest}
+                </Upload>
+                <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                  <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                </Modal>
+              </Row>
+            </Row>
+          )}
+
+          {current === 2 && (
             <>
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
               <BaseForm.Item
@@ -1466,7 +1196,7 @@ export const EditRequest: React.FC = () => {
             </>
           )}
 
-          {current === 2 && (
+          {current === 3 && (
             <>
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForSource')}:</h4>
               <BaseForm.Item
@@ -1578,7 +1308,7 @@ export const EditRequest: React.FC = () => {
             </>
           )}
 
-          {current === 3 && (
+          {current === 4 && (
             <>
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.selectService')} :</h4>
               <BaseForm.Item key="100" name={['services']}>
@@ -1590,11 +1320,11 @@ export const EditRequest: React.FC = () => {
                   expandedKeys={expandedKeys}
                   autoExpandParent={autoExpandParent}
                   onCheck={(checkedKeysValue: any, info: any) => {
-                    setTest(checkedKeysValue);
+                    setDefaultCheckedServices(checkedKeysValue);
                     requestServicesArray = [...checkedKeysValue];
                   }}
-                  defaultCheckedKeys={test}
-                  checkedKeys={test}
+                  defaultCheckedKeys={defaultCheckedServices}
+                  checkedKeys={defaultCheckedServices}
                   onSelect={onSelect}
                   selectedKeys={selectedKeys}
                   treeData={treeData}
