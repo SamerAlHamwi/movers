@@ -39,8 +39,6 @@ export const ChangeAcceptRequestOrPotentialClient: React.FC<ChangeAcceptRequestO
     onEdit(value);
   };
 
-  console.log(values);
-
   return (
     <Modal
       style={{ marginTop: '1rem' }}

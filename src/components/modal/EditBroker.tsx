@@ -53,20 +53,10 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
     form.submit();
   };
 
-  console.log(cityId);
-
   const onFinish = (value: Broker) => {
-    console.log(value);
-    console.log(cityId);
     value = Object.assign({}, value, { cityId: cityId });
     onEdit(value);
   };
-
-  const onChange = (value: any) => {
-    console.log('changed', value);
-  };
-
-  console.log(values);
 
   return (
     <Modal
@@ -197,7 +187,6 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
             max={100}
             formatter={(value) => `${value}%`}
             parser={(value: any) => value!.replace('%', '')}
-            onChange={onChange}
             style={{ width: '100%' }}
           />
         </BaseForm.Item>

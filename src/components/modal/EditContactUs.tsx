@@ -37,8 +37,6 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         },
       ],
     });
-    console.log(contactInfo);
-
     onEdit(contactInfo);
   };
 

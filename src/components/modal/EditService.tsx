@@ -68,8 +68,6 @@ export const EditService: React.FC<EditServiceProps> = ({
   };
 
   const onFinish = (info: ServiceModel) => {
-    console.log(info);
-
     const my_data = {
       attachmentId,
       translations: info.translations?.map((_, i) => ({
@@ -78,13 +76,7 @@ export const EditService: React.FC<EditServiceProps> = ({
       })),
       id: 0,
     };
-
-    console.log(my_data);
-
     info = Object.assign({}, info, my_data);
-
-    console.log(info);
-
     onEdit(my_data);
   };
 

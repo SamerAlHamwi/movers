@@ -17,8 +17,6 @@ const UsersViaBrokersStatistics = () => {
     GetUsersViaBrokersStatistics()
       .then((response) => {
         if (response.data?.success) {
-          console.log(response.data.result);
-
           setUsersViaBrokersStatistics(response?.data?.result);
         } else {
           throw new Error(response.data.message || 'Failed to fetch data');

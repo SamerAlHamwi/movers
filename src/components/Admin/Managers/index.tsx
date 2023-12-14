@@ -247,8 +247,6 @@ export const Manager: React.FC = () => {
               size="small"
               onChange={(e: RadioChangeEvent) => {
                 setTemp1(e.target.value);
-                console.log(e.target.value);
-                console.log(temp1);
               }}
               value={temp1}
             >

@@ -171,10 +171,6 @@ export const EditCompany: React.FC = () => {
 
   useEffect(() => {
     const updateFormValues = async () => {
-      // Check if companyData is not an empty object
-
-      // console.log('Updating form with new companyData:', companyData);
-
       const checkedKeysById: any[] = [];
       companyData?.services?.map((item: any) => {
         item.subServices?.map((sub: any) => {
@@ -546,7 +542,6 @@ export const EditCompany: React.FC = () => {
     };
 
     updatedFormData.translations = companyInfo.translations;
-    console.log('companyInfo', companyInfo);
     setEnableEdit(true);
 
     if (companyInfo.companyOwnerIdentityIds == 0) {

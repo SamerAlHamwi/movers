@@ -723,9 +723,7 @@ export const AddRequest: React.FC = () => {
                                 toggleDisable(sourceTypeItem.id);
                               }}
                               onChange={(CheckboxChangeEvent) => {
-                                console.log(CheckboxChangeEvent);
                                 const isChecked = CheckboxChangeEvent.target.checked;
-                                console.log(isChecked);
 
                                 if (isChecked) {
                                   setSelectedCheckboxes((prevSelectedCheckboxes) => [

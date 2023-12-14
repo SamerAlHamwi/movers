@@ -269,8 +269,6 @@ export const ApplicationsVersions: React.FC = () => {
     },
   ];
 
-  console.log(changemodaldata);
-
   return (
     <>
       <Card
@@ -326,7 +324,6 @@ export const ApplicationsVersions: React.FC = () => {
               visible={modalState.change}
               onCancel={() => handleModalClose('change')}
               onEdit={(data) => {
-                console.log('changemodaldata', changemodaldata);
                 changemodaldata !== undefined && handleChange(data, changemodaldata.id);
               }}
               isLoading={changeOptionApplicationsVersions.isLoading}

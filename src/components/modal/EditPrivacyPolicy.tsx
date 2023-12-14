@@ -35,7 +35,6 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
 
   useEffect(() => {
     if (Priv_values) {
-      console.log(Priv_values);
       const firstElement = Priv_values?.translations[0];
       if (firstElement?.language === AR) {
         setLang({

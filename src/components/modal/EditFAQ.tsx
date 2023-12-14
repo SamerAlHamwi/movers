@@ -43,8 +43,6 @@ export const EditFAQ: React.FC<EditFAQProps> = ({ visible, onCancel, values, onE
   };
 
   const onFinish = (info: faqModel) => {
-    console.log(info);
-
     const my_data = {
       translations: info.translations?.map((_, i) => ({
         ...info.translations[i],

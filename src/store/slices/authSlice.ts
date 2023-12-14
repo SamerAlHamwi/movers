@@ -50,8 +50,6 @@ export const doSetNewPassword = createAsyncThunk('auth/doSetNewPassword', async 
 );
 
 export const doLogout = createAsyncThunk('auth/doLogout', (payload, { dispatch }) => {
-  console.log('logout');
-
   deleteToken();
   deleteUser();
   dispatch(setUser(null));

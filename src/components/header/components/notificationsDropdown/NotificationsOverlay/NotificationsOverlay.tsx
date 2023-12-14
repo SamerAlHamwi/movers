@@ -80,18 +80,6 @@ export const NotificationsOverlay: React.FC<NotificationsOverlayProps> = ({
                     {t('common.loadMore')}
                   </Button>
                 )}
-                {/* <InfiniteScroll
-                  dataLength={totalCount}
-                  hasMore={true}
-                  next={() => console.log('jksbnjksbj')}
-                  loader={
-                    <SpinnerWrapper>
-                      <Spinner size="small" />
-                    </SpinnerWrapper>
-                  }
-                >
-                  <>{noticesList}</>
-                </InfiniteScroll> */}
               </>
             ) : notifications?.length === 0 ? (
               <>

@@ -65,7 +65,6 @@ export const SubServices: React.FC = () => {
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-    console.log(modalState);
   };
 
   const handleModalClose = (modalType: any) => {
@@ -198,8 +197,6 @@ export const SubServices: React.FC = () => {
               onClick={() => {
                 setIsOpenSliderImage(true);
                 setAttachmentData(record);
-
-                console.log(record);
               }}
             />
           </>

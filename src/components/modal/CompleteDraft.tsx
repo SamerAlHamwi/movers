@@ -308,8 +308,6 @@ export const CompleteDraft: React.FC = () => {
   });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
-    console.log(expandedKeysValue);
-
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
@@ -1139,7 +1137,6 @@ export const CompleteDraft: React.FC = () => {
                             }}
                             value={selectedChoices[sourceTypeItem.id]}
                           >
-                            {console.log('disabledState', disabledState[sourceTypeItem.id])}
                             {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
                               <Radio
                                 disabled={!disabledState[sourceTypeItem.id]}

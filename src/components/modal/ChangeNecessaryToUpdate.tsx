@@ -28,8 +28,6 @@ export const ChangeNecessaryToUpdate: React.FC<ChangeNecessaryToUpdateProps> = (
     form.submit();
   };
 
-  console.log(values?.updateOptions);
-
   const onFinish = (info: ApplicationsVersion) => {
     onEdit(info);
   };

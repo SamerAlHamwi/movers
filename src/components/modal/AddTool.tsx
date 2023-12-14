@@ -39,8 +39,6 @@ export const AddTool: React.FC<CreateModalProps> = ({ visible, onCancel, onCreat
   };
 
   const onFinish = (info: SourceTypeModel) => {
-    console.log(info);
-
     const my_data = {
       attachmentId,
       translations: info.translations?.map((_, i) => ({
@@ -48,12 +46,7 @@ export const AddTool: React.FC<CreateModalProps> = ({ visible, onCancel, onCreat
         language: i === 1 ? ('en' as LanguageType) : ('ar' as LanguageType),
       })),
     };
-    console.log(my_data);
-
     info = Object.assign(my_data);
-
-    console.log(info);
-
     onCreate(info);
   };
 

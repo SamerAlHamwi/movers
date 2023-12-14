@@ -44,7 +44,6 @@ export const EditPoint: React.FC<EditPointProps> = ({ visible, onCancel, values,
     form.submit();
   };
 
-  console.log('dkdkkd', lang);
   const onFinish = (value: Point) => {
     value = Object.assign({}, value, {
       translations: value.translations.map((_, i) => ({

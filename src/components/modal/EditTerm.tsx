@@ -29,7 +29,6 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, T
 
   useEffect(() => {
     if (Term_values) {
-      console.log(Term_values);
       const firstElement = Term_values?.translations[0];
       if (firstElement?.language === AR) {
         setLang({
