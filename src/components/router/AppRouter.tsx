@@ -11,7 +11,6 @@ import { withLoading } from '@app/hocs/withLoading.hoc';
 import { PrivateRoute } from '@app/hocs/withAuthorization';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { UserRole } from '@app/constants/userRole';
-import DragAndDropBoard from '../Admin/CommissionGroups';
 
 const AuthLayout = lazy(() => import('@app/components/layouts/AuthLayout/AuthLayout'));
 const ServerErrorPage = lazy(() => import('@app/pages/ErrorsPages/ServerErrorPage'));
@@ -63,8 +62,9 @@ const FrequentlyQuestionPage = lazy(() => import('@app/pages/OtherPages/Frequent
 const ConfigurationsPage = lazy(() => import('@app/pages/OtherPages/ConfigurationsPage'));
 const PointPage = lazy(() => import('@app/pages/PointsPages/PointPage'));
 const ReviewDetailsPage = lazy(() => import('@app/pages/CompaniesPages/ReviewsDetailsPage'));
-const CommissionGroupPage = lazy(() => import('@app/pages/CommissionGroupsPage/CommissionGroupsPage'));
+const CommissionGroupPage = lazy(() => import('@app/pages/CommissionGroupsPages/CommissionGroupsPage'));
 const FeaturedBundlePage = lazy(() => import('@app/pages/PointsPages/FeaturedBundlesPage'));
+const ApplicationsVersionPage = lazy(() => import('@app/pages/ApplicationsVersionsPages/ApplicationsVersionsPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -118,6 +118,7 @@ const PointsPage = withLoading(PointPage);
 const ReviewsDetailsPage = withLoading(ReviewDetailsPage);
 const CommissionGroupsPage = withLoading(CommissionGroupPage);
 const FeaturedBundlesPage = withLoading(FeaturedBundlePage);
+const ApplicationsVersionsPage = withLoading(ApplicationsVersionPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -699,6 +700,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <FrequentlyQuestionsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="ApplicationsVersions"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <ApplicationsVersionsPage />
               </PrivateRoute>
             }
           />

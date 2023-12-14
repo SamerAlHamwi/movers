@@ -21,6 +21,7 @@ import {
   SmsConfig,
   FileSizeConfig,
   HoursConfig,
+  ApplicationsVersion,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -81,6 +82,10 @@ export interface CreateFAQModalProps extends ModalProps {
 }
 export interface CreateBrokrModalProps extends ModalProps {
   onCreateBroker: (info: Broker) => void;
+}
+
+export interface CreateApplicationsVersionsModalProps extends ModalProps {
+  onCreate: (info: ApplicationsVersion) => void;
 }
 
 export interface CreateModalProps extends ModalProps {
@@ -161,6 +166,10 @@ export interface EditRejectReasonProps extends ModalProps {
   values: RejectReason | undefined;
   onEdit: (data: RejectReason) => void;
 }
+export interface EditApplicationsVersionProps extends ModalProps {
+  values: ApplicationsVersion | undefined;
+  onEdit: (data: ApplicationsVersion) => void;
+}
 export interface EditBrokerProps extends ModalProps {
   values: Broker | undefined;
   onEdit: (data: Broker) => void;
@@ -179,6 +188,11 @@ export interface EditCountryProps extends ModalProps {
 export interface EditCityProps extends ModalProps {
   city_values: CityModel | undefined;
   onEdit: (data: CityModel) => void;
+}
+
+export interface ChangeNecessaryToUpdateProps extends ModalProps {
+  values: ApplicationsVersion | undefined;
+  onEdit: (data: ApplicationsVersion) => void;
 }
 
 export interface EditFileSizeSettingProps extends ModalProps {
