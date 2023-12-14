@@ -1,15 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { DragDropContext, Droppable, Draggable, DropResult } from 'react-beautiful-dnd';
 import './DragAndDropBoard.css';
-import { Button, Spin, Badge, Row, Tooltip, Col } from 'antd';
-import {
-  DeleteOutlined,
-  EditOutlined,
-  EllipsisOutlined,
-  RetweetOutlined,
-  RollbackOutlined,
-  SettingOutlined,
-} from '@ant-design/icons';
+import { Spin, Badge, Row, Tooltip, Col } from 'antd';
+import { EditOutlined, ReloadOutlined, RollbackOutlined } from '@ant-design/icons';
 import { getAllGroups, createGroup, updateGroup, SwipeCompany } from '@app/services/commissionGroups';
 import { useMutation, useQuery } from 'react-query';
 import { notificationController } from '@app/controllers/notificationController';
@@ -20,6 +13,7 @@ import { Card } from '@app/components/common/Card/Card';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { CreateButtonText, TableButton } from '@app/components/GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 interface Company {
   bio: string;
@@ -60,6 +54,7 @@ const DragAndDropBoard = () => {
   const [editmodaldata, setEditmodaldata] = useState<any | undefined>(undefined);
   const [isEdit, setIsEdit] = useState(false);
   const [isDefault, setIsDefault] = useState(0);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -104,7 +99,7 @@ const DragAndDropBoard = () => {
     refetch();
     setIsEdit(false);
     setRefetchOnAdd(false);
-  }, [language, refetchOnAdd, isEdit]);
+  }, [language, refetchOnAdd, isEdit, refetchData]);
 
   useEffect(() => {
     if (dataGroup) {
@@ -251,18 +246,18 @@ const DragAndDropBoard = () => {
 
   return (
     <Card title={t('groups.groupsList')} padding={'1.25rem 1.25rem 0'}>
-      <Row justify={'end'}>
+      <Row justify={'end'} align={'middle'}>
         <Btn
           type="primary"
           style={{
-            margin: '1rem 1rem 1rem 0',
+            margin: '0 .5rem .5rem 0',
             width: 'auto',
-            height: 'auto',
           }}
           onClick={() => handleModalOpen('add')}
         >
           <CreateButtonText>{t('groups.addGroup')}</CreateButtonText>
         </Btn>
+        <ReloadBtn setRefetchData={setRefetchData} />
       </Row>
       <div className="drag-and-drop-board">
         <Row>

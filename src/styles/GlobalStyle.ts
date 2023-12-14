@@ -378,5 +378,17 @@ export default createGlobalStyle`
   .feature-row {
     background-color: #d3fcc2;
   }
+
+  .fullContent{
+    width:100% !important
+  }
+
+  .deleteImageIcon{
+        position: absolute;
+    right: 1.1rem;
+    background-color: #fff;
+    padding: 2px 3px;
+  }
+
   
 `;

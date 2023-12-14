@@ -24,6 +24,7 @@ import {
   GroupOutlined,
   AppstoreOutlined,
   StarOutlined,
+  CloudUploadOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -164,6 +165,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     key: 'FrequentlyQuestions',
     url: `/FrequentlyQuestions`,
     icon: <QuestionOutlined />,
+  },
+  {
+    title: 'sidebarNavigation.ApplicationsVersions',
+    key: 'ApplicationsVersions',
+    url: `/ApplicationsVersions`,
+    icon: <CloudUploadOutlined />,
   },
   {
     title: 'sidebarNavigation.Configurations',

@@ -40,6 +40,8 @@ const getAllAttributeForSourceTypes = async (
 };
 
 const getAttributeForSourceTypes = async (id: any) => {
+  console.log(id);
+
   return await httpApi.get(`${apiPrefix.attributeForSourceType}/GetAll?SourceTypeId=${id}`);
 };
 

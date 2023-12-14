@@ -36,6 +36,32 @@ export type Attachment = {
   url: string;
 };
 
+export type apkStore = {
+  Google_Play: 1;
+  IOS_Store: 2;
+};
+
+export type apkType = {
+  GoMovaro: 1;
+  GoMovaroPartner: 2;
+};
+
+export type updateOptions = {
+  Optional: 1;
+  Mandatory: 2;
+  Nothing: 3;
+};
+
+export type ApplicationsVersion = {
+  id: number;
+  apkStore: apkStore;
+  apkType: apkType;
+  apkVersion: string;
+  apkCode: number;
+  description: string;
+  updateOptions: updateOptions;
+};
+
 export type GeneralParams = {
   theNumberOfCompetingFirms: number;
   theNumberOfProductsOffered: number;
@@ -318,8 +344,18 @@ export interface Partner {
   discountPercentage: number;
 }
 
+export interface HoursInSystemConfig {
+  hoursToWaitUser: number;
+  hoursToConvertRequestToOutOfPossible: number;
+}
+
 export interface FileSizeConfig {
   fileSize: string;
+}
+
+export interface HoursConfig {
+  hoursToWaitUser: number;
+  hoursToConvertRequestToOutOfPossible: number;
 }
 
 export interface EmailConfig {

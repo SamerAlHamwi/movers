@@ -24,6 +24,7 @@ import {
   LeftOutlined,
 } from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type specifierType = {
   name: string;
@@ -57,6 +58,7 @@ const BranchDetails: React.FC = () => {
   const [branchData, setBranchData] = useState<any>();
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(['getBranch'], () =>
     getBranch(branchId)
@@ -158,17 +160,16 @@ const BranchDetails: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [refetch, language]);
+  }, [refetch, language, refetchData]);
 
   return (
     <>
       <PageTitle>{t('branch.branchInfo')}</PageTitle>
-      <Row justify={'end'}>
+      <Row justify={'end'} align={'middle'}>
         <Btn
           style={{
-            margin: '1rem 1rem 1rem 0',
+            margin: '0 .5rem .5rem 0',
             width: 'auto',
-            height: 'auto',
           }}
           type="ghost"
           onClick={() => Navigate(-1)}
@@ -176,6 +177,7 @@ const BranchDetails: React.FC = () => {
         >
           <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
         </Btn>
+        <ReloadBtn setRefetchData={setRefetchData} />
       </Row>
       <Row>
         <Cardd

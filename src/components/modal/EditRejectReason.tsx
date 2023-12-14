@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Radio, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
@@ -10,6 +10,8 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { LanguageType, RejectReason } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
+import { AR } from '@app/constants/appConstants';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 
 export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
@@ -17,6 +19,27 @@ export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onC
   const { isDesktop, isTablet } = useResponsive();
 
   const [valueRadio, setValueRadio] = useState(1);
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
+
+  useEffect(() => {
+    if (values) {
+      const firstElement = values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [values]);
 
   const onOk = () => {
     form.submit();
@@ -86,7 +109,7 @@ export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onC
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 0, 'description']}
+          name={['translations', lang.en, 'description']}
           label={<LableText>{t(`common.description_en`)}</LableText>}
           rules={[
             {
@@ -104,7 +127,7 @@ export const EditRejectReason: React.FC<EditRejectReasonProps> = ({ visible, onC
         </BaseForm.Item>
 
         <BaseForm.Item
-          name={['translations', 1, 'description']}
+          name={['translations', lang.ar, 'description']}
           label={<LableText>{t(`common.description_ar`)}</LableText>}
           rules={[
             {

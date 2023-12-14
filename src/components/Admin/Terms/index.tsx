@@ -11,12 +11,13 @@ import { notificationController } from '@app/controllers/notificationController'
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Table, CreateButtonText } from '../../GeneralStyles';
 import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, EditOutlined } from '@ant-design/icons';
+import { DeleteOutlined, EditOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/terms';
 import { EditTerm } from '@app/components/modal/EditTerm';
 import { AddTerm } from '@app/components/modal/AddTerm';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type Translation = {
   title: string;
@@ -50,6 +51,7 @@ export const Term: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<Term | undefined>(undefined);
   const { isTablet, isMobile, isDesktop } = useResponsive();
   const [refetchOnAddTerm, setRefetchOnAddTerm] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(
     ['Term messages', page, isDelete, pageSize, refetchOnAddTerm],
@@ -85,7 +87,7 @@ export const Term: React.FC = () => {
     setIsDelete(false);
     setIsEdit(false);
     setRefetchOnAddTerm(false);
-  }, [isDelete, isEdit, refetchOnAddTerm, page, pageSize, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAddTerm, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (isRefetching) setIsLoading(true);
@@ -243,6 +245,8 @@ export const Term: React.FC = () => {
             <CreateButtonText>{t('terms.addTerm')}</CreateButtonText>
           </Button>
 
+          <ReloadBtn setRefetchData={setRefetchData} />
+
           {/*    Add    */}
           {isOpenPushModalForm && (
             <AddTerm
@@ -299,7 +303,7 @@ export const Term: React.FC = () => {
             showQuickJumper: true,
             showTitle: false,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
             responsive: true,
             showLessItems: true,
             pageSizeOptions: [5, 10, 15, 20],

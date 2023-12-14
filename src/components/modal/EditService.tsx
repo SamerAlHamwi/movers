@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Modal, Space, message } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
@@ -14,7 +14,9 @@ import { UploadDragger } from '@app/components/common/Upload/Upload';
 import { useMutation } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import { Alert } from '../common/Alert/Alert';
-import { InboxOutlined, LoadingOutlined } from '@ant-design/icons';
+import { LoadingOutlined } from '@ant-design/icons';
+import { AR } from '@app/constants/appConstants';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 
 export const EditService: React.FC<EditServiceProps> = ({
   visible,
@@ -29,6 +31,27 @@ export const EditService: React.FC<EditServiceProps> = ({
   const { isDesktop, isTablet } = useResponsive();
   const [attachmentId, setAttachmentId] = useState<number>(AttachmentId);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
+
+  useEffect(() => {
+    if (values) {
+      const firstElement = values?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [values]);
 
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
@@ -92,7 +115,7 @@ export const EditService: React.FC<EditServiceProps> = ({
     >
       <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="ServivesForm">
         <BaseForm.Item
-          name={['translations', 1, 'name']}
+          name={['translations', lang.en, 'name']}
           label={<LableText>{t('common.name_en')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -106,7 +129,7 @@ export const EditService: React.FC<EditServiceProps> = ({
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', 0, 'name']}
+          name={['translations', lang.ar, 'name']}
           label={<LableText>{t('common.name_ar')}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },

@@ -26,6 +26,14 @@ const UpdateFileSizeSetting = async (data: any) => {
   return await httpApi.post(`${apiPrefix.configurations}/SetFileSizeSetting`, data);
 };
 
+const GetHoursInSystemSetting = async () => {
+  return await httpApi.get(`${apiPrefix.configurations}/GetHoursInSystem`);
+};
+
+const UpdateHoursInSystemSetting = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.configurations}/SetHoursInSystem`, data);
+};
+
 export {
   GetEmailSetting,
   UpdateEmailSetting,
@@ -33,4 +41,6 @@ export {
   UpdateSmsSetting,
   GetFileSizeSetting,
   UpdateFileSizeSetting,
+  GetHoursInSystemSetting,
+  UpdateHoursInSystemSetting,
 };

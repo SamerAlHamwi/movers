@@ -138,7 +138,7 @@ export const DetailsTitle = styled.div`
   font-size: ${FONT_SIZE.md};
   font-weight: ${FONT_WEIGHT.semibold};
   margin-right: 0.5rem;
-  width: 25%;
+  width: 35%;
 `;
 
 export const DetailsValue = styled.div`

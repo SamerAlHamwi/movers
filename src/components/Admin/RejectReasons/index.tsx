@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LoadingOutlined, ReloadOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import {
   getAllRejectReasons,
@@ -30,6 +30,7 @@ import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radi
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { defineColorBySeverity } from '@app/utils/utils';
 import styled from 'styled-components';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const RejectReasons: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -57,6 +58,7 @@ export const RejectReasons: React.FC = () => {
   const [isActivate, setIsActivate] = useState(false);
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isHover, setIsHover] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const TableText = styled.div`
     font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
@@ -114,6 +116,7 @@ export const RejectReasons: React.FC = () => {
     reasonRejectStatus,
     isActivate,
     isDeActivate,
+    refetchData,
   ]);
 
   useEffect(() => {
@@ -447,6 +450,8 @@ export const RejectReasons: React.FC = () => {
             <CreateButtonText>{t('rejectReasons.addRejectReason')}</CreateButtonText>
           </Button>
 
+          <ReloadBtn setRefetchData={setRefetchData} />
+
           {/*    Add    */}
           {modalState.add && (
             <AddRejectReason
@@ -503,7 +508,7 @@ export const RejectReasons: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

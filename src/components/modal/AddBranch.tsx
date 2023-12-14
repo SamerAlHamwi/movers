@@ -31,6 +31,7 @@ import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import type { DataNode } from 'antd/es/tree';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
+import ReloadBtn from '../Admin/ReusableComponents/ReloadBtn';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -101,6 +102,7 @@ export const AddBranch: React.FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [valueRadio, setValueRadio] = useState(1);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const GetAllServices = useQuery('getAllServices', getServices);
 
@@ -175,7 +177,7 @@ export const AddBranch: React.FC = () => {
     if (countryIdForCities !== '0') {
       availableCitiesRefetch();
     }
-  }, [countryIdForCities]);
+  }, [countryIdForCities, refetchData]);
   useEffect(() => {
     if (countryId !== '0') {
       citiesRefetch();
@@ -328,9 +330,8 @@ export const AddBranch: React.FC = () => {
       <Row justify={'end'} style={{ width: '100%' }}>
         <Btn
           style={{
-            margin: '1rem 1rem 1rem 0',
+            margin: '0 .5rem .5rem 0',
             width: 'auto',
-            height: 'auto',
           }}
           type="ghost"
           onClick={() => Navigate(-1)}
@@ -342,7 +343,7 @@ export const AddBranch: React.FC = () => {
         {current > 0 && (
           <Button
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 1rem 1rem 0',
               width: 'auto',
               height: 'auto',
             }}
@@ -355,7 +356,7 @@ export const AddBranch: React.FC = () => {
           <Button
             type="primary"
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 0rem .5rem 0',
               width: 'auto',
               height: 'auto',
             }}
@@ -368,7 +369,7 @@ export const AddBranch: React.FC = () => {
           <Button
             type="primary"
             style={{
-              margin: '1rem 1rem 1rem 0',
+              margin: '0 .5rem .5rem 0',
               width: 'auto',
               height: 'auto',
             }}
@@ -380,6 +381,7 @@ export const AddBranch: React.FC = () => {
             {t('common.done')}
           </Button>
         )}
+        <ReloadBtn setRefetchData={setRefetchData} />
       </Row>
       <Steps current={current} style={{ margin: '10px 10px 30px 0', padding: '0px 40px' }}>
         {steps.map((step, index) => (

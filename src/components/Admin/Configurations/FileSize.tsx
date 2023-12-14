@@ -61,15 +61,15 @@ export const FileSizeSetting: React.FC = () => {
     setIsEdit(false);
   }, [isEdit, refetch, language]);
 
-  const editEmailSetting = useMutation((data: FileSizeConfig) => UpdateFileSizeSetting(data));
+  const editFileSizeSetting = useMutation((data: FileSizeConfig) => UpdateFileSizeSetting(data));
 
   const handleEdit = (data: FileSizeConfig) => {
-    editEmailSetting
+    editFileSizeSetting
       .mutateAsync({ ...data })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`config.editEmailSettingSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`config.editFileSizeSettingSuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -78,8 +78,8 @@ export const FileSizeSetting: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editEmailSetting.isLoading }));
-  }, [editEmailSetting.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editFileSizeSetting.isLoading }));
+  }, [editFileSizeSetting.isLoading]);
 
   return (
     <>
@@ -91,12 +91,13 @@ export const FileSizeSetting: React.FC = () => {
             visible={modalState.edit}
             onCancel={() => handleModalClose('edit')}
             onEdit={(data: any) => editmodaldata !== undefined && handleEdit(data)}
-            isLoading={editEmailSetting.isLoading}
+            isLoading={editFileSizeSetting.isLoading}
           />
         )}
       </Row>
 
       <Card
+        style={{ height: '35%' }}
         title={t('config.FileSizeSetting')}
         bordered={false}
         extra={
@@ -117,7 +118,7 @@ export const FileSizeSetting: React.FC = () => {
       >
         <Details>
           <DetailsRow key={1}>
-            <DetailsTitle>{t('config.fileSize')}</DetailsTitle>
+            <DetailsTitle style={{ width: '100%' }}>{t('config.fileSize')}</DetailsTitle>
             <DetailsValue>{fileSizeData?.fileSize}</DetailsValue>
           </DetailsRow>
         </Details>

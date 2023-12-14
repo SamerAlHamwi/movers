@@ -5,15 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  FileSearchOutlined,
-  PhoneOutlined,
-  TagOutlined,
-  ContactsOutlined,
-  CodeOutlined,
-} from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, TagOutlined, CodeOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
@@ -29,6 +21,7 @@ import { AddCodesForREM } from '@app/components/modal/AddCodesForREM';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const Partners: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -54,6 +47,7 @@ export const Partners: React.FC = () => {
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -94,7 +88,7 @@ export const Partners: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, language, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, language, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -124,8 +118,6 @@ export const Partners: React.FC = () => {
         setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
-        console.log(error);
-
         notificationController.error({ message: error?.message || error.error?.message });
       }),
   );
@@ -273,6 +265,7 @@ export const Partners: React.FC = () => {
           >
             <CreateButtonText>{t('partners.addPartner')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Add    */}
           {modalState.add && (
@@ -296,7 +289,6 @@ export const Partners: React.FC = () => {
                   createCode: info,
                   id: codemodaldata?.id,
                 };
-                console.log(codeInfo);
                 addCode.mutateAsync(codeInfo);
               }}
               isLoading={addCode.isLoading}
@@ -347,7 +339,7 @@ export const Partners: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}

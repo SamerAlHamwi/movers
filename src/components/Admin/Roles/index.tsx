@@ -19,6 +19,7 @@ import { RoleModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
+import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export const Role: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -41,6 +42,7 @@ export const Role: React.FC = () => {
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+  const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -81,7 +83,7 @@ export const Role: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch]);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -219,6 +221,7 @@ export const Role: React.FC = () => {
           >
             <CreateButtonText>{t('roles.addRole')}</CreateButtonText>
           </Button>
+          <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
           {modalState.add && (
@@ -282,7 +285,7 @@ export const Role: React.FC = () => {
             showTitle: false,
             showLessItems: true,
             total: totalCount || 0,
-            hideOnSinglePage: true,
+            hideOnSinglePage: false,
           }}
           columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={loading}
