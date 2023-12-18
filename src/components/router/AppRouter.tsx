@@ -65,6 +65,7 @@ const ReviewDetailsPage = lazy(() => import('@app/pages/CompaniesPages/ReviewsDe
 const CommissionGroupPage = lazy(() => import('@app/pages/CommissionGroupsPages/CommissionGroupsPage'));
 const FeaturedBundlePage = lazy(() => import('@app/pages/PointsPages/FeaturedBundlesPage'));
 const ApplicationsVersionPage = lazy(() => import('@app/pages/ApplicationsVersionsPages/ApplicationsVersionsPage'));
+const PaymentPage = lazy(() => import('@app/pages/Payments/PaymentsPage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -119,6 +120,7 @@ const ReviewsDetailsPage = withLoading(ReviewDetailsPage);
 const CommissionGroupsPage = withLoading(CommissionGroupPage);
 const FeaturedBundlesPage = withLoading(FeaturedBundlePage);
 const ApplicationsVersionsPage = withLoading(ApplicationsVersionPage);
+const PaymentsPage = withLoading(PaymentPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -718,6 +720,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ConfigurationPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="Payments"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <PaymentsPage />
               </PrivateRoute>
             }
           />

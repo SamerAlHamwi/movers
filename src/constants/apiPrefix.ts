@@ -33,4 +33,5 @@ export default {
   commissionGroups: '/api/services/app/CommissionGroup',
   FeaturedBundles: '/api/services/app/Point',
   applicationsVersions: '/api/services/app/ApkBuild',
+  payments: '/api/services/app/MoneyTransfer',
 };

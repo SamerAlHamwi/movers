@@ -1,3 +1,4 @@
+import { PaidProvider, PaidStatues, ReasonOfPaid } from '@app/constants/enums/payments';
 import { NumericLiteral } from 'typescript';
 
 export type Dimension = number | string;
@@ -382,6 +383,13 @@ export interface Point {
   translations: Translation[];
 }
 
+export interface Payment {
+  id: number;
+  amount: number;
+  paidProvider: keyof PaidProvider;
+  paidStatues: keyof PaidStatues;
+  reasonOfPaid: keyof ReasonOfPaid;
+}
 export interface RejectReason {
   id: number;
   possibilityPotentialClient: number;

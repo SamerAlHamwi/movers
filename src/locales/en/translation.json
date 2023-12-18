@@ -938,6 +938,19 @@
     "change": "Update Necessary"
   },
 
+  "_comment31": "*********************************** payments ************************************************",
+  "payments": {
+    "paymentsList": "Payments List",
+    "amount": "Amount",
+    "paidProvider": "Payment Provider",
+    "paidStatues": "Payment Statues",
+    "reasonOfPaid": "Payment Reason",
+    "finished": "Finished",
+    "PayForOffer": "To Buy An Offer",
+    "BuyBundle": "To Buy A Point Bundle",
+    "BuyFeatureBundle": "To Buy A Featured Bundle"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -989,7 +1002,8 @@
     "EditCompany": "Edit Company",
     "CommissionGroups": "Commission Groups",
     "FeaturedBundles": "Featured Bundles",
-    "ApplicationsVersions": "Applications Versions"
+    "ApplicationsVersions": "Applications Versions",
+    "Payments": "Payments"
   },
 
   "header": {

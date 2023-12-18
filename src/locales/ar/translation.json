@@ -938,6 +938,19 @@
     "change": "تعديل ضرورة التحديث"
   },
 
+  "_comment31": "*********************************** payments ************************************************",
+  "payments": {
+    "paymentsList": "قائمة المدفوعات",
+    "amount": "القيمة المالية",
+    "paidProvider": "مزود الدفع",
+    "paidStatues": "حالة الدفع",
+    "reasonOfPaid": "سبب الدفع",
+    "finished": "منتهي",
+    "PayForOffer": "لشراء عرض سعر",
+    "BuyBundle": "لشراء باقة نقاط",
+    "BuyFeatureBundle": "لشراء باقة مُميزة"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -988,7 +1001,8 @@
     "EditCompany": "تعديل الشركة",
     "CommissionGroups": "مجموعات العمولة",
     "FeaturedBundles": "الباقات المُمَيِزة",
-    "ApplicationsVersions": "إصدارات التطبيقات"
+    "ApplicationsVersions": "إصدارات التطبيقات",
+    "Payments": "المدفوعات"
   },
 
   "header": {
