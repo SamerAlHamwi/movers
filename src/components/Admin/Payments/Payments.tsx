@@ -73,9 +73,17 @@ export const Payments: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>,
-      dataIndex: 'name',
-      render: (name: Payment) => {
-        return <>{name}</>;
+      render: (record: any) => {
+        switch (record.paidProvider) {
+          case PaidProvider.user:
+            return <>{record?.user.name}</>;
+          case PaidProvider.company:
+            return <>{record?.company.name}</>;
+          case PaidProvider.branch:
+            return <>{record?.companyBranch.name}</>;
+          default:
+            return '';
+        }
       },
     },
     {
