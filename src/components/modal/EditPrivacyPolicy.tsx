@@ -74,6 +74,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
 
   return (
     <Modal
+      style={{ marginTop: '-4rem' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
@@ -106,13 +107,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         <BaseForm.Item
           name={['translations', 0, 'title']}
           label={<LableText>{t(`common.title_en`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
@@ -120,13 +115,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         <BaseForm.Item
           name={['translations', 0, 'description']}
           label={<LableText>{t(`common.description_en`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
@@ -134,13 +123,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         <BaseForm.Item
           name={['translations', 1, 'title']}
           label={<LableText>{t(`common.title_ar`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ margin: '-.5rem 0' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
@@ -148,13 +131,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         <BaseForm.Item
           name={['translations', 1, 'description']}
           label={<LableText>{t(`common.description_ar`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
