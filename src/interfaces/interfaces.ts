@@ -322,6 +322,18 @@ export interface RequestModel {
   services: [];
   attributeChoiceAndAttachments: any[];
   isFeature: boolean;
+  user: User;
+}
+
+export interface User {
+  id: number;
+  name: string;
+  surname: string;
+  fullName: string;
+  userName: string;
+  phoneNumber: string;
+  emailAddress: string;
+  isActive: boolean;
 }
 
 export interface CountryModel {

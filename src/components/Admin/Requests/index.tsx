@@ -26,6 +26,7 @@ import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -38,17 +39,18 @@ export const Requests: React.FC = () => {
 
   const [modalState, setModalState] = useState({
     searchForUser: false,
+    checkPINForUser: false,
     edit: false,
     delete: false,
     approve: false,
     reject: false,
   });
   const [page, setPage] = useState<number>(1);
+  const [checkIfAddOrEdit, setCheckIfAddOrEdit] = useState<number>();
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [dataSource, setDataSource] = useState<RequestModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
-  const [editmodaldata, setEditmodaldata] = useState<RequestModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<RequestModel | undefined>(undefined);
   const [rejectmodaldata, setRejectmodaldata] = useState<RequestModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
@@ -58,8 +60,8 @@ export const Requests: React.FC = () => {
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [userId, setUserId] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<any>();
-
   const [temp, setTemp] = useState<any>();
+  const [recordRequest, setRecordRequest] = useState<RequestModel>();
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -165,50 +167,25 @@ export const Requests: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRequest.isLoading }));
   }, [deleteRequest.isLoading]);
 
-  const editRequest = useMutation((data: RequestModel) => UpdateRequest(data));
+  // const editRequest = useMutation((data: RequestModel) => UpdateRequest(data));
 
-  const handleEdit = (data: RequestModel, id: number) => {
-    editRequest
-      .mutateAsync({ ...data, id })
-      .then((data) => {
-        setIsEdit(data.data?.success);
-        message.open({
-          content: <Alert message={t(`requests.editRequestSuccessMessage`)} type={`success`} showIcon />,
-        });
-      })
-      .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-      });
-  };
+  // const handleEdit = (data: RequestModel, id: number) => {
+  //   editRequest
+  //     .mutateAsync({ ...data, id })
+  //     .then((data) => {
+  //       setIsEdit(data.data?.success);
+  //       message.open({
+  //         content: <Alert message={t(`requests.editRequestSuccessMessage`)} type={`success`} showIcon />,
+  //       });
+  //     })
+  //     .catch((error) => {
+  //       message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
+  //     });
+  // };
 
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editRequest.isLoading }));
-  }, [editRequest.isLoading]);
-
-  const approveRequest = useMutation((data: any) =>
-    confirmRequest(data)
-      .then((data) => {
-        data.data?.success &&
-          (setIsApproved(data.data?.success),
-          message.open({
-            content: <Alert message={t('requests.approveRequestSuccessMessage')} type={`success`} showIcon />,
-          }));
-      })
-      .catch((error) => {
-        message.open({
-          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
-        });
-      }),
-  );
-
-  const handleApprove = (id: any) => {
-    const data = { requestId: id, statues: 2 };
-    approveRequest.mutateAsync(data);
-  };
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, approve: approveRequest.isLoading }));
-  }, [approveRequest.isLoading]);
+  // useEffect(() => {
+  //   setModalState((prevModalState) => ({ ...prevModalState, edit: editRequest.isLoading }));
+  // }, [editRequest.isLoading]);
 
   const rejectRequest = useMutation((data: any) =>
     confirmRequest(data)
@@ -242,7 +219,8 @@ export const Requests: React.FC = () => {
           message.open({
             content: <Alert message={t('requests.truePIN')} type={`success`} showIcon />,
           });
-          Navigate(`/${userId}/drafts`);
+          if (checkIfAddOrEdit == 1) Navigate(`/${userId}/drafts`);
+          if (checkIfAddOrEdit == 2) Navigate(`/requests/${recordRequest?.id}/EditRequest`);
         } else if (data.data?.success && !data.data?.result?.isOwner) {
           message.open({
             content: <Alert message={t('requests.falsePIN')} type={`error`} showIcon />,
@@ -258,6 +236,12 @@ export const Requests: React.FC = () => {
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>,
+      render: (record: RequestModel) => {
+        return <>{record?.user?.fullName}</>;
+      },
+    },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.sourceCity')}</Header>,
       dataIndex: 'sourceCity',
@@ -542,7 +526,9 @@ export const Requests: React.FC = () => {
                   disabled={record.statues !== 1}
                   severity="info"
                   onClick={() => {
-                    Navigate(`/requests/${record.id}/EditRequest`);
+                    setRecordRequest(record);
+                    setCheckIfAddOrEdit(2);
+                    handleModalOpen('checkPINForUser');
                   }}
                 >
                   <EditOutlined />
@@ -588,13 +574,17 @@ export const Requests: React.FC = () => {
                   marginBottom: '.5rem',
                   width: 'auto',
                 }}
-                onClick={() => handleModalOpen('searchForUser')}
+                onClick={() => {
+                  setCheckIfAddOrEdit(1);
+                  handleModalOpen('searchForUser');
+                }}
               >
                 <CreateButtonText>{t('requests.addRequest')}</CreateButtonText>
               </Button>
               <ReloadBtn setRefetchData={setRefetchData} />
             </>
           )}
+
           {type === 'viaBroker' && (
             <Btn
               style={{
@@ -623,16 +613,18 @@ export const Requests: React.FC = () => {
             />
           )}
 
-          {/*    EDIT    */}
-          {/* {modalState.edit && (
-            <EditRequest
-              values={editmodaldata}
-              visible={modalState.edit}
-              onCancel={() => handleModalClose('edit')}
-              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id)}
-              isLoading={editRequest.isLoading}
+          {/*    Check PIN For User    */}
+          {modalState.checkPINForUser && (
+            <CheckPINForUser
+              visible={modalState.checkPINForUser}
+              onCancel={() => handleModalClose('checkPINForUser')}
+              onCreate={(info) => {
+                const values = { ...info, phoneNumber: recordRequest?.user?.phoneNumber };
+                confirm.mutateAsync(values);
+              }}
+              isLoading={confirm.isLoading}
             />
-          )} */}
+          )}
 
           {/*    Delete    */}
           {modalState.delete && (
@@ -659,8 +651,6 @@ export const Requests: React.FC = () => {
               onCancel={() => handleModalClose('reject')}
               onCreate={(info) => {
                 handleReject(info);
-                // const data = { requestId: id, statues: 3 };
-                // rejectRequest.mutateAsync(data);
               }}
               isLoading={rejectRequest.isLoading}
             />

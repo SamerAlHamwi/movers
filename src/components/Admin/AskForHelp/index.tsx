@@ -319,7 +319,6 @@ export const AskForHelp: React.FC = () => {
                       setUserId(record?.user?.id);
                       handleModalOpen('checkPINForUser');
                     }}
-                    // onClick={() => Navigate(`/${record.user.id}/addRequest`, { replace: false })}
                   >
                     <AuditOutlined />
                   </TableButton>

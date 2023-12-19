@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space, Tree, Tag } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree, Tag, DatePicker } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
@@ -35,6 +35,7 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import { notificationController } from '@app/controllers/notificationController';
 import { RequestModel } from '@app/interfaces/interfaces';
 import UploadImageRequest, { IUploadImage } from './upload-image';
+import moment from 'moment';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -518,19 +519,19 @@ export const EditRequest: React.FC = () => {
       sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
-      moveAtUtc:
-        form.getFieldValue('moveAtUtc') == undefined
-          ? RequestData?.moveAtUtc
-          : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      // moveAtUtc:
+      //   form.getFieldValue('moveAtUtc') == undefined
+      //     ? RequestData?.moveAtUtc
+      //     : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
       sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
       sourceAddress:
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
           : form.getFieldValue('sourceAddress'),
-      arrivalAtUtc:
-        form.getFieldValue('arrivalAtUtc') == undefined
-          ? RequestData?.arrivalAtUtc
-          : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      // arrivalAtUtc:
+      //   form.getFieldValue('arrivalAtUtc') == undefined
+      //     ? RequestData?.arrivalAtUtc
+      //     : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
       destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity.id : cityId.destination,
       destinationAddress:
         form.getFieldValue('destinationAddress') == undefined
@@ -732,7 +733,7 @@ export const EditRequest: React.FC = () => {
   };
 
   return (
-    <Card title={t('editRequest.editRequest')} padding="1.25rem 1.25rem 1.25rem">
+    <Card title={t('requests.editRequest')} padding="1.25rem 1.25rem 1.25rem">
       <Row justify={'end'} style={{ width: '100%' }}>
         <Btn
           style={{
@@ -857,9 +858,11 @@ export const EditRequest: React.FC = () => {
                               });
                             }}
                             defaultValue={
-                              RequestData?.attributeForSourceTypeValues.find(
-                                (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
-                              )?.attributeChoice.id
+                              selectedRadio.length > 0
+                                ? selectedRadio.find(
+                                    (value: any) => value?.attributeForSourcTypeId === sourceTypeItem.id,
+                                  )?.attributeChoiceId
+                                : undefined
                             }
                           >
                             {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
@@ -1032,8 +1035,8 @@ export const EditRequest: React.FC = () => {
               >
                 <Input defaultValue={RequestData.sourceAddress} />
               </BaseForm.Item>
-              {/* <BaseForm.Item
-                name="moveAtUtc"
+              <BaseForm.Item
+                // name="moveAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1048,9 +1051,9 @@ export const EditRequest: React.FC = () => {
               >
                 <DatePicker
                   style={{ width: '100%' }}
-                  defaultValue={RequestData?.moveAtUtc != null ? moment(RequestData.moveAtUtc) : undefined}
+                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : undefined}
                 />
-              </BaseForm.Item> */}
+              </BaseForm.Item>
               <div
                 style={
                   lang == 'en' && (isDesktop || isTablet)
@@ -1150,8 +1153,8 @@ export const EditRequest: React.FC = () => {
               >
                 <Input defaultValue={RequestData.destinationAddress} />
               </BaseForm.Item>
-              {/* <BaseForm.Item
-                name="arrivalAtUtc"
+              <BaseForm.Item
+                // name="arrivalAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1166,9 +1169,9 @@ export const EditRequest: React.FC = () => {
               >
                 <DatePicker
                   style={{ width: '100%' }}
-                  defaultValue={RequestData?.arrivalAtUtc != null ? moment(RequestData.arrivalAtUtc) : undefined}
+                  defaultValue={RequestData?.arrivalAtUtc ? moment(RequestData.arrivalAtUtc) : undefined}
                 />
-              </BaseForm.Item> */}
+              </BaseForm.Item>
               <div
                 style={
                   lang == 'en' && (isDesktop || isTablet)
