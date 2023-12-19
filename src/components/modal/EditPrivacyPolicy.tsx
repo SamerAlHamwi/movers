@@ -8,7 +8,6 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { P1 } from '../common/typography/P1/P1';
 import { LableText } from '@app/components/GeneralStyles';
 import { TextArea } from '../Admin/Translations';
-import { useAppSelector } from '@app/hooks/reduxHooks';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -23,11 +22,8 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
   isLoading,
 }) => {
   const { t } = useTranslation();
-  const theme = useAppSelector((state) => state.theme.theme);
   const [form] = BaseForm.useForm();
-  const [current, setCurrent] = useState(0);
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
-  const [attachments, setAttachments] = useState<any[]>([]);
   const [lang, setLang] = useState<any>({
     en: undefined,
     ar: undefined,
@@ -58,47 +54,58 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
     form.submit();
   };
 
-  const onFinish = (data: PrivacyPolicy) => {
-    const edited_data = {
-      title: data.title,
-      description: data.description,
-
-      id: data.id,
-      translations: data.translations.map((_, i) => ({
-        ...data.translations[i],
-        language: i === 0 ? ('en' as LanguageType) : ('ar' as LanguageType),
-      })),
-    };
-    onEdit(edited_data);
+  const onFinish = (info: PrivacyPolicy) => {
+    info = Object.assign({}, info, {
+      translations: [
+        {
+          title: info.translations[0].title,
+          description: info.translations[0].description,
+          language: 'en' as LanguageType,
+        },
+        {
+          title: info.translations[1].title,
+          description: info.translations[1].description,
+          language: 'ar' as LanguageType,
+        },
+      ],
+    });
+    onEdit(info);
   };
 
-  const buttonStyle = { height: 'auto' };
   return (
     <Modal
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
-        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t('notifications.send')}</div>
+        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
+          {t('privacyPolicy.editPrivacyModalTitle')}
+        </div>
       }
       onCancel={onCancel}
       maskClosable={true}
       footer={
         <BaseForm.Item style={{ display: 'flex', justifyContent: 'flex-end', marginBottom: '0' }}>
           <Space>
-            <Button style={buttonStyle} key="cancel" type="ghost" onClick={onCancel}>
+            <Button key="cancel" style={{ height: 'auto' }} type="ghost" onClick={onCancel}>
               <P1>{t('common.cancel')}</P1>
             </Button>
-            <Button style={buttonStyle} loading={isLoading} key="save" type="primary" onClick={onOk}>
-              <P1>{t('notifications.sendp')}</P1>
+            <Button type="primary" style={{ height: 'auto' }} loading={isLoading} key="edit" onClick={onOk}>
+              <P1>{t('common.saveEdit')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} layout="vertical" onFinish={onFinish} name="userForm">
+      <BaseForm
+        form={form}
+        layout="vertical"
+        initialValues={Priv_values}
+        onFinish={onFinish}
+        name="editPrivacyPolicyForm"
+      >
         <BaseForm.Item
-          name={['translations', lang.en, 'title']}
-          label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
+          name={['translations', 0, 'title']}
+          label={<LableText>{t(`common.title_en`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
@@ -110,10 +117,9 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
-
         <BaseForm.Item
-          name={['translations', lang.en, 'description']}
-          label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
+          name={['translations', 0, 'description']}
+          label={<LableText>{t(`common.description_en`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
@@ -126,8 +132,8 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', lang.ar, 'title']}
-          label={<LableText>{t(`notifications.arabictitle`)}</LableText>}
+          name={['translations', 1, 'title']}
+          label={<LableText>{t(`common.title_ar`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
@@ -140,8 +146,8 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['translations', lang.ar, 'description']}
-          label={<LableText>{t(`notifications.arabicdiscription`)}</LableText>}
+          name={['translations', 1, 'description']}
+          label={<LableText>{t(`common.description_ar`)}</LableText>}
           rules={[
             { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
@@ -149,9 +155,9 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
             },
           ]}
-          style={{ margin: '-.5rem 0' }}
+          style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
+          <TextArea style={{ textAlign: 'right', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

@@ -33,19 +33,15 @@ export type PrivacyPolicy = {
   translations: Translation[];
 };
 
-const Destination = [
-  'privacyPolicy.destination.all',
-  'privacyPolicy.destination.Users',
-  'privacyPolicy.destination.Companies',
-];
-
 export const PrivacyPolicy: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
+  const { isTablet, isMobile, isDesktop } = useResponsive();
 
-  const [notificationsData, setNotificationsData] = useState<Notification[] | undefined>(undefined);
+  const [privacyData, setPrivacyData] = useState<Notification[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
+  const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(1);
   const [pageSize, setPageSize] = useState(DEFAULT_PAGE_SIZE);
@@ -54,22 +50,18 @@ export const PrivacyPolicy: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<PrivacyPolicy | undefined>(undefined);
-  const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
   const [deletemodaldata, setDeletemodaldata] = useState<PrivacyPolicy | undefined>(undefined);
-  const { isTablet, isMobile, isDesktop } = useResponsive();
-  const [refetchOnAddNotification, setRefetchOnAddNotification] = useState(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
 
-  const user = useAppSelector((state) => state.user.user);
-
   const { refetch, isRefetching } = useQuery(
-    ['Privacyploicy messages', page, isDelete, pageSize, refetchOnAddNotification],
+    ['PrivacyPolicy', page, isDelete, pageSize, refetchOnAdd],
     () =>
       getAllprivacy(page, pageSize, searchString)
         .then((data) => {
-          const notifications = data.data?.result?.items;
+          const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
-          notifications?.forEach((element: PrivacyPolicy) => {
+          result?.forEach((element: PrivacyPolicy) => {
             const enTranslationIndex = element.translations?.findIndex(
               (translation: Translation) => translation.language === 'en',
             );
@@ -78,7 +70,7 @@ export const PrivacyPolicy: React.FC = () => {
               element.translations.unshift(enTranslation[0]);
             }
           });
-          setNotificationsData(notifications);
+          setPrivacyData(result);
           setIsLoading(!data.data?.success);
         })
         .catch((error) => {
@@ -86,7 +78,7 @@ export const PrivacyPolicy: React.FC = () => {
           setIsLoading(false);
         }),
     {
-      enabled: notificationsData === undefined,
+      enabled: privacyData === undefined,
     },
   );
 
@@ -100,14 +92,14 @@ export const PrivacyPolicy: React.FC = () => {
     refetch();
     setIsDelete(false);
     setIsEdit(false);
-    setRefetchOnAddNotification(false);
-  }, [isDelete, isEdit, refetchOnAddNotification, page, pageSize, language, searchString, refetch, refetchData]);
+    setRefetchOnAdd(false);
+  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, language, searchString, refetch, refetchData]);
 
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
     createPrivacy(data)
       .then((data) => {
-        notificationController.success({ message: t('privacyPolicy.sendSuccessMessage') });
-        setRefetchOnAddNotification(data.data?.success);
+        notificationController.success({ message: t('privacyPolicy.addPrivacySuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -117,13 +109,14 @@ export const PrivacyPolicy: React.FC = () => {
   useEffect(() => {
     setIsOpenPushModalForm(pushprivacy.isLoading);
   }, [pushprivacy.isLoading]);
+
   const deleteprivacy = useMutation((id: number) =>
     Deleteprivacy(id)
       .then((data: any) => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('privacyPolicy.deletepNotifactionsSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('privacyPolicy.deletePrivacySuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error: any) => {
@@ -132,6 +125,7 @@ export const PrivacyPolicy: React.FC = () => {
         });
       }),
   );
+
   const handleDelete = (id: any) => {
     if (page > 1) {
       deleteprivacy.mutateAsync(id);
@@ -140,9 +134,11 @@ export const PrivacyPolicy: React.FC = () => {
       deleteprivacy.mutateAsync(id);
     }
   };
+
   useEffect(() => {
     setIsOpenDeleteModalForm(deleteprivacy.isLoading);
   }, [deleteprivacy.isLoading]);
+
   const editprivacy = useMutation((data: PrivacyPolicy) => Updateprivacy(data));
 
   const handleEdit = (data: PrivacyPolicy, id: number) => {
@@ -151,7 +147,7 @@ export const PrivacyPolicy: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`managers.editManagerSuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`privacyPolicy.editPrivacySuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
@@ -162,70 +158,45 @@ export const PrivacyPolicy: React.FC = () => {
     setIsOpenEditModalForm(editprivacy.isLoading);
   }, [editprivacy.isLoading]);
 
-  const notificationsColumns = [
+  const columns = [
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'common.id'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>,
       dataIndex: 'id',
       width: '5%',
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'privacyPolicy.englishtitle'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.title_en')}</Header>,
       dataIndex: ['translations', 0, 'title'],
       render: (text: string) => {
         return <div style={{ fontFamily: 'Lato' }}>{text}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'privacyPolicy.arabictitle'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.title_ar')}</Header>,
       dataIndex: ['translations', 1, 'title'],
       render: (text: string) => {
         return <div style={{ fontFamily: 'Cairo' }}>{text}</div>;
       },
     },
     {
-      title: (
-        <Header style={{ wordBreak: 'normal' }}>
-          <Trans i18nKey={'privacyPolicy.englishdescription'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.description_en')}</Header>,
       dataIndex: ['translations', 0, 'description'],
       render: (text: string) => {
-        const firstSentence = text.split('.')[0]; // Get the first sentence
+        const firstSentence = text.split('.')[0];
 
         return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'privacyPolicy.arabicdiscription'} />
-        </Header>
-      ),
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.description_ar')}</Header>,
       dataIndex: ['translations', 1, 'description'],
       render: (text: string) => {
-        const firstSentence = text.split('.')[0]; // Get the first sentence
+        const firstSentence = text.split('.')[0];
         return <div style={{ fontFamily: 'Lato' }}>{firstSentence}</div>;
       },
     },
     {
-      title: (
-        <Header>
-          <Trans i18nKey={'privacyPolicy.actions'} />
-        </Header>
-      ),
-
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, Data: PrivacyPolicy) => {
         return (
@@ -264,7 +235,7 @@ export const PrivacyPolicy: React.FC = () => {
       <Card
         title={t('privacyPolicy.PrivacyList')}
         padding={
-          notificationsData?.length === 0 || notificationsData === undefined || (page === 1 && totalCount <= pageSize)
+          privacyData?.length === 0 || privacyData === undefined || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
             : '1.25rem 1.25rem 0rem'
         }
@@ -279,21 +250,12 @@ export const PrivacyPolicy: React.FC = () => {
             }}
             onClick={() => setIsOpenPushModalForm(true)}
           >
-            <CreateButtonText>{t('privacyPolicy.sendp')}</CreateButtonText>
+            <CreateButtonText>{t('privacyPolicy.addPrivacy')}</CreateButtonText>
           </Button>
           <ReloadBtn setRefetchData={setRefetchData} />
-          {isOpenEditModalForm ? (
-            <EditPrivacyPolicy
-              Priv_values={editmodaldata}
-              visible={isOpenEditModalForm}
-              onCancel={() => setIsOpenEditModalForm(false)}
-              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
-              isLoading={editprivacy.isLoading}
-            />
-          ) : null}{' '}
-          {isOpenPushModalForm ? (
+          {/* Add */}
+          {isOpenPushModalForm && (
             <AddPrivacyPolicy
-              isManager={user.userType === 0 ? false : true}
               visible={isOpenPushModalForm}
               onCancel={() => setIsOpenPushModalForm(false)}
               onCreateprivacy={(data) => {
@@ -301,8 +263,21 @@ export const PrivacyPolicy: React.FC = () => {
               }}
               isLoading={pushprivacy.isLoading}
             />
-          ) : null}
-          {isOpenDeleteModalForm ? (
+          )}
+
+          {/* Edit */}
+          {isOpenEditModalForm && (
+            <EditPrivacyPolicy
+              Priv_values={editmodaldata}
+              visible={isOpenEditModalForm}
+              onCancel={() => setIsOpenEditModalForm(false)}
+              onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
+              isLoading={editprivacy.isLoading}
+            />
+          )}
+
+          {/* Delete */}
+          {isOpenDeleteModalForm && (
             <ActionModal
               visible={isOpenDeleteModalForm}
               onCancel={() => setIsOpenDeleteModalForm(false)}
@@ -310,18 +285,18 @@ export const PrivacyPolicy: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('privacyPolicy.deleteprivacyModalTitle')}
+              title={t('privacyPolicy.deletePrivacytModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('privacyPolicy.deleteNprivacyModalDescription')}
+              description={t('privacyPolicy.deletePrivacyModalDescription')}
               isDanger={true}
               isLoading={deleteprivacy.isLoading}
             />
-          ) : null}
+          )}
         </Row>
 
         <Table
-          dataSource={notificationsData}
+          dataSource={privacyData}
           pagination={{
             showSizeChanger: true,
             onChange: (page: number, pageSize: number) => {
@@ -336,26 +311,9 @@ export const PrivacyPolicy: React.FC = () => {
             hideOnSinglePage: false,
             responsive: true,
             showLessItems: true,
-            // showTotal: (total) => `Total ${total} notifications`,
             pageSizeOptions: [5, 10, 15, 20],
           }}
-          columns={
-            user.userType === 1
-              ? notificationsColumns
-              : [
-                  ...notificationsColumns,
-                  {
-                    title: (
-                      <Header style={{ wordBreak: 'normal' }}>{t('privacyPolicy.destination.destination')}</Header>
-                    ),
-                    dataIndex: 'destination',
-                    width: '15%',
-                    render: (destination: number) => {
-                      return <>{t(Destination[destination])}</>;
-                    },
-                  },
-                ]
-          }
+          columns={columns.map((col) => ({ ...col, width: 'auto' }))}
           loading={isLoading}
           scroll={{ x: isTablet ? 700 : isMobile ? 800 : 600 }}
         />

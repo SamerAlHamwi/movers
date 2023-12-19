@@ -121,7 +121,6 @@ export interface CreateNotificationModalProps extends ModalProps {
 }
 export interface CreateprivacyModalProps extends ModalProps {
   onCreateprivacy: (PrivacyPolicy: PrivacyPolicy) => void;
-  isManager: boolean;
 }
 export interface CreateTermModalProps extends ModalProps {
   onCreateTerm: (Term: Term) => void;

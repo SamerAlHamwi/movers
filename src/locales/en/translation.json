@@ -855,9 +855,17 @@
     "numberOfRequests": "Number Of Requests"
   },
 
-  "_comment27": "*********************************** Terms ************************************************",
+  "_comment27": "*********************************** privacyPolicy ************************************************",
   "privacyPolicy": {
     "PrivacyList": "Privacy Policy List",
+    "deletePrivacytModalTitle": "Privacy Policy Reason",
+    "deletePrivacyModalDescription": "Are You Sure To Delete This Privacy Policy?",
+    "addPrivacy": "Add Privacy Policy",
+    "addPrivacyModalTitle": "Add Privacy Policy",
+    "editPrivacyModalTitle": "Edit Privacy Policy",
+    "addPrivacySuccessMessage": "The Privacy Policy Has Been Added Successfully",
+    "editPrivacySuccessMessage": "The Privacy Policy Has Been Edited Successfully",
+    "deletePrivacySuccessMessage": "The Privacy Policy Has Been Deleted Successfully",
     "TermsList": "Terms & Conditions List",
     "addTermModalTitle": "Add Term",
     "addTermSuccessMessage": "The Term Has Been Added Successfully",
