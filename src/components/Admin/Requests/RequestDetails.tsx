@@ -317,6 +317,55 @@ const RequestDetails: React.FC = () => {
               )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                {t('companies.companyUser')} :
+              </h3>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.fullName')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{requestData?.user?.fullName ?? '___'}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('common.emailAddress')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{requestData?.user?.emailAddress}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{requestData?.user?.phoneNumber ?? '___'}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.userName')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{requestData?.user?.userName}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.creationTime')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{requestData?.user?.creationTime}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.additionalInfo')} :
               </h3>
 
