@@ -590,7 +590,8 @@
     "false": "False",
     "companiesWitchBoughtInfo": "Companies That Have Purchased Potential Client Information",
     "attachmentsFromCompany": "Photos Of Completing The Order From The Company",
-    "rejectedoffers": "Rejected Offers"
+    "rejectedoffers": "Rejected Offers",
+    "editRequest": "Edit Request"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -635,7 +636,8 @@
     "enterCity": "Please Enter The City",
     "enterAddress": "Please Enter The Address",
     "selectSourceType": "Please Choose The Moving Type",
-    "atLeastOneAttachment": "At Least Upload One Attachment"
+    "atLeastOneAttachment": "At Least Upload One Attachment",
+    "Attachment": "Attachments"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -956,7 +958,8 @@
     "finished": "Finished",
     "PayForOffer": "To Buy An Offer",
     "BuyBundle": "To Buy A Point Bundle",
-    "BuyFeatureBundle": "To Buy A Featured Bundle"
+    "BuyFeatureBundle": "To Buy A Featured Bundle",
+    "all": "All Payments"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

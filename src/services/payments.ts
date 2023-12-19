@@ -10,8 +10,11 @@ const getAllPayments = async (
   reasonOfPaid: number,
 ) => {
   const skip = (page - 1) * pageSize;
+
   return await httpApi.get(
-    `${apiPrefix.payments}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&PaidProvider=${paidProvider}`,
+    `${apiPrefix.payments}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}` +
+      (paidProvider !== 0 ? `&PaidProvider=${paidProvider}` : '') +
+      (reasonOfPaid !== 0 ? `&ReasonOfPaid=${reasonOfPaid}` : ''),
   );
 };
 

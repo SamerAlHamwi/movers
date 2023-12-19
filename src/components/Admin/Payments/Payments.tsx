@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Row, Tabs } from 'antd';
+import { Button, Col, Radio, RadioChangeEvent, Row, Tabs } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery } from 'react-query';
@@ -14,13 +14,20 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { PaidProvider, PaidStatues, ReasonOfPaid } from '@app/constants/enums/payments';
+import { RadioGroup } from '@app/components/common/Radio/Radio';
+import { FONT_SIZE } from '@app/styles/themes/constants';
 
 export const Payments: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
-  const typeOfProvider = [`${t('common.user')}`, `${t('common.company')}`, `${t('common.branch')}`];
+  const typeOfProvider = [
+    `${t('payments.all')}`,
+    `${t('common.user')}`,
+    `${t('common.company')}`,
+    `${t('common.branch')}`,
+  ];
 
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
@@ -30,9 +37,9 @@ export const Payments: React.FC = () => {
   const [temp, setTemp] = useState<any>();
   const [bundleStatus, setBundleStatus] = useState<boolean | undefined>(undefined);
   const [refetchData, setRefetchData] = useState<boolean>(false);
-  const [paidProvider, setPaidProvider] = useState<number>(1);
-  const [paidStatues, setPaidStatues] = useState<number>(1);
-  const [reasonOfPaid, setReasonOfPaid] = useState<number>(1);
+  const [paidProvider, setPaidProvider] = useState<PaidProvider | number>(0);
+  const [paidStatues, setPaidStatues] = useState<any>(1);
+  const [reasonOfPaid, setReasonOfPaid] = useState<ReasonOfPaid | any>(0);
 
   const { refetch, isRefetching } = useQuery(
     ['Points', page, pageSize, bundleStatus],
@@ -60,8 +67,10 @@ export const Payments: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
+    console.log(reasonOfPaid);
+
     refetch();
-  }, [page, pageSize, language, searchString, bundleStatus, refetchData, paidProvider]);
+  }, [page, pageSize, language, searchString, bundleStatus, refetchData, paidProvider, reasonOfPaid]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -120,11 +129,59 @@ export const Payments: React.FC = () => {
             return '';
         }
       },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              <Radio style={{ display: 'block', fontSize }} value={1}>
+                {t('payments.PayForOffer')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={2}>
+                {t('payments.BuyBundle')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={3}>
+                {t('payments.BuyFeatureBundle')}
+              </Radio>
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setReasonOfPaid(0);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setReasonOfPaid(temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
     },
   ];
 
   const onChange = (key: string) => {
-    setPaidProvider(+key);
+    setPaidProvider(+key - 1);
   };
 
   return (
