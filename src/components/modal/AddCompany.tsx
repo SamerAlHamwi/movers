@@ -40,6 +40,7 @@ import type { DataNode } from 'antd/es/tree';
 import { useLanguage } from '@app/hooks/useLanguage';
 import CreatableSelect from 'react-select/creatable';
 import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -263,19 +264,6 @@ export const AddCompany: React.FC = () => {
     setRegionId(e);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
-
   const handleCancel = () => {
     setPreviewOpen(false);
   };
@@ -347,12 +335,6 @@ export const AddCompany: React.FC = () => {
   );
 
   const onFinish = (values: any) => {
-    const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['companyContact', 'phoneNumber']),
-    );
-    const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['userDto', 'phoneNumber']),
-    );
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
         const parts = obj.split(' ');
@@ -394,15 +376,15 @@ export const AddCompany: React.FC = () => {
         },
       ],
       companyContact: {
-        dialCode: '+' + dialCodeC,
-        phoneNumber: phoneNumberC,
+        dialCode: '+971',
+        phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: false,
       },
       userDto: {
-        dialCode: '+' + dialCodeU,
-        phoneNumber: phoneNumberU,
+        dialCode: '+971',
+        phoneNumber: form.getFieldValue(['userDto', 'phoneNumber']),
         emailAddress: form.getFieldValue(['userDto', 'emailAddress']),
         password: form.getFieldValue(['userDto', 'password']),
       },
@@ -754,9 +736,9 @@ export const AddCompany: React.FC = () => {
                     if (!value || isValidPhoneNumber(value)) {
                       return Promise.resolve();
                     }
-                    if (formattedPhoneNumber.length > 12) {
+                    if (value.length > 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
+                    } else if (value.length < 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                     }
                   },
@@ -764,7 +746,16 @@ export const AddCompany: React.FC = () => {
               ]}
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
+              <Input
+                addonBefore={'+971'}
+                onChange={(e: any) => {
+                  if (validationInputNumber(e.target.value)) {
+                    form.setFieldValue(['companyContact', 'phoneNumber'], e.target.value);
+                  } else form.setFieldValue(['companyContact', 'phoneNumber'], '');
+                }}
+                maxLength={9}
+                style={{ width: '100%' }}
+              />
             </BaseButtonsForm.Item>
           </>
         )}
@@ -783,9 +774,9 @@ export const AddCompany: React.FC = () => {
                     if (!value || isValidPhoneNumber(value)) {
                       return Promise.resolve();
                     }
-                    if (formattedPhoneNumber.length > 12) {
+                    if (value.length > 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
+                    } else if (value.length < 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                     }
                   },
@@ -805,7 +796,16 @@ export const AddCompany: React.FC = () => {
                     }
               }
             >
-              <PhoneInput key={2} onChange={handleFormattedValueChange} country={'ae'} />
+              <Input
+                addonBefore={'+971'}
+                onChange={(e: any) => {
+                  if (validationInputNumber(e.target.value)) {
+                    form.setFieldValue(['userDto', 'phoneNumber'], e.target.value);
+                  } else form.setFieldValue(['userDto', 'phoneNumber'], '');
+                }}
+                maxLength={9}
+                style={{ width: '100%' }}
+              />
             </BaseButtonsForm.Item>
 
             <BaseForm.Item
