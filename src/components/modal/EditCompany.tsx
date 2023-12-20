@@ -5,7 +5,6 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
-import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { UploadMultiAttachment, uploadAttachment } from '@app/services/Attachment';
 import {
@@ -13,21 +12,15 @@ import {
   ClearOutlined,
   FileAddOutlined,
   HomeOutlined,
-  InboxOutlined,
-  LoadingOutlined,
   PictureOutlined,
   PlusOutlined,
-  UserAddOutlined,
 } from '@ant-design/icons';
-import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image, Spin } from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image, Spin, Form } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
-import { countries } from '../Admin/Locations/Countries';
+import { getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
-import { cities } from '../Admin/Locations/Cities';
 import { getServices } from '@app/services/services';
-import { Services } from '../Admin/Services';
 import { getCompanyById, updateCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
@@ -35,11 +28,10 @@ import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/Ba
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';
-import type { DataNode } from 'antd/es/tree';
-import { BaseFormItem } from '@app/components/common/forms/components/BaseFormItem/BaseFormItem';
-import { Spinner } from '@app/components/common/Spinner/Spinner.styles';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
+import { AR } from '@app/constants/appConstants';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -110,7 +102,6 @@ export const EditCompany: React.FC = () => {
   const queryClient = useQueryClient();
   const Navigate = useNavigate();
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
-
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
@@ -122,7 +113,6 @@ export const EditCompany: React.FC = () => {
   const [CommercialFileRegisterId, setCommercialFileRegisterId] = useState();
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -147,8 +137,13 @@ export const EditCompany: React.FC = () => {
   const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const [picturesList, setPicturesList] = useState<any[]>([]);
+  const [test, setTest] = useState<any[]>([]);
+  const [lang, setLang] = useState<{ en: any; ar: any }>({
+    en: undefined,
+    ar: undefined,
+  });
 
-  const { data, status, refetch, isRefetching, isLoading } = useQuery(
+  const { data, status, isLoading } = useQuery(
     ['getCompanyById'],
     () =>
       getCompanyById(companyId)
@@ -167,7 +162,48 @@ export const EditCompany: React.FC = () => {
     },
   );
 
-  const [test, setTest] = useState<any[]>([]);
+  useEffect(() => {
+    if (companyData) {
+      companyData?.translations?.map((item: any) => {
+        if (item?.language === AR) {
+          setLang({
+            ar: INDEX_TWO,
+            en: INDEX_ONE,
+          });
+        } else {
+          setLang({
+            ar: INDEX_ONE,
+            en: INDEX_TWO,
+          });
+        }
+      });
+    }
+  }, [companyData]);
+
+  useEffect(() => {
+    if (countryId !== '0') {
+      citiesRefetch();
+      RegionsRefetch();
+    }
+  }, [countryId]);
+
+  useEffect(() => {
+    if (cityId !== '0') {
+      RegionsRefetch();
+    }
+  }, [cityId]);
+
+  useEffect(() => {
+    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForAvailableCities]);
+
+  useEffect(() => {
+    if (companyData?.availableCities) {
+      setCountryIdForAvailableCities(companyData?.availableCities[0]?.countryId);
+    }
+  }, [companyData?.availableCities]);
 
   useEffect(() => {
     const updateFormValues = async () => {
@@ -182,7 +218,6 @@ export const EditCompany: React.FC = () => {
             });
         });
       });
-
       setTest(checkedKeysById);
 
       await form.setFieldsValue(companyData);
@@ -193,7 +228,6 @@ export const EditCompany: React.FC = () => {
 
   useEffect(() => {
     if (companyData?.companyProfile) setImageLogoList([companyData?.companyProfile]);
-
     if (companyData?.companyOwnerIdentity) {
       const pdfAttachments: any[] = [];
       const imageAttachments: any[] = [];
@@ -237,7 +271,67 @@ export const EditCompany: React.FC = () => {
     }
   }, [companyData]);
 
+  useEffect(() => {
+    const updateFormValues = async () => {
+      const checkedKeysById: any[] = [];
+      companyData?.services?.map((service: any) => {
+        service.subServices?.map((subService: any) => {
+          if (subService?.tools?.length === 0) {
+            checkedKeysById.push(`onlySub service${service?.id} sub${subService?.id}`);
+          } else
+            subService.tools.map((tool: any) => {
+              checkedKeysById.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
+            });
+        });
+      });
+      setSelectedServices(checkedKeysById);
+      await form.setFieldsValue(companyData);
+    };
+    updateFormValues();
+  }, [companyData, form]);
+
+  useEffect(() => {
+    if (enableEdit) {
+      const showError = (messageText: string) => {
+        message.open({
+          content: <Alert message={messageText} type={`error`} showIcon />,
+        });
+      };
+      if (requestServices.length === 0 && selectedServices.length === 0) {
+        showError(t('requests.atLeastOneService'));
+      } else {
+        UpdateCompany.mutateAsync(companyInfo);
+        setEnableEdit(false);
+      }
+    }
+  }, [enableEdit]);
+
   const GetAllServices = useQuery('getAllServices', getServices);
+
+  const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const {
+    data: availableCitiesData,
+    refetch: availableCitiesRefetch,
+    isFetching: isLoadingAvailableCities,
+  } = useQuery('getCitiesForAvailabel', () => getCities(countryIdForAvailableCities), {
+    enabled: countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined,
+  });
+
+  const { data: citiesData, refetch: citiesRefetch } = useQuery(
+    'getCities',
+    () => getCities(countryId != '0' ? countryId : companyData?.region?.city?.country?.id),
+    {
+      enabled: countryId != '0' || companyData?.region?.city?.country?.id != undefined,
+    },
+  );
+
+  const { data: RegionsData, refetch: RegionsRefetch } = useQuery(
+    'getRegions',
+    () => getRegions(cityId != '0' ? cityId : companyData?.region?.city?.id),
+    {
+      enabled: cityId !== '0' || companyData?.region?.city?.id != undefined,
+    },
+  );
 
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
     return {
@@ -290,14 +384,6 @@ export const EditCompany: React.FC = () => {
     };
   });
 
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
@@ -307,50 +393,13 @@ export const EditCompany: React.FC = () => {
     setSelectedKeys(selectedKeysValue);
   };
 
-  const GetAllCountries = useQuery('GetAllCountries', getCountries);
-  const {
-    data: availableCitiesData,
-    refetch: availableCitiesRefetch,
-    isFetching: isLoadingAvailableCities,
-  } = useQuery('getCitiesForAvailabel', () => getCities(countryIdForAvailableCities), {
-    enabled: countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined,
-  });
-  const { data: citiesData, refetch: citiesRefetch } = useQuery(
-    'getCities',
-    () => getCities(countryId != '0' ? countryId : companyData?.region?.city?.country?.id),
-    {
-      enabled: countryId != '0' || companyData?.region?.city?.country?.id != undefined,
-    },
-  );
-  const { data: RegionsData, refetch: RegionsRefetch } = useQuery(
-    'getRegions',
-    () => getRegions(cityId != '0' ? cityId : companyData?.region?.city?.id),
-    {
-      enabled: cityId !== '0' || companyData?.region?.city?.id != undefined,
-    },
-  );
+  const next = () => {
+    setCurrent(current + 1);
+  };
 
-  useEffect(() => {
-    if (countryId !== '0') {
-      citiesRefetch();
-      RegionsRefetch();
-    }
-  }, [countryId]);
-  useEffect(() => {
-    if (cityId !== '0') {
-      RegionsRefetch();
-    }
-  }, [cityId]);
-  useEffect(() => {
-    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
-      availableCitiesRefetch();
-    }
-  }, [countryIdForAvailableCities]);
-  useEffect(() => {
-    if (companyData?.availableCities) {
-      setCountryIdForAvailableCities(companyData?.availableCities[0]?.countryId);
-    }
-  }, [companyData?.availableCities]);
+  const prev = () => {
+    setCurrent(current - 1);
+  };
 
   const ChangeCountryHandler = (e: any) => {
     setCountryId(e);
@@ -367,24 +416,20 @@ export const EditCompany: React.FC = () => {
     setRegionId(e);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
-
   const handleCancel = () => {
     setPreviewOpen(false);
   };
 
   const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+  };
+
+  const handlePreviews = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -457,109 +502,6 @@ export const EditCompany: React.FC = () => {
       }),
   );
 
-  const onFinish = (values: any) => {
-    const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['companyContact', 'phoneNumber']),
-    );
-    const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['userDto', 'phoneNumber']),
-    );
-    function extractServicesIds(input: any) {
-      requestServices = [];
-      input.map((obj: any) => {
-        const parts = obj.split(' ');
-        let result = {};
-        if (parts[0] == 'withTool') {
-          result = {
-            serviceId: parseInt(parts[1].replace('service', '')),
-            subServiceId: parseInt(parts[2].replace('sub', '')),
-            toolId: parseInt(parts[3].replace('tool', '')),
-          };
-          if (!requestServices.includes(result)) {
-            requestServices.push(result);
-          }
-        } else if (parts[0] == 'onlySub') {
-          result = {
-            serviceId: parseInt(parts[1].replace('service', '')),
-            subServiceId: parseInt(parts[2].replace('sub', '')),
-            toolId: null,
-          };
-          if (!requestServices.includes(result)) {
-            requestServices.push(result);
-          }
-        }
-        return result;
-      });
-    }
-    extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
-    const updatedFormData = { ...formData };
-
-    companyInfo = {
-      ...companyInfo,
-      translations: [
-        {
-          name: form.getFieldValue(['translations', 0, 'name']),
-          bio: form.getFieldValue(['translations', 0, 'bio']),
-          address: form.getFieldValue(['translations', 0, 'address']),
-          language: 'ar',
-        },
-        {
-          name: form.getFieldValue(['translations', 1, 'name']),
-          bio: form.getFieldValue(['translations', 1, 'bio']),
-          address: form.getFieldValue(['translations', 1, 'address']),
-          language: 'en',
-        },
-      ],
-      companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
-      regionId: regionId != '0' ? regionId : companyData?.region?.id,
-      companyContact: {
-        dialCode: dialCodeC != '0' ? '+' + dialCodeC : companyData.companyContact.dialCode,
-        phoneNumber: phoneNumberC != '0' ? phoneNumberC : companyData.companyContact.phoneNumber,
-        emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
-        webSite: form.getFieldValue(['companyContact', 'webSite']),
-        isForBranchCompany: false,
-      },
-      id: companyData?.id,
-      availableCitiesIds:
-        selectedCityValues.length == 0 ? companyData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
-      serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
-      services: requestServices,
-      comment: form.getFieldValue('comment'),
-      companyOwnerIdentityIds: [
-        OwnerImageIdentityId,
-        OwnerFileIdentityId,
-        imageOwnerList[0]?.id,
-        fileOwnerList[0]?.id,
-      ].filter((value) => value !== undefined),
-      companyCommercialRegisterIds: [
-        CommercialImageRegisterId,
-        CommercialFileRegisterId,
-        imageCommercialList[0]?.id,
-        fileCommercialList[0]?.id,
-      ].filter((value) => value !== undefined),
-
-      additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
-    };
-
-    updatedFormData.translations = companyInfo.translations;
-    setEnableEdit(true);
-
-    if (companyInfo.companyOwnerIdentityIds == 0) {
-      message.open({
-        content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
-      });
-      setEnableEdit(false);
-      return;
-    }
-    if (companyInfo.companyCommercialRegisterIds == 0) {
-      message.open({
-        content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
-      });
-      setEnableEdit(false);
-      return;
-    }
-  };
-
   const uploadImageButton = (
     <div style={{ color: '#40aaff' }}>
       <PictureOutlined />
@@ -582,41 +524,6 @@ export const EditCompany: React.FC = () => {
       <div className="ant-upload-text">Upload File</div>
     </div>
   );
-
-  useEffect(() => {
-    const updateFormValues = async () => {
-      const checkedKeysById: any[] = [];
-      companyData?.services?.map((service: any) => {
-        service.subServices?.map((subService: any) => {
-          if (subService?.tools?.length === 0) {
-            checkedKeysById.push(`onlySub service${service?.id} sub${subService?.id}`);
-          } else
-            subService.tools.map((tool: any) => {
-              checkedKeysById.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
-            });
-        });
-      });
-      setSelectedServices(checkedKeysById);
-      await form.setFieldsValue(companyData);
-    };
-    updateFormValues();
-  }, [companyData, form]);
-
-  useEffect(() => {
-    if (enableEdit) {
-      const showError = (messageText: string) => {
-        message.open({
-          content: <Alert message={messageText} type={`error`} showIcon />,
-        });
-      };
-      if (requestServices.length === 0 && selectedServices.length === 0) {
-        showError(t('requests.atLeastOneService'));
-      } else {
-        UpdateCompany.mutateAsync(companyInfo);
-        setEnableEdit(false);
-      }
-    }
-  }, [enableEdit]);
 
   const UploadAttachments = async (options: any) => {
     const { file } = options;
@@ -651,21 +558,117 @@ export const EditCompany: React.FC = () => {
     setFileOtherList(fileOtherList.concat(files));
   };
 
-  const handlePreviews = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as RcFile);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
-  };
-
   const uploadButtonForAllRequest = (
     <div>
       <PlusOutlined />
       <div className="ant-upload-text">Upload</div>
     </div>
   );
+
+  //  Form
+  const onFinish = (values: any) => {
+    console.log('values', values);
+    form.validateFields().then(() => {
+      function extractServicesIds(input: any) {
+        requestServices = [];
+        input.map((obj: any) => {
+          const parts = obj.split(' ');
+          let result = {};
+          if (parts[0] == 'withTool') {
+            result = {
+              serviceId: parseInt(parts[1].replace('service', '')),
+              subServiceId: parseInt(parts[2].replace('sub', '')),
+              toolId: parseInt(parts[3].replace('tool', '')),
+            };
+            if (!requestServices.includes(result)) {
+              requestServices.push(result);
+            }
+          } else if (parts[0] == 'onlySub') {
+            result = {
+              serviceId: parseInt(parts[1].replace('service', '')),
+              subServiceId: parseInt(parts[2].replace('sub', '')),
+              toolId: null,
+            };
+            if (!requestServices.includes(result)) {
+              requestServices.push(result);
+            }
+          }
+          return result;
+        });
+      }
+      extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
+      const updatedFormData = { ...formData };
+      companyInfo = {
+        ...companyInfo,
+        translations: [
+          {
+            name: form.getFieldValue(['translations', lang?.ar, 'name']),
+            bio: form.getFieldValue(['translations', lang?.ar, 'bio']),
+            address: form.getFieldValue(['translations', lang?.ar, 'address']),
+            language: 'ar',
+          },
+          {
+            name: form.getFieldValue(['translations', lang?.en, 'name']),
+            bio: form.getFieldValue(['translations', lang?.en, 'bio']),
+            address: form.getFieldValue(['translations', lang?.en, 'address']),
+            language: 'en',
+          },
+        ],
+        companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
+        regionId: regionId != '0' ? regionId : companyData?.region?.id,
+        companyContact: {
+          dialCode: companyData?.companyContact?.dialCode,
+          phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
+          emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
+          webSite: form.getFieldValue(['companyContact', 'webSite']),
+          isForBranchCompany: false,
+        },
+        id: companyData?.id,
+        availableCitiesIds:
+          selectedCityValues.length == 0
+            ? companyData?.availableCities.map((city: any) => city?.id)
+            : selectedCityValues,
+        serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
+        services: requestServices,
+        comment: form.getFieldValue('comment'),
+        companyOwnerIdentityIds: [
+          OwnerImageIdentityId,
+          OwnerFileIdentityId,
+          imageOwnerList[0]?.id,
+          fileOwnerList[0]?.id,
+        ].filter((value) => value !== undefined),
+        companyCommercialRegisterIds: [
+          CommercialImageRegisterId,
+          CommercialFileRegisterId,
+          imageCommercialList[0]?.id,
+          fileCommercialList[0]?.id,
+        ].filter((value) => value !== undefined),
+        additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
+      };
+      updatedFormData.translations = companyInfo.translations;
+      updatedFormData.translations = companyInfo.translations;
+      setEnableEdit(true);
+
+      updatedFormData.translations = companyInfo.translations;
+      setEnableEdit(true);
+
+      if (companyInfo.companyOwnerIdentityIds == 0) {
+        message.open({
+          content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
+        });
+        setEnableEdit(false);
+        return;
+      }
+      if (companyInfo.companyCommercialRegisterIds == 0) {
+        message.open({
+          content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
+        });
+        setEnableEdit(false);
+        return;
+      }
+      setEnableEdit(true);
+    });
+  };
 
   return (
     <Card title={t('companies.EditCompany')} padding="1.25rem 1.25rem 1.25rem">
@@ -733,10 +736,10 @@ export const EditCompany: React.FC = () => {
       <Spin spinning={isLoading}>
         {status === 'success' && companyData && (
           <BaseForm
-            form={form}
+            name="EditCompanyForm"
             initialValues={companyData?.result}
             onFinish={onFinish}
-            name="EditCompanyForm"
+            form={form}
             style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
           >
             {current === 0 && (
@@ -778,7 +781,7 @@ export const EditCompany: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 0, 'name']}
+                      name={['translations', lang?.ar, 'name']}
                       label={<LableText>{t('common.name_ar')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -799,7 +802,7 @@ export const EditCompany: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 1, 'name']}
+                      name={['translations', lang?.en, 'name']}
                       label={<LableText>{t('common.name_en')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -822,7 +825,7 @@ export const EditCompany: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 0, 'bio']}
+                      name={['translations', lang?.ar, 'bio']}
                       label={<LableText>{t('common.bio_ar')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -843,7 +846,7 @@ export const EditCompany: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 1, 'bio']}
+                      name={['translations', lang?.en, 'bio']}
                       label={<LableText>{t('common.bio_en')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -866,7 +869,7 @@ export const EditCompany: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 0, 'address']}
+                      name={['translations', lang?.ar, 'address']}
                       label={<LableText>{t('common.address_ar')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -887,7 +890,7 @@ export const EditCompany: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 1, 'address']}
+                      name={['translations', lang?.en, 'address']}
                       label={<LableText>{t('common.address_en')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -908,6 +911,7 @@ export const EditCompany: React.FC = () => {
 
                 <BaseForm.Item
                   label={<LableText>{t('companies.country')}</LableText>}
+                  name={'countryId'}
                   style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -938,7 +942,7 @@ export const EditCompany: React.FC = () => {
                   </Select>
                 </BaseForm.Item>
                 <BaseForm.Item
-                  name={['regions']}
+                  name={'region'}
                   label={<LableText>{t('companies.region')}</LableText>}
                   style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                   rules={[
@@ -974,7 +978,7 @@ export const EditCompany: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input value={companyInfo?.companyContact?.emailAddress} />
+                      <Input name="email" value={companyInfo?.companyContact?.emailAddress} />
                     </BaseForm.Item>
                   </Col>
                   <Col
@@ -995,8 +999,9 @@ export const EditCompany: React.FC = () => {
                     </BaseForm.Item>
                   </Col>
                 </Row>
-                <BaseButtonsForm.Item
+                <BaseForm.Item
                   key={current}
+                  name={['companyContact', 'phoneNumber']}
                   label={t('common.phoneNumber')}
                   rules={[
                     { required: true, message: t('common.requiredField') },
@@ -1005,9 +1010,9 @@ export const EditCompany: React.FC = () => {
                         if (!value || isValidPhoneNumber(value)) {
                           return Promise.resolve();
                         }
-                        if (formattedPhoneNumber.length > 12) {
+                        if (value.length > 9) {
                           return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                        } else if (formattedPhoneNumber.length < 12) {
+                        } else if (value.length < 9) {
                           return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                         }
                       },
@@ -1015,13 +1020,18 @@ export const EditCompany: React.FC = () => {
                   ]}
                   style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                 >
-                  <PhoneInput
-                    value={companyData.companyContact?.dialCode + companyData.companyContact?.phoneNumber}
-                    key={1}
-                    onChange={handleFormattedValueChange}
-                    country={'ae'}
+                  <Input
+                    addonBefore={'+971'}
+                    value={companyData?.companyContact?.phoneNumber}
+                    onChange={(e) => {
+                      if (validationInputNumber(e.target.value)) {
+                        form.setFieldValue(['companyContact', 'phoneNumber'], e.target.value);
+                      } else form.setFieldValue(['companyContact', 'phoneNumber'], '');
+                    }}
+                    maxLength={9}
+                    style={{ width: '100%' }}
                   />
-                </BaseButtonsForm.Item>
+                </BaseForm.Item>
               </>
             )}
             {current === 1 && (
