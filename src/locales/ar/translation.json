@@ -590,7 +590,8 @@
     "false": "لا",
     "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل",
     "attachmentsFromCompany": "صور إنهاء الطلب من الشركة",
-    "rejectedoffers": "العروض المرفوضة"
+    "rejectedoffers": "العروض المرفوضة",
+    "editRequest": "تعديل طلب النقل"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -635,7 +636,8 @@
     "enterCity": "رجاءً أدخل المدينة",
     "enterAddress": "رجاءً أدخل العنوان",
     "selectSourceType": "رجاءً إختر نوع مكان النقل",
-    "atLeastOneAttachment": "رجاءً إرقع صورة واحدة على الأقل"
+    "atLeastOneAttachment": "رجاءً إرقع صورة واحدة على الأقل",
+    "Attachment": "الصور"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -855,9 +857,17 @@
     "numberOfRequests": "عدد طلبات النقل"
   },
 
-  "_comment27": "*********************************** Terms ************************************************",
+  "_comment27": "*********************************** privacyPolicy ************************************************",
   "privacyPolicy": {
     "PrivacyList": "قائمة سياسة الخصوصية",
+    "deletePrivacytModalTitle": "حذف هذه السياسة",
+    "deletePrivacyModalDescription": "هل أنت متأكد من حذف هذه السياسة؟",
+    "addPrivacy": "إضافة سياسة خصوصية",
+    "addPrivacyModalTitle": "إضافة سياسة خصوصية",
+    "editPrivacyModalTitle": "تعديل سياسسة الخصوصية",
+    "addPrivacySuccessMessage": "تمت إضافة سياسة الخصوصية بنجاح",
+    "editPrivacySuccessMessage": "تم تعديل سياسة الخصوصية بنجاح",
+    "deletePrivacySuccessMessage": "تم حذف سياسة الخصوصية بنجاح",
     "TermsList": "قائمة الشروط والأحكام",
     "addTermModalTitle": "إضافة حُكم",
     "addTermSuccessMessage": "تمت إضافة الحُكم بنجاح",
@@ -938,6 +948,20 @@
     "change": "تعديل ضرورة التحديث"
   },
 
+  "_comment31": "*********************************** payments ************************************************",
+  "payments": {
+    "paymentsList": "قائمة المدفوعات",
+    "amount": "القيمة المالية",
+    "paidProvider": "مزود الدفع",
+    "paidStatues": "حالة الدفع",
+    "reasonOfPaid": "سبب الدفع",
+    "finished": "منتهي",
+    "PayForOffer": "لشراء عرض سعر",
+    "BuyBundle": "لشراء باقة نقاط",
+    "BuyFeatureBundle": "لشراء باقة مُميزة",
+    "all": "كل المدفوعات"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -988,7 +1012,8 @@
     "EditCompany": "تعديل الشركة",
     "CommissionGroups": "مجموعات العمولة",
     "FeaturedBundles": "الباقات المُمَيِزة",
-    "ApplicationsVersions": "إصدارات التطبيقات"
+    "ApplicationsVersions": "إصدارات التطبيقات",
+    "Payments": "المدفوعات"
   },
 
   "header": {

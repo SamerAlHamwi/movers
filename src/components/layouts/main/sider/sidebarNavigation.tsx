@@ -25,6 +25,8 @@ import {
   AppstoreOutlined,
   StarOutlined,
   CloudUploadOutlined,
+  SyncOutlined,
+  WalletOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -69,6 +71,12 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     key: 'Companies',
     url: '/companies',
     icon: <BankOutlined />,
+  },
+  {
+    title: 'sidebarNavigation.Payments',
+    key: 'Payments',
+    url: '/Payments',
+    icon: <WalletOutlined />,
   },
   {
     title: 'sidebarNavigation.commissionGroups',

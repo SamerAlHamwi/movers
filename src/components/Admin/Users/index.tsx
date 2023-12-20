@@ -203,7 +203,10 @@ export const User: React.FC = () => {
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userFullName')}</Header>, dataIndex: 'fullName' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('users.userFullName')}</Header>,
+      dataIndex: 'registrationFullName',
+    },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userName')}</Header>, dataIndex: 'userName' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
     {
