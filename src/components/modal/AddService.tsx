@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Space, Modal, message } from 'antd';
+import { Space, Modal, message, Radio } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../Admin/Translations';
@@ -52,7 +52,7 @@ export const AddService: React.FC<CreateServiceModalProps> = ({ visible, onCance
 
   return (
     <Modal
-      style={{ marginTop: '0rem' }}
+      style={{ marginTop: '-4rem' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
@@ -103,6 +103,46 @@ export const AddService: React.FC<CreateServiceModalProps> = ({ visible, onCance
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="isForStorage"
+          label={<LableText>{t(`services.isForStorage`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={true} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isForStorage')}
+            </Radio>
+            <Radio value={false} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isNotForStorage')}
+            </Radio>
+          </Radio.Group>
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="isForTruck"
+          label={<LableText>{t(`services.isForTruck`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={true} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isForTruck')}
+            </Radio>
+            <Radio value={false} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isNotForTruck')}
+            </Radio>
+          </Radio.Group>
         </BaseForm.Item>
         <BaseForm.Item
           name={'image'}

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Space, message } from 'antd';
+import { Modal, Radio, Space, message } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -77,12 +77,12 @@ export const EditService: React.FC<EditServiceProps> = ({
       id: 0,
     };
     info = Object.assign({}, info, my_data);
-    onEdit(my_data);
+    onEdit(info);
   };
 
   return (
     <Modal
-      style={{ marginTop: '0rem' }}
+      style={{ marginTop: '-4rem' }}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       open={visible}
       title={
@@ -133,6 +133,46 @@ export const EditService: React.FC<EditServiceProps> = ({
           style={{ marginTop: '-.5rem' }}
         >
           <Input />
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="isForStorage"
+          label={<LableText>{t(`services.isForStorage`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={true} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isForStorage')}
+            </Radio>
+            <Radio value={false} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isNotForStorage')}
+            </Radio>
+          </Radio.Group>
+        </BaseForm.Item>
+        <BaseForm.Item
+          name="isForTruck"
+          label={<LableText>{t(`services.isForTruck`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={true} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isForTruck')}
+            </Radio>
+            <Radio value={false} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('services.isNotForTruck')}
+            </Radio>
+          </Radio.Group>
         </BaseForm.Item>
         <BaseForm.Item
           rules={[{ required: true, message: t('common.requiredImage') }]}

@@ -22,8 +22,6 @@ export const ChangeNecessaryToUpdate: React.FC<ChangeNecessaryToUpdateProps> = (
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
 
-  const [valueRadio, setValueRadio] = useState(3);
-
   const onOk = () => {
     form.submit();
   };
@@ -75,13 +73,7 @@ export const ChangeNecessaryToUpdate: React.FC<ChangeNecessaryToUpdateProps> = (
           ]}
           style={{ marginTop: '-.5rem' }}
         >
-          <Radio.Group
-            style={{ display: 'flex', width: '100%' }}
-            onChange={(event) => {
-              setValueRadio(event.target.value);
-            }}
-            defaultValue={values?.updateOptions}
-          >
+          <Radio.Group style={{ display: 'flex', width: '100%' }} defaultValue={values?.updateOptions}>
             <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
               {t('applicationsVersions.Optional')}
             </Radio>

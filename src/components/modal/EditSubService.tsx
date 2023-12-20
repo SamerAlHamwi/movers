@@ -54,7 +54,7 @@ export const EditSubService: React.FC<EditServiceProps> = ({
       id: 0,
     };
     info = Object.assign({}, info, my_data);
-    onEdit(my_data);
+    onEdit(info);
   };
 
   return (

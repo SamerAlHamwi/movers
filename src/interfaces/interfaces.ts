@@ -260,6 +260,8 @@ export interface ServiceModel {
   attachmentId: number;
   attachment?: any;
   serviceId?: string | undefined;
+  isForStorage?: boolean;
+  isForTruck?: boolean;
 }
 
 export interface faqModel {

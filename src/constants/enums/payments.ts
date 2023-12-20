@@ -12,4 +12,11 @@ export enum ReasonOfPaid {
   PayForOffer = 1,
   BuyBundle,
   BuyFeatureBundle,
+  ReturnMoneyAfterDiscount,
+  ReturnMoneyWithoutDiscount,
+}
+
+export enum PaidDestination {
+  ForHim = 1,
+  OnHim,
 }

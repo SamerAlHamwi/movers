@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@app/components/common/Card/Card';
-import { Alert, Row, Space, Tooltip, message } from 'antd';
+import { Alert, Row, Space, Tag, Tooltip, message } from 'antd';
 import { Table } from 'components/common/Table/Table';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
@@ -14,12 +14,12 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, ServiceModel, translation } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddService } from '@app/components/modal/AddService';
 import { EditService } from '@app/components/modal/EditService';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
-import { TableButton, Header, Modal, Image, CreateButtonText } from '../../GeneralStyles';
+import { Header, Modal, Image, CreateButtonText, TableButton } from '../../GeneralStyles';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
@@ -224,6 +224,52 @@ export const Services: React.FC = () => {
               </div>
             </Button>
           </Space>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('services.isForStorage')}</Header>,
+      dataIndex: 'isForStorage',
+      render: (record: boolean) => {
+        return (
+          <>
+            {record == true ? (
+              <Tooltip placement="top" title={t('services.isForStorage')}>
+                <TableButton severity="success">
+                  <CheckOutlined />
+                </TableButton>
+              </Tooltip>
+            ) : (
+              <Tooltip placement="top" title={t('services.isNotForStorage')}>
+                <TableButton severity="error">
+                  <CloseOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('services.isForTruck')}</Header>,
+      dataIndex: 'isForTruck',
+      render: (record: boolean) => {
+        return (
+          <>
+            {record == true ? (
+              <Tooltip placement="top" title={t('services.isForTruck')}>
+                <TableButton severity="success">
+                  <CheckOutlined />
+                </TableButton>
+              </Tooltip>
+            ) : (
+              <Tooltip placement="top" title={t('services.isNotForTruck')}>
+                <TableButton severity="error">
+                  <CloseOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
+          </>
         );
       },
     },

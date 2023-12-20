@@ -167,26 +167,6 @@ export const Requests: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteRequest.isLoading }));
   }, [deleteRequest.isLoading]);
 
-  // const editRequest = useMutation((data: RequestModel) => UpdateRequest(data));
-
-  // const handleEdit = (data: RequestModel, id: number) => {
-  //   editRequest
-  //     .mutateAsync({ ...data, id })
-  //     .then((data) => {
-  //       setIsEdit(data.data?.success);
-  //       message.open({
-  //         content: <Alert message={t(`requests.editRequestSuccessMessage`)} type={`success`} showIcon />,
-  //       });
-  //     })
-  //     .catch((error) => {
-  //       message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-  //     });
-  // };
-
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, edit: editRequest.isLoading }));
-  // }, [editRequest.isLoading]);
-
   const rejectRequest = useMutation((data: any) =>
     confirmRequest(data)
       .then((data) => {
@@ -403,6 +383,11 @@ export const Requests: React.FC = () => {
             {record?.statues === 13 && (
               <Tag key={record?.id} color="#A5978B" style={{ padding: '4px' }}>
                 {t('requests.OutOfPossible')}
+              </Tag>
+            )}
+            {record?.statues === 14 && (
+              <Tag key={record?.id} color="#ff00fa" style={{ padding: '4px' }}>
+                {t('requests.CanceledAfterInProcess')}
               </Tag>
             )}
           </>

@@ -246,7 +246,11 @@
     "editServiceSuccessMessage": "تم تعديل معلومات الخدمة",
     "editServiceModalTitle": "تعديل معلومات الخدمة",
     "deleteServiceModalTitle": "حذف الخدمة",
-    "deleteServiceModalDescription": "هل أنت متأكد من حذف هذه الخدمة"
+    "deleteServiceModalDescription": "هل أنت متأكد من حذف هذه الخدمة",
+    "isForStorage": "من أجل التخزين",
+    "isNotForStorage": "ليس من أجل التخزين",
+    "isForTruck": "من أجل الشحن",
+    "isNotForTruck": "ليس من أجل الشحن"
   },
 
   "_comment6": "*********************************** companies ***************************",
@@ -591,7 +595,9 @@
     "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل",
     "attachmentsFromCompany": "صور إنهاء الطلب من الشركة",
     "rejectedoffers": "العروض المرفوضة",
-    "editRequest": "تعديل طلب النقل"
+    "editRequest": "تعديل طلب النقل",
+    "featured": "مُميزة",
+    "CanceledAfterInProcess": "مُلغى بعد المعالجة"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -954,12 +960,17 @@
     "amount": "القيمة المالية",
     "paidProvider": "مزود الدفع",
     "paidStatues": "حالة الدفع",
+    "PaidDestination": "له أو عليه",
     "reasonOfPaid": "سبب الدفع",
     "finished": "منتهي",
     "PayForOffer": "لشراء عرض سعر",
     "BuyBundle": "لشراء باقة نقاط",
     "BuyFeatureBundle": "لشراء باقة مُميزة",
-    "all": "كل المدفوعات"
+    "ReturnMoneyAfterDiscount": "لإعادة المال بعد الخصم",
+    "ReturnMoneyWithoutDiscount": "لإعادة المال بدون خصم",
+    "all": "كل المدفوعات",
+    "ForHim": "المال عائد له",
+    "OnHim": "المال له"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

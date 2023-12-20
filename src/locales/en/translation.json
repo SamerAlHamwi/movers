@@ -87,7 +87,9 @@
     "false": "False",
     "branch": "Branch",
     "broker": "Broker",
-    "refetch": "Refetch Data"
+    "refetch": "Refetch Data",
+    "yes": "Yes",
+    "no": "No"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -245,7 +247,11 @@
     "editServiceSuccessMessage": "The Service Has Been Edited Successfully",
     "editServiceModalTitle": "Edit Service",
     "deleteServiceModalTitle": "Delete Service",
-    "deleteServiceModalDescription": "Are You Sure To Delete This Service?"
+    "deleteServiceModalDescription": "Are You Sure To Delete This Service?",
+    "isForStorage": "For Storage",
+    "isNotForStorage": "Not For Storage",
+    "isForTruck": "For Shipping",
+    "isNotForTruck": "Not For Shipping"
   },
 
   "_comment6": "*********************************** companies ***************************",
@@ -591,7 +597,9 @@
     "companiesWitchBoughtInfo": "Companies That Have Purchased Potential Client Information",
     "attachmentsFromCompany": "Photos Of Completing The Order From The Company",
     "rejectedoffers": "Rejected Offers",
-    "editRequest": "Edit Request"
+    "editRequest": "Edit Request",
+    "featured": "Featured",
+    "CanceledAfterInProcess": "Canceled After In Process"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -954,12 +962,17 @@
     "amount": "Amount",
     "paidProvider": "Payment Provider",
     "paidStatues": "Payment Statues",
+    "PaidDestination": "Payment Destination",
     "reasonOfPaid": "Payment Reason",
     "finished": "Finished",
     "PayForOffer": "To Buy An Offer",
     "BuyBundle": "To Buy A Point Bundle",
     "BuyFeatureBundle": "To Buy A Featured Bundle",
-    "all": "All Payments"
+    "ReturnMoneyAfterDiscount": "To Return The Money After Discount",
+    "ReturnMoneyWithoutDiscount": "To Return The Money Without Discount",
+    "all": "All Payments",
+    "ForHim": "The Money Belongs To Him",
+    "OnHim": "He paid the money"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Alert, Row, Space, Tooltip, message } from 'antd';
+import { Alert, Badge, Rate, Row, Space, Tooltip, message } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { useQuery, useMutation } from 'react-query';
@@ -200,6 +200,11 @@ export const SuitableCompanies: React.FC = () => {
   };
 
   const columnsCompany = [
+    {
+      rowScope: 'row',
+      render: (record: any) =>
+        record.isFeature && <Rate disabled defaultValue={1} count={1} style={{ fontSize: '15px' }} />,
+    },
     type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       render: (record: any) =>
@@ -287,6 +292,11 @@ export const SuitableCompanies: React.FC = () => {
   ].filter(Boolean);
 
   const columnsBranch = [
+    {
+      rowScope: 'row',
+      render: (record: any) =>
+        record.isFeature && <Rate disabled defaultValue={1} count={1} style={{ fontSize: '15px' }} />,
+    },
     type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
       render: (record: any) => (
@@ -423,7 +433,7 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataCompany}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
-          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
+          // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
 
@@ -459,7 +469,7 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataBranch}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
-          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
+          // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
 

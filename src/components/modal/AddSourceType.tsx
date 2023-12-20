@@ -110,7 +110,7 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+          <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name="pointsToGiftMediator"
@@ -118,7 +118,7 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+          <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name="pointsToBuyRequest"
@@ -126,7 +126,7 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber defaultValue={0} min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+          <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name={'image'}

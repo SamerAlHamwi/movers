@@ -13,7 +13,7 @@ import { Payment } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
-import { PaidProvider, PaidStatues, ReasonOfPaid } from '@app/constants/enums/payments';
+import { PaidProvider, PaidStatues, ReasonOfPaid, PaidDestination } from '@app/constants/enums/payments';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 
@@ -103,6 +103,20 @@ export const Payments: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('payments.PaidDestination')}</Header>,
+      dataIndex: 'paidDestination',
+      render: (record: any) => {
+        switch (record.paidProvider) {
+          case PaidDestination.ForHim:
+            return <>{t('payments.ForHim')}</>;
+          case PaidDestination.OnHim:
+            return <>{t('payments.OnHim')}</>;
+          default:
+            return '';
+        }
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('payments.paidStatues')}</Header>,
       dataIndex: 'paidStatues',
       render: (paidStatues: PaidStatues) => {
@@ -125,6 +139,10 @@ export const Payments: React.FC = () => {
             return t('payments.BuyBundle');
           case ReasonOfPaid.BuyFeatureBundle:
             return t('payments.BuyFeatureBundle');
+          case ReasonOfPaid.ReturnMoneyAfterDiscount:
+            return t('payments.ReturnMoneyAfterDiscount');
+          case ReasonOfPaid.ReturnMoneyWithoutDiscount:
+            return t('payments.ReturnMoneyWithoutDiscount');
           default:
             return '';
         }
@@ -148,6 +166,12 @@ export const Payments: React.FC = () => {
               </Radio>
               <Radio style={{ display: 'block', fontSize }} value={3}>
                 {t('payments.BuyFeatureBundle')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={4}>
+                {t('payments.ReturnMoneyAfterDiscount')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={5}>
+                {t('payments.ReturnMoneyWithoutDiscount')}
               </Radio>
             </RadioGroup>
             <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
