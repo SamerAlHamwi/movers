@@ -3,8 +3,9 @@ import { Col, Row } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { EmailSetting } from './EmailSetting';
 import { SmsSetting } from './SmsSetting';
-import { FileSizeSetting } from './FileSize';
-import { HoursInSystemSetting } from './HoursInSystem';
+import { FileSizeSetting } from './FileSizeSetting';
+import { HoursInSystemSetting } from './HoursInSystemSetting';
+import { DiscountPercentageSetting } from './DiscountPercentageSetting';
 
 export const Configurations: React.FC = () => {
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
@@ -21,6 +22,9 @@ export const Configurations: React.FC = () => {
         </Col>
         <Col span={24} style={{ marginBottom: '2rem' }}>
           <HoursInSystemSetting />
+        </Col>
+        <Col span={24} style={{ marginBottom: '2rem' }}>
+          <DiscountPercentageSetting />
         </Col>
       </Row>
     </>

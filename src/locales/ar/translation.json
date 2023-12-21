@@ -88,7 +88,8 @@
     "false": "لا",
     "branch": "فرع",
     "broker": "وسيط",
-    "refetch": "إعادة تحميل"
+    "refetch": "إعادة تحميل",
+    "return": "إعادة"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -525,6 +526,7 @@
     "deleteRequestModalDescription": "هل أنت متأكد من حذف هذه الطلب",
     "approveRequestSuccessMessage": "تمت الموافقة على طلب النقل بنجاح",
     "rejectRequestSuccessMessage": "تم رفض طلب النقل بنجاح",
+    "returnRequestSuccessMessage": "تمت إعادة طلب النقل بنجاح",
     "approveRequestModalTitle": "الموافقة على طلب النقل",
     "approveRequestModalDescription": "هل أنت متأكد من الموافقة على طلب النقل؟",
     "rejectRequestModalTitle": "رفض طلب النقل",
@@ -583,8 +585,10 @@
     "checkPINForUserModalTitle": "إدخال رمز ال PIN للحصول على تفويض المستخدم",
     "checkPINForUserModal": "إرسال رمز ال PIN",
     "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل",
-    "sendRejectReason": "إرسال سبب الرفض للمستخدم",
+    "sendRejectReason": "إرسال سبب الرفض إلى المستخدم",
+    "sendReturnReason": "إرسال سبب الإعادة إلى المستخدم",
     "reasonRefuse": "سبب رفض طلب النقل",
+    "reasonReturn": "سبب إعادة طلب النقل",
     "additionalAttachments": "صور إضافية",
     "noAttachments": "لم يتم رفع صور لهذا العنصر",
     "offerDetails": "تفاصيل عرض السعر",
@@ -597,7 +601,8 @@
     "rejectedoffers": "العروض المرفوضة",
     "editRequest": "تعديل طلب النقل",
     "featured": "مُميزة",
-    "CanceledAfterInProcess": "مُلغى بعد المعالجة"
+    "CanceledAfterInProcess": "مُلغى بعد المعالجة",
+    "RejectedNeedToEdit": "الطلب مُعاد إلى المستخدم"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -912,7 +917,11 @@
     "hoursToWaitUser": "عدد الساعات الممنوحة للمستخدم لإختيار عرض أو رفض كافة العروض",
     "hoursToConvertRequestToOutOfPossible": "عدد الساعات المتاحة للبقاء كعميل محتمل",
     "editHoursSetting": "تعديل إعدادات الساعات",
-    "editHoursInSystemSettingSuccessMessage": "تم تعديل إعدادات الساعات بنجاح"
+    "editHoursInSystemSettingSuccessMessage": "تم تعديل إعدادات الساعات بنجاح",
+    "DiscountPercentageSetting": "إعدادات نسبة الخصم من المستخدم",
+    "discountPercentageIfUserCancelHisRequest": "نسبة الخصم من المستخدم اذا قام بإلغاء طلبه",
+    "editDiscountPercentageSetting": "تعديل إعدادات نسبة الخصم",
+    "editDiscountPercentageSettingSuccessMessage": "تم تعديل إعدادات نسبة الخصم بنجاح"
   },
 
   "_comment29": "*********************************** groups ************************************************",

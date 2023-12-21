@@ -1,5 +1,5 @@
 import React from 'react';
-import { Modal, Space } from 'antd';
+import { InputNumber, Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -71,7 +71,7 @@ export const EditFileSizeSetting: React.FC<EditFileSizeSettingProps> = ({
           ]}
           style={{ marginTop: '-.5rem' }}
         >
-          <Input />
+          <InputNumber addonAfter={'Mega Byte'} min={0} max={100} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

@@ -34,6 +34,14 @@ const UpdateHoursInSystemSetting = async (data: any) => {
   return await httpApi.post(`${apiPrefix.configurations}/SetHoursInSystem`, data);
 };
 
+const GetDiscountPercentageSetting = async () => {
+  return await httpApi.get(`${apiPrefix.configurations}/GetDiscountPercentage`);
+};
+
+const UpdateDiscountPercentageSetting = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.configurations}/SetDiscountPercentage`, data);
+};
+
 export {
   GetEmailSetting,
   UpdateEmailSetting,
@@ -43,4 +51,6 @@ export {
   UpdateFileSizeSetting,
   GetHoursInSystemSetting,
   UpdateHoursInSystemSetting,
+  GetDiscountPercentageSetting,
+  UpdateDiscountPercentageSetting,
 };

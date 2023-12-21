@@ -6,22 +6,22 @@ import { useQuery, useMutation } from 'react-query';
 import { EditOutlined, CheckOutlined, CloseOutlined } from '@ant-design/icons';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { HoursInSystemConfig } from '@app/interfaces/interfaces';
+import { DiscountPercentageConfig } from '@app/interfaces/interfaces';
 import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { GetHoursInSystemSetting, UpdateHoursInSystemSetting } from '@app/services/configurations';
-import { EditHoursInSystemSetting } from '@app/components/modal/EditHoursInSystemSetting';
+import { GetDiscountPercentageSetting, UpdateDiscountPercentageSetting } from '@app/services/configurations';
+import { EditDiscountPercentageSetting } from '@app/components/modal/EditDiscountPercentageSetting';
 
-export const HoursInSystemSetting: React.FC = () => {
+export const DiscountPercentageSetting: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
   const [modalState, setModalState] = useState({
     edit: false,
   });
-  const [hoursInSystemData, setHoursInSystemData] = useState<HoursInSystemConfig | undefined>(undefined);
+  const [discountPercentageData, setDiscountPercentageData] = useState<DiscountPercentageConfig | undefined>(undefined);
   const [isEdit, setIsEdit] = useState(false);
-  const [editmodaldata, setEditmodaldata] = useState<HoursInSystemConfig | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<DiscountPercentageConfig | undefined>(undefined);
   const [loading, setLoading] = useState(true);
 
   const handleModalOpen = (modalType: any) => {
@@ -33,12 +33,12 @@ export const HoursInSystemSetting: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['GetHoursInSystemSetting'],
+    ['GetDiscountPercentageSetting'],
     () =>
-      GetHoursInSystemSetting()
+      GetDiscountPercentageSetting()
         .then((data) => {
           const result = data.data?.result;
-          setHoursInSystemData(result);
+          setDiscountPercentageData(result);
           setLoading(!data.data?.success);
         })
         .catch((err) => {
@@ -46,7 +46,7 @@ export const HoursInSystemSetting: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: hoursInSystemData === undefined,
+      enabled: discountPercentageData === undefined,
     },
   );
 
@@ -61,15 +61,19 @@ export const HoursInSystemSetting: React.FC = () => {
     setIsEdit(false);
   }, [isEdit, refetch, language]);
 
-  const editHoursInSystemSetting = useMutation((data: HoursInSystemConfig) => UpdateHoursInSystemSetting(data));
+  const editDiscountPercentageSetting = useMutation((data: DiscountPercentageConfig) =>
+    UpdateDiscountPercentageSetting(data),
+  );
 
-  const handleEdit = (data: HoursInSystemConfig) => {
-    editHoursInSystemSetting
+  const handleEdit = (data: DiscountPercentageConfig) => {
+    editDiscountPercentageSetting
       .mutateAsync({ ...data })
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`config.editHoursInSystemSettingSuccessMessage`)} type={`success`} showIcon />,
+          content: (
+            <Alert message={t(`config.editDiscountPercentageSettingSuccessMessage`)} type={`success`} showIcon />
+          ),
         });
       })
       .catch((error) => {
@@ -78,26 +82,26 @@ export const HoursInSystemSetting: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editHoursInSystemSetting.isLoading }));
-  }, [editHoursInSystemSetting.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editDiscountPercentageSetting.isLoading }));
+  }, [editDiscountPercentageSetting.isLoading]);
 
   return (
     <>
       <Row justify={'end'}>
         {/*    EDIT    */}
         {modalState.edit && (
-          <EditHoursInSystemSetting
+          <EditDiscountPercentageSetting
             values={editmodaldata}
             visible={modalState.edit}
             onCancel={() => handleModalClose('edit')}
             onEdit={(data: any) => editmodaldata !== undefined && handleEdit(data)}
-            isLoading={editHoursInSystemSetting.isLoading}
+            isLoading={editDiscountPercentageSetting.isLoading}
           />
         )}
       </Row>
 
       <Card
-        title={t('config.HoursInSystemSetting')}
+        title={t('config.DiscountPercentageSetting')}
         bordered={false}
         extra={
           <Tooltip placement="top" title={t('common.edit')}>
@@ -105,7 +109,7 @@ export const HoursInSystemSetting: React.FC = () => {
               severity="info"
               onClick={() => {
                 setModalState;
-                setEditmodaldata(hoursInSystemData);
+                setEditmodaldata(discountPercentageData);
                 handleModalOpen('edit');
               }}
             >
@@ -117,13 +121,10 @@ export const HoursInSystemSetting: React.FC = () => {
       >
         <Details>
           <DetailsRow key={1}>
-            <DetailsTitle style={{ width: '100%' }}>{t('config.hoursToWaitUser')}</DetailsTitle>
-            <DetailsValue>{hoursInSystemData?.hoursToWaitUser}</DetailsValue>
-          </DetailsRow>
-
-          <DetailsRow key={1}>
-            <DetailsTitle style={{ width: '100%' }}>{t('config.hoursToConvertRequestToOutOfPossible')}</DetailsTitle>
-            <DetailsValue>{hoursInSystemData?.hoursToConvertRequestToOutOfPossible}</DetailsValue>
+            <DetailsTitle style={{ width: '95%', marginRight: '0' }}>
+              {t('config.discountPercentageIfUserCancelHisRequest')}
+            </DetailsTitle>
+            <DetailsValue>{discountPercentageData?.discountPercentageIfUserCancelHisRequest}</DetailsValue>
           </DetailsRow>
         </Details>
       </Card>
