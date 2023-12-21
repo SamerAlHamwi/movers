@@ -1,4 +1,4 @@
-import { CountryModel } from './../interfaces/interfaces';
+import { CountryModel } from '../interfaces/interfaces';
 import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
