@@ -93,7 +93,7 @@ export const AddRequest: React.FC = () => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState<any[]>([]);
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+  const [validations, setValidations] = useState(false);
   const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>();
   const [attributeForSourceTypeId, setAttributeForSourceTypeId] = useState(0);
@@ -479,24 +479,24 @@ export const AddRequest: React.FC = () => {
       attributeChoiceAndAttachments: allAttachments,
       userId: userId ? userId : '0',
     };
-    setAttachmentIdsChanged(true);
+    setValidations(true);
 
     if (attachmentIds.length == 0 && attributeChoiceAndAttachmentsToSend.length == 0) {
       message.open({
         content: <Alert message={t('addRequest.atLeastOneAttachment')} type={`error`} showIcon />,
       });
-      setAttachmentIdsChanged(false);
+      setValidations(false);
       return;
     }
   };
 
   useEffect(() => {
-    if (attachmentIdsChanged) {
+    if (validations) {
       const showError = (messageText: string) => {
         message.open({
           content: <Alert message={messageText} type={`error`} showIcon />,
         });
-        setAttachmentIdsChanged(false);
+        setValidations(false);
       };
 
       const checkField = (fieldName: any, messageText: string) => {
@@ -526,10 +526,10 @@ export const AddRequest: React.FC = () => {
         showError(t('addRequest.enterCity'));
       } else {
         createRequestMutation.mutateAsync(requestData);
-        setAttachmentIdsChanged(false);
+        setValidations(false);
       }
     }
-  }, [attachmentIdsChanged]);
+  }, [validations]);
 
   const uploadButtonForAttribute = (
     <div>
