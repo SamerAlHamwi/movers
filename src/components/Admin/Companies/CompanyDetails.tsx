@@ -568,6 +568,15 @@ const CompanyDetails: React.FC = () => {
                 treeData={treeData as DataNode[]}
               />
 
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('requests.comment')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>{companyData?.comment ?? t('requests.nocomment')}</DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.attachments')} :
               </h3>
