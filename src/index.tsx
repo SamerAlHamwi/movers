@@ -7,6 +7,7 @@ import { Provider } from 'react-redux';
 import { store } from '@app/store/store';
 import ReactDOM from 'react-dom';
 import React from 'react';
+import { BrowserRouter, HashRouter } from 'react-router-dom';
 
 interface EventTarget {
   state?: 'activated';
@@ -15,7 +16,11 @@ interface EventTarget {
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>
-      <App />
+      <BrowserRouter>
+        <HashRouter>
+          <App />
+        </HashRouter>
+      </BrowserRouter>
     </Provider>
   </React.StrictMode>,
   document.getElementById('root'),
