@@ -981,6 +981,7 @@ export const AddRequest: React.FC = () => {
                   ? { width: '100%', marginBottom: '5rem' }
                   : {}
               }
+              valuePropName="data"
             >
               <DatePicker style={{ width: '100%' }} />
             </BaseForm.Item>
@@ -1089,6 +1090,7 @@ export const AddRequest: React.FC = () => {
                   ? { width: '100%', marginBottom: '5rem' }
                   : {}
               }
+              valuePropName="data"
             >
               <DatePicker style={{ width: '100%' }} />
             </BaseForm.Item>

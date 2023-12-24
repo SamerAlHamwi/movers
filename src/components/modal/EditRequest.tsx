@@ -155,7 +155,14 @@ export const EditRequest: React.FC = () => {
             }),
           );
           setAttributeChoiceAndAttachments(imageRequest ?? []);
-          setRequestData(result);
+          setRequestData({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
+          form.setFieldsValue({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
           setGetRequest(false);
         })
         .catch((error) => {
@@ -187,17 +194,23 @@ export const EditRequest: React.FC = () => {
 
   useEffect(() => {
     if (selectedRadio?.length > 0) {
-      selectedRadio.map((item) => {
-        getChildAttributeChoice(item.attributeChoiceId)
-          .then((data) => {
-            const items = data?.data?.result?.items || [];
-            setChildAttributeChoices(items);
-          })
-          .catch((error) => {
-            message.open(error);
+      const fetchData = async () => {
+        try {
+          const promises = selectedRadio.map(async (item) => {
+            const data = await getChildAttributeChoice(item.attributeChoiceId);
+            return data?.data?.result?.items || [];
           });
-        return item;
-      });
+
+          const results = await Promise.all(promises);
+          const flattenedItems = results.flat();
+
+          setChildAttributeChoices(flattenedItems);
+        } catch (error: any) {
+          message.open(error);
+        }
+      };
+
+      fetchData();
     }
   }, [selectedRadio]);
 
@@ -452,7 +465,6 @@ export const EditRequest: React.FC = () => {
 
     // services
     function extractServicesIds(input: any) {
-      // requestServices = [];
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -478,8 +490,6 @@ export const EditRequest: React.FC = () => {
         return result;
       });
     }
-    // console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
-    // console.log('fileList', fileList);
 
     extractServicesIds(requestServices.length == 0 ? defaultCheckedServices : requestServicesArray);
 
@@ -493,24 +503,25 @@ export const EditRequest: React.FC = () => {
     ];
     const allAttachments = [...y, ...attributeChoiceAndAttachments];
 
-    console.log('requestServices', requestServices);
+    console.log(form.getFieldValue('moveAtUtc'));
+    // console.log(form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'));
+    console.log(RequestData?.moveAtUtc);
+
     requestData = {
       sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
-      // moveAtUtc:
-      //   form.getFieldValue('moveAtUtc') == undefined
-      //     ? RequestData?.moveAtUtc
-      //     : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      moveAtUtc:
+        form.getFieldValue('moveAtUtc') == undefined ? RequestData?.moveAtUtc : form.getFieldValue('moveAtUtc'),
       sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
       sourceAddress:
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
           : form.getFieldValue('sourceAddress'),
-      // arrivalAtUtc:
-      //   form.getFieldValue('arrivalAtUtc') == undefined
-      //     ? RequestData?.arrivalAtUtc
-      //     : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      arrivalAtUtc:
+        form.getFieldValue('arrivalAtUtc') == undefined
+          ? RequestData?.arrivalAtUtc
+          : form.getFieldValue('arrivalAtUtc'),
       destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity.id : cityId.destination,
       destinationAddress:
         form.getFieldValue('destinationAddress') == undefined
@@ -532,7 +543,6 @@ export const EditRequest: React.FC = () => {
     console.log(requestData);
   };
 
-  // console.log('validations', validations);
   useEffect(() => {
     if (validations) {
       const showError = (messageText: string) => {
@@ -550,21 +560,19 @@ export const EditRequest: React.FC = () => {
         return true;
       };
 
-      console.log('requestServices', requestServices);
-      // console.log('defaultCheckedServices', defaultCheckedServices);
-      if (requestServices.length === 0 && defaultCheckedServices.length === 0) {
+      if (requestServices.length === 0) {
         showError(t('requests.atLeastOneService'));
       } else if (attributeChoiceAndAttachments.length === 0 || fileList.length === 0) {
         showError(t('addRequest.atLeastOneAttachment'));
-        // } else if (valueRadio === 0) {
-        // showError(t('addRequest.selectServiceType'));
       } else if (
         !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
         !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
         !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField('sourceAddress', t('addRequest.enterAddress')) ||
-        !checkField('destinationAddress', t('addRequest.enterAddress'))
+        !checkField('destinationAddress', t('addRequest.enterAddress')) ||
+        !checkField('moveAtUtc', t('addRequest.enterDate')) ||
+        !checkField('arrivalAtUtc', t('addRequest.enterDate'))
       ) {
         return;
         // } else if (cityId.source === '0' || cityId.destination === '0') {
@@ -573,14 +581,9 @@ export const EditRequest: React.FC = () => {
         updateRequestMutation.mutateAsync(requestData);
         requestServices = [];
         requestServicesArray = [];
-        // setValidations(false);
       }
-      // setValidations(true);
     }
   }, [validations]);
-
-  // console.log('requestServices', requestServices);
-  // console.log('defaultCheckedServices', defaultCheckedServices);
 
   const uploadButtonForAllRequest = (
     <div>
@@ -1024,7 +1027,7 @@ export const EditRequest: React.FC = () => {
                 <Input defaultValue={RequestData.sourceAddress} />
               </BaseForm.Item>
               <BaseForm.Item
-                // name="moveAtUtc"
+                name="moveAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1036,10 +1039,11 @@ export const EditRequest: React.FC = () => {
                     ? { width: '100%', marginBottom: '5rem' }
                     : {}
                 }
+                valuePropName="data"
               >
                 <DatePicker
                   style={{ width: '100%' }}
-                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : undefined}
+                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : moment()}
                 />
               </BaseForm.Item>
               <div
@@ -1142,7 +1146,7 @@ export const EditRequest: React.FC = () => {
                 <Input defaultValue={RequestData.destinationAddress} />
               </BaseForm.Item>
               <BaseForm.Item
-                // name="arrivalAtUtc"
+                name="arrivalAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1154,6 +1158,7 @@ export const EditRequest: React.FC = () => {
                     ? { width: '100%', marginBottom: '5rem' }
                     : {}
                 }
+                valuePropName="data"
               >
                 <DatePicker
                   style={{ width: '100%' }}
