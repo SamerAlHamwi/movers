@@ -495,7 +495,7 @@ export const Requests: React.FC = () => {
                 {t('requests.CanceledAfterInProcess')}
               </Radio>
               <Radio style={{ display: 'block', fontSize }} value={15}>
-                {t('requests.RejectedNeedToEdit')}
+                {t('addRequest.rejectedNeedToEdit')}
               </Radio>
             </RadioGroup>
             <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>

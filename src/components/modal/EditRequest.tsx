@@ -18,7 +18,7 @@ import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
-import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
+import { getChildAttributeChoice, getAttributeForSourceTypes } from '@app/services/sourceTypes';
 import { UpdateRequest, getRequestById } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
@@ -36,6 +36,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { RequestModel } from '@app/interfaces/interfaces';
 import UploadImageRequest, { IUploadImage } from './upload-image';
 import moment from 'moment';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -44,6 +45,24 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
+
+const steps = [
+  {
+    title: 'SourceType',
+  },
+  {
+    title: 'Attachment',
+  },
+  {
+    title: 'Location',
+  },
+  {
+    title: 'Contact',
+  },
+  {
+    title: 'Services',
+  },
+];
 
 const { Step } = Steps;
 let requestData = {};
@@ -59,7 +78,7 @@ export const EditRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
-  const { userId, requestId } = useParams();
+  const { requestId } = useParams();
   const { language } = useLanguage();
   const Navigate = useNavigate();
 
@@ -106,7 +125,7 @@ export const EditRequest: React.FC = () => {
   const [fileListLength, setFileListLength] = useState(0);
   const [picturesList, setPicturesList] = useState<any[]>([]);
 
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+  const [validations, setValidations] = useState<boolean>(false);
   const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
 
   const {
@@ -146,6 +165,25 @@ export const EditRequest: React.FC = () => {
       enabled: getRequest,
     },
   );
+
+  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllCountry = useQuery('GetAllCountry', getCountries);
+  const {
+    data: cityData,
+    refetch,
+    isRefetching,
+  } = useQuery('GetAllCity', () => getCities(countryId), {
+    enabled: countryId != '0',
+  });
+
+  const {
+    data: attributeForSourceTypesData,
+    refetch: attributeForSourceTypesRefetch,
+    isRefetching: attributeForSourceTypesIsRefetching,
+    isLoading: attributeForSourceTypesIsLoading,
+  } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
+    enabled: RequestData?.sourceType?.id != undefined,
+  });
 
   useEffect(() => {
     if (selectedRadio?.length > 0) {
@@ -207,25 +245,6 @@ export const EditRequest: React.FC = () => {
     // onError: (error: any) => {
     //   message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
     // },
-  });
-
-  const GetAllServices = useQuery('getAllServices', getServices);
-  const GetAllCountry = useQuery('GetAllCountry', getCountries);
-  const {
-    data: cityData,
-    refetch,
-    isRefetching,
-  } = useQuery('GetAllCity', () => getCities(countryId), {
-    enabled: countryId != '0',
-  });
-
-  const {
-    data: attributeForSourceTypesData,
-    refetch: attributeForSourceTypesRefetch,
-    isRefetching: attributeForSourceTypesIsRefetching,
-    isLoading: attributeForSourceTypesIsLoading,
-  } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
-    enabled: RequestData?.sourceType?.id != undefined,
   });
 
   useEffect(() => {
@@ -297,24 +316,6 @@ export const EditRequest: React.FC = () => {
       }
     }
   };
-
-  const steps = [
-    {
-      title: 'SourceType',
-    },
-    {
-      title: 'Attachment',
-    },
-    {
-      title: 'Location',
-    },
-    {
-      title: 'Contact',
-    },
-    {
-      title: 'Services',
-    },
-  ];
 
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
     return {
@@ -393,10 +394,6 @@ export const EditRequest: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
   const ChangeCountryHandler = (e: any, positionType: 'source' | 'destination') => {
     setCountryId(e);
     if (positionType === 'source') {
@@ -413,15 +410,6 @@ export const EditRequest: React.FC = () => {
       setCityId((prevCityId) => ({ ...prevCityId, destination: e }));
     }
   };
-
-  // const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-  //   const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-  //   const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-  //   return {
-  //     dialCode,
-  //     phoneNumber,
-  //   };
-  // };
 
   const updateRequestMutation = useMutation((id: any) =>
     UpdateRequest(id)
@@ -443,18 +431,7 @@ export const EditRequest: React.FC = () => {
   );
 
   const onFinish = async (values: any) => {
-    // requestForQuotationContacts
-
-    // const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
-    //   form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
-    // );
-    // const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
-    //   form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
-    // );
-
     const sourceContact = {
-      // dailCode: '+' + dialCodeS,
-      // phoneNumber: phoneNumberS == undefined ? RequestData?.requestForQuotationContacts[0]?.phoneNumber : phoneNumberS,
       dailCode: '+971',
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
       fullName:
@@ -464,8 +441,6 @@ export const EditRequest: React.FC = () => {
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
-      // dailCode: '+' + dialCodeD,
-      // phoneNumber: phoneNumberD == undefined ? RequestData?.requestForQuotationContacts[1]?.phoneNumber : phoneNumberD,
       dailCode: '+971',
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
       fullName:
@@ -477,7 +452,7 @@ export const EditRequest: React.FC = () => {
 
     // services
     function extractServicesIds(input: any) {
-      requestServices = [];
+      // requestServices = [];
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -503,6 +478,9 @@ export const EditRequest: React.FC = () => {
         return result;
       });
     }
+    // console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
+    // console.log('fileList', fileList);
+
     extractServicesIds(requestServices.length == 0 ? defaultCheckedServices : requestServicesArray);
 
     // attributeChoiceAndAttachments
@@ -515,6 +493,7 @@ export const EditRequest: React.FC = () => {
     ];
     const allAttachments = [...y, ...attributeChoiceAndAttachments];
 
+    console.log('requestServices', requestServices);
     requestData = {
       sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
@@ -546,20 +525,21 @@ export const EditRequest: React.FC = () => {
       comment: form.getFieldValue('comment'),
       attributeForSourceTypeValues: selectedRadio,
       attributeChoiceAndAttachments: allAttachments,
-      userId: userId ?? '0',
+      userId: RequestData?.user.id,
       id: requestId,
     };
-    setAttachmentIdsChanged(true);
-    requestServicesArray = [];
+    setValidations(true);
+    console.log(requestData);
   };
 
+  // console.log('validations', validations);
   useEffect(() => {
-    if (attachmentIdsChanged) {
+    if (validations) {
       const showError = (messageText: string) => {
         message.open({
           content: <Alert message={messageText} type={`error`} showIcon />,
         });
-        setAttachmentIdsChanged(false);
+        setValidations(false);
       };
 
       const checkField = (fieldName: any, messageText: string) => {
@@ -570,29 +550,37 @@ export const EditRequest: React.FC = () => {
         return true;
       };
 
-      // if (selectedSourceType) {
-      //   showError(t('addRequest.selectSourceType'));
-      // } else if (requestServices.length === 0) {
-      //   showError(t('requests.atLeastOneService'));
-      // } else if (valueRadio === 0) {
-      //   showError(t('addRequest.selectServiceType'));
-      // } else if (
-      //   !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
-      //   !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
-      //   !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
-      //   !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
-      //   !checkField('sourceAddress', t('addRequest.enterAddress')) ||
-      //   !checkField('destinationAddress', t('addRequest.enterAddress'))
-      // ) {
-      //   return;
-      // } else if (cityId.source === '0' || cityId.destination === '0') {
-      //   showError(t('addRequest.enterCity'));
-      // } else {
-      updateRequestMutation.mutateAsync(requestData);
-      setAttachmentIdsChanged(false);
-      // }
+      console.log('requestServices', requestServices);
+      // console.log('defaultCheckedServices', defaultCheckedServices);
+      if (requestServices.length === 0 && defaultCheckedServices.length === 0) {
+        showError(t('requests.atLeastOneService'));
+      } else if (attributeChoiceAndAttachments.length === 0 || fileList.length === 0) {
+        showError(t('addRequest.atLeastOneAttachment'));
+        // } else if (valueRadio === 0) {
+        // showError(t('addRequest.selectServiceType'));
+      } else if (
+        !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField('sourceAddress', t('addRequest.enterAddress')) ||
+        !checkField('destinationAddress', t('addRequest.enterAddress'))
+      ) {
+        return;
+        // } else if (cityId.source === '0' || cityId.destination === '0') {
+        //   showError(t('addRequest.enterCity'));
+      } else {
+        updateRequestMutation.mutateAsync(requestData);
+        requestServices = [];
+        requestServicesArray = [];
+        // setValidations(false);
+      }
+      // setValidations(true);
     }
-  }, [attachmentIdsChanged]);
+  }, [validations]);
+
+  // console.log('requestServices', requestServices);
+  // console.log('defaultCheckedServices', defaultCheckedServices);
 
   const uploadButtonForAllRequest = (
     <div>
@@ -827,11 +815,11 @@ export const EditRequest: React.FC = () => {
                   <div>
                     {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
                       <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
-                        <div style={{ margin: '1rem' }}>
-                          {sourceTypeItem.id} - {sourceTypeItem.name}
+                        <div>
+                          <h3 style={{ margin: '1rem' }}>{sourceTypeItem.name}</h3>
                           <Radio.Group
                             className="radios"
-                            style={{ display: 'flex', justifyContent: 'space-around' }}
+                            style={{ display: 'flex', justifyContent: 'space-around', margin: '1rem' }}
                             onChange={(e) => {
                               setSelectedRadio((prevSelectedChoices) => {
                                 const existingIndex = prevSelectedChoices.findIndex(
@@ -869,7 +857,7 @@ export const EditRequest: React.FC = () => {
                               <Radio
                                 key={parentAttributeChoice.id}
                                 value={parentAttributeChoice.id}
-                                style={{ height: '30px' }}
+                                style={{ height: '30px', margin: '.5rem' }}
                               >
                                 {parentAttributeChoice.name}
                               </Radio>
@@ -1212,9 +1200,10 @@ export const EditRequest: React.FC = () => {
               >
                 <Input defaultValue={RequestData.requestForQuotationContacts[0].fullName} />
               </BaseForm.Item>
-              <BaseButtonsForm.Item
+
+              <BaseForm.Item
+                key={current}
                 name={['requestForQuotationContacts', 0, 'phoneNumber']}
-                $successText={t('auth.phoneNumberVerified')}
                 label={t('common.phoneNumber')}
                 rules={[
                   { required: true, message: t('common.requiredField') },
@@ -1223,37 +1212,28 @@ export const EditRequest: React.FC = () => {
                       if (!value || isValidPhoneNumber(value)) {
                         return Promise.resolve();
                       }
-                      if (formattedPhoneNumber.length > 12) {
+                      if (value.length > 9) {
                         return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                      } else if (formattedPhoneNumber.length < 12) {
+                      } else if (value.length < 9) {
                         return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                       }
                     },
                   }),
                 ]}
-                style={
-                  isDesktop || isTablet
-                    ? {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                    : {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                }
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               >
-                <PhoneInput
-                  onChange={handleFormattedValueChange}
-                  country={'ae'}
-                  value={
-                    RequestData.requestForQuotationContacts[0]?.dailCode +
-                    RequestData.requestForQuotationContacts[0]?.phoneNumber
-                  }
+                <Input
+                  addonBefore={'+971'}
+                  value={RequestData.requestForQuotationContacts[0]?.phoneNumber}
+                  onChange={(e) => {
+                    if (validationInputNumber(e.target.value)) {
+                      form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], e.target.value);
+                    } else form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], '');
+                  }}
+                  maxLength={9}
+                  style={{ width: '100%' }}
                 />
-              </BaseButtonsForm.Item>
+              </BaseForm.Item>
 
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
               <BaseForm.Item
@@ -1266,7 +1246,42 @@ export const EditRequest: React.FC = () => {
               >
                 <Input defaultValue={RequestData.requestForQuotationContacts[1].fullName} />
               </BaseForm.Item>
-              <BaseButtonsForm.Item
+
+              <BaseForm.Item
+                key={current}
+                name={['requestForQuotationContacts', 1, 'phoneNumber']}
+                label={t('common.phoneNumber')}
+                rules={[
+                  { required: true, message: t('common.requiredField') },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || isValidPhoneNumber(value)) {
+                        return Promise.resolve();
+                      }
+                      if (value.length > 9) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                      } else if (value.length < 9) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                      }
+                    },
+                  }),
+                ]}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              >
+                <Input
+                  addonBefore={'+971'}
+                  value={RequestData.requestForQuotationContacts[0]?.phoneNumber}
+                  onChange={(e) => {
+                    if (validationInputNumber(e.target.value)) {
+                      form.setFieldValue(['requestForQuotationContacts', 1, 'phoneNumber'], e.target.value);
+                    } else form.setFieldValue(['requestForQuotationContacts', 1, 'phoneNumber'], '');
+                  }}
+                  maxLength={9}
+                  style={{ width: '100%' }}
+                />
+              </BaseForm.Item>
+
+              {/* <BaseButtonsForm.Item
                 name={['requestForQuotationContacts', 1, 'phoneNumber']}
                 $successText={t('auth.phoneNumberVerified')}
                 label={t('common.phoneNumber')}
@@ -1307,7 +1322,7 @@ export const EditRequest: React.FC = () => {
                     RequestData.requestForQuotationContacts[1]?.phoneNumber
                   }
                 />
-              </BaseButtonsForm.Item>
+              </BaseButtonsForm.Item> */}
             </>
           )}
 

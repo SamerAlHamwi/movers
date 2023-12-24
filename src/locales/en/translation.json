@@ -603,7 +603,8 @@
     "rejectedoffers": "Rejected Offers",
     "editRequest": "Edit Request",
     "featured": "Featured",
-    "CanceledAfterInProcess": "Canceled After In Process"
+    "CanceledAfterInProcess": "Canceled After In Process",
+    "RejectedNeedToEdit": "Request Has Been Returned To User"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -922,8 +923,7 @@
     "DiscountPercentageSetting": "Discount Percentage Setting",
     "discountPercentageIfUserCancelHisRequest": "Discount Percentage From The User If He Cancels His Request",
     "editDiscountPercentageSetting": "Edit Discount Percentages Setting",
-    "editDiscountPercentageSettingSuccessMessage": "The Discount Percentage Setting Has Been Edited Successfully",
-    "RejectedNeedToEdit": "Request Has Been Returned To User"
+    "editDiscountPercentageSettingSuccessMessage": "The Discount Percentage Setting Has Been Edited Successfully"
   },
 
   "_comment29": "*********************************** groups ************************************************",
