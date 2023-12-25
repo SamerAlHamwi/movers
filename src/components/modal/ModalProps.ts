@@ -22,6 +22,7 @@ import {
   FileSizeConfig,
   HoursConfig,
   ApplicationsVersion,
+  DiscountPercentageConfig,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -97,6 +98,7 @@ export interface SearchForUserModalProps extends ModalProps {
 
 export interface SendRejectReasons extends ModalProps {
   onCreate: (info: any) => void;
+  type: string;
 }
 
 export interface CheckPINModalProps extends ModalProps {
@@ -207,6 +209,11 @@ export interface EditHoursInSystemSettingProps extends ModalProps {
 export interface EditEmailSettingProps extends ModalProps {
   values: EmailConfig | undefined;
   onEdit: (data: EmailConfig) => void;
+}
+
+export interface EditDiscountPercentageSettingProps extends ModalProps {
+  values: DiscountPercentageConfig | undefined;
+  onEdit: (data: DiscountPercentageConfig) => void;
 }
 
 export interface EditSmsSettingProps extends ModalProps {

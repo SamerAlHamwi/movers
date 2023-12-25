@@ -1,5 +1,5 @@
 import React, { lazy } from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, HashRouter } from 'react-router-dom';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import LoginPage from '@app/pages/AuthPages/LoginPage';
 import SecurityCodePage from '@app/pages/AuthPages/SecurityCodePage';
@@ -132,7 +132,8 @@ export const AppRouter: React.FC = () => {
   );
 
   return (
-    <BrowserRouter>
+    // <BrowserRouter>
+    <HashRouter>
       <Routes>
         <Route path={'/'} element={protectedLayout}>
           <Route
@@ -745,6 +746,7 @@ export const AppRouter: React.FC = () => {
         </Route>
         <Route path="/logout" element={<LogoutFallback />} />
       </Routes>
-    </BrowserRouter>
+    </HashRouter>
+    // </BrowserRouter>
   );
 };

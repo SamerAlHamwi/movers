@@ -389,6 +389,10 @@ export interface EmailConfig {
   senderUseDefaultCredentials: boolean;
 }
 
+export interface DiscountPercentageConfig {
+  discountPercentageIfUserCancelHisRequest: number;
+}
+
 export interface SmsConfig {
   smsUserName: string;
   smsPassword: string;

@@ -10,12 +10,10 @@ import { LableText } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 
-export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCancel, onCreate, isLoading }) => {
+export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCancel, onCreate, isLoading, type }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
-
-  const [userId, setUserId] = useState<number>(0);
 
   const onOk = () => {
     form.submit();
@@ -25,6 +23,8 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
     onCreate(info);
   };
 
+  console.log(type);
+
   return (
     <Modal
       style={{ marginTop: '0rem' }}
@@ -32,7 +32,7 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('requests.sendRejectReason')}
+          {type == 'reject' ? t('requests.sendRejectReason') : t('requests.sendReturnReason')}
         </div>
       }
       onCancel={onCancel}
@@ -44,7 +44,7 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button type="primary" style={{ height: 'auto' }} loading={isLoading} key="add" onClick={onOk}>
-              <P1>{t('requests.sendRejectReason')}</P1>
+              <P1>{type == 'reject' ? t('requests.sendRejectReason') : t('requests.sendReturnReason')}</P1>
             </Button>
           </Space>
         </BaseForm.Item>
@@ -53,7 +53,7 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
       <BaseForm form={form} onFinish={onFinish} name="SearchForUserForm">
         <BaseForm.Item
           name="reasonRefuse"
-          label={<LableText>{t(`requests.reasonRefuse`)}</LableText>}
+          label={<LableText>{type == 'reject' ? t(`requests.reasonRefuse`) : t('requests.reasonReturn')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

@@ -378,7 +378,7 @@ const RequestDetails: React.FC = () => {
                 <DetailsValue
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                 >
-                  {requestData?.comment == null ? t('requests.nocomment') : requestData?.comment}
+                  {requestData?.comment ?? t('requests.nocomment')}
                 </DetailsValue>
               </DetailsRow>
 

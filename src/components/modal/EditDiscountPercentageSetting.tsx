@@ -4,14 +4,14 @@ import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../Admin/Translations';
-import { EditHoursInSystemSettingProps } from './ModalProps';
+import { EditDiscountPercentageSettingProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { HoursConfig } from '@app/interfaces/interfaces';
+import { DiscountPercentageConfig } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 
-export const EditHoursInSystemSetting: React.FC<EditHoursInSystemSettingProps> = ({
+export const EditDiscountPercentageSetting: React.FC<EditDiscountPercentageSettingProps> = ({
   visible,
   onCancel,
   values,
@@ -26,17 +26,18 @@ export const EditHoursInSystemSetting: React.FC<EditHoursInSystemSettingProps> =
     form.submit();
   };
 
-  const onFinish = (value: HoursConfig) => {
+  const onFinish = (value: DiscountPercentageConfig) => {
     onEdit(value);
   };
 
   return (
     <Modal
-      width={isDesktop ? '540px' : isTablet ? '500px' : '450px'}
+      style={{ marginTop: '0rem' }}
+      width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       open={visible}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('config.editHoursSetting')}
+          {t('config.editDiscountPercentageSetting')}
         </div>
       }
       onCancel={onCancel}
@@ -54,41 +55,20 @@ export const EditHoursInSystemSetting: React.FC<EditHoursInSystemSettingProps> =
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} initialValues={values} layout="vertical" onFinish={onFinish} name="EditHoursSettingForm">
+      <BaseForm
+        form={form}
+        initialValues={values}
+        layout="vertical"
+        onFinish={onFinish}
+        name="EditDiscountPercentageSettingForm"
+      >
         <BaseForm.Item
-          name="hoursToWaitUser"
-          label={t('config.hoursToWaitUser')}
-          rules={[
-            {
-              required: true,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-            },
-            {
-              pattern: /^[0-9]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
-            },
-          ]}
+          name="discountPercentageIfUserCancelHisRequest"
+          label={<LableText>{t('config.discountPercentageIfUserCancelHisRequest')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber addonAfter={'Hour'} min={1} />
-        </BaseForm.Item>
-
-        <BaseForm.Item
-          name="hoursToConvertRequestToOutOfPossible"
-          label={t('config.hoursToConvertRequestToOutOfPossible')}
-          rules={[
-            {
-              required: true,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-            },
-            {
-              pattern: /^[0-9]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
-            },
-          ]}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <InputNumber addonAfter={'Hour'} min={1} />
+          <InputNumber addonAfter={'%'} min={0} max={100} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

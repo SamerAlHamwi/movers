@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space, Tree, Tag, DatePicker } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Tree, DatePicker } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
@@ -10,15 +10,13 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import _ from 'lodash';
 import { ClearOutlined, HomeOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServices } from '@app/services/services';
-import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
+import { getChildAttributeChoice, getAttributeForSourceTypes } from '@app/services/sourceTypes';
 import { UpdateRequest, getRequestById } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
@@ -36,6 +34,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import { RequestModel } from '@app/interfaces/interfaces';
 import UploadImageRequest, { IUploadImage } from './upload-image';
 import moment from 'moment';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -44,6 +43,24 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onload = () => resolve(reader.result as string);
     reader.onerror = (error) => reject(error);
   });
+
+const steps = [
+  {
+    title: 'SourceType',
+  },
+  {
+    title: 'Attachment',
+  },
+  {
+    title: 'Location',
+  },
+  {
+    title: 'Contact',
+  },
+  {
+    title: 'Services',
+  },
+];
 
 const { Step } = Steps;
 let requestData = {};
@@ -59,14 +76,13 @@ export const EditRequest: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
-  const { userId, requestId } = useParams();
+  const { requestId } = useParams();
   const { language } = useLanguage();
   const Navigate = useNavigate();
 
   const [RequestData, setRequestData] = useState<RequestModel>();
   const [getRequest, setGetRequest] = useState<boolean>(true);
   const [current, setCurrent] = useState(0);
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
   const [sourcePosition, setSourcePosition] = useState({
     lat: sourceLat,
     lng: sourceLng,
@@ -94,20 +110,19 @@ export const EditRequest: React.FC = () => {
   const [selectedRadio, setSelectedRadio] = useState<
     Array<{ attributeForSourcTypeId: number; attributeChoiceId: number }>
   >([]);
+  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   // images state
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState<any[]>([]);
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
-    Array<{ attributeChoiceId: number; attachmentIds: number[] }>
+    Array<{ attributeChoiceId: number; attachmentIds: any[] }>
   >([]);
   // multiple attachment in request level state
   const [fileListLength, setFileListLength] = useState(0);
   const [picturesList, setPicturesList] = useState<any[]>([]);
-
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
-  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
+  const [validations, setValidations] = useState<boolean>(false);
 
   const {
     data: dataRequest,
@@ -123,7 +138,7 @@ export const EditRequest: React.FC = () => {
           const result = data.data?.result;
           const imageRequest = data.data?.result.attributeChoiceAndAttachments.map((item: any) => {
             return {
-              attachmentIds: item.attachments.map((attachment: any) => attachment.id),
+              attachmentIds: item.attachments,
               attributeChoiceId: item.attributeChoice.id,
             };
           });
@@ -135,8 +150,16 @@ export const EditRequest: React.FC = () => {
               };
             }),
           );
+
           setAttributeChoiceAndAttachments(imageRequest ?? []);
-          setRequestData(result);
+          setRequestData({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
+          form.setFieldsValue({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
           setGetRequest(false);
         })
         .catch((error) => {
@@ -146,68 +169,6 @@ export const EditRequest: React.FC = () => {
       enabled: getRequest,
     },
   );
-
-  useEffect(() => {
-    if (selectedRadio?.length > 0) {
-      selectedRadio.map((item) => {
-        getChildAttributeChoice(item.attributeChoiceId)
-          .then((data) => {
-            const items = data?.data?.result?.items || [];
-            setChildAttributeChoices(items);
-          })
-          .catch((error) => {
-            message.open(error);
-          });
-        return item;
-      });
-    }
-  }, [selectedRadio]);
-
-  const handleCancel = () => setPreviewOpen(false);
-
-  const handlePreviews = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as RcFile);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
-  };
-
-  const uploadImage = useMutation((data: any) => uploadAttachment(data), {
-    // onSuccess: (data: any) => {
-    //   if (data.data.success) {
-    //     const newId = data.data.result?.id;
-    //     setPreviewImage(data.data.result?.url);
-    //     setAttributeChoiceAndAttachments((prevAttributes) => {
-    //       const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
-    //       if (existingObjectIndex !== -1) {
-    //         const updatedAttributes = [...prevAttributes];
-    //         const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
-    //         if (!attachmentIds.includes(newId)) {
-    //           attachmentIds.push(newId);
-    //         }
-    //         return updatedAttributes;
-    //       } else {
-    //         return [
-    //           ...prevAttributes,
-    //           {
-    //             attributeChoiceId: itemId,
-    //             attachmentIds: [newId],
-    //           },
-    //         ];
-    //       }
-    //     });
-    //   } else {
-    //     message.open({
-    //       content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
-    //     });
-    //   }
-    // },
-    // onError: (error: any) => {
-    //   message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-    // },
-  });
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
@@ -227,6 +188,41 @@ export const EditRequest: React.FC = () => {
   } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
     enabled: RequestData?.sourceType?.id != undefined,
   });
+
+  useEffect(() => {
+    if (selectedRadio?.length > 0) {
+      const fetchData = async () => {
+        try {
+          const promises = selectedRadio.map(async (item) => {
+            const data = await getChildAttributeChoice(item.attributeChoiceId);
+            return data?.data?.result?.items || [];
+          });
+
+          const results = await Promise.all(promises);
+          const flattenedItems = results.flat();
+
+          setChildAttributeChoices(flattenedItems);
+        } catch (error: any) {
+          message.open(error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [selectedRadio]);
+
+  const handleCancel = () => setPreviewOpen(false);
+
+  const handlePreviews = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+  };
+
+  const uploadImage = useMutation((data: any) => uploadAttachment(data));
 
   useEffect(() => {
     if (countryId != '0') refetch();
@@ -271,11 +267,10 @@ export const EditRequest: React.FC = () => {
   }, [RequestData]);
 
   const filterImage = (attributeId: number) => {
-    const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
     let imagesData: Array<any> = [];
-    attributeAndAttachments.map((attribute: any) => {
-      if (attribute.attributeChoice.id === attributeId) {
-        const temp = attribute.attachments.map((attachment: any) => ({
+    attributeChoiceAndAttachments.map((attribute: any) => {
+      if (attribute.attributeChoiceId === attributeId) {
+        const temp = attribute.attachmentIds.map((attachment: any) => ({
           attributeId: attributeId,
           id: attachment.id,
           url: attachment.url || attachment.lowResolutionPhotoUrl,
@@ -298,24 +293,6 @@ export const EditRequest: React.FC = () => {
     }
   };
 
-  const steps = [
-    {
-      title: 'SourceType',
-    },
-    {
-      title: 'Attachment',
-    },
-    {
-      title: 'Location',
-    },
-    {
-      title: 'Contact',
-    },
-    {
-      title: 'Services',
-    },
-  ];
-
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
     return {
       title: (
@@ -336,10 +313,7 @@ export const EditRequest: React.FC = () => {
                 title: (
                   <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
                     <Image src={service?.attachment?.url} width={16} height={16} />
-                    <span style={{ fontWeight: 'bold' }}>
-                      {subService?.id}
-                      {subService?.name}
-                    </span>
+                    <span style={{ fontWeight: 'bold' }}>{subService?.name}</span>
                   </span>
                 ),
                 key:
@@ -393,10 +367,6 @@ export const EditRequest: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
   const ChangeCountryHandler = (e: any, positionType: 'source' | 'destination') => {
     setCountryId(e);
     if (positionType === 'source') {
@@ -413,15 +383,6 @@ export const EditRequest: React.FC = () => {
       setCityId((prevCityId) => ({ ...prevCityId, destination: e }));
     }
   };
-
-  // const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-  //   const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-  //   const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-  //   return {
-  //     dialCode,
-  //     phoneNumber,
-  //   };
-  // };
 
   const updateRequestMutation = useMutation((id: any) =>
     UpdateRequest(id)
@@ -443,18 +404,7 @@ export const EditRequest: React.FC = () => {
   );
 
   const onFinish = async (values: any) => {
-    // requestForQuotationContacts
-
-    // const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
-    //   form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
-    // );
-    // const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
-    //   form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
-    // );
-
     const sourceContact = {
-      // dailCode: '+' + dialCodeS,
-      // phoneNumber: phoneNumberS == undefined ? RequestData?.requestForQuotationContacts[0]?.phoneNumber : phoneNumberS,
       dailCode: '+971',
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
       fullName:
@@ -464,8 +414,6 @@ export const EditRequest: React.FC = () => {
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
-      // dailCode: '+' + dialCodeD,
-      // phoneNumber: phoneNumberD == undefined ? RequestData?.requestForQuotationContacts[1]?.phoneNumber : phoneNumberD,
       dailCode: '+971',
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
       fullName:
@@ -477,7 +425,6 @@ export const EditRequest: React.FC = () => {
 
     // services
     function extractServicesIds(input: any) {
-      requestServices = [];
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -503,35 +450,53 @@ export const EditRequest: React.FC = () => {
         return result;
       });
     }
+
     extractServicesIds(requestServices.length == 0 ? defaultCheckedServices : requestServicesArray);
 
     // attributeChoiceAndAttachments
     const attachmentIds = fileList.map((file) => file.uid);
-    const y = [
-      {
-        attributeChoiceId: null,
-        attachmentIds: attachmentIds,
-      },
-    ];
-    const allAttachments = [...y, ...attributeChoiceAndAttachments];
+    const y =
+      attachmentIds.length > 0
+        ? [
+            {
+              attributeChoiceId: null,
+              attachmentIds: attachmentIds,
+            },
+          ]
+        : [];
+
+    const x: { attributeChoiceId: number; attachmentIds: any[] }[] = [];
+    attributeChoiceAndAttachments.forEach((item) => {
+      const existingEntry = x.find((entry) => entry.attributeChoiceId === item.attributeChoiceId);
+
+      if (existingEntry) {
+        existingEntry.attachmentIds = existingEntry.attachmentIds.concat(
+          item.attachmentIds.map((id) => (typeof id === 'number' ? id : id.id)),
+        );
+      } else {
+        x.push({
+          attributeChoiceId: item.attributeChoiceId,
+          attachmentIds: item.attachmentIds.map((id) => (typeof id === 'number' ? id : id.id)),
+        });
+      }
+    });
+    const allAttachments = [...y, ...x];
 
     requestData = {
       sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
-      // moveAtUtc:
-      //   form.getFieldValue('moveAtUtc') == undefined
-      //     ? RequestData?.moveAtUtc
-      //     : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      moveAtUtc:
+        form.getFieldValue('moveAtUtc') == undefined ? RequestData?.moveAtUtc : form.getFieldValue('moveAtUtc'),
       sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
       sourceAddress:
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
           : form.getFieldValue('sourceAddress'),
-      // arrivalAtUtc:
-      //   form.getFieldValue('arrivalAtUtc') == undefined
-      //     ? RequestData?.arrivalAtUtc
-      //     : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      arrivalAtUtc:
+        form.getFieldValue('arrivalAtUtc') == undefined
+          ? RequestData?.arrivalAtUtc
+          : form.getFieldValue('arrivalAtUtc'),
       destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity.id : cityId.destination,
       destinationAddress:
         form.getFieldValue('destinationAddress') == undefined
@@ -546,20 +511,19 @@ export const EditRequest: React.FC = () => {
       comment: form.getFieldValue('comment'),
       attributeForSourceTypeValues: selectedRadio,
       attributeChoiceAndAttachments: allAttachments,
-      userId: userId ?? '0',
+      userId: RequestData?.user.id,
       id: requestId,
     };
-    setAttachmentIdsChanged(true);
-    requestServicesArray = [];
+    setValidations(true);
   };
 
   useEffect(() => {
-    if (attachmentIdsChanged) {
+    if (validations) {
       const showError = (messageText: string) => {
         message.open({
           content: <Alert message={messageText} type={`error`} showIcon />,
         });
-        setAttachmentIdsChanged(false);
+        setValidations(false);
       };
 
       const checkField = (fieldName: any, messageText: string) => {
@@ -570,29 +534,28 @@ export const EditRequest: React.FC = () => {
         return true;
       };
 
-      // if (selectedSourceType) {
-      //   showError(t('addRequest.selectSourceType'));
-      // } else if (requestServices.length === 0) {
-      //   showError(t('requests.atLeastOneService'));
-      // } else if (valueRadio === 0) {
-      //   showError(t('addRequest.selectServiceType'));
-      // } else if (
-      //   !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
-      //   !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
-      //   !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
-      //   !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
-      //   !checkField('sourceAddress', t('addRequest.enterAddress')) ||
-      //   !checkField('destinationAddress', t('addRequest.enterAddress'))
-      // ) {
-      //   return;
-      // } else if (cityId.source === '0' || cityId.destination === '0') {
-      //   showError(t('addRequest.enterCity'));
-      // } else {
-      updateRequestMutation.mutateAsync(requestData);
-      setAttachmentIdsChanged(false);
-      // }
+      if (requestServices.length === 0) {
+        showError(t('requests.atLeastOneService'));
+      } else if (attributeChoiceAndAttachments.length === 0) {
+        showError(t('addRequest.atLeastOneAttachment'));
+      } else if (
+        !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField('sourceAddress', t('addRequest.enterAddress')) ||
+        !checkField('destinationAddress', t('addRequest.enterAddress')) ||
+        !checkField('moveAtUtc', t('addRequest.enterDate')) ||
+        !checkField('arrivalAtUtc', t('addRequest.enterDate'))
+      ) {
+        return;
+      } else {
+        updateRequestMutation.mutateAsync(requestData);
+        requestServices = [];
+        requestServicesArray = [];
+      }
     }
-  }, [attachmentIdsChanged]);
+  }, [validations]);
 
   const uploadButtonForAllRequest = (
     <div>
@@ -647,28 +610,6 @@ export const EditRequest: React.FC = () => {
     updateFormValues();
   }, [RequestData, form]);
 
-  useEffect(() => {
-    attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => {
-      sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => {
-        if (
-          RequestData?.attributeForSourceTypeValues.find(
-            (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
-          )?.attributeChoice.id === parentAttributeChoice.id
-        ) {
-          // setMaher((prev) => {
-          //   return prev.concat([
-          //     {
-          //       parentId: sourceTypeItem.id,
-          //       childId: parentAttributeChoice.id,
-          //       isChange: true,
-          //     },
-          //   ]);
-          // });
-        }
-      });
-    });
-  }, [attributeForSourceTypesData, RequestData]);
-
   const addImageToState = (data: any) => {
     const tempAttribute = _.cloneDeep(attributeChoiceAndAttachments);
     const findAttribute = tempAttribute.findIndex((item) => item.attributeChoiceId === data.attributeId);
@@ -721,14 +662,16 @@ export const EditRequest: React.FC = () => {
   ) => {
     const tempAttachment = _.cloneDeep(attributeChoiceAndAttachments);
     const tempUrl = _.cloneDeep(url);
-
     const attributeIndex = tempAttachment.findIndex((item) => item.attributeChoiceId === attributeId);
+
     if (attributeIndex !== -1) {
-      const newAttachments = tempAttachment[attributeIndex].attachmentIds.filter((item) => item !== imageId);
+      const newAttachments = tempAttachment[attributeIndex].attachmentIds.filter((item) => item.id !== imageId);
       tempAttachment[attributeIndex].attachmentIds = newAttachments;
       const filteredUrl = tempUrl.filter((item) => item.id !== imageId);
+      const updateedImages = tempAttachment.filter((item) => item.attachmentIds.length !== 0);
+
       setUrl(filteredUrl);
-      setAttributeChoiceAndAttachments(tempAttachment);
+      setAttributeChoiceAndAttachments(updateedImages);
     }
   };
 
@@ -782,7 +725,7 @@ export const EditRequest: React.FC = () => {
               height: 'auto',
             }}
             onClick={onFinish}
-            loading={updateRequestMutation.isLoading || uploadImage.isLoading}
+            loading={updateRequestMutation.isLoading}
           >
             {t('common.done')}
           </Button>
@@ -827,11 +770,11 @@ export const EditRequest: React.FC = () => {
                   <div>
                     {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
                       <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
-                        <div style={{ margin: '1rem' }}>
-                          {sourceTypeItem.id} - {sourceTypeItem.name}
+                        <div>
+                          <h3 style={{ margin: '1rem' }}>{sourceTypeItem.name}</h3>
                           <Radio.Group
                             className="radios"
-                            style={{ display: 'flex', justifyContent: 'space-around' }}
+                            style={{ display: 'flex', justifyContent: 'space-around', margin: '1rem' }}
                             onChange={(e) => {
                               setSelectedRadio((prevSelectedChoices) => {
                                 const existingIndex = prevSelectedChoices.findIndex(
@@ -869,7 +812,7 @@ export const EditRequest: React.FC = () => {
                               <Radio
                                 key={parentAttributeChoice.id}
                                 value={parentAttributeChoice.id}
-                                style={{ height: '30px' }}
+                                style={{ height: '30px', margin: '.5rem' }}
                               >
                                 {parentAttributeChoice.name}
                               </Radio>
@@ -894,7 +837,7 @@ export const EditRequest: React.FC = () => {
                     <UploadImageRequest
                       item={item}
                       uploadImageAction={uploadImageAction}
-                      images={filterImage(item.id)}
+                      images={filterImage(item.id) ?? []}
                       handleDeleteImage={handleDeleteImage}
                       previewOpen={previewOpen}
                       previewTitle={previewTitle}
@@ -1036,7 +979,7 @@ export const EditRequest: React.FC = () => {
                 <Input defaultValue={RequestData.sourceAddress} />
               </BaseForm.Item>
               <BaseForm.Item
-                // name="moveAtUtc"
+                name="moveAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1048,10 +991,11 @@ export const EditRequest: React.FC = () => {
                     ? { width: '100%', marginBottom: '5rem' }
                     : {}
                 }
+                valuePropName="data"
               >
                 <DatePicker
                   style={{ width: '100%' }}
-                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : undefined}
+                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : moment()}
                 />
               </BaseForm.Item>
               <div
@@ -1154,7 +1098,7 @@ export const EditRequest: React.FC = () => {
                 <Input defaultValue={RequestData.destinationAddress} />
               </BaseForm.Item>
               <BaseForm.Item
-                // name="arrivalAtUtc"
+                name="arrivalAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1166,6 +1110,7 @@ export const EditRequest: React.FC = () => {
                     ? { width: '100%', marginBottom: '5rem' }
                     : {}
                 }
+                valuePropName="data"
               >
                 <DatePicker
                   style={{ width: '100%' }}
@@ -1212,9 +1157,10 @@ export const EditRequest: React.FC = () => {
               >
                 <Input defaultValue={RequestData.requestForQuotationContacts[0].fullName} />
               </BaseForm.Item>
-              <BaseButtonsForm.Item
+
+              <BaseForm.Item
+                key={current}
                 name={['requestForQuotationContacts', 0, 'phoneNumber']}
-                $successText={t('auth.phoneNumberVerified')}
                 label={t('common.phoneNumber')}
                 rules={[
                   { required: true, message: t('common.requiredField') },
@@ -1223,37 +1169,28 @@ export const EditRequest: React.FC = () => {
                       if (!value || isValidPhoneNumber(value)) {
                         return Promise.resolve();
                       }
-                      if (formattedPhoneNumber.length > 12) {
+                      if (value.length > 9) {
                         return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                      } else if (formattedPhoneNumber.length < 12) {
+                      } else if (value.length < 9) {
                         return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                       }
                     },
                   }),
                 ]}
-                style={
-                  isDesktop || isTablet
-                    ? {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                    : {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                }
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
               >
-                <PhoneInput
-                  onChange={handleFormattedValueChange}
-                  country={'ae'}
-                  value={
-                    RequestData.requestForQuotationContacts[0]?.dailCode +
-                    RequestData.requestForQuotationContacts[0]?.phoneNumber
-                  }
+                <Input
+                  addonBefore={'+971'}
+                  value={RequestData.requestForQuotationContacts[0]?.phoneNumber}
+                  onChange={(e) => {
+                    if (validationInputNumber(e.target.value)) {
+                      form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], e.target.value);
+                    } else form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], '');
+                  }}
+                  maxLength={9}
+                  style={{ width: '100%' }}
                 />
-              </BaseButtonsForm.Item>
+              </BaseForm.Item>
 
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
               <BaseForm.Item
@@ -1266,7 +1203,42 @@ export const EditRequest: React.FC = () => {
               >
                 <Input defaultValue={RequestData.requestForQuotationContacts[1].fullName} />
               </BaseForm.Item>
-              <BaseButtonsForm.Item
+
+              <BaseForm.Item
+                key={current}
+                name={['requestForQuotationContacts', 1, 'phoneNumber']}
+                label={t('common.phoneNumber')}
+                rules={[
+                  { required: true, message: t('common.requiredField') },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || isValidPhoneNumber(value)) {
+                        return Promise.resolve();
+                      }
+                      if (value.length > 9) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                      } else if (value.length < 9) {
+                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                      }
+                    },
+                  }),
+                ]}
+                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              >
+                <Input
+                  addonBefore={'+971'}
+                  value={RequestData.requestForQuotationContacts[0]?.phoneNumber}
+                  onChange={(e) => {
+                    if (validationInputNumber(e.target.value)) {
+                      form.setFieldValue(['requestForQuotationContacts', 1, 'phoneNumber'], e.target.value);
+                    } else form.setFieldValue(['requestForQuotationContacts', 1, 'phoneNumber'], '');
+                  }}
+                  maxLength={9}
+                  style={{ width: '100%' }}
+                />
+              </BaseForm.Item>
+
+              {/* <BaseButtonsForm.Item
                 name={['requestForQuotationContacts', 1, 'phoneNumber']}
                 $successText={t('auth.phoneNumberVerified')}
                 label={t('common.phoneNumber')}
@@ -1307,7 +1279,7 @@ export const EditRequest: React.FC = () => {
                     RequestData.requestForQuotationContacts[1]?.phoneNumber
                   }
                 />
-              </BaseButtonsForm.Item>
+              </BaseButtonsForm.Item> */}
             </>
           )}
 

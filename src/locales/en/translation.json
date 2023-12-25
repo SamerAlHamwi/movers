@@ -89,7 +89,8 @@
     "broker": "Broker",
     "refetch": "Refetch Data",
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "return": "Return"
   },
 
   "_comment0": "*********************************** auth ************************************************",
@@ -542,6 +543,7 @@
     "deleteRequestModalDescription": "Are You Sure To Delete This Request?",
     "approveRequestSuccessMessage": "The Request Has Been Approved Successfully",
     "rejectRequestSuccessMessage": "The Request Has Been Rejected Successfully",
+    "returnRequestSuccessMessage": "The Request Has Been Returned Successfully",
     "approveRequestModalTitle": "Approve Request",
     "approveRequestModalDescription": "Are You Sure To Approve This Request?",
     "rejectRequestModalTitle": "Reject Request",
@@ -600,8 +602,10 @@
     "checkPINForUserModalTitle": "Enter The PIN Code To Obtain User Authorization",
     "checkPINForUserModal": "Enter The PIN Code",
     "atLeastOneService": "At Least One Service Must Be Selected",
-    "sendRejectReason": "Send Reject Reason To User",
+    "sendRejectReason": "Send Reason For The Rejection To User",
+    "sendReturnReason": "Send Reason For The Return To User",
     "reasonRefuse": "The Reason For Rejecting The Request",
+    "reasonReturn": "The Reason For Returning The Request",
     "additionalAttachments": "Additional Attachments",
     "noAttachments": "There Are No Attachments For This Item",
     "offerDetails": "Offer Details",
@@ -615,7 +619,8 @@
     "editRequest": "Edit Request",
     "featured": "Featured",
     "CanceledAfterInProcess": "Canceled After In Process",
-    "allRequsets": "All Requests"
+    "allRequsets": "All Requests",
+    "RejectedNeedToEdit": "Request Has Been Returned To User"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",
@@ -661,7 +666,8 @@
     "enterAddress": "Please Enter The Address",
     "selectSourceType": "Please Choose The Moving Type",
     "atLeastOneAttachment": "At Least Upload One Attachment",
-    "Attachment": "Attachments"
+    "Attachment": "Attachments",
+    "enterDate": "Please Enter The Date"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -930,7 +936,11 @@
     "hoursToWaitUser": "Number Of Hours Given To The User To Choose An Offer Or Reject All Offers",
     "hoursToConvertRequestToOutOfPossible": "Number Of Hours Available To Remain As A Potential Client",
     "editHoursSetting": "Edit Hours Setting",
-    "editHoursInSystemSettingSuccessMessage": "The Hours Setting Has Been Edited Successfully"
+    "editHoursInSystemSettingSuccessMessage": "The Hours Setting Has Been Edited Successfully",
+    "DiscountPercentageSetting": "Discount Percentage Setting",
+    "discountPercentageIfUserCancelHisRequest": "Discount Percentage From The User If He Cancels His Request",
+    "editDiscountPercentageSetting": "Edit Discount Percentages Setting",
+    "editDiscountPercentageSettingSuccessMessage": "The Discount Percentage Setting Has Been Edited Successfully"
   },
 
   "_comment29": "*********************************** groups ************************************************",

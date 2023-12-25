@@ -33,6 +33,7 @@ import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { useLanguage } from '@app/hooks/useLanguage';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -93,7 +94,7 @@ export const AddRequest: React.FC = () => {
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState<any[]>([]);
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
+  const [validations, setValidations] = useState(false);
   const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   const [parentAttributeChoiceIdValue, setParentAttributeChoiceIdValue] = useState<any>();
   const [attributeForSourceTypeId, setAttributeForSourceTypeId] = useState(0);
@@ -359,15 +360,6 @@ export const AddRequest: React.FC = () => {
     }
   };
 
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
-
   const createRequestMutation = useMutation((id: any) =>
     createRequest(id)
       .then((data) => {
@@ -388,30 +380,16 @@ export const AddRequest: React.FC = () => {
   );
 
   const onFinish = async (values: any) => {
-    const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
-    );
-    const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
-    );
     const sourceContact = {
-      // dailCode: '+' + dialCodeS,
       dailCode: '+971',
-      phoneNumber: phoneNumberS,
+      phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
       fullName: form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']),
-      // isCallAvailable: form.getFieldValue('isCallAvailableSource') == undefined ? false : true,
-      // isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableSource') == undefined ? false : true,
-      // isTelegramAvailable: form.getFieldValue('isTelegramAvailableSource') == undefined ? false : true,
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
-      // dailCode: '+' + dialCodeD,
       dailCode: '+971',
-      phoneNumber: phoneNumberD,
+      phoneNumber: form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
       fullName: form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']),
-      // isCallAvailable: form.getFieldValue('isCallAvailableDestination') == undefined ? false : true,
-      // isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableDestination') == undefined ? false : true,
-      // isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
       requestForQuotationContactType: 2,
     };
     function extractServicesIds(input: any) {
@@ -479,24 +457,24 @@ export const AddRequest: React.FC = () => {
       attributeChoiceAndAttachments: allAttachments,
       userId: userId ? userId : '0',
     };
-    setAttachmentIdsChanged(true);
+    setValidations(true);
 
     if (attachmentIds.length == 0 && attributeChoiceAndAttachmentsToSend.length == 0) {
       message.open({
         content: <Alert message={t('addRequest.atLeastOneAttachment')} type={`error`} showIcon />,
       });
-      setAttachmentIdsChanged(false);
+      setValidations(false);
       return;
     }
   };
 
   useEffect(() => {
-    if (attachmentIdsChanged) {
+    if (validations) {
       const showError = (messageText: string) => {
         message.open({
           content: <Alert message={messageText} type={`error`} showIcon />,
         });
-        setAttachmentIdsChanged(false);
+        setValidations(false);
       };
 
       const checkField = (fieldName: any, messageText: string) => {
@@ -519,17 +497,19 @@ export const AddRequest: React.FC = () => {
         !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField('sourceAddress', t('addRequest.enterAddress')) ||
-        !checkField('destinationAddress', t('addRequest.enterAddress'))
+        !checkField('destinationAddress', t('addRequest.enterAddress')) ||
+        !checkField('moveAtUtc', t('addRequest.enterDate')) ||
+        !checkField('arrivalAtUtc', t('addRequest.enterDate'))
       ) {
         return;
       } else if (cityId.source === '0' || cityId.destination === '0') {
         showError(t('addRequest.enterCity'));
       } else {
         createRequestMutation.mutateAsync(requestData);
-        setAttachmentIdsChanged(false);
+        setValidations(false);
       }
     }
-  }, [attachmentIdsChanged]);
+  }, [validations]);
 
   const uploadButtonForAttribute = (
     <div>
@@ -682,10 +662,6 @@ export const AddRequest: React.FC = () => {
                 showSearch
                 optionFilterProp="children"
                 onChange={(e: any) => {
-                  // setSelectedCheckboxes([]); // Reset the selectedCheckboxes to an empty object
-                  // setSelectedChoices([]); // Reset the selectedChoices to an empty object
-                  // setImagesLists([]); // Reset the imagesLists to an empty object
-
                   setSelectedSourceType(e);
                   setSourceType('1');
                 }}
@@ -970,6 +946,7 @@ export const AddRequest: React.FC = () => {
               <Input />
             </BaseForm.Item>
             <BaseForm.Item
+              name="moveAtUtc"
               label={<LableText>{t('addRequest.date')}</LableText>}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -981,6 +958,7 @@ export const AddRequest: React.FC = () => {
                   ? { width: '100%', marginBottom: '5rem' }
                   : {}
               }
+              valuePropName="data"
             >
               <DatePicker style={{ width: '100%' }} />
             </BaseForm.Item>
@@ -1078,6 +1056,7 @@ export const AddRequest: React.FC = () => {
               <Input />
             </BaseForm.Item>
             <BaseForm.Item
+              name="arrivalAtUtc"
               label={<LableText>{t('addRequest.date')}</LableText>}
               rules={[
                 { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1089,6 +1068,7 @@ export const AddRequest: React.FC = () => {
                   ? { width: '100%', marginBottom: '5rem' }
                   : {}
               }
+              valuePropName="data"
             >
               <DatePicker style={{ width: '100%' }} />
             </BaseForm.Item>
@@ -1132,9 +1112,9 @@ export const AddRequest: React.FC = () => {
             >
               <Input />
             </BaseForm.Item>
-            <BaseButtonsForm.Item
+            <BaseForm.Item
+              key={current}
               name={['requestForQuotationContacts', 0, 'phoneNumber']}
-              $successText={t('auth.phoneNumberVerified')}
               label={t('common.phoneNumber')}
               rules={[
                 { required: true, message: t('common.requiredField') },
@@ -1143,30 +1123,27 @@ export const AddRequest: React.FC = () => {
                     if (!value || isValidPhoneNumber(value)) {
                       return Promise.resolve();
                     }
-                    if (formattedPhoneNumber.length > 12) {
+                    if (value.length > 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
+                    } else if (value.length < 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                     }
                   },
                 }),
               ]}
-              style={
-                isDesktop || isTablet
-                  ? {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-                  : {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-              }
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-            </BaseButtonsForm.Item>
+              <Input
+                addonBefore={'+971'}
+                onChange={(e) => {
+                  if (validationInputNumber(e.target.value)) {
+                    form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], e.target.value);
+                  } else form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], '');
+                }}
+                maxLength={9}
+                style={{ width: '100%' }}
+              />
+            </BaseForm.Item>
 
             <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
             <BaseForm.Item
@@ -1179,9 +1156,9 @@ export const AddRequest: React.FC = () => {
             >
               <Input />
             </BaseForm.Item>
-            <BaseButtonsForm.Item
+            <BaseForm.Item
+              key={current}
               name={['requestForQuotationContacts', 1, 'phoneNumber']}
-              $successText={t('auth.phoneNumberVerified')}
               label={t('common.phoneNumber')}
               rules={[
                 { required: true, message: t('common.requiredField') },
@@ -1190,30 +1167,27 @@ export const AddRequest: React.FC = () => {
                     if (!value || isValidPhoneNumber(value)) {
                       return Promise.resolve();
                     }
-                    if (formattedPhoneNumber.length > 12) {
+                    if (value.length > 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
+                    } else if (value.length < 9) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                     }
                   },
                 }),
               ]}
-              style={
-                isDesktop || isTablet
-                  ? {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-                  : {
-                      width: 'fit-content',
-                      margin: '2rem auto',
-                      direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                    }
-              }
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
-              <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-            </BaseButtonsForm.Item>
+              <Input
+                addonBefore={'+971'}
+                onChange={(e) => {
+                  if (validationInputNumber(e.target.value)) {
+                    form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], e.target.value);
+                  } else form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], '');
+                }}
+                maxLength={9}
+                style={{ width: '100%' }}
+              />
+            </BaseForm.Item>
           </>
         )}
 

@@ -5,7 +5,14 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, CloseOutlined, TagOutlined, LeftOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  CloseOutlined,
+  TagOutlined,
+  LeftOutlined,
+  RetweetOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { getAllRequests, createRequest, DeleteRequest, UpdateRequest, confirmRequest } from '@app/services/requests';
 import { Table } from '@app/components/common/Table/Table';
@@ -46,6 +53,7 @@ export const Requests: React.FC = () => {
     delete: false,
     approve: false,
     reject: false,
+    return: false,
   });
   const [page, setPage] = useState<number>(1);
   const [checkIfAddOrEdit, setCheckIfAddOrEdit] = useState<number>();
@@ -55,10 +63,12 @@ export const Requests: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [deletemodaldata, setDeletemodaldata] = useState<RequestModel | undefined>(undefined);
   const [rejectmodaldata, setRejectmodaldata] = useState<RequestModel | undefined>(undefined);
+  const [returnmodaldata, setReturnmodaldata] = useState<RequestModel | undefined>(undefined);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [isApproved, setIsApproved] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
+  const [isReturned, setIsReturned] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [userId, setUserId] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<any>();
@@ -74,7 +84,7 @@ export const Requests: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Requests', type, brokerId, page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected],
+    ['Requests', type, brokerId, page, pageSize, refetchOnAdd, isDelete, isEdit, isApproved, isRejected, isReturned],
     () =>
       getAllRequests(type, brokerId, page, pageSize, searchString, requestStatus)
         .then((data) => {
@@ -105,12 +115,14 @@ export const Requests: React.FC = () => {
     setRefetchOnAdd(false);
     setIsApproved(false);
     setIsRejected(false);
+    setIsReturned(false);
   }, [
     isDelete,
     refetchOnAdd,
     isEdit,
     isApproved,
     isRejected,
+    isReturned,
     page,
     pageSize,
     language,
@@ -194,6 +206,31 @@ export const Requests: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, reject: rejectRequest.isLoading }));
   }, [rejectRequest.isLoading]);
 
+  const returnRequest = useMutation((data: any) =>
+    confirmRequest(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsReturned(data.data?.success),
+          message.open({
+            content: <Alert message={t('requests.returnRequestSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReturn = (info: any) => {
+    const data = { requestId: returnmodaldata?.id, statues: 15, reasonRefuse: info.reasonRefuse };
+    returnRequest.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, return: returnRequest.isLoading }));
+  }, [returnRequest.isLoading]);
+
   const confirm = useMutation((data) =>
     checkPIN(data)
       .then((data) => {
@@ -222,6 +259,12 @@ export const Requests: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>,
       render: (record: RequestModel) => {
         return <>{record?.user?.fullName}</>;
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.userName')}</Header>,
+      render: (record: RequestModel) => {
+        return <>{record?.user?.userName}</>;
       },
     },
     {
@@ -392,6 +435,11 @@ export const Requests: React.FC = () => {
                 {t('requests.CanceledAfterInProcess')}
               </Tag>
             )}
+            {record?.statues === 15 && (
+              <Tag key={record?.id} color="#ba4e63" style={{ padding: '4px' }}>
+                {t('requests.RejectedNeedToEdit')}
+              </Tag>
+            )}
           </>
         );
       },
@@ -470,6 +518,21 @@ export const Requests: React.FC = () => {
                   }}
                 >
                   <CloseOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
+
+            {type !== 'viaBroker' && (
+              <Tooltip placement="top" title={t('common.return')}>
+                <TableButton
+                  disabled={record.statues !== 1}
+                  severity="warning"
+                  onClick={() => {
+                    setReturnmodaldata(record);
+                    handleModalOpen('return');
+                  }}
+                >
+                  <RetweetOutlined />
                 </TableButton>
               </Tooltip>
             )}
@@ -616,6 +679,20 @@ export const Requests: React.FC = () => {
                 handleReject(info);
               }}
               isLoading={rejectRequest.isLoading}
+              type="reject"
+            />
+          )}
+
+          {/*    Return    */}
+          {modalState.return && (
+            <SendRejectReason
+              visible={modalState.return}
+              onCancel={() => handleModalClose('return')}
+              onCreate={(info) => {
+                handleReturn(info);
+              }}
+              isLoading={returnRequest.isLoading}
+              type="return"
             />
           )}
         </Row>
