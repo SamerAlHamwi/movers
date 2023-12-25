@@ -233,7 +233,21 @@
     "facebook": "Facebook",
     "instgram": "instgram",
     "twitter": "Twitter",
-    "editContactSuccessMessage": "Contact Information Has Been successfully modified"
+    "editContactSuccessMessage": "Contact Information Has Been successfully modified",
+    "startTime": "Start time",
+    "endTime": "End time",
+    "startDate": "Start date",
+    "endDate": "Close date",
+    "workingTime": "Working time",
+    "daysOfWeek": {
+      "Sunday": "Sunday",
+      "Monday": "Monday",
+      "Tuesday": "Tuesday",
+      "Wednesday": "Wednesday",
+      "Thursday": "Thursday",
+      "Friday": "Friday",
+      "Saturday": "Saturday"
+    }
   },
 
   "_comment5": "*********************************** services ************************************************",
@@ -290,6 +304,7 @@
     "checking": "Checking",
     "approved": "Approved",
     "rejected": "Rejected",
+    "rejectedNeedToEdit": "Rejected Need To Edit",
     "deleteCompanySuccessMessage": "The Company Has Been Deleted Successfully",
     "addCompany": "Add Company",
     "deletecompanyModalTitle": "Delete Company",
@@ -604,6 +619,7 @@
     "editRequest": "Edit Request",
     "featured": "Featured",
     "CanceledAfterInProcess": "Canceled After In Process",
+    "allRequsets": "All Requests",
     "RejectedNeedToEdit": "Request Has Been Returned To User"
   },
 

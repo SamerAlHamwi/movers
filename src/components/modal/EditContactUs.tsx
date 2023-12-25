@@ -1,5 +1,5 @@
-import React from 'react';
-import { Modal, Space } from 'antd';
+import React, { useState } from 'react';
+import { Modal, Select, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -10,14 +10,24 @@ import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { ContactUsModel, LanguageType } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 import { TextArea, Input } from '../Admin/Translations';
+import { TimePicker } from 'antd';
+import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
+import { isValidPhoneNumber } from 'react-phone-number-input';
+const { Option } = Select;
 
 export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, contact_values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
+  const [timeRange, setTimeRange] = useState<string[]>([]);
 
   const onOk = () => {
     form.submit();
+  };
+
+  const getTime = (timeRange: string[]) => {
+    setTimeRange(timeRange);
   };
 
   const onFinish = (contactInfo: ContactUsModel) => {
@@ -36,13 +46,15 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
           language: 'en' as LanguageType,
         },
       ],
+      startTime: timeRange[0],
+      endTime: timeRange[1],
     });
     onEdit(contactInfo);
   };
 
   return (
     <Modal
-      style={{ marginTop: '0rem' }}
+      style={{ marginTop: '0rem', height: '90vh', overflowY: 'scroll' }}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       open={visible}
       title={
@@ -183,11 +195,33 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         </BaseForm.Item>
         <BaseForm.Item
           name="phoneNumber"
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
           label={<LableText>{t('contactUs.phoneNumber')}</LableText>}
+          rules={[
+            { required: true, message: t('common.requiredField') },
+            () => ({
+              validator(_, value) {
+                if (!value || isValidPhoneNumber(value)) {
+                  return Promise.resolve();
+                }
+                if (value.length > PHONE_NUMBER_LENGTH) {
+                  return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                } else if (value.length < PHONE_NUMBER_LENGTH) {
+                  return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                }
+              },
+            }),
+          ]}
         >
-          <Input />
+          <Input
+            addonBefore={PHONE_NUMBER_CODE}
+            onChange={(e: any) => {
+              if (validationInputNumber(e.target.value)) {
+                form.setFieldValue(['phoneNumber'], e.target.value);
+              } else form.setFieldValue(['phoneNumber'], '');
+            }}
+            maxLength={9}
+          />
         </BaseForm.Item>
         <BaseForm.Item
           name="facebook"
@@ -212,6 +246,49 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
           label={<LableText>{t('contactUs.twitter')}</LableText>}
         >
           <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name={'startDay'}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+          label={<LableText>{t('contactUs.startDate')}</LableText>}
+        >
+          <Select>
+            {DAYS_OF_WEEK_NAME.map((item: any) => {
+              return (
+                <Option key={item?.day} value={item?.day}>
+                  {t(`contactUs.daysOfWeek.${item?.dayName}`)}
+                </Option>
+              );
+            })}
+          </Select>
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name={'endDay'}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+          label={<LableText>{t('contactUs.endDate')}</LableText>}
+        >
+          <Select>
+            {DAYS_OF_WEEK_NAME.map((item: any) => {
+              return (
+                <Option key={item?.day} value={item?.day}>
+                  {t(`contactUs.daysOfWeek.${item?.dayName}`)}
+                </Option>
+              );
+            })}
+          </Select>
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="time"
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+          label={<LableText>{t('contactUs.workingTime')}</LableText>}
+        >
+          <TimePicker.RangePicker onChange={(date, dateString) => getTime(dateString)} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

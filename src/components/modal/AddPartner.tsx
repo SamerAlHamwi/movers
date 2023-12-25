@@ -13,6 +13,8 @@ import { Partner } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useQuery } from 'react-query';
 import { getCities, getCountries } from '@app/services/locations';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
+import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 
 export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCancel, onCreatePartner, isLoading }) => {
   const [form] = BaseForm.useForm();
@@ -48,7 +50,7 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
 
   return (
     <Modal
-      style={{ marginTop: '-6rem' }}
+      style={{ marginTop: '-6rem', height: '90vh', overflowY: 'scroll' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
@@ -99,16 +101,34 @@ export const AddPartner: React.FC<CreatePartnerModalProps> = ({ visible, onCance
         <BaseForm.Item
           name="partnerPhoneNumber"
           label={<LableText>{t('common.phoneNumber')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
+          rules={[{ required: true, message: t('common.requiredField') }]}
         >
-          <Input />
+          <Input
+            addonBefore={PHONE_NUMBER_CODE}
+            onChange={(e: any) => {
+              if (validationInputNumber(e.target.value)) {
+                form.setFieldValue('partnerPhoneNumber', e.target.value);
+              } else form.setFieldValue('partnerPhoneNumber', '');
+            }}
+            maxLength={9}
+          />
         </BaseForm.Item>
 
         <BaseForm.Item
           name="emailAddress"
           label={<LableText>{t('common.emailAddress')}</LableText>}
           style={{ marginTop: '-.5rem' }}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+            {
+              type: 'email',
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.invalidEmail')}</p>,
+            },
+          ]}
         >
           <Input />
         </BaseForm.Item>
