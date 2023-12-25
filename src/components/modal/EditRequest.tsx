@@ -83,7 +83,6 @@ export const EditRequest: React.FC = () => {
   const [RequestData, setRequestData] = useState<RequestModel>();
   const [getRequest, setGetRequest] = useState<boolean>(true);
   const [current, setCurrent] = useState(0);
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
   const [sourcePosition, setSourcePosition] = useState({
     lat: sourceLat,
     lng: sourceLng,
@@ -151,10 +150,16 @@ export const EditRequest: React.FC = () => {
               };
             }),
           );
-          // console.log('imageRequest', imageRequest);
 
           setAttributeChoiceAndAttachments(imageRequest ?? []);
-          setRequestData(result);
+          setRequestData({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
+          form.setFieldsValue({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
           setGetRequest(false);
         })
         .catch((error) => {
@@ -164,8 +169,6 @@ export const EditRequest: React.FC = () => {
       enabled: getRequest,
     },
   );
-
-  // console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
@@ -219,40 +222,7 @@ export const EditRequest: React.FC = () => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-  const uploadImage = useMutation((data: any) => uploadAttachment(data), {
-    // onSuccess: (data: any) => {
-    //   if (data.data.success) {
-    //     const newId = data.data.result?.id;
-    //     setPreviewImage(data.data.result?.url);
-    //     setAttributeChoiceAndAttachments((prevAttributes) => {
-    //       const existingObjectIndex = prevAttributes.findIndex((obj) => obj.attributeChoiceId === itemId);
-    //       if (existingObjectIndex !== -1) {
-    //         const updatedAttributes = [...prevAttributes];
-    //         const attachmentIds = updatedAttributes[existingObjectIndex].attachmentIds;
-    //         if (!attachmentIds.includes(newId)) {
-    //           attachmentIds.push(newId);
-    //         }
-    //         return updatedAttributes;
-    //       } else {
-    //         return [
-    //           ...prevAttributes,
-    //           {
-    //             attributeChoiceId: itemId,
-    //             attachmentIds: [newId],
-    //           },
-    //         ];
-    //       }
-    //     });
-    //   } else {
-    //     message.open({
-    //       content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
-    //     });
-    //   }
-    // },
-    // onError: (error: any) => {
-    //   message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-    // },
-  });
+  const uploadImage = useMutation((data: any) => uploadAttachment(data));
 
   useEffect(() => {
     if (countryId != '0') refetch();
@@ -547,8 +517,6 @@ export const EditRequest: React.FC = () => {
     setValidations(true);
   };
 
-  console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
-
   useEffect(() => {
     if (validations) {
       const showError = (messageText: string) => {
@@ -757,7 +725,7 @@ export const EditRequest: React.FC = () => {
               height: 'auto',
             }}
             onClick={onFinish}
-            loading={updateRequestMutation.isLoading || uploadImage.isLoading}
+            loading={updateRequestMutation.isLoading}
           >
             {t('common.done')}
           </Button>
