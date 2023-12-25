@@ -19,9 +19,11 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined, ReloadOutlined, TagOutlined } from '@ant-design/icons';
+import { LeftOutlined, ReloadOutlined, RetweetOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
+import { confirmRequest } from '@app/services/requests';
 
 export const Offers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -31,6 +33,9 @@ export const Offers: React.FC = () => {
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { requestId, companyId, branchId, type } = useParams();
 
+  const [modalState, setModalState] = useState({
+    return: false,
+  });
   const [page, setPage] = useState<number>(1);
   const [pageSize, setPageSize] = useState<number>(DEFAULT_PAGE_SIZE);
   const [dataSource, setDataSource] = useState<RequestModel[] | undefined>(undefined);
@@ -38,6 +43,16 @@ export const Offers: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [selectedOffers, setSelectedOffers] = useState<string[]>([]);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [isReturned, setIsReturned] = useState(false);
+  const [returnmodaldata, setReturnmodaldata] = useState<RequestModel | undefined>(undefined);
+
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
+  };
+
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const { refetch, isRefetching } = useQuery(
     ['Offers', page, pageSize],
@@ -83,6 +98,31 @@ export const Offers: React.FC = () => {
       enabled: dataSource === undefined && type === 'rejectedoffers',
     },
   );
+
+  const returnRequest = useMutation((data: any) =>
+    confirmRequest(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsReturned(data.data?.success),
+          message.open({
+            content: <Alert message={t('requests.returnRequestSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReturn = (info: any) => {
+    const data = { requestId: returnmodaldata?.id, statues: 15, reasonRefuse: info.reasonRefuse };
+    returnRequest.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, return: returnRequest.isLoading }));
+  }, [returnRequest.isLoading]);
 
   useEffect(() => {
     if (isRefetching) setLoading(true);
@@ -169,6 +209,19 @@ export const Offers: React.FC = () => {
                 <TagOutlined />
               </TableButton>
             </Tooltip>
+
+            <Tooltip placement="top" title={t('common.return')}>
+              <TableButton
+                disabled={record.statues !== 1}
+                severity="warning"
+                onClick={() => {
+                  setReturnmodaldata(record);
+                  handleModalOpen('return');
+                }}
+              >
+                <RetweetOutlined />
+              </TableButton>
+            </Tooltip>
           </Space>
         );
       },
@@ -198,8 +251,24 @@ export const Offers: React.FC = () => {
           >
             <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
           </Btn>
+
           <ReloadBtn setRefetchData={setRefetchData} />
+
+          {/*    Return    */}
+          {modalState.return && (
+            <SendRejectReason
+              visible={modalState.return}
+              onCancel={() => handleModalClose('return')}
+              onCreate={(info) => {
+                handleReturn(info);
+              }}
+              isLoading={returnRequest.isLoading}
+              type="return"
+              typeItem="offer"
+            />
+          )}
         </Row>
+
         <Table
           pagination={{
             showSizeChanger: true,

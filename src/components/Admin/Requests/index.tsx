@@ -707,6 +707,7 @@ export const Requests: React.FC = () => {
               }}
               isLoading={rejectRequest.isLoading}
               type="reject"
+              typeItem="request"
             />
           )}
 
@@ -720,6 +721,7 @@ export const Requests: React.FC = () => {
               }}
               isLoading={returnRequest.isLoading}
               type="return"
+              typeItem="request"
             />
           )}
         </Row>

@@ -15,6 +15,7 @@ import {
   TeamOutlined,
   SnippetsOutlined,
   LeftOutlined,
+  RetweetOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
@@ -504,6 +505,19 @@ export const Companies: React.FC = () => {
                     }}
                   >
                     <TeamOutlined />
+                  </TableButton>
+                </Tooltip>
+
+                <Tooltip placement="top" title={t('common.return')}>
+                  <TableButton
+                    disabled={record.statues !== 1}
+                    severity="warning"
+                    onClick={() => {
+                      // setReturnmodaldata(record);
+                      handleModalOpen('return');
+                    }}
+                  >
+                    <RetweetOutlined />
                   </TableButton>
                 </Tooltip>
 
