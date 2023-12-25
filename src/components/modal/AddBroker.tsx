@@ -56,7 +56,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
 
   return (
     <Modal
-      style={{ marginTop: '-6rem' }}
+      style={{ marginTop: '-6rem', height: '90vh', overflowY: 'scroll' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={

@@ -39,6 +39,7 @@ import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/Chan
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
 
 interface CompanyRecord {
   id: number;
@@ -416,15 +417,13 @@ export const Companies: React.FC = () => {
               }}
               value={temp}
             >
-              <Radio style={{ display: 'block', fontSize }} value={2}>
-                {t('companies.approved')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={3}>
-                {t('companies.rejected')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={1}>
-                {t('companies.checking')}
-              </Radio>
+              {COMPANY_STATUS_NAMES.map((item: any, index: number) => {
+                return (
+                  <Radio key={index} style={{ display: 'block', fontSize }} value={item.value}>
+                    {t(`companies.${item.name}`)}
+                  </Radio>
+                );
+              })}
             </RadioGroup>
             <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
               <Col>

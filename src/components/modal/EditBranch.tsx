@@ -21,6 +21,8 @@ import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { TextArea } from '../Admin/Translations';
+import { PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -77,9 +79,7 @@ export const EditBranch: React.FC = () => {
   const [current, setCurrent] = useState(0);
   const [formData, setFormData] = useState<BranchModel>(branchInfo);
   const [branchData, setbranchData] = useState<BranchModel>(branchInfo);
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState(
-    branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber,
-  );
+
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
@@ -238,19 +238,6 @@ export const EditBranch: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
-
   const editBranch = useMutation((data: BranchModel) =>
     UpdateBranch(data)
       .then((data: any) => {
@@ -264,7 +251,6 @@ export const EditBranch: React.FC = () => {
   );
 
   const onFinish = (values: any) => {
-    const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(formattedPhoneNumber);
     function extractServicesIds(input: any) {
       requestServices = [];
       input.map((obj: any) => {
@@ -314,8 +300,8 @@ export const EditBranch: React.FC = () => {
         },
       ],
       companyContact: {
-        dialCode: dialCodeC != '0' ? '+' + dialCodeC : branchData.companyContact.dialCode,
-        phoneNumber: phoneNumberC != '0' ? phoneNumberC : branchData.companyContact.phoneNumber,
+        dialCode: PHONE_NUMBER_CODE,
+        phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: true,
@@ -696,6 +682,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseButtonsForm.Item
+                      name={['companyContact', 'phoneNumber']}
                       key={current}
                       $successText={t('auth.phoneNumberVerified')}
                       label={t('common.phoneNumber')}
@@ -706,23 +693,28 @@ export const EditBranch: React.FC = () => {
                             if (!value || isValidPhoneNumber(value)) {
                               return Promise.resolve();
                             }
-                            if (formattedPhoneNumber.length > 12) {
+                            if (value.length > PHONE_NUMBER_LENGTH) {
                               return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                            } else if (formattedPhoneNumber.length < 12) {
+                            } else if (value.length < PHONE_NUMBER_LENGTH) {
                               return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                             }
                           },
                         }),
                       ]}
                       style={
-                        isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
+                        isDesktop || isTablet ? { width: '100%', margin: 'auto' } : { width: '80%', margin: '0 10%' }
                       }
                     >
-                      <PhoneInput
-                        value={branchData.companyContact?.dialCode + branchData.companyContact?.phoneNumber}
+                      <Input
                         key={1}
-                        onChange={handleFormattedValueChange}
-                        country={'ae'}
+                        addonBefore={PHONE_NUMBER_CODE}
+                        maxLength={PHONE_NUMBER_LENGTH}
+                        value={branchData.companyContact?.phoneNumber}
+                        onChange={(e) => {
+                          if (validationInputNumber(e.target.value)) {
+                            form.setFieldValue(['companyContact', 'phoneNumber'], e.target.value);
+                          } else form.setFieldValue(['companyContact', 'phoneNumber'], '');
+                        }}
                       />
                     </BaseButtonsForm.Item>
                   </Col>

@@ -9,8 +9,15 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   padding: 8px;
-  width: 250px;
+  width: 100%;
   margin-bottom: 2rem;
+  padding: 0;
+}
+.ant-spin-container .ant-ribbon-wrapper,
+.ant-spin-container .ant-card,
+.ant-spin-container .ant-card-body {
+  width: 200px;
+  padding: 0;
 }
 
 .task-list {

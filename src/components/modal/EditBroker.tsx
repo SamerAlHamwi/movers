@@ -60,7 +60,7 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
 
   return (
     <Modal
-      style={{ marginTop: '-4rem' }}
+      style={{ marginTop: '-4rem', height: '90vh', overflowY: 'scroll' }}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       open={visible}
       title={

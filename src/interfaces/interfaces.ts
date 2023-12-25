@@ -251,7 +251,12 @@ export interface ContactUsModel {
   instgram: string;
   twitter: string;
   phoneNumber: number;
+  startDay: number;
+  endDay: number;
+  startTime: string;
+  endTime: string;
   translations: Translation[];
+  time: string[];
 }
 
 export interface ServiceModel {

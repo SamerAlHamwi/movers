@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText, treeStyle, Text } from '../GeneralStyles';
+import { CreateButtonText, LableText, treeStyle, Text, TextBack } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
-import { FONT_SIZE } from '@app/styles/themes/constants';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -12,6 +12,7 @@ import {
   ClearOutlined,
   FileAddOutlined,
   HomeOutlined,
+  LeftOutlined,
   PictureOutlined,
   PlusOutlined,
 } from '@ant-design/icons';
@@ -32,6 +33,7 @@ import { RcFile, UploadFile } from 'antd/es/upload';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import { AR } from '@app/constants/appConstants';
 import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
+import { Btn } from '../common/MoonSunSwitch/MoonSunSwitch.styles';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -138,6 +140,7 @@ export const EditCompany: React.FC = () => {
   const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const [picturesList, setPicturesList] = useState<any[]>([]);
   const [test, setTest] = useState<any[]>([]);
+  const { desktopOnly } = useResponsive();
   const [lang, setLang] = useState<{ en: any; ar: any }>({
     en: undefined,
     ar: undefined,
@@ -672,31 +675,47 @@ export const EditCompany: React.FC = () => {
 
   return (
     <Card title={t('companies.EditCompany')} padding="1.25rem 1.25rem 1.25rem">
-      <Row justify={'end'} style={{ width: '100%' }}>
+      <Row justify={'end'} align={'middle'} style={{ width: '100%' }}>
         {current > 0 && (
-          <Button
-            style={{
-              margin: '1rem 1rem 1rem 0',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => prev()}
-          >
-            {t('common.prev')}
-          </Button>
+          <>
+            <Button
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => prev()}
+            >
+              {t('common.prev')}
+            </Button>
+          </>
         )}
         {current < steps.length - 1 && (
-          <Button
-            type="primary"
-            style={{
-              margin: '1rem 1rem 1rem 0',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => next()}
-          >
-            <CreateButtonText>{t('common.next')}</CreateButtonText>
-          </Button>
+          <>
+            <Btn
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              type="ghost"
+              onClick={() => Navigate(-1)}
+              icon={<LeftOutlined />}
+            >
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+            <Button
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => next()}
+            >
+              <CreateButtonText>{t('common.next')}</CreateButtonText>
+            </Button>
+          </>
         )}
         {current === steps.length - 1 && (
           <Button
