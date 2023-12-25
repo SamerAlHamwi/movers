@@ -6,15 +6,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
-import {
-  BankOutlined,
-  ClearOutlined,
-  EyeInvisibleOutlined,
-  EyeTwoTone,
-  HomeOutlined,
-  LeftOutlined,
-  UserAddOutlined,
-} from '@ant-design/icons';
+import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
 import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Alert, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
@@ -24,7 +16,6 @@ import { getServices } from '@app/services/services';
 import { createBranch } from '@app/services/branches';
 import { Card } from '@app/components/common/Card/Card';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
@@ -32,6 +23,8 @@ import type { DataNode } from 'antd/es/tree';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
 import ReloadBtn from '../Admin/ReusableComponents/ReloadBtn';
+import { PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -217,19 +210,6 @@ export const AddBranch: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
-
   const addBranch = useMutation((data: BranchModel) =>
     createBranch(data)
       .then((data: any) => {
@@ -245,12 +225,6 @@ export const AddBranch: React.FC = () => {
   );
 
   const onFinish = (values: any) => {
-    const { dialCode: dialCodeC, phoneNumber: phoneNumberC } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['companyContact', 'phoneNumber']),
-    );
-    const { dialCode: dialCodeU, phoneNumber: phoneNumberU } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue(['userDto', 'phoneNumber']),
-    );
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
         const parts = obj.split(' ');
@@ -293,15 +267,15 @@ export const AddBranch: React.FC = () => {
         },
       ],
       companyContact: {
-        dialCode: '+' + dialCodeC,
-        phoneNumber: phoneNumberC,
+        dialCode: PHONE_NUMBER_CODE,
+        phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: true,
       },
       userDto: {
-        dialCode: '+' + dialCodeU,
-        phoneNumber: phoneNumberU,
+        dialCode: PHONE_NUMBER_CODE,
+        phoneNumber: form.getFieldValue(['userDto', 'phoneNumber']),
         emailAddress: form.getFieldValue(['userDto', 'emailAddress']),
         password: form.getFieldValue(['userDto', 'password']),
       },
@@ -374,7 +348,6 @@ export const AddBranch: React.FC = () => {
               height: 'auto',
             }}
             htmlType="submit"
-            // disabled={addBranch.isLoading || uploadImage.isLoading}
             disabled={addBranch.isLoading}
             onClick={() => onFinish(form.getFieldsValue())}
           >
@@ -581,7 +554,7 @@ export const AddBranch: React.FC = () => {
             <Row>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
                 <BaseForm.Item
-                  label={<LableText>{t('companies.emailAddress')}</LableText>}
+                  label={<LableText>{t('common.emailAddress')}</LableText>}
                   name={['companyContact', 'emailAddress']}
                   style={{ marginTop: '-1rem' }}
                   rules={[
@@ -625,9 +598,9 @@ export const AddBranch: React.FC = () => {
                         if (!value || isValidPhoneNumber(value)) {
                           return Promise.resolve();
                         }
-                        if (formattedPhoneNumber.length > 12) {
+                        if (value.length > PHONE_NUMBER_LENGTH) {
                           return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                        } else if (formattedPhoneNumber.length < 12) {
+                        } else if (value.length < PHONE_NUMBER_LENGTH) {
                           return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                         }
                       },
@@ -635,7 +608,16 @@ export const AddBranch: React.FC = () => {
                   ]}
                   style={{ margin: '2%', direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl' }}
                 >
-                  <PhoneInput key={1} onChange={handleFormattedValueChange} country={'ae'} />
+                  <Input
+                    addonBefore={PHONE_NUMBER_CODE}
+                    onChange={(e: any) => {
+                      if (validationInputNumber(e.target.value)) {
+                        form.setFieldValue(['companyContact', 'phoneNumber'], e.target.value);
+                      } else form.setFieldValue(['companyContact', 'phoneNumber'], '');
+                    }}
+                    maxLength={9}
+                    style={{ width: '100%' }}
+                  />
                 </BaseButtonsForm.Item>
               </Col>
             </Row>
@@ -667,9 +649,9 @@ export const AddBranch: React.FC = () => {
                     if (!value || isValidPhoneNumber(value)) {
                       return Promise.resolve();
                     }
-                    if (formattedPhoneNumber.length > 12) {
+                    if (value.length > PHONE_NUMBER_LENGTH) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                    } else if (formattedPhoneNumber.length < 12) {
+                    } else if (value.length < PHONE_NUMBER_LENGTH) {
                       return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
                     }
                   },
@@ -689,11 +671,20 @@ export const AddBranch: React.FC = () => {
                     }
               }
             >
-              <PhoneInput key={2} onChange={handleFormattedValueChange} country={'ae'} />
+              <Input
+                addonBefore={PHONE_NUMBER_CODE}
+                onChange={(e: any) => {
+                  if (validationInputNumber(e.target.value)) {
+                    form.setFieldValue(['userDto', 'phoneNumber'], e.target.value);
+                  } else form.setFieldValue(['userDto', 'phoneNumber'], '');
+                }}
+                maxLength={9}
+                style={{ width: '100%' }}
+              />
             </BaseButtonsForm.Item>
 
             <BaseForm.Item
-              label={<LableText>{t('companies.emailAddress')}</LableText>}
+              label={<LableText>{t('common.emailAddress')}</LableText>}
               name={['userDto', 'emailAddress']}
               style={
                 isDesktop || isTablet

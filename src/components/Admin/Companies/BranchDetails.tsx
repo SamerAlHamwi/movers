@@ -24,7 +24,6 @@ import {
   LeftOutlined,
 } from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
-import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
 export type specifierType = {
   name: string;
@@ -177,7 +176,6 @@ const BranchDetails: React.FC = () => {
         >
           <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
         </Btn>
-        <ReloadBtn setRefetchData={setRefetchData} />
       </Row>
       <Row>
         <Cardd

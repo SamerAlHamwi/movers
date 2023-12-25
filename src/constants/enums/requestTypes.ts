@@ -1,0 +1,15 @@
+export enum RequestType {
+  Checking = 1,
+  Approved = 2,
+  Rejected = 3,
+  Possible = 4,
+  HasOffers = 5,
+  InProcess = 6,
+  FinishByCompany = 7,
+  FinishByUser = 8,
+  NotFinishByUser = 9,
+  Finished = 10,
+  Canceled = 11,
+  CanceledAfterRejectOffers = 12,
+  OutOfPossible = 13,
+}

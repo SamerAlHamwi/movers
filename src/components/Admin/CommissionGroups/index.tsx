@@ -56,14 +56,6 @@ const DragAndDropBoard = () => {
   const [isDefault, setIsDefault] = useState(0);
   const [refetchData, setRefetchData] = useState<boolean>(false);
 
-  const handleModalOpen = (modalType: any) => {
-    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
-  };
-
-  const handleModalClose = (modalType: any) => {
-    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
-  };
-
   const { refetch, isRefetching } = useQuery(
     ['AllGroups'],
     () =>
@@ -94,6 +86,39 @@ const DragAndDropBoard = () => {
       }),
   );
 
+  const addGroup = useMutation((data: any) =>
+    createGroup(data)
+      .then((data) => {
+        notificationController.success({ message: t('groups.addGroupSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  const editGroup = useMutation((data: any) => updateGroup(data));
+
+  const handleEdit = (data: any, id: number, isDefault: boolean) => {
+    editGroup
+      .mutateAsync({ name: data, id, isDefault: isDefault })
+      .then((data) => {
+        setIsEdit(data.data?.success);
+        notificationController.success({ message: t('groups.editGroupSuccessMessage') });
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      });
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, add: addGroup.isLoading }));
+  }, [addGroup.isLoading]);
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editGroup.isLoading }));
+  }, [editGroup.isLoading]);
+
   useEffect(() => {
     setLoading(true);
     refetch();
@@ -108,38 +133,13 @@ const DragAndDropBoard = () => {
     }
   }, [dataGroup != undefined]);
 
-  const addGroup = useMutation((data: any) =>
-    createGroup(data)
-      .then((data) => {
-        notificationController.success({ message: t('groups.addGroupSuccessMessage') });
-        setRefetchOnAdd(data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      }),
-  );
-
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, add: addGroup.isLoading }));
-  }, [addGroup.isLoading]);
-
-  const editGroup = useMutation((data: any) => updateGroup(data));
-
-  const handleEdit = (data: any, id: number) => {
-    editGroup
-      .mutateAsync({ name: data, id })
-      .then((data) => {
-        setIsEdit(data.data?.success);
-        notificationController.success({ message: t('groups.editGroupSuccessMessage') });
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-      });
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
   };
 
-  useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, edit: editGroup.isLoading }));
-  }, [editGroup.isLoading]);
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const onDragEnd = async (result: DropResult) => {
     const { source, destination, draggableId } = result;
@@ -164,6 +164,7 @@ const DragAndDropBoard = () => {
     }
   };
 
+  //  reset company
   const handleResetCompany = async (sourceGroupId: string, companyId: number) => {
     try {
       setLoading(true);
@@ -184,30 +185,28 @@ const DragAndDropBoard = () => {
       title={`${group.name} %`}
       bordered={false}
       extra={
-        !group.isDefault && (
-          <Row>
-            <Col>
-              <Tooltip placement="top" title={t('common.edit')}>
-                <TableButton
-                  severity="info"
-                  onClick={() => {
-                    handleModalOpen('edit');
-                    setEditmodaldata(group);
-                  }}
-                >
-                  <EditOutlined />
-                </TableButton>
-              </Tooltip>
-            </Col>
-            {/* <Col>
+        <Row>
+          <Col>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  handleModalOpen('edit');
+                  setEditmodaldata(group);
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+          </Col>
+          {/* <Col>
               <Tooltip placement="top" title={t('common.delete')}>
                 <TableButton severity="error">
                   <DeleteOutlined />
                 </TableButton>
               </Tooltip>
             </Col> */}
-          </Row>
-        )
+        </Row>
       }
     >
       <div className="column" key={group.id}>
@@ -260,7 +259,7 @@ const DragAndDropBoard = () => {
         <ReloadBtn setRefetchData={setRefetchData} />
       </Row>
       <div className="drag-and-drop-board">
-        <Row>
+        <Row style={{ marginBottom: '1rem' }}>
           <DragDropContext onDragEnd={onDragEnd}>
             <Spin spinning={loading || isRefetching}>
               {dataGroup?.map((group) => {
@@ -295,7 +294,7 @@ const DragAndDropBoard = () => {
             visible={modalState.edit}
             onCancel={() => handleModalClose('edit')}
             onEdit={(data) => {
-              editmodaldata !== undefined && handleEdit(data.name, data.id);
+              editmodaldata !== undefined && handleEdit(data.name, data.id, data.isDefault);
             }}
             isLoading={editGroup.isLoading}
           />

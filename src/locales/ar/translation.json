@@ -231,7 +231,21 @@
     "facebook": "فيسبوك",
     "instgram": "إنستغرام",
     "twitter": "تويتر",
-    "editContactSuccessMessage": "تم تعديل معلومات التواصل بنجاح!"
+    "editContactSuccessMessage": "تم تعديل معلومات التواصل بنجاح!",
+    "startTime": "وقت البدأ",
+    "endTime": "وقت الانتهاء",
+    "startDate": "تاريخ البدأ",
+    "endDate": "تاريخ الإغلاق",
+    "workingTime": "ساعات العمل",
+    "daysOfWeek": {
+      "Sunday": "الأحد",
+      "Monday": "الاثنين",
+      "Tuesday": "الثلاثاء",
+      "Wednesday": "الأربعاء",
+      "Thursday": "الخميس",
+      "Friday": "الجمعة",
+      "Saturday": "السبت"
+    }
   },
 
   "_comment5": "*********************************** services ************************************************",
@@ -290,6 +304,7 @@
     "additionalAttachment": "صور | ملفات إضافية",
     "checking": "قيد المعالجة",
     "approved": "تم قبولها",
+    "rejectedNeedToEdit": "مرفوض بحاجة تعديل",
     "rejected": "تم رفضها",
     "deleteCompanySuccessMessage": "تم حذف هذه الشركة بنجاح",
     "addCompany": "إضافة شركة",
@@ -597,7 +612,8 @@
     "rejectedoffers": "العروض المرفوضة",
     "editRequest": "تعديل طلب النقل",
     "featured": "مُميزة",
-    "CanceledAfterInProcess": "مُلغى بعد المعالجة"
+    "CanceledAfterInProcess": "مُلغى بعد المعالجة",
+    "allRequsets": "كل الطلبات"
   },
 
   "_comment17": "*********************************** addRequest ************************************************",

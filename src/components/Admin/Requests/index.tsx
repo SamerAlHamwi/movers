@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, message, Radio, RadioChangeEvent, Row, Space, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Row, Space, Tabs, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -27,6 +27,8 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
+import { RequestType } from '@app/constants/enums/requestTypes';
+import { REQUEST_TYPES } from '@app/constants/appConstants';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -404,50 +406,17 @@ export const Requests: React.FC = () => {
               }}
               value={temp}
             >
-              <Radio style={{ display: 'block', fontSize }} value={1}>
-                {t('requests.checking')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={2}>
-                {t('requests.approved')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={3}>
-                {t('requests.rejected')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={4}>
-                {t('requests.possible')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={5}>
-                {t('requests.hasOffers')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={6}>
-                {t('requests.inProcess')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={7}>
-                {t('requests.FinishByCompany')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={8}>
-                {t('requests.FinishByUser')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={9}>
-                {t('requests.NotFinishByUser')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={10}>
-                {t('requests.Finished')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={11}>
-                {t('requests.canceled')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={12}>
-                {t('requests.CanceledAfterRejectOffers')}
-              </Radio>
-              <Radio style={{ display: 'block', fontSize }} value={13}>
-                {t('requests.OutOfPossible')}
-              </Radio>
+              {REQUEST_TYPES.map((item: any, index: number) => {
+                return (
+                  <Radio key={index} style={{ display: 'block', fontSize }} value={item.type}>
+                    {t(`requests.${item.name}`)}
+                  </Radio>
+                );
+              })}
             </RadioGroup>
             <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
               <Col>
                 <Button
-                  // disabled={userType === undefined ? true : false}
                   style={{ fontSize, fontWeight: '400' }}
                   size="small"
                   onClick={() => {
@@ -539,6 +508,15 @@ export const Requests: React.FC = () => {
       },
     },
   ].filter(Boolean);
+
+  const typeOfRequests = [
+    { label: t('requests.allRequsets'), value: undefined },
+    { label: t('requests.inProcess'), value: RequestType.InProcess },
+  ];
+
+  const onChange = (key: any) => {
+    key === 'undefined' ? setRequestStatus(undefined) : setRequestStatus(key);
+  };
 
   return (
     <>
@@ -642,26 +620,40 @@ export const Requests: React.FC = () => {
           )}
         </Row>
 
-        <Table
-          pagination={{
-            showSizeChanger: true,
-            onChange: (page: number, pageSize: number) => {
-              setPage(page);
-              setPageSize(pageSize);
-            },
-            current: page,
-            pageSize: pageSize,
-            showQuickJumper: true,
-            responsive: true,
-            showTitle: false,
-            showLessItems: true,
-            total: totalCount || 0,
-            hideOnSinglePage: false,
-          }}
-          columns={columns.map((col) => ({ ...col, width: 'auto' }))}
-          loading={loading}
-          dataSource={dataSource}
-          scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+        {/* Mad */}
+        <Tabs
+          onChange={onChange}
+          type="card"
+          items={typeOfRequests.map((item, i) => {
+            const id = String(item?.value);
+            return {
+              key: id,
+              label: item.label,
+              children: (
+                <Table
+                  pagination={{
+                    showSizeChanger: true,
+                    onChange: (page: number, pageSize: number) => {
+                      setPage(page);
+                      setPageSize(pageSize);
+                    },
+                    current: page,
+                    pageSize: pageSize,
+                    showQuickJumper: true,
+                    responsive: true,
+                    showTitle: false,
+                    showLessItems: true,
+                    total: totalCount || 0,
+                    hideOnSinglePage: false,
+                  }}
+                  columns={columns.map((col) => ({ ...col, width: 'auto' }))}
+                  loading={loading}
+                  dataSource={dataSource}
+                  scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+                />
+              ),
+            };
+          })}
         />
       </Card>
     </>

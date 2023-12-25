@@ -14,6 +14,8 @@ import { EditOutlined } from '@ant-design/icons';
 import { EditContactUs } from '@app/components/modal/EditContactUs';
 import { CreateButtonText } from '../../GeneralStyles';
 import styled from 'styled-components';
+import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE, TIME_HOURS_MINUTES } from '@app/constants/appConstants';
+import dayjs from 'dayjs';
 
 export type specifierType = {
   name: string;
@@ -34,19 +36,8 @@ const ContactUs: React.FC = () => {
   const [contactData, setContacData] = useState<any>();
   const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<any | undefined>(undefined);
-
-  const { refetch, isRefetching } = useQuery(['getContactUs'], () =>
-    getContactUs()
-      .then((data) => {
-        const result = data.data?.result;
-        setContacData(result);
-        setLoading(!data.data?.success);
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-        setLoading(false);
-      }),
-  );
+  const [startDay, setStartDay] = useState<string | undefined>('');
+  const [endDay, setEndDay] = useState<string | undefined>('');
 
   const DetailsRow = styled.div`
     display: flex;
@@ -73,20 +64,18 @@ const ContactUs: React.FC = () => {
     gap: 1.25rem;
     margin: 1.25rem 0.5rem;
   `;
-
-  useEffect(() => {
-    if (isRefetching) {
-      setLoading(true);
-    } else setLoading(false);
-  }, [isRefetching, refetch]);
-
-  useEffect(() => {
-    setLoading(true);
-    refetch();
-    setIsEdit(false);
-  }, [isEdit, refetch, language]);
-
-  const editContactInfo = useMutation((data: any) => UpdateContactUs(data));
+  const { refetch, isRefetching } = useQuery(['getContactUs'], () =>
+    getContactUs()
+      .then((data) => {
+        const result = data.data?.result;
+        setContacData(result);
+        setLoading(!data.data?.success);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+        setLoading(false);
+      }),
+  );
 
   const handleEdit = (data: any) => {
     editContactInfo
@@ -102,9 +91,34 @@ const ContactUs: React.FC = () => {
       });
   };
 
+  const editContactInfo = useMutation((data: any) => UpdateContactUs(data));
+
+  useEffect(() => {
+    if (isRefetching) {
+      setLoading(true);
+    } else setLoading(false);
+  }, [isRefetching, refetch]);
+
+  useEffect(() => {
+    setLoading(true);
+    refetch();
+    setIsEdit(false);
+  }, [isEdit, refetch, language]);
+
   useEffect(() => {
     setIsOpenEditModalForm(editContactInfo.isLoading);
   }, [editContactInfo.isLoading]);
+
+  useEffect(() => {
+    if (contactData) getDaysName();
+  }, [contactData]);
+
+  const getDaysName = () => {
+    const startDay = DAYS_OF_WEEK_NAME.find((item) => contactData?.startDay === item?.day);
+    setStartDay(startDay?.dayName);
+    const endDay = DAYS_OF_WEEK_NAME.find((item) => contactData?.endDay === item?.day);
+    setEndDay(endDay?.dayName);
+  };
 
   return (
     <>
@@ -135,7 +149,7 @@ const ContactUs: React.FC = () => {
               </DetailsRow>
               <DetailsRow key={5}>
                 <DetailsTitle> {t('contactUs.phoneNumber')} </DetailsTitle>
-                <DetailsValue>{contactData?.phoneNumber}</DetailsValue>
+                <DetailsValue>{PHONE_NUMBER_CODE + contactData?.phoneNumber}</DetailsValue>
               </DetailsRow>
               <DetailsRow key={6}>
                 <DetailsTitle> {t('contactUs.facebook')} </DetailsTitle>
@@ -148,6 +162,22 @@ const ContactUs: React.FC = () => {
               <DetailsRow key={8}>
                 <DetailsTitle> {t('contactUs.twitter')} </DetailsTitle>
                 <DetailsValue>{contactData?.twitter}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow key={9}>
+                <DetailsTitle> {t('contactUs.startDate')} </DetailsTitle>
+                <DetailsValue>{t(`contactUs.daysOfWeek.${startDay}`)}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow key={10}>
+                <DetailsTitle> {t('contactUs.endDate')} </DetailsTitle>
+                <DetailsValue>{t(`contactUs.daysOfWeek.${endDay}`)}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow key={11}>
+                <DetailsTitle> {t('contactUs.startTime')} </DetailsTitle>
+                <DetailsValue>{dayjs(contactData?.startTime).format(TIME_HOURS_MINUTES)}</DetailsValue>
+              </DetailsRow>
+              <DetailsRow key={12}>
+                <DetailsTitle> {t('contactUs.endTime')} </DetailsTitle>
+                <DetailsValue>{dayjs(contactData?.endTime).format(TIME_HOURS_MINUTES)}</DetailsValue>
               </DetailsRow>
             </Details>
           </Spinner>

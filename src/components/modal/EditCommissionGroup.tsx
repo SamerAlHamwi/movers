@@ -1,5 +1,5 @@
 import React from 'react';
-import { InputNumber, Modal, Space } from 'antd';
+import { Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -8,7 +8,6 @@ import { EditGroupProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { LanguageType, Point } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 
 export const EditCommissionGroup: React.FC<EditGroupProps> = ({ visible, onCancel, values, onEdit, isLoading }) => {
@@ -21,7 +20,7 @@ export const EditCommissionGroup: React.FC<EditGroupProps> = ({ visible, onCance
   };
 
   const onFinish = (value: any) => {
-    const data = { name: value.name, isDefault: false, id: values.id };
+    const data = { name: value.name, id: values.id, isDefault: values?.isDefault };
     onEdit(data);
   };
 
