@@ -650,7 +650,8 @@
     "enterAddress": "Please Enter The Address",
     "selectSourceType": "Please Choose The Moving Type",
     "atLeastOneAttachment": "At Least Upload One Attachment",
-    "Attachment": "Attachments"
+    "Attachment": "Attachments",
+    "enterDate": "Please Enter The Date"
   },
 
   "_comment18": "*********************************** Branches ************************************************",

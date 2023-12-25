@@ -1,7 +1,7 @@
 import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space, Tree, Tag, DatePicker } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Tree, DatePicker } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
@@ -10,9 +10,7 @@ import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import _ from 'lodash';
 import { ClearOutlined, HomeOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
-import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
@@ -113,20 +111,19 @@ export const EditRequest: React.FC = () => {
   const [selectedRadio, setSelectedRadio] = useState<
     Array<{ attributeForSourcTypeId: number; attributeChoiceId: number }>
   >([]);
+  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   // images state
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
   const [fileList, setFileList] = useState<any[]>([]);
   const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
-    Array<{ attributeChoiceId: number; attachmentIds: number[] }>
+    Array<{ attributeChoiceId: number; attachmentIds: any[] }>
   >([]);
   // multiple attachment in request level state
   const [fileListLength, setFileListLength] = useState(0);
   const [picturesList, setPicturesList] = useState<any[]>([]);
-
   const [validations, setValidations] = useState<boolean>(false);
-  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
 
   const {
     data: dataRequest,
@@ -142,7 +139,7 @@ export const EditRequest: React.FC = () => {
           const result = data.data?.result;
           const imageRequest = data.data?.result.attributeChoiceAndAttachments.map((item: any) => {
             return {
-              attachmentIds: item.attachments.map((attachment: any) => attachment.id),
+              attachmentIds: item.attachments,
               attributeChoiceId: item.attributeChoice.id,
             };
           });
@@ -154,6 +151,8 @@ export const EditRequest: React.FC = () => {
               };
             }),
           );
+          // console.log('imageRequest', imageRequest);
+
           setAttributeChoiceAndAttachments(imageRequest ?? []);
           setRequestData(result);
           setGetRequest(false);
@@ -165,6 +164,8 @@ export const EditRequest: React.FC = () => {
       enabled: getRequest,
     },
   );
+
+  // console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
 
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
@@ -187,17 +188,23 @@ export const EditRequest: React.FC = () => {
 
   useEffect(() => {
     if (selectedRadio?.length > 0) {
-      selectedRadio.map((item) => {
-        getChildAttributeChoice(item.attributeChoiceId)
-          .then((data) => {
-            const items = data?.data?.result?.items || [];
-            setChildAttributeChoices(items);
-          })
-          .catch((error) => {
-            message.open(error);
+      const fetchData = async () => {
+        try {
+          const promises = selectedRadio.map(async (item) => {
+            const data = await getChildAttributeChoice(item.attributeChoiceId);
+            return data?.data?.result?.items || [];
           });
-        return item;
-      });
+
+          const results = await Promise.all(promises);
+          const flattenedItems = results.flat();
+
+          setChildAttributeChoices(flattenedItems);
+        } catch (error: any) {
+          message.open(error);
+        }
+      };
+
+      fetchData();
     }
   }, [selectedRadio]);
 
@@ -290,11 +297,10 @@ export const EditRequest: React.FC = () => {
   }, [RequestData]);
 
   const filterImage = (attributeId: number) => {
-    const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
     let imagesData: Array<any> = [];
-    attributeAndAttachments.map((attribute: any) => {
-      if (attribute.attributeChoice.id === attributeId) {
-        const temp = attribute.attachments.map((attachment: any) => ({
+    attributeChoiceAndAttachments.map((attribute: any) => {
+      if (attribute.attributeChoiceId === attributeId) {
+        const temp = attribute.attachmentIds.map((attachment: any) => ({
           attributeId: attributeId,
           id: attachment.id,
           url: attachment.url || attachment.lowResolutionPhotoUrl,
@@ -337,10 +343,7 @@ export const EditRequest: React.FC = () => {
                 title: (
                   <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
                     <Image src={service?.attachment?.url} width={16} height={16} />
-                    <span style={{ fontWeight: 'bold' }}>
-                      {subService?.id}
-                      {subService?.name}
-                    </span>
+                    <span style={{ fontWeight: 'bold' }}>{subService?.name}</span>
                   </span>
                 ),
                 key:
@@ -452,7 +455,6 @@ export const EditRequest: React.FC = () => {
 
     // services
     function extractServicesIds(input: any) {
-      // requestServices = [];
       input.map((obj: any) => {
         const parts = obj.split(' ');
         let result = {};
@@ -478,39 +480,53 @@ export const EditRequest: React.FC = () => {
         return result;
       });
     }
-    // console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
-    // console.log('fileList', fileList);
 
     extractServicesIds(requestServices.length == 0 ? defaultCheckedServices : requestServicesArray);
 
     // attributeChoiceAndAttachments
     const attachmentIds = fileList.map((file) => file.uid);
-    const y = [
-      {
-        attributeChoiceId: null,
-        attachmentIds: attachmentIds,
-      },
-    ];
-    const allAttachments = [...y, ...attributeChoiceAndAttachments];
+    const y =
+      attachmentIds.length > 0
+        ? [
+            {
+              attributeChoiceId: null,
+              attachmentIds: attachmentIds,
+            },
+          ]
+        : [];
 
-    console.log('requestServices', requestServices);
+    const x: { attributeChoiceId: number; attachmentIds: any[] }[] = [];
+    attributeChoiceAndAttachments.forEach((item) => {
+      const existingEntry = x.find((entry) => entry.attributeChoiceId === item.attributeChoiceId);
+
+      if (existingEntry) {
+        existingEntry.attachmentIds = existingEntry.attachmentIds.concat(
+          item.attachmentIds.map((id) => (typeof id === 'number' ? id : id.id)),
+        );
+      } else {
+        x.push({
+          attributeChoiceId: item.attributeChoiceId,
+          attachmentIds: item.attachmentIds.map((id) => (typeof id === 'number' ? id : id.id)),
+        });
+      }
+    });
+    const allAttachments = [...y, ...x];
+
     requestData = {
       sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
-      // moveAtUtc:
-      //   form.getFieldValue('moveAtUtc') == undefined
-      //     ? RequestData?.moveAtUtc
-      //     : form.getFieldValue('moveAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      moveAtUtc:
+        form.getFieldValue('moveAtUtc') == undefined ? RequestData?.moveAtUtc : form.getFieldValue('moveAtUtc'),
       sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
       sourceAddress:
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
           : form.getFieldValue('sourceAddress'),
-      // arrivalAtUtc:
-      //   form.getFieldValue('arrivalAtUtc') == undefined
-      //     ? RequestData?.arrivalAtUtc
-      //     : form.getFieldValue('arrivalAtUtc').format('YYYY-MM-DDTHH:mm:ss'),
+      arrivalAtUtc:
+        form.getFieldValue('arrivalAtUtc') == undefined
+          ? RequestData?.arrivalAtUtc
+          : form.getFieldValue('arrivalAtUtc'),
       destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity.id : cityId.destination,
       destinationAddress:
         form.getFieldValue('destinationAddress') == undefined
@@ -529,10 +545,10 @@ export const EditRequest: React.FC = () => {
       id: requestId,
     };
     setValidations(true);
-    console.log(requestData);
   };
 
-  // console.log('validations', validations);
+  console.log('attributeChoiceAndAttachments', attributeChoiceAndAttachments);
+
   useEffect(() => {
     if (validations) {
       const showError = (messageText: string) => {
@@ -550,37 +566,28 @@ export const EditRequest: React.FC = () => {
         return true;
       };
 
-      console.log('requestServices', requestServices);
-      // console.log('defaultCheckedServices', defaultCheckedServices);
-      if (requestServices.length === 0 && defaultCheckedServices.length === 0) {
+      if (requestServices.length === 0) {
         showError(t('requests.atLeastOneService'));
-      } else if (attributeChoiceAndAttachments.length === 0 || fileList.length === 0) {
+      } else if (attributeChoiceAndAttachments.length === 0) {
         showError(t('addRequest.atLeastOneAttachment'));
-        // } else if (valueRadio === 0) {
-        // showError(t('addRequest.selectServiceType'));
       } else if (
         !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
         !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
         !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField('sourceAddress', t('addRequest.enterAddress')) ||
-        !checkField('destinationAddress', t('addRequest.enterAddress'))
+        !checkField('destinationAddress', t('addRequest.enterAddress')) ||
+        !checkField('moveAtUtc', t('addRequest.enterDate')) ||
+        !checkField('arrivalAtUtc', t('addRequest.enterDate'))
       ) {
         return;
-        // } else if (cityId.source === '0' || cityId.destination === '0') {
-        //   showError(t('addRequest.enterCity'));
       } else {
         updateRequestMutation.mutateAsync(requestData);
         requestServices = [];
         requestServicesArray = [];
-        // setValidations(false);
       }
-      // setValidations(true);
     }
   }, [validations]);
-
-  // console.log('requestServices', requestServices);
-  // console.log('defaultCheckedServices', defaultCheckedServices);
 
   const uploadButtonForAllRequest = (
     <div>
@@ -635,28 +642,6 @@ export const EditRequest: React.FC = () => {
     updateFormValues();
   }, [RequestData, form]);
 
-  useEffect(() => {
-    attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => {
-      sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => {
-        if (
-          RequestData?.attributeForSourceTypeValues.find(
-            (value: any) => value?.attributeForSourcType?.id === sourceTypeItem.id,
-          )?.attributeChoice.id === parentAttributeChoice.id
-        ) {
-          // setMaher((prev) => {
-          //   return prev.concat([
-          //     {
-          //       parentId: sourceTypeItem.id,
-          //       childId: parentAttributeChoice.id,
-          //       isChange: true,
-          //     },
-          //   ]);
-          // });
-        }
-      });
-    });
-  }, [attributeForSourceTypesData, RequestData]);
-
   const addImageToState = (data: any) => {
     const tempAttribute = _.cloneDeep(attributeChoiceAndAttachments);
     const findAttribute = tempAttribute.findIndex((item) => item.attributeChoiceId === data.attributeId);
@@ -709,14 +694,16 @@ export const EditRequest: React.FC = () => {
   ) => {
     const tempAttachment = _.cloneDeep(attributeChoiceAndAttachments);
     const tempUrl = _.cloneDeep(url);
-
     const attributeIndex = tempAttachment.findIndex((item) => item.attributeChoiceId === attributeId);
+
     if (attributeIndex !== -1) {
-      const newAttachments = tempAttachment[attributeIndex].attachmentIds.filter((item) => item !== imageId);
+      const newAttachments = tempAttachment[attributeIndex].attachmentIds.filter((item) => item.id !== imageId);
       tempAttachment[attributeIndex].attachmentIds = newAttachments;
       const filteredUrl = tempUrl.filter((item) => item.id !== imageId);
+      const updateedImages = tempAttachment.filter((item) => item.attachmentIds.length !== 0);
+
       setUrl(filteredUrl);
-      setAttributeChoiceAndAttachments(tempAttachment);
+      setAttributeChoiceAndAttachments(updateedImages);
     }
   };
 
@@ -882,7 +869,7 @@ export const EditRequest: React.FC = () => {
                     <UploadImageRequest
                       item={item}
                       uploadImageAction={uploadImageAction}
-                      images={filterImage(item.id)}
+                      images={filterImage(item.id) ?? []}
                       handleDeleteImage={handleDeleteImage}
                       previewOpen={previewOpen}
                       previewTitle={previewTitle}
@@ -1024,7 +1011,7 @@ export const EditRequest: React.FC = () => {
                 <Input defaultValue={RequestData.sourceAddress} />
               </BaseForm.Item>
               <BaseForm.Item
-                // name="moveAtUtc"
+                name="moveAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1036,10 +1023,11 @@ export const EditRequest: React.FC = () => {
                     ? { width: '100%', marginBottom: '5rem' }
                     : {}
                 }
+                valuePropName="data"
               >
                 <DatePicker
                   style={{ width: '100%' }}
-                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : undefined}
+                  defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : moment()}
                 />
               </BaseForm.Item>
               <div
@@ -1142,7 +1130,7 @@ export const EditRequest: React.FC = () => {
                 <Input defaultValue={RequestData.destinationAddress} />
               </BaseForm.Item>
               <BaseForm.Item
-                // name="arrivalAtUtc"
+                name="arrivalAtUtc"
                 label={<LableText>{t('addRequest.date')}</LableText>}
                 rules={[
                   { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
@@ -1154,6 +1142,7 @@ export const EditRequest: React.FC = () => {
                     ? { width: '100%', marginBottom: '5rem' }
                     : {}
                 }
+                valuePropName="data"
               >
                 <DatePicker
                   style={{ width: '100%' }}
