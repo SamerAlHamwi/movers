@@ -337,7 +337,9 @@
     "noReviews": "There Are No Reviews From Clients",
     "typeMove": "Type Of Moving",
     "EditCompany": "Edit Company Information",
-    "editeCompanySuccessMessage": "The Company Has Been Edited Successfully"
+    "editeCompanySuccessMessage": "The Company Has Been Edited Successfully",
+    "returnCompanySuccessMessage": "The Company Has Been Returned Successfully",
+    "RejectedNeedToEdit": "Company Has Been Returned"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -605,9 +607,11 @@
     "sendRejectRequestReason": "Send Reason For The Reject Request To User",
     "sendReturnRequestReason": "Send Reason For The Return Request To User",
     "sendReturnOfferReason": "Send Reason For The Return Offer To The Provider",
+    "sendReturnCompanyReason": "Send Reason For The Return Company",
     "reasonRefuseRequest": "The Reason For Rejecting The Request",
     "reasonReturnRequest": "The Reason For Returning The Request",
     "reasonReturnOffer": "The Reason For Returning The Offer",
+    "reasonReturnCompany": "The Reason For Returning The Company",
     "additionalAttachments": "Additional Attachments",
     "noAttachments": "There Are No Attachments For This Item",
     "offerDetails": "Offer Details",

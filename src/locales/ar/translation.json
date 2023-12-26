@@ -339,7 +339,9 @@
     "noReviews": "لا يوجد مراجعات من المستخدمين",
     "typeMove": "طريقة النقل",
     "EditCompany": "تعديل معلومات الشركة",
-    "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح"
+    "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح",
+    "returnCompanySuccessMessage": "تم إعادة طلب تسجيل الشركة بنجاح",
+    "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الشركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -602,10 +604,12 @@
     "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل",
     "sendRejectRequestReason": "إرسال سبب رفض الطلب إلى المستخدم",
     "sendReturnRequestReason": "إرسال سبب إعادة الطلب إلى المستخدم",
-    "sendReturnOfferReason": "إرسال سبب إعادة عرض السعر إلى مُقدِمه",
+    "sendReturnOfferReason": "إرسال سبب إعادة طلب التسجيل إلى الشركة",
+    "sendReturnCompanyReason": "إرسال سبب إعادة عرض السعر إلى مُقدِمه",
     "reasonRefuseRequest": "سبب رفض طلب النقل",
     "reasonReturnRequest": "سبب إعادة طلب النقل",
     "reasonReturnOffer": "سبب إعادة طلب عرض السعر",
+    "reasonReturnCompany": "سبب إعادة طلب تسجيل شركة",
     "additionalAttachments": "صور إضافية",
     "noAttachments": "لم يتم رفع صور لهذا العنصر",
     "offerDetails": "تفاصيل عرض السعر",
