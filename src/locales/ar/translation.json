@@ -339,7 +339,8 @@
     "noReviews": "لا يوجد مراجعات من المستخدمين",
     "typeMove": "طريقة النقل",
     "EditCompany": "تعديل معلومات الشركة",
-    "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح"
+    "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح",
+    "allCompanies": "كل الشركات"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -999,6 +1000,17 @@
     "OnHim": "المال له"
   },
 
+  "paymentPrivacy": {
+    "paymentPrivacyList": "لائحة خصوصية الدفع",
+    "addPrivacy": "إضافة خصوصية الدفع",
+    "editPrivacySuccessMessage": "تم تعديل خصوصية الدفع بنجاح",
+    "deletePrivacySuccessMessage": "تم حذف خصوصية الدفع بنجاح",
+    "addPrivacySuccessMessage": "تمت إضافة خصوصية الدفع بنجاح",
+    "deletePrivacytModalTitle": "حذف هذه السياسة",
+    "editPrivacyModalTitle": "تعديل خصوصية الدفع",
+    "deletePrivacyModalDescription": "هل أنت متأكد من حذف هذه السياسة؟"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "غو موفارو",
@@ -1050,7 +1062,8 @@
     "CommissionGroups": "مجموعات العمولة",
     "FeaturedBundles": "الباقات المُمَيِزة",
     "ApplicationsVersions": "إصدارات التطبيقات",
-    "Payments": "المدفوعات"
+    "Payments": "المدفوعات",
+    "PaymentPrivacy": "خصوصية الدفع"
   },
 
   "header": {

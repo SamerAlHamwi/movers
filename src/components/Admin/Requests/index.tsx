@@ -699,7 +699,6 @@ export const Requests: React.FC = () => {
           )}
         </Row>
 
-        {/* Mad */}
         <Tabs
           onChange={onChange}
           type="card"

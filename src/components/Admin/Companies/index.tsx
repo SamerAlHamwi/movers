@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, message, Radio, RadioChangeEvent, Row, Space, Tag, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Row, Space, Tabs, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -41,6 +41,7 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
+import { CompanyStatus } from '@app/constants/enums/companyStatues';
 
 interface CompanyRecord {
   id: number;
@@ -290,6 +291,11 @@ export const Companies: React.FC = () => {
         message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
       });
   };
+
+  const typeOfComapnies = [
+    { label: t('companies.allCompanies'), value: undefined },
+    { label: t('companies.rejectedNeedToEdit'), value: CompanyStatus.RejectedNeedToEdit },
+  ];
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -550,6 +556,10 @@ export const Companies: React.FC = () => {
     },
   ].filter(Boolean);
 
+  const onChange = (key: any) => {
+    key === 'undefined' ? setCompanyStatus(undefined) : setCompanyStatus(key);
+  };
+
   return (
     <>
       <Card
@@ -677,28 +687,41 @@ export const Companies: React.FC = () => {
           ) : null}
         </Row>
 
-        <Table
-          pagination={{
-            showSizeChanger: true,
-            onChange: (page: number, pageSize: number) => {
-              setPage(page);
-              setPageSize(pageSize);
-            },
-            current: page,
-            pageSize: pageSize,
-            showQuickJumper: true,
-            responsive: true,
-            showTitle: false,
-            showLessItems: true,
-            total: totalCount || 0,
-            hideOnSinglePage: false,
-          }}
-          columns={columns.map((col) => ({ ...col, width: 'auto' }))}
-          loading={loading}
-          dataSource={dataSource}
-          scroll={{ x: isTablet || isMobile ? 950 : 800 }}
-          rowKey={(record: CompanyRecord) => record.id.toString()}
-          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
+        <Tabs
+          onChange={onChange}
+          type="card"
+          items={typeOfComapnies.map((item, i) => {
+            const id = String(item?.value);
+            return {
+              key: id,
+              label: item.label,
+              children: (
+                <Table
+                  pagination={{
+                    showSizeChanger: true,
+                    onChange: (page: number, pageSize: number) => {
+                      setPage(page);
+                      setPageSize(pageSize);
+                    },
+                    current: page,
+                    pageSize: pageSize,
+                    showQuickJumper: true,
+                    responsive: true,
+                    showTitle: false,
+                    showLessItems: true,
+                    total: totalCount || 0,
+                    hideOnSinglePage: false,
+                  }}
+                  columns={columns.map((col) => ({ ...col, width: 'auto' }))}
+                  loading={loading}
+                  dataSource={dataSource}
+                  scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+                  rowKey={(record: CompanyRecord) => record.id.toString()}
+                  rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
+                />
+              ),
+            };
+          })}
         />
       </Card>
     </>

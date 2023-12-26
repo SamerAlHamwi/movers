@@ -20,6 +20,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
   onEdit,
   Priv_values,
   isLoading,
+  title,
 }) => {
   const { t } = useTranslation();
   const [form] = BaseForm.useForm();
@@ -79,7 +80,8 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('privacyPolicy.editPrivacyModalTitle')}
+          {/* {t('privacyPolicy.editPrivacyModalTitle')} */}
+          {t(`${title}`)}
         </div>
       }
       onCancel={onCancel}

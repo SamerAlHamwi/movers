@@ -27,6 +27,7 @@ import {
   CloudUploadOutlined,
   SyncOutlined,
   WalletOutlined,
+  SafetyOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -160,13 +161,19 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     title: 'sidebarNavigation.PrivacyPolicy',
     key: 'PrivacyPolicy',
     url: `/PrivacyPolicy`,
-    icon: <FileProtectOutlined />,
+    icon: <SafetyCertificateOutlined />,
+  },
+  {
+    title: 'sidebarNavigation.PaymentPrivacy',
+    key: 'PaymentPrivacy',
+    url: `/PaymentPrivacy`,
+    icon: <SafetyOutlined />,
   },
   {
     title: 'sidebarNavigation.Terms',
     key: 'Term',
     url: `/Terms`,
-    icon: <SafetyCertificateOutlined />,
+    icon: <FileProtectOutlined />,
   },
   {
     title: 'sidebarNavigation.FrequentlyQuestions',
