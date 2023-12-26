@@ -154,20 +154,18 @@ export const PossibleClients: React.FC = () => {
         }
       >
         <Row justify={'end'} align={'middle'}>
-          <>
-            <Btn
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-              }}
-              type="ghost"
-              onClick={() => Navigate(-1)}
-              icon={<LeftOutlined />}
-            >
-              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-            </Btn>
-            <ReloadBtn setRefetchData={setRefetchData} />
-          </>
+          <Btn
+            style={{
+              marginBottom: '.5rem',
+              width: 'auto',
+            }}
+            type="ghost"
+            onClick={() => Navigate(-1)}
+            icon={<LeftOutlined />}
+          >
+            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+          </Btn>
+          <ReloadBtn setRefetchData={setRefetchData} />
         </Row>
 
         <Table

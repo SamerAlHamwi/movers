@@ -2,10 +2,10 @@ import { httpApi } from '@app/api/httpApi';
 import { PrivacyPolicy } from '@app/components/Admin/PrivacyPolicy';
 import apiPrefix from '@app/constants/apiPrefix';
 
-const getAllprivacy = async (page: number, pageSize: number, search: string) => {
+const getAllprivacy = async (page: number, pageSize: number, search: string, IsForMoney: boolean) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.privacyPolicy}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
+    `${apiPrefix.privacyPolicy}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&IsForMoney=${IsForMoney}`,
   );
 };
 

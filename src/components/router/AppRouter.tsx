@@ -33,6 +33,7 @@ const Notifications = lazy(() => import('@app/pages/OtherPages/NotificationsPage
 const Terms = lazy(() => import('@app/pages/OtherPages/TermPage'));
 const ContactusPage = lazy(() => import('@app/pages/OtherPages/ContactUsPage'));
 const PrivacyPolicy = lazy(() => import('@app/pages/OtherPages/PrivacyPolicyPage'));
+const PaymentPrivacy = lazy(() => import('@app/pages/OtherPages/PaymentPrivacyPage'));
 const RolePage = lazy(() => import('@app/pages/OtherPages/RolesPage'));
 const RequestPage = lazy(() => import('@app/pages/RequestsPages/RequestsPage'));
 const RequestDetailPage = lazy(() => import('@app/pages/RequestsPages/RequestDetailsPage'));
@@ -88,6 +89,7 @@ const NotificationsPage = withLoading(Notifications);
 const TermsPage = withLoading(Terms);
 const ContactUsPage = withLoading(ContactusPage);
 const PrivacyPolicyPage = withLoading(PrivacyPolicy);
+const PaymentPrivacyPage = withLoading(PaymentPrivacy);
 const RolesPage = withLoading(RolePage);
 const RequestsPage = withLoading(RequestPage);
 const RequestDetailsPage = withLoading(RequestDetailPage);
@@ -676,6 +678,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1]]}>
                 <PrivacyPolicyPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="PaymentPrivacy"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <PaymentPrivacyPage />
               </PrivateRoute>
             }
           />

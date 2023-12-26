@@ -17,6 +17,7 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
   onCreateprivacy,
   onCancel,
   isLoading,
+  title,
 }) => {
   const { isDesktop, isTablet } = useResponsive();
   const [form] = BaseForm.useForm();
@@ -50,11 +51,7 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
       style={{ marginTop: '-4rem' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
-      title={
-        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {t('privacyPolicy.addPrivacyModalTitle')}
-        </div>
-      }
+      title={<div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t(`${title}`)}</div>}
       onCancel={onCancel}
       maskClosable={true}
       footer={

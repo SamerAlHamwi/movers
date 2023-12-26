@@ -34,7 +34,7 @@ export type PrivacyPolicy = {
   isForMoney: boolean;
 };
 
-export const PrivacyPolicy: React.FC = () => {
+const PaymentPolicy = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -56,12 +56,13 @@ export const PrivacyPolicy: React.FC = () => {
   const [refetchData, setRefetchData] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(
-    ['PrivacyPolicy', page, isDelete, pageSize, refetchOnAdd],
+    ['PaymentPrivacy', page, isDelete, pageSize, refetchOnAdd],
     () =>
-      getAllprivacy(page, pageSize, searchString, false)
+      getAllprivacy(page, pageSize, searchString, true)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
+          console.log('results', result);
           result?.forEach((element: PrivacyPolicy) => {
             const enTranslationIndex = element.translations?.findIndex(
               (translation: Translation) => translation.language === 'en',
@@ -84,9 +85,10 @@ export const PrivacyPolicy: React.FC = () => {
   );
 
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
-    createPrivacy(data)
+    createPrivacy({ ...data, isForMoney: true })
       .then((data) => {
-        notificationController.success({ message: t('privacyPolicy.addPrivacySuccessMessage') });
+        console.log('data', data);
+        notificationController.success({ message: t('paymentPrivacy.addPrivacySuccessMessage') });
         setRefetchOnAdd(data.data?.success);
       })
       .catch((error) => {
@@ -100,7 +102,7 @@ export const PrivacyPolicy: React.FC = () => {
         data.data?.success &&
           (setIsDelete(data.data?.success),
           message.open({
-            content: <Alert message={t('privacyPolicy.deletePrivacySuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('paymentPrivacy.deletePrivacySuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error: any) => {
@@ -110,7 +112,7 @@ export const PrivacyPolicy: React.FC = () => {
       }),
   );
 
-  const editprivacy = useMutation((data: PrivacyPolicy) => Updateprivacy(data));
+  const editprivacy = useMutation((data: PrivacyPolicy) => Updateprivacy({ ...data, isForMoney: true }));
 
   const handleEdit = (data: PrivacyPolicy, id: number) => {
     editprivacy
@@ -118,11 +120,13 @@ export const PrivacyPolicy: React.FC = () => {
       .then((data) => {
         setIsEdit(data.data?.success);
         message.open({
-          content: <Alert message={t(`privacyPolicy.editPrivacySuccessMessage`)} type={`success`} showIcon />,
+          content: <Alert message={t(`paymentPrivacy.editPrivacySuccessMessage`)} type={`success`} showIcon />,
         });
       })
       .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
+        message.open({
+          content: <Alert message={error.error?.message || error.message} type={`error`} showIcon />,
+        });
       });
   };
 
@@ -235,7 +239,7 @@ export const PrivacyPolicy: React.FC = () => {
   return (
     <>
       <Card
-        title={t('privacyPolicy.PrivacyList')}
+        title={t('paymentPrivacy.paymentPrivacyList')}
         padding={
           privacyData?.length === 0 || privacyData === undefined || (page === 1 && totalCount <= pageSize)
             ? '1.25rem 1.25rem 1.25rem'
@@ -252,7 +256,7 @@ export const PrivacyPolicy: React.FC = () => {
             }}
             onClick={() => setIsOpenPushModalForm(true)}
           >
-            <CreateButtonText>{t('privacyPolicy.addPrivacy')}</CreateButtonText>
+            <CreateButtonText>{t('paymentPrivacy.addPrivacy')}</CreateButtonText>
           </Button>
           <ReloadBtn setRefetchData={setRefetchData} />
           {/* Add */}
@@ -264,7 +268,7 @@ export const PrivacyPolicy: React.FC = () => {
                 pushprivacy.mutateAsync(data);
               }}
               isLoading={pushprivacy.isLoading}
-              title="privacyPolicy.addPrivacyModalTitle"
+              title="paymentPrivacy.addPrivacy"
             />
           )}
 
@@ -276,7 +280,7 @@ export const PrivacyPolicy: React.FC = () => {
               onCancel={() => setIsOpenEditModalForm(false)}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
               isLoading={editprivacy.isLoading}
-              title="privacyPolicy.editPrivacyModalTitle"
+              title="paymentPrivacy.editPrivacyModalTitle"
             />
           )}
 
@@ -289,10 +293,10 @@ export const PrivacyPolicy: React.FC = () => {
                 deletemodaldata !== undefined && handleDelete(deletemodaldata.id);
               }}
               width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('privacyPolicy.deletePrivacytModalTitle')}
+              title={t('paymentPrivacy.deletePrivacytModalTitle')}
               okText={t('common.delete')}
               cancelText={t('common.cancel')}
-              description={t('privacyPolicy.deletePrivacyModalDescription')}
+              description={t('paymentPrivacy.deletePrivacyModalDescription')}
               isDanger={true}
               isLoading={deleteprivacy.isLoading}
             />
@@ -325,3 +329,5 @@ export const PrivacyPolicy: React.FC = () => {
     </>
   );
 };
+
+export default PaymentPolicy;

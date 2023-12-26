@@ -338,6 +338,7 @@
     "typeMove": "Type Of Moving",
     "EditCompany": "Edit Company Information",
     "editeCompanySuccessMessage": "The Company Has Been Edited Successfully",
+    "allCompanies": "All Companies",
     "returnCompanySuccessMessage": "The Company Has Been Returned Successfully",
     "RejectedNeedToEdit": "Company Has Been Returned"
   },
@@ -1008,6 +1009,17 @@
     "OnHim": "He paid the money"
   },
 
+  "paymentPrivacy": {
+    "paymentPrivacyList": "Payment Privacy List",
+    "addPrivacy": "Add Payment Privacy",
+    "editPrivacySuccessMessage": "The Payment Privacy Has Been Edited Successfully",
+    "deletePrivacySuccessMessage": "The Payment Privacy Has Been Deleted Successfully",
+    "addPrivacySuccessMessage": "The Payment Policy Has Been Added Successfully",
+    "deletePrivacytModalTitle": "Payment Privacy Reason",
+    "editPrivacyModalTitle": "Edit Payment Privacy",
+    "deletePrivacyModalDescription": "Are You Sure To Delete This Payment Privacy?"
+  },
+
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
     "Brand": "Go Movaro",
@@ -1060,7 +1072,8 @@
     "CommissionGroups": "Commission Groups",
     "FeaturedBundles": "Featured Bundles",
     "ApplicationsVersions": "Applications Versions",
-    "Payments": "Payments"
+    "Payments": "Payments",
+    "PaymentPrivacy": "Payment Privacy"
   },
 
   "header": {

@@ -332,7 +332,7 @@ export const AddBranch: React.FC = () => {
             style={{
               margin: '0 0rem .5rem 0',
               width: 'auto',
-              height: 'auto',
+              // height: 'auto',
             }}
             onClick={() => next()}
           >
@@ -345,7 +345,7 @@ export const AddBranch: React.FC = () => {
             style={{
               margin: '0 .5rem .5rem 0',
               width: 'auto',
-              height: 'auto',
+              // height: 'auto',
             }}
             htmlType="submit"
             disabled={addBranch.isLoading}

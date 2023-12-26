@@ -697,7 +697,6 @@ export const Requests: React.FC = () => {
           )}
         </Row>
 
-        {/* Table */}
         <Tabs
           onChange={onChange}
           type="card"
