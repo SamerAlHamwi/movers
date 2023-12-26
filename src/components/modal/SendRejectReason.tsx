@@ -23,8 +23,6 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
     onCreate(info);
   };
 
-  console.log(type);
-
   return (
     <Modal
       style={{ marginTop: '0rem' }}
@@ -32,7 +30,13 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
         <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {type == 'reject' ? t('requests.sendRejectReason') : t('requests.sendReturnReason')}
+          {type == 'rejectRequest'
+            ? t('requests.sendRejectRequestReason')
+            : type == 'returnRequest'
+            ? t('requests.sendReturnRequestReason')
+            : type == 'returnOffer'
+            ? t('requests.sendReturnOfferReason')
+            : ''}
         </div>
       }
       onCancel={onCancel}
@@ -44,7 +48,15 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
               <P1>{t('common.cancel')}</P1>
             </Button>
             <Button type="primary" style={{ height: 'auto' }} loading={isLoading} key="add" onClick={onOk}>
-              <P1>{type == 'reject' ? t('requests.sendRejectReason') : t('requests.sendReturnReason')}</P1>
+              <P1>
+                {type == 'rejectRequest'
+                  ? t('requests.sendRejectRequestReason')
+                  : type == 'returnRequest'
+                  ? t('requests.sendReturnRequestReason')
+                  : type == 'returnOffer'
+                  ? t('requests.sendReturnOfferReason')
+                  : ''}
+              </P1>
             </Button>
           </Space>
         </BaseForm.Item>
@@ -53,7 +65,17 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
       <BaseForm form={form} onFinish={onFinish} name="SearchForUserForm">
         <BaseForm.Item
           name="reasonRefuse"
-          label={<LableText>{type == 'reject' ? t(`requests.reasonRefuse`) : t('requests.reasonReturn')}</LableText>}
+          label={
+            <LableText>
+              {type == 'rejectRequest'
+                ? t(`requests.reasonRefuseRequest`)
+                : type == 'returnRequest'
+                ? t('requests.reasonReturnRequest')
+                : type == 'returnOffer'
+                ? t('requests.reasonReturnOffer')
+                : ''}
+            </LableText>
+          }
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

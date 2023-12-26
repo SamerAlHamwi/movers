@@ -11,7 +11,7 @@ const getAllOffers = async (
 ) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(
-    `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&RequestId=${requestId}&CompanyId=${companyId}&CompanyBranchId=${branchId}`,
+    `${apiPrefix.offers}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&Statues=1&RequestId=${requestId}&CompanyId=${companyId}&CompanyBranchId=${branchId}`,
   );
 };
 
@@ -30,4 +30,8 @@ const sendForUser = async (data: any) => {
   return await httpApi.post(`${apiPrefix.offers}/ApproveOfferToSendItToUser`, data);
 };
 
-export { getAllOffers, getrejectedOffers, getOfferById, sendForUser };
+const returnOfferToProvider = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.offers}/RejectOfferToEditItByAdmin`, data);
+};
+
+export { getAllOffers, getrejectedOffers, getOfferById, sendForUser, returnOfferToProvider };

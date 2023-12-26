@@ -404,6 +404,11 @@ export const Companies: React.FC = () => {
                 {t('companies.rejected')}
               </Tag>
             )}
+            {record.statues === 4 && (
+              <Tag key={record?.id} color="#ba4e63" style={{ padding: '4px' }}>
+                {t('requests.RejectedNeedToEdit')}
+              </Tag>
+            )}
           </>
         );
       },
@@ -634,7 +639,6 @@ export const Companies: React.FC = () => {
               okText={t('common.approve')}
               cancelText={t('common.cancel')}
               description={t('companies.approvecompanyModalDescription')}
-              // isDanger={true}
               isLoading={approveCompany.isLoading}
             />
           )}
@@ -652,7 +656,6 @@ export const Companies: React.FC = () => {
               okText={t('common.reject')}
               cancelText={t('common.cancel')}
               description={t('companies.rejectcompanyModalDescription')}
-              // isDanger={true}
               isLoading={approveCompany.isLoading}
             />
           )}

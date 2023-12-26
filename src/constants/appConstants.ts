@@ -1,6 +1,6 @@
 import { CompanyStatus } from './enums/companyStatues';
 import { DayOfWeek } from './enums/dayOfWeek';
-import { RequestType } from './enums/requestTypes';
+import { RequestStatus } from './enums/requestStatus';
 
 export const AR = 'ar';
 export const EN = 'en';
@@ -20,20 +20,22 @@ export const DAYS_OF_WEEK_NAME = [
 
 export const TIME_HOURS_MINUTES = 'HH:mm:ss';
 
-export const REQUEST_TYPES = [
-  { type: RequestType.Checking, name: 'checking' },
-  { type: RequestType.Approved, name: 'approved' },
-  { type: RequestType.Rejected, name: 'rejected' },
-  { type: RequestType.Possible, name: 'possible' },
-  { type: RequestType.HasOffers, name: 'hasOffers' },
-  { type: RequestType.InProcess, name: 'inProcess' },
-  { type: RequestType.FinishByCompany, name: 'FinishByCompany' },
-  { type: RequestType.FinishByUser, name: 'FinishByUser' },
-  { type: RequestType.NotFinishByUser, name: 'NotFinishByUser' },
-  { type: RequestType.Finished, name: 'Finished' },
-  { type: RequestType.Canceled, name: 'canceled' },
-  { type: RequestType.CanceledAfterRejectOffers, name: 'CanceledAfterRejectOffers' },
-  { type: RequestType.OutOfPossible, name: 'OutOfPossible' },
+export const REQUEST_STATUS = [
+  { type: RequestStatus.Checking, name: 'checking' },
+  { type: RequestStatus.Approved, name: 'approved' },
+  { type: RequestStatus.Rejected, name: 'rejected' },
+  { type: RequestStatus.Possible, name: 'possible' },
+  { type: RequestStatus.HasOffers, name: 'hasOffers' },
+  { type: RequestStatus.InProcess, name: 'inProcess' },
+  { type: RequestStatus.FinishByCompany, name: 'FinishByCompany' },
+  { type: RequestStatus.FinishByUser, name: 'FinishByUser' },
+  { type: RequestStatus.NotFinishByUser, name: 'NotFinishByUser' },
+  { type: RequestStatus.Finished, name: 'Finished' },
+  { type: RequestStatus.Canceled, name: 'canceled' },
+  { type: RequestStatus.CanceledAfterRejectOffers, name: 'CanceledAfterRejectOffers' },
+  { type: RequestStatus.OutOfPossible, name: 'OutOfPossible' },
+  { type: RequestStatus.CanceledAfterInProcess, name: 'CanceledAfterInProcess' },
+  { type: RequestStatus.RejectedNeedToEdit, name: 'RejectedNeedToEdit' },
 ];
 
 export const COMPANY_STATUS_NAMES = [

@@ -1,4 +1,4 @@
-export enum RequestType {
+export enum RequestStatus {
   Checking = 1,
   Approved = 2,
   Rejected = 3,
@@ -12,4 +12,6 @@ export enum RequestType {
   Canceled = 11,
   CanceledAfterRejectOffers = 12,
   OutOfPossible = 13,
+  CanceledAfterInProcess = 14,
+  RejectedNeedToEdit = 15,
 }
