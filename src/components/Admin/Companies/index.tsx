@@ -117,11 +117,6 @@ export const Companies: React.FC = () => {
     },
   );
 
-  // console.log('totalCount', totalCount);
-  // console.log('type', type);
-  // console.log('requestId', requestId);
-  console.log('requestId', type !== 'companiesThatBoughtInfo' && requestId === undefined);
-
   const { refetch: refetchCompaniesThatBoughtInfo, isRefetching: isRefetchingCompaniesThatBoughtInfo } = useQuery(
     ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
     () =>
@@ -145,7 +140,7 @@ export const Companies: React.FC = () => {
     if (isRefetching) {
       setLoading(true);
     } else setLoading(false);
-  }, [isRefetching, refetch]);
+  }, [isRefetching, isRefetchingCompaniesThatBoughtInfo, refetch, refetchCompaniesThatBoughtInfo]);
 
   useEffect(() => {
     setLoading(true);

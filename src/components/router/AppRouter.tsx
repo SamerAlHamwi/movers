@@ -134,8 +134,7 @@ export const AppRouter: React.FC = () => {
   );
 
   return (
-    // <BrowserRouter>
-    <HashRouter>
+    <BrowserRouter>
       <Routes>
         <Route path={'/'} element={protectedLayout}>
           <Route
@@ -757,7 +756,6 @@ export const AppRouter: React.FC = () => {
         </Route>
         <Route path="/logout" element={<LogoutFallback />} />
       </Routes>
-    </HashRouter>
-    // </BrowserRouter>
+    </BrowserRouter>
   );
 };
