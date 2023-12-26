@@ -340,7 +340,9 @@
     "typeMove": "طريقة النقل",
     "EditCompany": "تعديل معلومات الشركة",
     "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح",
-    "allCompanies": "كل الشركات"
+    "allCompanies": "كل الشركات",
+    "returnCompanySuccessMessage": "تم إعادة طلب تسجيل الشركة بنجاح",
+    "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الشركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -601,10 +603,14 @@
     "checkPINForUserModalTitle": "إدخال رمز ال PIN للحصول على تفويض المستخدم",
     "checkPINForUserModal": "إرسال رمز ال PIN",
     "atLeastOneService": "يجب تحديد خدمة واحدة على الأقل",
-    "sendRejectReason": "إرسال سبب الرفض إلى المستخدم",
-    "sendReturnReason": "إرسال سبب الإعادة إلى المستخدم",
-    "reasonRefuse": "سبب رفض طلب النقل",
-    "reasonReturn": "سبب إعادة طلب النقل",
+    "sendRejectRequestReason": "إرسال سبب رفض الطلب إلى المستخدم",
+    "sendReturnRequestReason": "إرسال سبب إعادة الطلب إلى المستخدم",
+    "sendReturnOfferReason": "إرسال سبب إعادة طلب التسجيل إلى الشركة",
+    "sendReturnCompanyReason": "إرسال سبب إعادة عرض السعر إلى مُقدِمه",
+    "reasonRefuseRequest": "سبب رفض طلب النقل",
+    "reasonReturnRequest": "سبب إعادة طلب النقل",
+    "reasonReturnOffer": "سبب إعادة طلب عرض السعر",
+    "reasonReturnCompany": "سبب إعادة طلب تسجيل شركة",
     "additionalAttachments": "صور إضافية",
     "noAttachments": "لم يتم رفع صور لهذا العنصر",
     "offerDetails": "تفاصيل عرض السعر",
@@ -784,7 +790,7 @@
     "company": "شركة",
     "branch": "فرع",
     "details": "تفاصيل العرض",
-    "sendToUserSuccessMessage": "سيتم إرسال هذه العروض للمستخدم",
+    "sendToUserSuccessMessage": "تم إرسال هذه العروض للمستخدم بنجاح",
     "services": "الخدمات",
     "selectedCompany": "معلومات الشركة المُقدّمة للعرض",
     "selectedBranch": "معلومات الفرع المُقدّم للعرض",
@@ -799,7 +805,8 @@
     "userName": "إسم المستخدم",
     "emailAddress": "عنوان البريد الإلكتروني",
     "SelectedByUser": "تم إختياره من قبل المستخدم",
-    "RejectedByUser": "تم رفضه من قبل المستخدم"
+    "RejectedByUser": "تم رفضه من قبل المستخدم",
+    "returnOfferSuccessMessage": "تمت إعادة عرض السعر لمُقدِمه بنجاح"
   },
 
   "_comment24": "*********************************** points ************************************************",

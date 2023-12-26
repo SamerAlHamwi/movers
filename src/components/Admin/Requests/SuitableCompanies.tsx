@@ -469,12 +469,12 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataBranch}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
-          // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
 
       {type == '1' && (
         <Button
+          disabled={dataCompany?.length == 0 && dataBranch?.length == 0}
           type="primary"
           style={{
             marginBottom: '.5rem',

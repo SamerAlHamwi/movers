@@ -34,8 +34,8 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
-import { RequestType } from '@app/constants/enums/requestTypes';
-import { REQUEST_TYPES } from '@app/constants/appConstants';
+import { RequestStatus } from '@app/constants/enums/requestStatus';
+import { REQUEST_STATUS } from '@app/constants/appConstants';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -454,7 +454,7 @@ export const Requests: React.FC = () => {
               }}
               value={temp}
             >
-              {REQUEST_TYPES.map((item: any, index: number) => {
+              {REQUEST_STATUS.map((item: any, index: number) => {
                 return (
                   <Radio key={index} style={{ display: 'block', fontSize }} value={item.type}>
                     {t(`requests.${item.name}`)}
@@ -574,7 +574,7 @@ export const Requests: React.FC = () => {
 
   const typeOfRequests = [
     { label: t('requests.allRequsets'), value: undefined },
-    { label: t('requests.inProcess'), value: RequestType.InProcess },
+    { label: t('requests.inProcess'), value: RequestStatus.InProcess },
   ];
 
   const onChange = (key: any) => {
@@ -679,8 +679,7 @@ export const Requests: React.FC = () => {
                 handleReject(info);
               }}
               isLoading={rejectRequest.isLoading}
-              type="reject"
-              typeItem="request"
+              type="rejectRequest"
             />
           )}
 
@@ -693,8 +692,7 @@ export const Requests: React.FC = () => {
                 handleReturn(info);
               }}
               isLoading={returnRequest.isLoading}
-              type="return"
-              typeItem="request"
+              type="returnRequest"
             />
           )}
         </Row>

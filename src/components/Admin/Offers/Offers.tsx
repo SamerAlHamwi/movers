@@ -5,7 +5,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
 import { useQuery, useMutation } from 'react-query';
-import { getAllOffers, getrejectedOffers, sendForUser } from '@app/services/offers';
+import { getAllOffers, getrejectedOffers, returnOfferToProvider, sendForUser } from '@app/services/offers';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
@@ -55,7 +55,7 @@ export const Offers: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Offers', page, pageSize],
+    ['Offers', page, pageSize, isReturned],
     () =>
       getAllOffers(
         page,
@@ -99,13 +99,13 @@ export const Offers: React.FC = () => {
     },
   );
 
-  const returnRequest = useMutation((data: any) =>
-    confirmRequest(data)
+  const returnOffer = useMutation((data: any) =>
+    returnOfferToProvider(data)
       .then((data) => {
         data.data?.success &&
           (setIsReturned(data.data?.success),
           message.open({
-            content: <Alert message={t('requests.returnRequestSuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('offers.returnOfferSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -116,13 +116,13 @@ export const Offers: React.FC = () => {
   );
 
   const handleReturn = (info: any) => {
-    const data = { requestId: returnmodaldata?.id, statues: 15, reasonRefuse: info.reasonRefuse };
-    returnRequest.mutateAsync(data);
+    const data = { offerId: returnmodaldata?.id, reasonRefuse: info.reasonRefuse };
+    returnOffer.mutateAsync(data);
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, return: returnRequest.isLoading }));
-  }, [returnRequest.isLoading]);
+    setModalState((prevModalState) => ({ ...prevModalState, return: returnOffer.isLoading }));
+  }, [returnOffer.isLoading]);
 
   useEffect(() => {
     if (isRefetching) setLoading(true);
@@ -132,7 +132,7 @@ export const Offers: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
-  }, [page, pageSize, language, searchString, refetch, refetchData]);
+  }, [page, pageSize, language, searchString, refetch, refetchData, isReturned]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -262,9 +262,8 @@ export const Offers: React.FC = () => {
               onCreate={(info) => {
                 handleReturn(info);
               }}
-              isLoading={returnRequest.isLoading}
-              type="return"
-              typeItem="offer"
+              isLoading={returnOffer.isLoading}
+              type="returnOffer"
             />
           )}
         </Row>
@@ -294,6 +293,7 @@ export const Offers: React.FC = () => {
 
       {requestId !== undefined && type === undefined && (
         <Button
+          disabled={dataSource?.length == 0}
           type="primary"
           style={{
             marginBottom: '.5rem',

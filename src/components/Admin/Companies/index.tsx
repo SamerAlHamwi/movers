@@ -42,6 +42,7 @@ import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
 import { CompanyStatus } from '@app/constants/enums/companyStatues';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 
 interface CompanyRecord {
   id: number;
@@ -61,6 +62,7 @@ export const Companies: React.FC = () => {
     delete: false,
     approve: false,
     reject: false,
+    return: false,
     acceptRequestOrPotentialClient: false,
   });
   const [page, setPage] = useState<number>(1);
@@ -82,6 +84,8 @@ export const Companies: React.FC = () => {
   const [temp, setTemp] = useState<any>();
   const [companyStatus, setCompanyStatus] = useState<any>();
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [isReturned, setIsReturned] = useState(false);
+  const [returnmodaldata, setReturnmodaldata] = useState<CompanyModal | undefined>(undefined);
 
   const handleButtonClick = () => {
     Navigate('/addCompany', { replace: false });
@@ -95,7 +99,7 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected, companyStatus],
+    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected, companyStatus, isReturned],
     () =>
       getAllCompanies(page, pageSize, searchString, undefined, undefined, companyStatus)
         .then((data) => {
@@ -156,6 +160,7 @@ export const Companies: React.FC = () => {
     refetch,
     companyStatus,
     refetchData,
+    isReturned,
   ]);
 
   useEffect(() => {
@@ -276,26 +281,34 @@ export const Companies: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, reject: rejectCompany.isLoading }));
   }, [rejectCompany.isLoading]);
 
-  const editManager = useMutation((data: CompanyModal) => updateCompany(data));
-
-  const handleEdit = (data: CompanyModal, id: number) => {
-    editManager
-      .mutateAsync({ ...data, id })
+  const returnCompany = useMutation((data: any) =>
+    confirmCompany(data)
       .then((data) => {
-        setIsEdit(data.data?.success);
-        message.open({
-          content: <Alert message={t(`Companies.editeCompanySuccessMessage`)} type={`success`} showIcon />,
-        });
+        data.data?.success &&
+          (setIsReturned(data.data?.success),
+          message.open({
+            content: <Alert message={t('companies.returnCompanySuccessMessage')} type={`success`} showIcon />,
+          }));
       })
       .catch((error) => {
-        message.open({ content: <Alert message={error.error?.message || error.message} type={`error`} showIcon /> });
-      });
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReturn = (info: any) => {
+    const data = { companyId: returnmodaldata?.id, statues: 4, reasonRefuse: info.reasonRefuse };
+    returnCompany.mutateAsync(data);
   };
 
   const typeOfComapnies = [
     { label: t('companies.allCompanies'), value: undefined },
     { label: t('companies.rejectedNeedToEdit'), value: CompanyStatus.RejectedNeedToEdit },
   ];
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, return: returnCompany.isLoading }));
+  }, [returnCompany.isLoading]);
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -398,6 +411,19 @@ export const Companies: React.FC = () => {
                     <CloseOutlined />
                   </TableButton>
                 </Tooltip>
+
+                <Tooltip placement="top" title={t('common.return')}>
+                  <TableButton
+                    disabled={record.statues !== 1}
+                    severity="warning"
+                    onClick={() => {
+                      setReturnmodaldata(record);
+                      handleModalOpen('return');
+                    }}
+                  >
+                    <RetweetOutlined />
+                  </TableButton>
+                </Tooltip>
               </Space>
             )}
             {record.statues === 2 && (
@@ -408,6 +434,11 @@ export const Companies: React.FC = () => {
             {record.statues === 3 && (
               <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
                 {t('companies.rejected')}
+              </Tag>
+            )}
+            {record.statues === 4 && (
+              <Tag key={record?.id} color="#ba4e63" style={{ padding: '4px' }}>
+                {t('companies.RejectedNeedToEdit')}
               </Tag>
             )}
           </>
@@ -510,19 +541,6 @@ export const Companies: React.FC = () => {
                     }}
                   >
                     <TeamOutlined />
-                  </TableButton>
-                </Tooltip>
-
-                <Tooltip placement="top" title={t('common.return')}>
-                  <TableButton
-                    disabled={record.statues !== 1}
-                    severity="warning"
-                    onClick={() => {
-                      // setReturnmodaldata(record);
-                      handleModalOpen('return');
-                    }}
-                  >
-                    <RetweetOutlined />
                   </TableButton>
                 </Tooltip>
 
@@ -644,7 +662,6 @@ export const Companies: React.FC = () => {
               okText={t('common.approve')}
               cancelText={t('common.cancel')}
               description={t('companies.approvecompanyModalDescription')}
-              // isDanger={true}
               isLoading={approveCompany.isLoading}
             />
           )}
@@ -662,8 +679,20 @@ export const Companies: React.FC = () => {
               okText={t('common.reject')}
               cancelText={t('common.cancel')}
               description={t('companies.rejectcompanyModalDescription')}
-              // isDanger={true}
               isLoading={approveCompany.isLoading}
+            />
+          )}
+
+          {/*    Return    */}
+          {modalState.return && (
+            <SendRejectReason
+              visible={modalState.return}
+              onCancel={() => handleModalClose('return')}
+              onCreate={(info) => {
+                handleReturn(info);
+              }}
+              isLoading={returnCompany.isLoading}
+              type="returnCompany"
             />
           )}
 

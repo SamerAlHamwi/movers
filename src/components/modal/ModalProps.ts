@@ -99,7 +99,6 @@ export interface SearchForUserModalProps extends ModalProps {
 export interface SendRejectReasons extends ModalProps {
   onCreate: (info: any) => void;
   type: string;
-  typeItem: string;
 }
 
 export interface CheckPINModalProps extends ModalProps {
