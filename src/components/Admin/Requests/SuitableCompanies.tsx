@@ -365,9 +365,6 @@ export const SuitableCompanies: React.FC = () => {
     },
   ].filter(Boolean);
 
-  console.log(dataCompany);
-  console.log(dataBranch);
-
   return (
     <>
       <Card
@@ -472,7 +469,6 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataBranch}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
-          // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
 
