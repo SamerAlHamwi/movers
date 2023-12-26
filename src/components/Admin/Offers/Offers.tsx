@@ -290,9 +290,9 @@ export const Offers: React.FC = () => {
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
         />
       </Card>
-
       {requestId !== undefined && type === undefined && (
         <Button
+          disabled={dataSource?.length == 0}
           type="primary"
           style={{
             marginBottom: '.5rem',

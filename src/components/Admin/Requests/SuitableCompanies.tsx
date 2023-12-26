@@ -365,6 +365,9 @@ export const SuitableCompanies: React.FC = () => {
     },
   ].filter(Boolean);
 
+  console.log(dataCompany);
+  console.log(dataBranch);
+
   return (
     <>
       <Card
@@ -475,6 +478,7 @@ export const SuitableCompanies: React.FC = () => {
 
       {type == '1' && (
         <Button
+          disabled={dataCompany?.length == 0 && dataBranch?.length == 0}
           type="primary"
           style={{
             marginBottom: '.5rem',
