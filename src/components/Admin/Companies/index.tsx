@@ -113,11 +113,16 @@ export const Companies: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined && type === undefined && requestId === undefined,
+      enabled: type !== 'companiesThatBoughtInfo' && requestId === undefined,
     },
   );
 
-  const allCompanies = useQuery(
+  // console.log('totalCount', totalCount);
+  // console.log('type', type);
+  // console.log('requestId', requestId);
+  console.log('requestId', type !== 'companiesThatBoughtInfo' && requestId === undefined);
+
+  const { refetch: refetchCompaniesThatBoughtInfo, isRefetching: isRefetchingCompaniesThatBoughtInfo } = useQuery(
     ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
     () =>
       getAllCompanies(page, pageSize, searchString, type, requestId, companyStatus)
@@ -144,7 +149,8 @@ export const Companies: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    refetch();
+    type !== 'companiesThatBoughtInfo' && requestId === undefined && refetch();
+    type !== undefined && requestId !== undefined && refetchCompaniesThatBoughtInfo();
     setIsEdit(false);
     setIsDelete(false);
   }, [
@@ -157,7 +163,6 @@ export const Companies: React.FC = () => {
     pageSize,
     language,
     searchString,
-    refetch,
     companyStatus,
     refetchData,
     isReturned,
