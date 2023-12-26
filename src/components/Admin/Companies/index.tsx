@@ -304,7 +304,7 @@ export const Companies: React.FC = () => {
 
   const typeOfComapnies = [
     { label: t('companies.allCompanies'), value: undefined },
-    { label: t('companies.rejectedNeedToEdit'), value: CompanyStatus.RejectedNeedToEdit },
+    { label: t('companies.returnedRequests'), value: CompanyStatus.RejectedNeedToEdit },
   ];
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, return: returnCompany.isLoading }));
@@ -533,11 +533,11 @@ export const Companies: React.FC = () => {
                   </TableButton>
                 </Tooltip>
 
-                <Tooltip placement="top" title={t('companies.possibleClients')}>
+                <Tooltip placement="top" title={t('companies.potentialClients')}>
                   <TableButton
                     severity="success"
                     onClick={() => {
-                      Navigate(`${record.id}/possibleClients`, { replace: false });
+                      Navigate(`${record.id}/potentialClients`, { replace: false });
                     }}
                   >
                     <TeamOutlined />
@@ -592,9 +592,8 @@ export const Companies: React.FC = () => {
           {type !== undefined && requestId !== undefined && (
             <Btn
               style={{
-                margin: '1rem 1rem 1rem 0',
+                margin: '0 .5rem .5rem 0',
                 width: 'auto',
-                height: 'auto',
               }}
               type="ghost"
               onClick={() => Navigate(-1)}

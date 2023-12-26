@@ -329,7 +329,7 @@
     "totalPoints": "عدد النقاط الكلي",
     "possibleClientsList": "قائمة العملاء المحتملين",
     "possibleClientsInfo": "تفاصيل العملاء المحتملين",
-    "possibleClients": "العملاء المحتملين",
+    "potentialClients": "العملاء المحتملين",
     "ChangeAcceptRequestOrPotentialClient": "إمكانية الشركة لإستقبال طلبات النقل وشراء معلومات العملاء المحتملين",
     "acceptRequests": "هل يمكنها إستقبال طلبات النقل؟",
     "acceptPossibleRequests": "هل يمكنها شراء معلومات العملاء المحتملين؟",
@@ -342,7 +342,8 @@
     "editeCompanySuccessMessage": "تم تعديل معلومات هذه الشركة بنجاح",
     "allCompanies": "كل الشركات",
     "returnCompanySuccessMessage": "تم إعادة طلب تسجيل الشركة بنجاح",
-    "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الشركة"
+    "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الشركة",
+    "returnedRequests": "الشركات المُعادة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -1061,7 +1062,7 @@
     "RejectReason": "أسباب الرفض",
     "Drafts": "الطلبات الغير مستكملة",
     "CompleteDraft": "إستكمال طلب نقل",
-    "possibleClients": "العملاء المحتملين",
+    "potentialClients": "العملاء المحتملين",
     "Configurations": "الإعدادات",
     "editRequest": "تعديل طلب النقل",
     "ReviewsDetails": "تفاصيل المراجعات",

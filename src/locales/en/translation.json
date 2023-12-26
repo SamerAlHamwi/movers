@@ -327,7 +327,7 @@
     "branches": "Branches",
     "possibleClientsList": "Potential Clients List",
     "possibleClientsInfo": "Potential Clients Information",
-    "possibleClients": "Potential Clients",
+    "potentialClients": "Potential Clients",
     "ChangeAcceptRequestOrPotentialClient": "The Company's Ability To Receive Requests And Purchase Potential Clients Information",
     "acceptRequests": "Can It Receive Requests?",
     "acceptPossibleRequests": "Can It Buy Potential Clents Information?",
@@ -340,7 +340,8 @@
     "editeCompanySuccessMessage": "The Company Has Been Edited Successfully",
     "allCompanies": "All Companies",
     "returnCompanySuccessMessage": "The Company Has Been Returned Successfully",
-    "RejectedNeedToEdit": "Company Has Been Returned"
+    "RejectedNeedToEdit": "Company Has Been Returned",
+    "returnedRequests": "Returned Companies"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -1064,7 +1065,7 @@
     "RejectReason": "Reject Reasons",
     "Drafts": "Drafts",
     "CompleteDraft": "Complete Draft",
-    "possibleClients": "Potential Clients",
+    "potentialClients": "Potential Clients",
     "Configurations": "Configurations",
     "editRequest": "Edit Request",
     "ReviewsDetails": "Reviews Details",

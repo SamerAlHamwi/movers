@@ -48,7 +48,7 @@ const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
 const EditCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/EditCompanyPage'));
-const PossibleClientsPage = lazy(() => import('@app/pages/CompaniesPages/PossibleClientsPage'));
+const PotentialClientsPage = lazy(() => import('@app/pages/CompaniesPages/PotentialClientsPage'));
 const BranchesPage = lazy(() => import('@app/pages/CompaniesPages/BranchPage'));
 const BranchDetailPage = lazy(() => import('@app/pages/CompaniesPages/BranchDetailsPage'));
 const AddBranchPage = lazy(() => import('@app/pages/CompaniesPages/AddBranchPage'));
@@ -104,7 +104,7 @@ const CompanyPage = withLoading(Companiespage);
 const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
 const EditCompanyPage = withLoading(EditCompaniesPage);
-const PossibleClientPage = withLoading(PossibleClientsPage);
+const PotentialClientPage = withLoading(PotentialClientsPage);
 const BranchPage = withLoading(BranchesPage);
 const BranchDetailsPage = withLoading(BranchDetailPage);
 const AddBranchesPage = withLoading(AddBranchPage);
@@ -334,16 +334,16 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
-            path="companies/:companyId/possibleClients"
+            path="companies/:companyId/potentialClients"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <PossibleClientPage />
+                <PotentialClientPage />
               </PrivateRoute>
             }
           />
 
           <Route
-            path="companies/:companyId/possibleClients/:possibleClientId/details"
+            path="companies/:companyId/potentialClients/:possibleClientId/details"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <RequestDetailsPage />

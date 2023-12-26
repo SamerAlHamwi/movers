@@ -19,7 +19,7 @@ import { TextBack } from '@app/components/GeneralStyles';
 import { getPossibleClients } from '@app/services/requests';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 
-export const PossibleClients: React.FC = () => {
+export const PotentialClients: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const { t } = useTranslation();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
