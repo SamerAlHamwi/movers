@@ -40,7 +40,7 @@ import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/Chan
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
-import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
+import { COMPANY_STATUS_NAMES, NEED_TO_UPDATE } from '@app/constants/appConstants';
 import { CompanyStatus } from '@app/constants/enums/companyStatues';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 
@@ -86,6 +86,7 @@ export const Companies: React.FC = () => {
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [isReturned, setIsReturned] = useState(false);
   const [returnmodaldata, setReturnmodaldata] = useState<CompanyModal | undefined>(undefined);
+  const [needToUpdate, setNeedToUpdate] = useState<boolean>(false);
 
   const handleButtonClick = () => {
     Navigate('/addCompany', { replace: false });
@@ -99,9 +100,21 @@ export const Companies: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected, companyStatus, isReturned],
+    [
+      'AllCompanies',
+      page,
+      pageSize,
+      isDelete,
+      isEdit,
+      isApproved,
+      isChanged,
+      isRejected,
+      companyStatus,
+      isReturned,
+      needToUpdate,
+    ],
     () =>
-      getAllCompanies(page, pageSize, searchString, undefined, undefined, companyStatus)
+      getAllCompanies(page, pageSize, searchString, undefined, undefined, companyStatus, needToUpdate)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -161,6 +174,7 @@ export const Companies: React.FC = () => {
     companyStatus,
     refetchData,
     isReturned,
+    needToUpdate,
   ]);
 
   useEffect(() => {
@@ -305,6 +319,7 @@ export const Companies: React.FC = () => {
   const typeOfComapnies = [
     { label: t('companies.allCompanies'), value: undefined },
     { label: t('companies.returnedRequests'), value: CompanyStatus.RejectedNeedToEdit },
+    { label: t('companies.needToUpdate'), value: NEED_TO_UPDATE },
   ];
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, return: returnCompany.isLoading }));
@@ -575,7 +590,11 @@ export const Companies: React.FC = () => {
   ].filter(Boolean);
 
   const onChange = (key: any) => {
-    key === 'undefined' ? setCompanyStatus(undefined) : setCompanyStatus(key);
+    key === 'undefined'
+      ? (setCompanyStatus(undefined), setNeedToUpdate(false))
+      : key === NEED_TO_UPDATE
+      ? (setCompanyStatus(undefined), setNeedToUpdate(true))
+      : setCompanyStatus(key);
   };
 
   return (

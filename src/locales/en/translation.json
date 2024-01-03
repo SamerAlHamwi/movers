@@ -341,7 +341,8 @@
     "allCompanies": "All Companies",
     "returnCompanySuccessMessage": "The Company Has Been Returned Successfully",
     "RejectedNeedToEdit": "Company Has Been Returned",
-    "returnedRequests": "Returned Companies"
+    "returnedRequests": "Returned Companies",
+    "needToUpdate": "Need To Update"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
