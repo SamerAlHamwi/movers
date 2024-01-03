@@ -343,7 +343,8 @@
     "allCompanies": "كل الشركات",
     "returnCompanySuccessMessage": "تم إعادة طلب تسجيل الشركة بنجاح",
     "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الشركة",
-    "returnedRequests": "الشركات المُعادة"
+    "returnedRequests": "الشركات المُعادة",
+    "needToUpdate": "تحتاج إلى تحديث"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -673,7 +674,8 @@
     "selectSourceType": "رجاءً إختر نوع مكان النقل",
     "atLeastOneAttachment": "رجاءً إرقع صورة واحدة على الأقل",
     "Attachment": "الصور",
-    "enterDate": "رجاءً أدخل التاريخ"
+    "enterDate": "رجاءً أدخل التاريخ",
+    "sourceTypeRequired": "رجاءً إختر نوع مكان النقل"
   },
 
   "_comment18": "*********************************** Branches ************************************************",

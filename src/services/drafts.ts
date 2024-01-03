@@ -17,4 +17,8 @@ const checkPIN = async (data: any) => {
   return await httpApi.post(`${apiPrefix.users}/CheckIfUserOwnesPinByPhoneNumber`, data);
 };
 
-export { getAllDrafts, getDraftById, sendForUser, checkPIN };
+const UpdateDraft = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.drafts}/Update`, data);
+};
+
+export { getAllDrafts, getDraftById, sendForUser, checkPIN, UpdateDraft };

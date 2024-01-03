@@ -676,7 +676,8 @@
     "selectSourceType": "Please Choose The Moving Type",
     "atLeastOneAttachment": "At Least Upload One Attachment",
     "Attachment": "Attachments",
-    "enterDate": "Please Enter The Date"
+    "enterDate": "Please Enter The Date",
+    "sourceTypeRequired": "Please Choose The Moving Type"
   },
 
   "_comment18": "*********************************** Branches ************************************************",
@@ -1075,7 +1076,8 @@
     "FeaturedBundles": "Featured Bundles",
     "ApplicationsVersions": "Applications Versions",
     "Payments": "Payments",
-    "PaymentPrivacy": "Payment Privacy"
+    "PaymentPrivacy": "Payment Privacy",
+    "needToUpdate": "Need To Update"
   },
 
   "header": {

@@ -1,14 +1,21 @@
-import React, { useEffect, useState } from 'react';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { useTranslation } from 'react-i18next';
-import { message, Steps, Radio, Image, Row, Col, Space, Tree, Form } from 'antd';
+import { message, Steps, Radio, Image, Row, Col, Space, Tree, Form, DatePicker } from 'antd';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
 import { Input } from '../Admin/Translations';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
-import { BankOutlined, ClearOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
+import {
+  BankOutlined,
+  ClearOutlined,
+  HomeOutlined,
+  LeftOutlined,
+  PushpinOutlined,
+  UserOutlined,
+} from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
@@ -24,19 +31,22 @@ import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
 import { getCountries, getCities } from '@app/services/locations';
-import { DatePicker } from '../common/pickers/DatePicker';
 import { Alert } from '../common/Alert/Alert';
-import { uploadAttachment } from '@app/services/Attachment';
+import { UploadMultiAttachment, uploadAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
 import { Modal, Upload } from 'antd';
 import { useNavigate, useParams } from 'react-router-dom';
 import type { RcFile } from 'antd/es/upload';
 import type { UploadFile } from 'antd/es/upload/interface';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { getDraftById } from '@app/services/drafts';
-import { Spinner } from '../common/Spinner/Spinner';
+import { UpdateDraft, getDraftById } from '@app/services/drafts';
 import moment from 'moment';
-import dayjs from 'dayjs';
+import { useLanguage } from '@app/hooks/useLanguage';
+import { RequestModel } from '@app/interfaces/interfaces';
+import { notificationController } from '@app/controllers/notificationController';
+import _ from 'lodash';
+import UploadImageRequest, { IUploadImage } from './upload-image';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -46,56 +56,49 @@ const getBase64 = (file: RcFile): Promise<string> =>
     reader.onerror = (error) => reject(error);
   });
 
+const steps = [
+  {
+    title: 'SourceType',
+  },
+  {
+    title: 'Attachment',
+  },
+  {
+    title: 'Location',
+  },
+  {
+    title: 'Contact',
+  },
+  {
+    title: 'Services',
+  },
+];
+
 const { Step } = Steps;
+let requestData = {};
 let requestServicesArray: any = [];
-const requestServices: any = [];
+let requestServices: any = [];
 const lang = localStorage.getItem('Go Movaro-lang');
-
-let requestData = {
-  sourceCityId: '',
-  sourceAddress: '',
-  sourceLongitude: 0,
-  sourceLatitude: 0,
-  moveAtUtc: null,
-
-  destinationCityId: '',
-  destinationAddress: '',
-  destinationLongitude: 0,
-  destinationLatitude: 0,
-  arrivalAtUtc: null,
-
-  requestForQuotationContacts: [{}],
-  serviceType: 0,
-  comment: '',
-  services: [],
-
-  sourceTypeId: '',
-  attributeForSourceTypeValues: [{}],
-  attributeChoiceAndAttachments: [
-    {
-      attributeChoiceId: null,
-      attachmentIds: [0],
-    },
-  ],
-
-  userId: '',
-};
+const sourceLat = 25.15658048160557;
+const sourceLng = 55.34100848084654;
+const destinationLat = 25.180801685212185;
+const destinationLng = 55.281956967174665;
 
 export const CompleteDraft: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
   const { userId, draftId } = useParams();
+  const { language } = useLanguage();
   const Navigate = useNavigate();
 
-  const sourceLat = 25.15658048160557;
-  const sourceLng = 55.34100848084654;
-  const destinationLat = 25.180801685212185;
-  const destinationLng = 55.281956967174665;
-
+  const [RequestData, setRequestData] = useState<RequestModel>();
+  const [getRequest, setGetRequest] = useState<boolean>(true);
   const [current, setCurrent] = useState(0);
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
-  const [sourcePosition, setSourcePosition] = useState({ lat: sourceLat, lng: sourceLng });
+  const [sourcePosition, setSourcePosition] = useState({
+    lat: sourceLat,
+    lng: sourceLng,
+  });
   const [destinationPosition, setDestinationPosition] = useState({ lat: destinationLat, lng: destinationLng });
   const [centerSource, setCenterSource] = useState({
     lat: 25.15658048160557,
@@ -105,29 +108,125 @@ export const CompleteDraft: React.FC = () => {
     lat: 25.15658048160557,
     lng: 55.34100848084654,
   });
+  // tree state (services)
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
-  const [valueRadio, setValueRadio] = useState(1);
+  const [defaultCheckedServices, setDefaultCheckedServices] = useState<any[]>([]);
+  // service type state
+  const [valueRadio, setValueRadio] = useState(0);
+  // location state
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
-  const [selectedServicesKeysMap, setSelectedServicesKeysMap] = useState<{ [index: number]: string[] }>({});
-  const [selectedSourceType, setSelectedSourceType] = useState('0');
-  const [sourceType, setSourceType] = useState('0');
-  const [selectedChoices, setSelectedChoices] = useState<{ sourceTypeId: number; attributeChoiceId: number }[]>([]);
-  const [attributeChoiceItems, setAttributeChoiceItems] = useState<JSX.Element[]>([]);
-
+  // select attributeChoice state
+  const [selectedRadio, setSelectedRadio] = useState<
+    Array<{ attributeForSourcTypeId: number; attributeChoiceId: number }>
+  >([]);
+  const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
+  // images state
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
-  const [fileList, setFileList] = useState([]);
-  const [attachmentIds, setAttachmentIds] = useState<number[]>([]);
-  const [attachmentIdsChanged, setAttachmentIdsChanged] = useState(false);
-  const [dataSource, setDataSource] = useState<any>(undefined);
+  const [fileList, setFileList] = useState<any[]>([]);
+  const [attributeChoiceAndAttachments, setAttributeChoiceAndAttachments] = useState<
+    Array<{ attributeChoiceId: number; attachmentIds: any[] }>
+  >([]);
+  // multiple attachment in request level state
+  const [fileListLength, setFileListLength] = useState(0);
+  const [picturesList, setPicturesList] = useState<any[]>([]);
+  const [validations, setValidations] = useState<boolean>(false);
+
+  const {
+    data: dataRequest,
+    status,
+    refetch: refetchRequest,
+    isRefetching: isRefetchingRequest,
+    isLoading,
+  } = useQuery(
+    ['getDraftById'],
+    () =>
+      getDraftById(draftId)
+        .then((data) => {
+          const result = data.data?.result;
+          setRequestData({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
+          form.setFieldsValue({
+            ...result,
+            moveAtUtc: new Date(`${result.moveAtUtc}`),
+          });
+          const imageRequest = data.data?.result.attributeChoiceAndAttachments.map((item: any) => {
+            return {
+              attachmentIds: item.attachments,
+              attributeChoiceId: item.attributeChoice?.id,
+            };
+          });
+          status === 'success' &&
+            setSelectedRadio(
+              data.data?.result.attributeForSourceTypeValues.map((item: any) => {
+                return {
+                  attributeForSourcTypeId: item.attributeForSourcType?.id,
+                  attributeChoiceId: item.attributeChoice?.id,
+                };
+              }),
+            );
+
+          status === 'success' && setAttributeChoiceAndAttachments(imageRequest ?? []);
+          setGetRequest(false);
+        })
+        .catch((error) => {
+          notificationController.error({ message: error.message || error.error?.message });
+        }),
+    {
+      enabled: draftId !== undefined,
+    },
+  );
+
+  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllCountry = useQuery('GetAllCountry', getCountries);
+  const {
+    data: cityData,
+    refetch,
+    isRefetching,
+  } = useQuery('GetAllCity', () => getCities(countryId), {
+    enabled: countryId != '0',
+  });
+
+  const {
+    data: attributeForSourceTypesData,
+    refetch: attributeForSourceTypesRefetch,
+    isRefetching: attributeForSourceTypesIsRefetching,
+    isLoading: attributeForSourceTypesIsLoading,
+  } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
+    enabled: RequestData?.sourceType?.id != undefined,
+  });
+
+  useEffect(() => {
+    if (selectedRadio?.length > 0) {
+      const fetchData = async () => {
+        try {
+          const promises = selectedRadio.map(async (item) => {
+            const data: any = item.attributeChoiceId && (await getChildAttributeChoice(item.attributeChoiceId));
+            return data?.data?.result?.items || [];
+          });
+
+          const results = await Promise.all(promises);
+          const flattenedItems = results.flat();
+
+          setChildAttributeChoices(flattenedItems);
+        } catch (error: any) {
+          message.open(error);
+        }
+      };
+
+      fetchData();
+    }
+  }, [selectedRadio]);
 
   const handleCancel = () => setPreviewOpen(false);
 
-  const handlePreview = async (file: UploadFile) => {
+  const handlePreviews = async (file: UploadFile) => {
     if (!file.url && !file.preview) {
       file.preview = await getBase64(file.originFileObj as RcFile);
     }
@@ -136,77 +235,64 @@ export const CompleteDraft: React.FC = () => {
     setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
   };
 
-  const handleChange = ({ fileList }: any) => {
-    setFileList(fileList);
-  };
-
-  const uploadImage = useMutation((data: any) => uploadAttachment(data), {
-    onSuccess: (data: any) => {
-      if (data.data.success) {
-        setAttachmentIds((prevIds) => [...prevIds, data.data.result?.id]);
-        setPreviewImage(data.data.result?.url);
-      } else {
-        message.open({
-          content: <Alert message={data.data.error?.message || 'Upload failed'} type={'error'} showIcon />,
-        });
-      }
-    },
-    onError: (error: any) => {
-      message.open({ content: <Alert message={error.error?.message || error.message} type={'error'} showIcon /> });
-    },
-  });
-
-  const GetAllServices = useQuery('getAllServices', getServices);
-  const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
-  const GetAllCountry = useQuery('GetAllCountry', getCountries);
-  const {
-    data: cityData,
-    refetch,
-    isRefetching,
-  } = useQuery('GetAllCity', () => getCities(countryId), {
-    enabled: countryId !== '0',
-  });
-
-  const {
-    data: attributeForSourceTypesData,
-    refetch: AttributeForSourceTypesRefetch,
-    isRefetching: attributeForSourceTypesIsRefetching,
-  } = useQuery('AttributeForSourceTypes', () => getAttributeForSourceTypes(selectedSourceType), {
-    refetchOnWindowFocus: false,
-    enabled: Number(selectedSourceType) !== 0,
-  });
-
-  const {
-    data: draftData,
-    status: statusDraft,
-    refetch: draftRefetch,
-    isRefetching: draftIsRefetching,
-    isLoading: draftIsLoading,
-  } = useQuery(
-    ['getDraftById'],
-    () =>
-      getDraftById(draftId)
-        .then((data) => {
-          const result = data.data?.result;
-          setDataSource(result);
-          // setLoading(!data.data?.success);
-        })
-        .catch((err) => {
-          // setLoading(false);
-          // notificationController.error({ message: err?.message || err.error?.message });
-        }),
-    {
-      enabled: draftId !== undefined,
-    },
-  );
+  const uploadImage = useMutation((data: any) => uploadAttachment(data));
 
   useEffect(() => {
-    refetch();
+    if (countryId != '0') refetch();
   }, [countryId]);
 
   useEffect(() => {
-    AttributeForSourceTypesRefetch();
-  }, [selectedSourceType, sourceType]);
+    attributeForSourceTypesRefetch();
+    GetAllServices.refetch();
+  }, [language, RequestData?.sourceType?.id]);
+
+  useEffect(() => {
+    setSourcePosition({
+      lat: RequestData?.sourceLatitude,
+      lng: RequestData?.sourceLongitude,
+    });
+    setDestinationPosition({
+      lat: RequestData?.destinationLatitude,
+      lng: RequestData?.destinationLongitude,
+    });
+
+    const requestDataAttachments = RequestData?.attachments || [];
+    const transformedAttachments = requestDataAttachments.map((attachment: any) => ({
+      status: 'done',
+      uid: attachment.id,
+      url: attachment.url || attachment.lowResolutionPhotoUrl,
+    }));
+    setFileList(transformedAttachments);
+
+    const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
+    const transformedAttributeAttachments = attributeAndAttachments.map((attribute: any) => {
+      return {
+        attributeId: attribute?.attributeChoice?.id,
+        attachment: attribute.attachments.map((attachment: any) => ({
+          status: 'done',
+          uid: attachment.id,
+          url: attachment.url || attachment.lowResolutionPhotoUrl,
+          name: attachment.url ?? '',
+        })),
+      };
+    });
+    // setImagesList(transformedAttributeAttachments);
+  }, [RequestData]);
+
+  const filterImage = (attributeId: number) => {
+    let imagesData: Array<any> = [];
+    attributeChoiceAndAttachments.map((attribute: any) => {
+      if (attribute.attributeChoiceId === attributeId) {
+        const temp = attribute.attachmentIds.map((attachment: any) => ({
+          attributeId: attributeId,
+          id: attachment.id,
+          url: attachment.url || attachment.lowResolutionPhotoUrl,
+        }));
+        imagesData = temp;
+      }
+    });
+    return imagesData;
+  };
 
   const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
     if (event.latLng) {
@@ -220,91 +306,61 @@ export const CompleteDraft: React.FC = () => {
     }
   };
 
-  const steps = [
-    {
-      title: 'Contact',
-      content: [
-        'Source',
-        'fullNameContactSource',
-        'phoneNumberSource',
-        'isCallAvailableSource',
-        'isWhatsAppAvailableSource',
-        'isTelegramAvailableSource',
-        'Destination',
-        'fullNameContactDestination',
-        'phoneNumberDestination',
-        'isCallAvailableDestination',
-        'isWhatsAppAvailableDestination',
-        'isTelegramAvailableDestination',
-      ],
-    },
-    {
-      title: 'Location',
-      content: [
-        'Source',
-        'sourceCountry',
-        'sourceCity',
-        'sourceAddress',
-        'moveAtUtc',
-        'sourceLocation',
-        'Destination',
-        'destinationCountry',
-        'destinationCity',
-        'destinationAddress',
-        'arrivalAtUtc',
-        'destinationLocation',
-      ],
-    },
-    {
-      title: 'Services',
-      content: ['serviceType', 'services', 'comment'],
-    },
-    {
-      title: 'SourceType',
-      content: ['sourceTypeId', 'attributeForSourceTypeValues', 'attributeChoiceAndAttachments'],
-    },
-  ];
-
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
-    const serviceNode: DataNode = {
+    return {
       title: (
         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <Image src={service?.attachment?.url} width={27} height={27} />
-          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+          <Image src={service?.attachment?.url} width={16} height={16} />
+          <span style={{ fontWeight: 'bold' }}>
+            {service?.id}
+            {service?.name}
+          </span>
         </span>
       ),
       key: `service${service?.id}`,
-      children: [],
+      serviceId: `${service?.id}`,
+      children:
+        service?.subServices?.length > 0
+          ? service?.subServices?.map((subService: any) => {
+              return {
+                title: (
+                  <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                    <Image src={service?.attachment?.url} width={16} height={16} />
+                    <span style={{ fontWeight: 'bold' }}>{subService?.name}</span>
+                  </span>
+                ),
+                key:
+                  subService?.tools?.length > 0
+                    ? `sub${subService?.id}`
+                    : `onlySub service${service?.id} sub${subService?.id}`,
+                serviceId: `${service?.id}`,
+                subServiceId: `${subService?.id}`,
+                children:
+                  subService?.tools?.length > 0
+                    ? subService?.tools?.map((tool: any) => {
+                        return {
+                          title: (
+                            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                              <Image src={tool?.attachment?.url} width={16} height={16} />
+                              <span style={{ fontWeight: 'bold' }}>
+                                {tool?.id}
+                                {tool?.name}
+                              </span>
+                            </span>
+                          ),
+                          key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+                          serviceId: `${service?.id}`,
+                          subServiceId: `${subService?.id}`,
+                          toolId: `${tool?.id}`,
+                        };
+                      })
+                    : [],
+                disabled: service?.subServices?.length > 0 ? false : true,
+              };
+            })
+          : [],
       disabled: service?.subServices?.length > 0 ? false : true,
     };
-    if (service?.subServices?.length > 0) {
-      serviceNode.children = service.subServices.map((subService: any) => {
-        const subServiceNode = {
-          title: (
-            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <Image src={subService?.attachment?.url} width={27} height={27} />
-              {subService?.name}
-            </span>
-          ),
-          key:
-            subService?.tools?.length > 0 ? `${subService?.id}` : `onlySub service${service?.id} sub${subService?.id}`,
-          children: [],
-        };
-        if (subService?.tools?.length > 0) {
-          subServiceNode.children = subService.tools.map((tool: any) => ({
-            title: (
-              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-                <Image src={tool?.attachment?.url} width={27} height={27} />
-                {tool?.name}
-              </span>
-            ),
-            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
-          }));
-        }
-        return subServiceNode;
-      });
-    }
-    return serviceNode;
   });
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
@@ -324,16 +380,12 @@ export const CompleteDraft: React.FC = () => {
     setCurrent(current - 1);
   };
 
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
-  };
-
   const ChangeCountryHandler = (e: any, positionType: 'source' | 'destination') => {
     setCountryId(e);
     if (positionType === 'source') {
-      form.setFieldValue('sourceCity', '');
+      form.setFieldValue('sourceCityId', '');
     } else if (positionType === 'destination') {
-      form.setFieldValue('destinationCity', '');
+      form.setFieldValue('destinationCityId', '');
     }
   };
 
@@ -345,24 +397,16 @@ export const CompleteDraft: React.FC = () => {
     }
   };
 
-  const extractDialCodeAndPhoneNumber = (fullPhoneNumber: string) => {
-    const dialCode = fullPhoneNumber?.substring(0, fullPhoneNumber.indexOf('+') + 4);
-    const phoneNumber = fullPhoneNumber?.substring(dialCode.length);
-    return {
-      dialCode,
-      phoneNumber,
-    };
-  };
-
-  const createRequestMutation = useMutation((id: any) =>
-    createRequest(id)
+  const updateRequestMutation = useMutation((id: any) =>
+    UpdateDraft(id)
       .then((data) => {
         data.data?.success &&
           message.open({
             content: <Alert message={t('requests.addRequestSuccessMessage')} type={`success`} showIcon />,
           });
         requestServicesArray = [];
-        Navigate(`/AskForHelp`);
+        setAttributeChoiceAndAttachments([]);
+        Navigate(`/requests`);
       })
       .catch((error) => {
         message.open({
@@ -373,30 +417,26 @@ export const CompleteDraft: React.FC = () => {
   );
 
   const onFinish = async (values: any) => {
-    const { dialCode: dialCodeS, phoneNumber: phoneNumberS } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue('phoneNumberSource'),
-    );
-    const { dialCode: dialCodeD, phoneNumber: phoneNumberD } = extractDialCodeAndPhoneNumber(
-      form.getFieldValue('phoneNumberDestination'),
-    );
     const sourceContact = {
-      dailCode: '+' + dialCodeS,
-      phoneNumber: phoneNumberS,
-      fullName: form.getFieldValue('fullNameContactSource'),
-      isCallAvailable: form.getFieldValue('isCallAvailableSource') == undefined ? false : true,
-      isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableSource') == undefined ? false : true,
-      isTelegramAvailable: form.getFieldValue('isTelegramAvailableSource') == undefined ? false : true,
+      dailCode: '+971',
+      phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
+      fullName:
+        form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']) == undefined
+          ? RequestData?.requestForQuotationContacts[0]?.fullName
+          : form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']),
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
-      dailCode: '+' + dialCodeD,
-      phoneNumber: phoneNumberD,
-      fullName: form.getFieldValue('fullNameContactDestination'),
-      isCallAvailable: form.getFieldValue('isCallAvailableDestination') == undefined ? false : true,
-      isWhatsAppAvailable: form.getFieldValue('isWhatsAppAvailableDestination') == undefined ? false : true,
-      isTelegramAvailable: form.getFieldValue('isTelegramAvailableDestination') == undefined ? false : true,
+      dailCode: '+971',
+      phoneNumber: form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
+      fullName:
+        form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']) == undefined
+          ? RequestData?.requestForQuotationContacts[1]?.fullName
+          : form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']),
       requestForQuotationContactType: 2,
     };
+
+    // services
     function extractServicesIds(input: any) {
       input.map((obj: any) => {
         const parts = obj.split(' ');
@@ -407,108 +447,251 @@ export const CompleteDraft: React.FC = () => {
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: parseInt(parts[3].replace('tool', '')),
           };
-          requestServices.push(result);
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
         } else if (parts[0] == 'onlySub') {
           result = {
             serviceId: parseInt(parts[1].replace('service', '')),
             subServiceId: parseInt(parts[2].replace('sub', '')),
             toolId: null,
           };
-          requestServices.push(result);
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
         }
         return result;
       });
     }
-    extractServicesIds(requestServicesArray);
 
-    const selectedChoicesArray = Object.entries(selectedChoices);
+    extractServicesIds(requestServices.length == 0 ? defaultCheckedServices : requestServicesArray);
 
-    const attributeForSourceTypeValues = selectedChoicesArray.map(([sourceTypeId, choice]: any) => {
-      const sourceTypeIdNumber = parseInt(sourceTypeId);
-      const parts = choice.split(' ');
-      const attributeChoiceId = parseInt(parts[2].replace('parentAttributeChoice', ''));
-      return {
-        attributeForSourcTypeId: sourceTypeIdNumber,
-        attributeChoiceId: attributeChoiceId,
-      };
+    // attributeChoiceAndAttachments
+    const attachmentIds = fileList.map((file) => file.uid);
+    const y =
+      attachmentIds.length > 0
+        ? [
+            {
+              attributeChoiceId: null,
+              attachmentIds: attachmentIds,
+            },
+          ]
+        : [];
+
+    const x: { attributeChoiceId: number; attachmentIds: any[] }[] = [];
+    attributeChoiceAndAttachments.forEach((item) => {
+      const existingEntry = x.find((entry) => entry.attributeChoiceId === item.attributeChoiceId);
+
+      if (existingEntry) {
+        existingEntry.attachmentIds = existingEntry.attachmentIds.concat(
+          item.attachmentIds.map((id) => (typeof id === 'number' ? id : id.id)),
+        );
+      } else {
+        x.push({
+          attributeChoiceId: item.attributeChoiceId,
+          attachmentIds: item.attachmentIds.map((id) => (typeof id === 'number' ? id : id.id)),
+        });
+      }
     });
+    const allAttachments = [...y, ...x];
 
-    const formDataArray = fileList.map((file: any) => {
-      const formData = new FormData();
-      formData.append('RefType', '2');
-      formData.append('file', file.originFileObj);
-      return formData;
-    });
-
-    const uploadPromises = formDataArray.map((formData: any) => {
-      return uploadImage.mutateAsync(formData);
-    });
-
-    Promise.all(uploadPromises)
-      .then(() => {
-        setAttachmentIdsChanged(true);
-      })
-      .catch((error) => {
-        console.error('File upload error:', error);
-      });
+    console.log(cityId.source);
+    console.log(RequestData?.sourceCity.id);
+    console.log(cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source);
 
     requestData = {
-      sourceCityId: cityId.source,
-      sourceAddress: form.getFieldValue('sourceAddress'),
+      sourceTypeId: RequestData?.sourceType?.id,
+      requestForQuotationContacts: [sourceContact, destinationContact],
+      serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
+      moveAtUtc:
+        form.getFieldValue('moveAtUtc') == undefined ? RequestData?.moveAtUtc : form.getFieldValue('moveAtUtc'),
+      sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
+      sourceAddress:
+        form.getFieldValue('sourceAddress') == undefined
+          ? RequestData?.sourceAddress
+          : form.getFieldValue('sourceAddress'),
+      arrivalAtUtc:
+        form.getFieldValue('arrivalAtUtc') == undefined
+          ? RequestData?.arrivalAtUtc
+          : form.getFieldValue('arrivalAtUtc'),
+      destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity?.id : cityId.destination,
+      destinationAddress:
+        form.getFieldValue('destinationAddress') == undefined
+          ? RequestData?.destinationAddress
+          : form.getFieldValue('destinationAddress'),
       sourceLongitude: sourcePosition.lng,
       sourceLatitude: sourcePosition.lat,
-      moveAtUtc: form.getFieldValue('moveAtUtc'),
-
-      destinationCityId: cityId.destination,
-      destinationAddress: form.getFieldValue('destinationAddress'),
       destinationLongitude: destinationPosition.lng,
       destinationLatitude: destinationPosition.lat,
-      arrivalAtUtc: form.getFieldValue('arrivalAtUtc'),
-
-      requestForQuotationContacts: [sourceContact, destinationContact],
-      serviceType: valueRadio,
-      comment: form.getFieldValue('comment'),
       services: requestServices,
 
-      sourceTypeId: selectedSourceType,
-      attributeForSourceTypeValues,
-      attributeChoiceAndAttachments: [
-        {
-          attributeChoiceId: null,
-          attachmentIds: attachmentIds,
-        },
-      ],
-
-      userId: userId ? userId : '0',
+      comment: form.getFieldValue('comment'),
+      attributeForSourceTypeValues: selectedRadio,
+      attributeChoiceAndAttachments: allAttachments,
+      userId: RequestData?.user?.id,
+      id: draftId,
     };
+    setValidations(true);
   };
 
   useEffect(() => {
-    if (attachmentIdsChanged) {
-      requestData.attributeChoiceAndAttachments[0].attachmentIds = attachmentIds;
-      createRequestMutation.mutateAsync(requestData);
-      setAttachmentIdsChanged(false);
-    }
-  }, [attachmentIdsChanged]);
+    if (validations) {
+      const showError = (messageText: string) => {
+        message.open({
+          content: <Alert message={messageText} type={`error`} showIcon />,
+        });
+        setValidations(false);
+      };
 
-  const uploadButton = (
+      const checkField = (fieldName: any, messageText: string) => {
+        if (form.getFieldValue(fieldName) === undefined) {
+          showError(messageText);
+          return false;
+        }
+        return true;
+      };
+      if (selectedRadio.length == 0) {
+        showError(t('addRequest.sourceTypeRequired'));
+      } else if (requestServices.length === 0) {
+        showError(t('requests.atLeastOneService'));
+      } else if (attributeChoiceAndAttachments.length === 0) {
+        showError(t('addRequest.atLeastOneAttachment'));
+      } else if (
+        !checkField(['requestForQuotationContacts', 0, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 1, 'phoneNumber'], t('addRequest.enterPhoneNumber')) ||
+        !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
+        !checkField('sourceAddress', t('addRequest.enterAddress')) ||
+        !checkField('sourceCityId', t('addRequest.enterCity')) ||
+        !checkField('destinationAddress', t('addRequest.enterAddress')) ||
+        !checkField('moveAtUtc', t('addRequest.enterDate')) ||
+        !checkField('arrivalAtUtc', t('addRequest.enterDate'))
+      ) {
+        return;
+      } else {
+        updateRequestMutation.mutateAsync(requestData);
+        requestServices = [];
+        requestServicesArray = [];
+      }
+    }
+  }, [validations]);
+
+  const uploadButtonForAllRequest = (
     <div>
       <PlusOutlined />
       <div className="ant-upload-text">Upload</div>
     </div>
   );
 
-  interface DisabledState {
-    [key: string]: boolean;
-  }
+  const UploadAttachments = async (options: any) => {
+    const { file } = options;
 
-  const [disabledState, setDisabledState] = useState<DisabledState>({});
+    if (typeof file?.uid === 'string') picturesList?.push(file);
 
-  const toggleDisable = (sourceTypeId: string) => {
-    setDisabledState((prevState) => ({
-      ...prevState,
-      [sourceTypeId]: prevState[sourceTypeId] === undefined ? true : !prevState[sourceTypeId],
-    }));
+    if (picturesList?.length === fileListLength) {
+      const formData = new FormData();
+      picturesList?.forEach((item) => {
+        formData.append('files', item);
+      });
+      formData.append('RefType', '2');
+      const result = await UploadMultiAttachment(formData);
+      const x: any[] = [];
+      result?.data?.result?.map((res: any) => {
+        x.push({
+          uid: res?.id,
+          status: 'done',
+          url: res?.url,
+        });
+      });
+      setPicturesList([]);
+      setFileListLength(0);
+
+      setFileList(fileList.concat(x));
+    }
+  };
+
+  useEffect(() => {
+    const updateFormValues = async () => {
+      const checkedKeysById: any[] = [];
+      RequestData?.services?.map((service: any) => {
+        service.subServices?.map((subService: any) => {
+          if (subService?.tools?.length === 0) {
+            checkedKeysById.push(`onlySub service${service?.id} sub${subService?.id}`);
+          } else
+            subService.tools.map((tool: any) => {
+              checkedKeysById.push(`withTool service${service?.id} sub${subService?.id} tool${tool?.id}`);
+            });
+        });
+      });
+      setDefaultCheckedServices(checkedKeysById);
+      await form.setFieldsValue(RequestData);
+    };
+    updateFormValues();
+  }, [RequestData, form]);
+
+  const addImageToState = (data: any) => {
+    const tempAttribute = _.cloneDeep(attributeChoiceAndAttachments);
+    const findAttribute = tempAttribute.findIndex((item) => item.attributeChoiceId === data.attributeId);
+    if (findAttribute !== -1) {
+      tempAttribute[findAttribute].attachmentIds.push(data.id);
+    } else {
+      tempAttribute.push({
+        attachmentIds: [data.id],
+        attributeChoiceId: data.attributeId,
+      });
+    }
+    setAttributeChoiceAndAttachments(tempAttribute);
+  };
+
+  const uploadImageAction = (
+    file: any,
+    url: Array<IUploadImage>,
+    setUrl: Dispatch<SetStateAction<Array<IUploadImage>>>,
+    attributeId: number,
+  ) => {
+    const tempImage = _.cloneDeep(url);
+    const formData = new FormData();
+    formData.append('file', file.file);
+    formData.append('RefType', '2');
+    uploadImage.mutate(formData, {
+      onSuccess(data) {
+        if (data.data.success) {
+          tempImage.push({
+            id: data.data.result.id,
+            attributeId: attributeId,
+            url: data.data.result.url,
+            status: 'done',
+          });
+          addImageToState({
+            id: data.data.result.id,
+            attributeId: attributeId,
+            url: data.data.result.url,
+          });
+          setUrl(tempImage);
+        }
+      },
+    });
+  };
+
+  const handleDeleteImage = (
+    attributeId: number,
+    imageId: number,
+    url: Array<IUploadImage>,
+    setUrl: Dispatch<SetStateAction<Array<IUploadImage>>>,
+  ) => {
+    const tempAttachment = _.cloneDeep(attributeChoiceAndAttachments);
+    const tempUrl = _.cloneDeep(url);
+    const attributeIndex = tempAttachment.findIndex((item) => item.attributeChoiceId === attributeId);
+
+    if (attributeIndex !== -1) {
+      const newAttachments = tempAttachment[attributeIndex].attachmentIds.filter((item) => item.id !== imageId);
+      tempAttachment[attributeIndex].attachmentIds = newAttachments;
+      const filteredUrl = tempUrl.filter((item) => item.id !== imageId);
+      const updateedImages = tempAttachment.filter((item) => item.attachmentIds.length !== 0);
+
+      setUrl(filteredUrl);
+      setAttributeChoiceAndAttachments(updateedImages);
+    }
   };
 
   return (
@@ -561,7 +744,7 @@ export const CompleteDraft: React.FC = () => {
               height: 'auto',
             }}
             onClick={onFinish}
-            loading={createRequestMutation.isLoading || uploadImage.isLoading}
+            loading={updateRequestMutation.isLoading}
           >
             {t('common.done')}
           </Button>
@@ -574,603 +757,587 @@ export const CompleteDraft: React.FC = () => {
             title={t(`addRequest.${step.title}`)}
             icon={
               index === 0 ? (
-                <UserOutlined />
+                <HomeOutlined />
               ) : index === 1 ? (
                 <PushpinOutlined />
-              ) : index === 2 ? (
-                <ClearOutlined />
+              ) : 2 ? (
+                <PushpinOutlined />
               ) : index === 3 ? (
-                <BankOutlined />
+                <UserOutlined />
+              ) : index === 4 ? (
+                <ClearOutlined />
               ) : undefined
             }
           />
         ))}
       </Steps>
-      {statusDraft === 'success' && dataSource && (
+
+      {status === 'success' && RequestData && (
         <BaseForm
           form={form}
           onFinish={onFinish}
-          initialValues={{
-            ...dataSource,
-          }}
-          name="addRequestForm"
+          name="editRequestForm"
           style={{ padding: '10px 20px', width: '90%', margin: 'auto' }}
         >
-          {current === 0 && (
+          {!attributeForSourceTypesIsRefetching && (
             <>
-              <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForSource')}:</h4>
-
-              <BaseForm.Item
-                name={['requestForQuotationContacts', 0, 'fullName']}
-                label={<LableText>fullName</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-              >
-                <Input />
-              </BaseForm.Item>
-
-              <BaseButtonsForm.Item
-                name={['requestForQuotationContacts', 0, 'phoneNumber']}
-                $successText={t('auth.phoneNumberVerified')}
-                label={t('common.phoneNumber')}
-                rules={[
-                  { required: true, message: t('common.requiredField') },
-                  () => ({
-                    validator(_, value) {
-                      if (!value || isValidPhoneNumber(value)) {
-                        return Promise.resolve();
-                      }
-                      if (formattedPhoneNumber.length > 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                      } else if (formattedPhoneNumber.length < 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                      }
-                    },
-                  }),
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                    : {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                }
-              >
-                <PhoneInput
-                  onChange={handleFormattedValueChange}
-                  country={'ae'}
-                  value={dataSource?.requestForQuotationContacts[0]?.phoneNumber}
-                />
-              </BaseButtonsForm.Item>
-
-              <Row
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                }}
-              >
-                <Col>
-                  <BaseForm.Item name={['requestForQuotationContacts', 0, 'isCallAvailable']} valuePropName="checked">
-                    <Checkbox defaultChecked={dataSource?.requestForQuotationContacts[0]?.isCallAvailable}>
-                      isCallAvailable
-                    </Checkbox>
+              {current === 0 && (
+                <>
+                  <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.whatMoving')}</h4>
+                  <BaseForm.Item name={['attributeForSourceTypeValues']}>
+                    {!attributeForSourceTypesIsRefetching &&
+                    attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
+                      <p>{t('addRequest.sourceTypeDoesntHaveAttribute')}</p>
+                    ) : attributeForSourceTypesData?.data?.result?.items.length > 0 ? (
+                      <div>
+                        {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
+                          <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
+                            <div>
+                              <h3 style={{ margin: '1rem' }}>{sourceTypeItem.name}</h3>
+                              <Radio.Group
+                                className="radios"
+                                style={{ display: 'flex', justifyContent: 'space-around', margin: '1rem' }}
+                                onChange={(e) => {
+                                  setSelectedRadio((prevSelectedChoices) => {
+                                    const existingIndex = prevSelectedChoices.findIndex(
+                                      (choice) => choice.attributeForSourcTypeId === sourceTypeItem.id,
+                                    );
+                                    if (existingIndex !== -1) {
+                                      return [
+                                        ...prevSelectedChoices.slice(0, existingIndex),
+                                        {
+                                          attributeForSourcTypeId: sourceTypeItem.id,
+                                          attributeChoiceId: e.target.value,
+                                        },
+                                        ...prevSelectedChoices.slice(existingIndex + 1),
+                                      ];
+                                    } else {
+                                      return [
+                                        ...prevSelectedChoices,
+                                        {
+                                          attributeForSourcTypeId: sourceTypeItem.id,
+                                          attributeChoiceId: e.target.value,
+                                        },
+                                      ];
+                                    }
+                                  });
+                                }}
+                                defaultValue={
+                                  selectedRadio.length > 0
+                                    ? selectedRadio.find(
+                                        (value: any) => value?.attributeForSourcTypeId === sourceTypeItem.id,
+                                      )?.attributeChoiceId
+                                    : undefined
+                                }
+                              >
+                                {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
+                                  <Radio
+                                    key={parentAttributeChoice.id}
+                                    value={parentAttributeChoice.id}
+                                    style={{ height: '30px', margin: '.5rem' }}
+                                  >
+                                    {parentAttributeChoice.name}
+                                  </Radio>
+                                ))}
+                              </Radio.Group>
+                            </div>
+                          </Card>
+                        ))}
+                      </div>
+                    ) : (
+                      ''
+                    )}
                   </BaseForm.Item>
-                </Col>
-                <Col>
+                </>
+              )}
+
+              {current === 1 && (
+                <Row className="fullContent" justify={'center'}>
+                  {childAttributeChoices?.length > 0 &&
+                    childAttributeChoices?.map((item: any) => {
+                      return (
+                        <Col key={item?.id} span={12}>
+                          <UploadImageRequest
+                            item={item}
+                            uploadImageAction={uploadImageAction}
+                            images={filterImage(item?.id) ?? []}
+                            handleDeleteImage={handleDeleteImage}
+                            previewOpen={previewOpen}
+                            previewTitle={previewTitle}
+                            handleCancel={handleCancel}
+                            previewImage={previewImage}
+                            handlePreviews={handlePreviews}
+                          />
+                        </Col>
+                      );
+                    })}
+                  <Row>
+                    <p> add additional attachments for your request: </p>
+                    <Upload
+                      accept=".jpeg,.png,.jpg"
+                      listType="picture-card"
+                      fileList={fileList}
+                      onPreview={handlePreviews}
+                      maxCount={10}
+                      multiple
+                      onChange={(item) => {
+                        setFileListLength(item.fileList?.filter((item) => typeof item.uid === 'string')?.length);
+                      }}
+                      onRemove={(file) => {
+                        setFileList((prev: any[]) => {
+                          const data = prev.filter((item: any) => item?.uid !== file?.uid);
+                          return data;
+                        });
+                        return;
+                      }}
+                      customRequest={UploadAttachments}
+                    >
+                      {fileList.length >= 8 ? null : uploadButtonForAllRequest}
+                    </Upload>
+                    <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
+                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
+                    </Modal>
+                  </Row>
+                </Row>
+              )}
+
+              {current === 2 && (
+                <>
+                  <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
                   <BaseForm.Item
-                    name={['requestForQuotationContacts', 0, 'isTelegramAvailable']}
-                    valuePropName="checked"
+                    name={['serviceType']}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
                   >
-                    <Checkbox defaultChecked={dataSource?.requestForQuotationContacts[0]?.isTelegramAvailable}>
-                      isTelegramAvailable
-                    </Checkbox>
+                    <Radio.Group
+                      style={{ display: 'flex', width: '100%' }}
+                      onChange={(event) => {
+                        form.setFieldsValue({ ['serviceType']: event.target.value });
+                        setValueRadio(event.target.value);
+                      }}
+                      defaultValue={RequestData.serviceType}
+                    >
+                      <Radio
+                        value={1}
+                        style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}
+                      >
+                        {t('requests.Internal')}
+                      </Radio>
+                      <Radio
+                        value={2}
+                        style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}
+                      >
+                        {t('requests.External')}
+                      </Radio>
+                    </Radio.Group>
                   </BaseForm.Item>
-                </Col>
-                <Col>
+
+                  <h4 style={{ margin: '4rem 0', fontWeight: '700' }}>{t('addRequest.sourceLocations')}:</h4>
                   <BaseForm.Item
-                    name={['requestForQuotationContacts', 0, 'isWhatsAppAvailable']}
-                    valuePropName="checked"
+                    label={<LableText>{t('addRequest.country')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                    }
                   >
-                    <Checkbox defaultChecked={dataSource?.requestForQuotationContacts[0]?.isWhatsAppAvailable}>
-                      isWhatsAppAvailable
-                    </Checkbox>
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option: any) =>
+                        option!.children?.toLowerCase().includes(input?.toLowerCase())
+                      }
+                      filterSort={(optionA: any, optionB: any) =>
+                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                      }
+                      onChange={(e) => ChangeCountryHandler(e, 'source')}
+                      defaultValue={RequestData.sourceCity.country.name}
+                    >
+                      {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                        return (
+                          <Option value={ele.id} key={ele?.id}>
+                            {ele.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
                   </BaseForm.Item>
-                </Col>
-              </Row>
-
-              <h4 style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
-
-              <BaseForm.Item
-                name={['requestForQuotationContacts', 1, 'fullName']}
-                label={<LableText>fullName</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-                initialValue={dataSource?.requestForQuotationContacts[0].fullName}
-              >
-                <Input />
-              </BaseForm.Item>
-
-              <BaseButtonsForm.Item
-                name={['requestForQuotationContacts', 1, 'phoneNumber']}
-                $successText={t('auth.phoneNumberVerified')}
-                label={t('common.phoneNumber')}
-                rules={[
-                  { required: true, message: t('common.requiredField') },
-                  () => ({
-                    validator(_, value) {
-                      if (!value || isValidPhoneNumber(value)) {
-                        return Promise.resolve();
-                      }
-                      if (formattedPhoneNumber.length > 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                      } else if (formattedPhoneNumber.length < 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                      }
-                    },
-                  }),
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                    : {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                }
-              >
-                <PhoneInput onChange={handleFormattedValueChange} country={'ae'} />
-              </BaseButtonsForm.Item>
-
-              <Row
-                style={{
-                  display: 'flex',
-                  flexDirection: 'row',
-                  justifyContent: 'space-evenly',
-                }}
-              >
-                <Col>
-                  <BaseForm.Item name={['requestForQuotationContacts', 1, 'isCallAvailable']} valuePropName="checked">
-                    <Checkbox>isCallAvailable</Checkbox>
-                  </BaseForm.Item>
-                </Col>
-                <Col>
                   <BaseForm.Item
-                    name={['requestForQuotationContacts', 1, 'isTelegramAvailable']}
-                    valuePropName="checked"
+                    name={['sourceCityId']}
+                    label={<LableText>{t('addRequest.city')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                    }
                   >
-                    <Checkbox>isTelegramAvailable</Checkbox>
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option: any) =>
+                        option!.children?.toLowerCase().includes(input?.toLowerCase())
+                      }
+                      filterSort={(optionA: any, optionB: any) =>
+                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                      }
+                      onChange={(e) => ChangeCityHandler(e, 'source')}
+                      defaultValue={RequestData.sourceCity.name}
+                    >
+                      {cityData?.data?.result?.items?.map((ele: any) => {
+                        return (
+                          <Select value={ele.id} key={ele?.id}>
+                            {ele.name}
+                          </Select>
+                        );
+                      })}
+                    </Select>
                   </BaseForm.Item>
-                </Col>
-                <Col>
                   <BaseForm.Item
-                    name={['requestForQuotationContacts', 1, 'isWhatsAppAvailable']}
-                    valuePropName="checked"
+                    name="sourceAddress"
+                    label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet
+                        ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                        : isMobile
+                        ? { width: '100%', display: 'block' }
+                        : {}
+                    }
                   >
-                    <Checkbox>isWhatsAppAvailable</Checkbox>
+                    <Input defaultValue={RequestData.sourceAddress} />
                   </BaseForm.Item>
-                </Col>
-              </Row>
-            </>
-          )}
-
-          {current === 1 && (
-            <>
-              <BaseForm.Item
-                label={<LableText>{t('addRequest.country')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                }
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                  filterSort={(optionA: any, optionB: any) =>
-                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                  }
-                  onChange={(e) => ChangeCountryHandler(e, 'source')}
-                  defaultValue={dataSource?.city?.country?.name}
-                >
-                  {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
-                    return (
-                      <Option value={ele.id} key={ele?.id}>
-                        {ele.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </BaseForm.Item>
-              <BaseForm.Item
-                name={['sourceCityId']}
-                label={<LableText>{t('addRequest.city')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                }
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                  filterSort={(optionA: any, optionB: any) =>
-                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                  }
-                  onChange={(e) => ChangeCityHandler(e, 'source')}
-                  defaultValue={dataSource?.city?.name}
-                >
-                  {cityData?.data?.result?.items?.map((ele: any) => {
-                    return (
-                      <Option value={ele.id} key={ele?.id}>
-                        {ele.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </BaseForm.Item>
-              <BaseForm.Item
-                name="sourceAddress"
-                label={<LableText>sourceAddress</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? { width: '40%', margin: '0 2%', display: 'inline-block' }
-                    : isMobile
-                    ? { width: '100%', display: 'block' }
-                    : {}
-                }
-              >
-                <Input />
-              </BaseForm.Item>
-              <BaseForm.Item
-                label={<LableText>{t('addRequest.date')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                    : isMobile
-                    ? { width: '100%', marginBottom: '5rem' }
-                    : {}
-                }
-              >
-                <DatePicker style={{ width: '100%' }} defaultValue={dayjs(moment(dataSource.moveAtUtc).toDate())} />
-              </BaseForm.Item>
-              <div
-                style={
-                  lang == 'en' && (isDesktop || isTablet)
-                    ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
-                    : lang == 'en' && isMobile
-                    ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
-                    : lang == 'ar' && (isDesktop || isTablet)
-                    ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
-                    : lang == 'ar' && isMobile
-                    ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
-                    : {}
-                }
-              >
-                <div style={{ width: '100%', height: '400px' }}>
-                  <GoogleMap
-                    center={centerSource}
-                    zoom={12}
-                    mapContainerStyle={{ width: '100%', height: '100%' }}
-                    onClick={(event) => handleMapClick(event, 'source')}
+                  <BaseForm.Item
+                    name="moveAtUtc"
+                    label={<LableText>{t('addRequest.date')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet
+                        ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                        : isMobile
+                        ? { width: '100%', marginBottom: '5rem' }
+                        : {}
+                    }
+                    valuePropName="data"
                   >
-                    <Marker key="source" position={sourcePosition} />
-                  </GoogleMap>
-                </div>
-              </div>
-
-              <BaseForm.Item
-                label={<LableText>{t('addRequest.country')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                }
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                  filterSort={(optionA: any, optionB: any) =>
-                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                  }
-                  onChange={(e) => ChangeCountryHandler(e, 'destination')}
-                  defaultValue={dataSource?.city?.country?.name}
-                >
-                  {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
-                    return (
-                      <Option value={ele.id} key={ele?.id}>
-                        {ele.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </BaseForm.Item>
-              <BaseForm.Item
-                name={['destinationCityId']}
-                label={<LableText>{t('addRequest.city')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                }
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  filterOption={(input, option: any) => option!.children?.toLowerCase().includes(input?.toLowerCase())}
-                  filterSort={(optionA: any, optionB: any) =>
-                    optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                  }
-                  onChange={(e) => ChangeCityHandler(e, 'destination')}
-                  defaultValue={dataSource?.city?.name}
-                >
-                  {cityData?.data?.result?.items?.map((ele: any) => {
-                    return (
-                      <Option value={ele.id} key={ele?.id}>
-                        {ele.name}
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </BaseForm.Item>
-              <BaseForm.Item
-                name="destinationAddress"
-                label={<LableText>destinationAddress</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? { width: '40%', margin: '0 2%', display: 'inline-block' }
-                    : isMobile
-                    ? { width: '100%', display: 'block' }
-                    : {}
-                }
-              >
-                <Input />
-              </BaseForm.Item>
-              <BaseForm.Item
-                label={<LableText>{t('addRequest.date')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                    : isMobile
-                    ? { width: '100%', marginBottom: '5rem' }
-                    : {}
-                }
-              >
-                <DatePicker style={{ width: '100%' }} defaultValue={dayjs(moment(dataSource.arrivalAtUtc).toDate())} />
-              </BaseForm.Item>
-              <div
-                style={
-                  lang == 'en' && (isDesktop || isTablet)
-                    ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
-                    : lang == 'en' && isMobile
-                    ? { right: '0', float: 'right', position: 'relative', width: '100%' }
-                    : lang == 'ar' && (isDesktop || isTablet)
-                    ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
-                    : lang == 'ar' && isMobile
-                    ? { left: '0', float: 'left', position: 'relative', width: '100%' }
-                    : {}
-                }
-              >
-                <div style={{ width: '100%', height: '400px' }}>
-                  <GoogleMap
-                    center={centerDestination}
-                    zoom={12}
-                    mapContainerStyle={{ width: '100%', height: '100%' }}
-                    onClick={(event) => handleMapClick(event, 'destination')}
+                    <DatePicker
+                      style={{ width: '100%' }}
+                      defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : undefined}
+                    />
+                  </BaseForm.Item>
+                  <div
+                    style={
+                      lang == 'en' && (isDesktop || isTablet)
+                        ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                        : lang == 'en' && isMobile
+                        ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
+                        : lang == 'ar' && (isDesktop || isTablet)
+                        ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                        : lang == 'ar' && isMobile
+                        ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
+                        : {}
+                    }
                   >
-                    <Marker key="destination" position={destinationPosition} />
-                  </GoogleMap>
-                </div>
-              </div>
-            </>
-          )}
+                    <div style={{ width: '100%', height: '400px' }}>
+                      <GoogleMap
+                        center={centerSource}
+                        zoom={12}
+                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                        onClick={(event) => handleMapClick(event, 'source')}
+                      >
+                        <Marker key="source" position={sourcePosition} />
+                      </GoogleMap>
+                    </div>
+                  </div>
 
-          {current === 2 && (
-            <>
-              <BaseForm.Item name={['serviceType']}>
-                <Radio.Group
-                  style={{ display: 'flex', width: '100%' }}
-                  onChange={(event) => {
-                    form.setFieldsValue({ ['serviceType']: event.target.value });
-                    setValueRadio(event.target.value);
-                  }}
-                >
-                  <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    {t('requests.Internal')}
-                  </Radio>
-                  <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
-                    {t('requests.External')}
-                  </Radio>
-                </Radio.Group>
-              </BaseForm.Item>
+                  <h4 style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>{t('addRequest.destinationLocations')}:</h4>
+                  <BaseForm.Item
+                    label={<LableText>{t('addRequest.country')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                    }
+                  >
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option: any) =>
+                        option!.children?.toLowerCase().includes(input?.toLowerCase())
+                      }
+                      filterSort={(optionA: any, optionB: any) =>
+                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                      }
+                      onChange={(e) => ChangeCountryHandler(e, 'destination')}
+                      defaultValue={RequestData?.destinationCity?.country?.name}
+                    >
+                      {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                        return (
+                          <Option value={ele.id} key={ele?.id}>
+                            {ele.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </BaseForm.Item>
+                  <BaseForm.Item
+                    name={['destinationCityId']}
+                    label={<LableText>{t('addRequest.city')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
+                    }
+                  >
+                    <Select
+                      showSearch
+                      optionFilterProp="children"
+                      filterOption={(input, option: any) =>
+                        option!.children?.toLowerCase().includes(input?.toLowerCase())
+                      }
+                      filterSort={(optionA: any, optionB: any) =>
+                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                      }
+                      onChange={(e) => ChangeCityHandler(e, 'destination')}
+                      defaultValue={RequestData?.destinationCity?.name}
+                    >
+                      {cityData?.data?.result?.items?.map((ele: any) => {
+                        return (
+                          <Option value={ele.id} key={ele?.id}>
+                            {ele.name}
+                          </Option>
+                        );
+                      })}
+                    </Select>
+                  </BaseForm.Item>
+                  <BaseForm.Item
+                    name="destinationAddress"
+                    label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet
+                        ? { width: '40%', margin: '0 2%', display: 'inline-block' }
+                        : isMobile
+                        ? { width: '100%', display: 'block' }
+                        : {}
+                    }
+                  >
+                    <Input defaultValue={RequestData?.destinationAddress} />
+                  </BaseForm.Item>
+                  <BaseForm.Item
+                    name="arrivalAtUtc"
+                    label={<LableText>{t('addRequest.date')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={
+                      isDesktop || isTablet
+                        ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
+                        : isMobile
+                        ? { width: '100%', marginBottom: '5rem' }
+                        : {}
+                    }
+                    valuePropName="data"
+                  >
+                    <DatePicker
+                      style={{ width: '100%' }}
+                      defaultValue={RequestData?.arrivalAtUtc ? moment(RequestData.arrivalAtUtc) : undefined}
+                    />
+                  </BaseForm.Item>
+                  <div
+                    style={
+                      lang == 'en' && (isDesktop || isTablet)
+                        ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
+                        : lang == 'en' && isMobile
+                        ? { right: '0', float: 'right', position: 'relative', width: '100%' }
+                        : lang == 'ar' && (isDesktop || isTablet)
+                        ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
+                        : lang == 'ar' && isMobile
+                        ? { left: '0', float: 'left', position: 'relative', width: '100%' }
+                        : {}
+                    }
+                  >
+                    <div style={{ width: '100%', height: '400px' }}>
+                      <GoogleMap
+                        center={centerDestination}
+                        zoom={12}
+                        mapContainerStyle={{ width: '100%', height: '100%' }}
+                        onClick={(event) => handleMapClick(event, 'destination')}
+                      >
+                        <Marker key="destination" position={destinationPosition} />
+                      </GoogleMap>
+                    </div>
+                  </div>
+                </>
+              )}
 
-              <BaseForm.Item name={['services']}>
-                {treeData?.map((serviceTreeData: any, serviceIndex: number) => {
-                  const serviceKeys = selectedServicesKeysMap[serviceIndex] || [];
-                  return (
+              {current === 3 && (
+                <>
+                  <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForSource')}:</h4>
+                  <BaseForm.Item
+                    name={['requestForQuotationContacts', 0, 'fullName']}
+                    label={<LableText>{t('common.fullName')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Input defaultValue={RequestData.requestForQuotationContacts[0].fullName} />
+                  </BaseForm.Item>
+
+                  <BaseForm.Item
+                    key={current}
+                    name={['requestForQuotationContacts', 0, 'phoneNumber']}
+                    label={t('common.phoneNumber')}
+                    rules={[
+                      { required: true, message: t('common.requiredField') },
+                      () => ({
+                        validator(_, value) {
+                          if (!value || isValidPhoneNumber(value)) {
+                            return Promise.resolve();
+                          }
+                          if (value.length > 9) {
+                            return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                          } else if (value.length < 9) {
+                            return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                          }
+                        },
+                      }),
+                    ]}
+                    style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Input
+                      addonBefore={'+971'}
+                      value={RequestData.requestForQuotationContacts[0]?.phoneNumber}
+                      onChange={(e) => {
+                        if (validationInputNumber(e.target.value)) {
+                          form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], e.target.value);
+                        } else form.setFieldValue(['requestForQuotationContacts', 0, 'phoneNumber'], '');
+                      }}
+                      maxLength={9}
+                      style={{ width: '100%' }}
+                    />
+                  </BaseForm.Item>
+
+                  <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.ForDestination')}:</h4>
+                  <BaseForm.Item
+                    name={['requestForQuotationContacts', 1, 'fullName']}
+                    label={<LableText>{t('common.fullName')}</LableText>}
+                    rules={[
+                      {
+                        required: true,
+                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                      },
+                    ]}
+                    style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Input defaultValue={RequestData?.requestForQuotationContacts[1]?.fullName} />
+                  </BaseForm.Item>
+
+                  <BaseForm.Item
+                    key={current}
+                    name={['requestForQuotationContacts', 1, 'phoneNumber']}
+                    label={t('common.phoneNumber')}
+                    rules={[
+                      { required: true, message: t('common.requiredField') },
+                      () => ({
+                        validator(_, value) {
+                          if (!value || isValidPhoneNumber(value)) {
+                            return Promise.resolve();
+                          }
+                          if (value.length > 9) {
+                            return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
+                          } else if (value.length < 9) {
+                            return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
+                          }
+                        },
+                      }),
+                    ]}
+                    style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Input
+                      addonBefore={'+971'}
+                      value={RequestData.requestForQuotationContacts[0]?.phoneNumber}
+                      onChange={(e) => {
+                        if (validationInputNumber(e.target.value)) {
+                          form.setFieldValue(['requestForQuotationContacts', 1, 'phoneNumber'], e.target.value);
+                        } else form.setFieldValue(['requestForQuotationContacts', 1, 'phoneNumber'], '');
+                      }}
+                      maxLength={9}
+                      style={{ width: '100%' }}
+                    />
+                  </BaseForm.Item>
+                </>
+              )}
+
+              {current === 4 && (
+                <>
+                  <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.selectService')} :</h4>
+                  <BaseForm.Item key="100" name={['services']}>
                     <Tree
-                      key={serviceIndex}
                       style={treeStyle}
                       checkable
                       defaultExpandAll={true}
                       onExpand={onExpand}
                       expandedKeys={expandedKeys}
                       autoExpandParent={autoExpandParent}
-                      onCheck={(checkedKeysValue: any) => {
-                        for (const key of checkedKeysValue) {
-                          if (!requestServicesArray.includes(key)) {
-                            requestServicesArray.push(key);
-                          }
-                        }
-                        setSelectedServicesKeysMap((prevSelectedKeysMap) => {
-                          const updatedKeysMap = { ...prevSelectedKeysMap };
-                          updatedKeysMap[serviceIndex] = checkedKeysValue;
-                          return updatedKeysMap;
-                        });
+                      onCheck={(checkedKeysValue: any, info: any) => {
+                        setDefaultCheckedServices(checkedKeysValue);
+                        requestServicesArray = [...checkedKeysValue];
                       }}
-                      defaultCheckedKeys={serviceKeys}
-                      checkedKeys={serviceKeys}
+                      defaultCheckedKeys={defaultCheckedServices}
+                      checkedKeys={defaultCheckedServices}
                       onSelect={onSelect}
                       selectedKeys={selectedKeys}
-                      treeData={[serviceTreeData]}
+                      treeData={treeData}
                     />
-                  );
-                })}
-              </BaseForm.Item>
+                  </BaseForm.Item>
 
-              <BaseForm.Item name={['comment']}>
-                <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
-              </BaseForm.Item>
-            </>
-          )}
-
-          {current === 3 && (
-            <>
-              <BaseForm.Item
-                name={['sourceTypeId']}
-                label={<LableText>{t('addRequest.sourceType')}</LableText>}
-                rules={[
-                  { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-                ]}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : isMobile ? { width: '100%' } : {}}
-              >
-                <Select
-                  showSearch
-                  optionFilterProp="children"
-                  onChange={(e: any) => {
-                    setSelectedSourceType(e);
-                    setSourceType('1');
-                  }}
-                >
-                  {GetAllSourceType?.data?.data?.result?.items?.map((ele: any) => {
-                    return (
-                      <Option value={ele.id} key={ele?.id}>
-                        <Space>
-                          <span role="img" aria-label={ele.name} style={{ display: 'flex', alignItems: 'center' }}>
-                            <img src={ele?.icon?.url} width={27} height={27} style={{ margin: '0 1.5rem 0 0.3rem' }} />
-                            {ele.name}
-                          </span>
-                        </Space>
-                      </Option>
-                    );
-                  })}
-                </Select>
-              </BaseForm.Item>
-
-              <BaseForm.Item name={['attributeForSourceTypeValues']}>
-                {sourceType == '0' ? (
-                  <p>Please choose an option from the select.</p>
-                ) : attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
-                  <p>This Source Type doesn&apos;t have any Attribute</p>
-                ) : attributeForSourceTypesData?.data?.result?.items.length > 0 && sourceType == '1' ? (
-                  <div>
-                    {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
-                      <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
-                        <div style={{ margin: '1rem' }}>
-                          <p style={{ fontWeight: 'bold', marginBottom: '3rem' }}>
-                            <Checkbox onClick={() => toggleDisable(sourceTypeItem.id)}>{sourceTypeItem.name}</Checkbox>
-                          </p>
-                          <Radio.Group
-                            style={{ display: 'flex', justifyContent: 'space-around' }}
-                            onChange={(e) => {
-                              const sourceTypeId = sourceTypeItem.id;
-                              const parentAttributeChoiceId = parseInt(
-                                e.target.value.split(' ')[2].replace('parentAttributeChoice', ''),
-                              );
-                              setSelectedChoices((prevSelectedChoices) => ({
-                                ...prevSelectedChoices,
-                                [sourceTypeId]: e.target.value,
-                              }));
-
-                              getChildAttributeChoice(parentAttributeChoiceId)
-                                .then((data) => {
-                                  const items = data?.data?.result?.items || [];
-
-                                  const itemElements = items.map((item: any) => (
-                                    <div key={item.id} style={{ margin: '4rem 1rem 5rem' }}>
-                                      <p>{item.name}</p>
-                                    </div>
-                                  ));
-
-                                  setAttributeChoiceItems((prevAttributeChoiceItems) => ({
-                                    ...prevAttributeChoiceItems,
-                                    [sourceTypeId]: itemElements,
-                                  }));
-                                })
-                                .catch((error) => {
-                                  console.error(error);
-                                });
-                            }}
-                            value={selectedChoices[sourceTypeItem.id]}
-                          >
-                            {sourceTypeItem.attributeChoices.map((parentAttributeChoice: any) => (
-                              <Radio
-                                disabled={!disabledState[sourceTypeItem.id]}
-                                key={parentAttributeChoice.id}
-                                value={`sourceWithAttribute attributeForSourceType${sourceTypeItem.id} parentAttributeChoice${parentAttributeChoice.id}`}
-                              >
-                                {parentAttributeChoice.name}
-                              </Radio>
-                            ))}
-                          </Radio.Group>
-                          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                            {attributeChoiceItems[sourceTypeItem.id]}
-                          </div>
-                        </div>
-                      </Card>
-                    ))}
-                    <Upload
-                      action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-                      accept=".jpeg,.png,.jpg"
-                      listType="picture-card"
-                      fileList={fileList}
-                      onPreview={handlePreview}
-                      onChange={handleChange}
-                    >
-                      {fileList.length >= 8 ? null : uploadButton}
-                    </Upload>
-                    <Modal open={previewOpen} title={previewTitle} footer={null} onCancel={handleCancel}>
-                      <img alt="example" style={{ width: '100%' }} src={previewImage} />
-                    </Modal>
-                  </div>
-                ) : (
-                  ''
-                )}
-              </BaseForm.Item>
+                  <BaseForm.Item name={['comment']}>
+                    <TextArea aria-label="comment" style={{ margin: '1rem  0' }} placeholder={t('requests.comment')} />
+                  </BaseForm.Item>
+                </>
+              )}
             </>
           )}
         </BaseForm>

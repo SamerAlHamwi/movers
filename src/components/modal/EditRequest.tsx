@@ -1237,49 +1237,6 @@ export const EditRequest: React.FC = () => {
                   style={{ width: '100%' }}
                 />
               </BaseForm.Item>
-
-              {/* <BaseButtonsForm.Item
-                name={['requestForQuotationContacts', 1, 'phoneNumber']}
-                $successText={t('auth.phoneNumberVerified')}
-                label={t('common.phoneNumber')}
-                rules={[
-                  { required: true, message: t('common.requiredField') },
-                  () => ({
-                    validator(_, value) {
-                      if (!value || isValidPhoneNumber(value)) {
-                        return Promise.resolve();
-                      }
-                      if (formattedPhoneNumber.length > 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                      } else if (formattedPhoneNumber.length < 12) {
-                        return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                      }
-                    },
-                  }),
-                ]}
-                style={
-                  isDesktop || isTablet
-                    ? {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                    : {
-                        width: 'fit-content',
-                        margin: '2rem auto',
-                        direction: localStorage.getItem('Go Movaro-lang') == 'en' ? 'ltr' : 'rtl',
-                      }
-                }
-              >
-                <PhoneInput
-                  onChange={handleFormattedValueChange}
-                  country={'ae'}
-                  value={
-                    RequestData.requestForQuotationContacts[1]?.dailCode +
-                    RequestData.requestForQuotationContacts[1]?.phoneNumber
-                  }
-                />
-              </BaseButtonsForm.Item> */}
             </>
           )}
 
