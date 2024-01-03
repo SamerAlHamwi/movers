@@ -18,5 +18,5 @@ export enum ReasonOfPaid {
 
 export enum PaidDestination {
   ForHim = 1,
-  OnHim,
+  OnHim = 2,
 }

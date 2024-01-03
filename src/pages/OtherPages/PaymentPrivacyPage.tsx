@@ -8,7 +8,7 @@ const PaymentPolicyPage: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('sidebarNavigation.PaymentPolicy')}</PageTitle>
+      <PageTitle>{t('sidebarNavigation.PaymentPrivacy')}</PageTitle>
       <PaymentPolicy />
     </>
   );

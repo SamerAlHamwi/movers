@@ -67,8 +67,6 @@ export const Payments: React.FC = () => {
 
   useEffect(() => {
     setLoading(true);
-    console.log(reasonOfPaid);
-
     refetch();
   }, [page, pageSize, language, searchString, bundleStatus, refetchData, paidProvider, reasonOfPaid]);
 
@@ -106,7 +104,7 @@ export const Payments: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('payments.PaidDestination')}</Header>,
       dataIndex: 'paidDestination',
       render: (record: any) => {
-        switch (record.paidProvider) {
+        switch (record) {
           case PaidDestination.ForHim:
             return <>{t('payments.ForHim')}</>;
           case PaidDestination.OnHim:

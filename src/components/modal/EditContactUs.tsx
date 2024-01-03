@@ -54,7 +54,7 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
 
   return (
     <Modal
-      style={{ marginTop: '0rem', height: '90vh', overflowY: 'scroll' }}
+      style={{ marginTop: '0rem', height: '80vh', overflowY: 'scroll' }}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       open={visible}
       title={

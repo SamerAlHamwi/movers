@@ -19,6 +19,9 @@
   width: 200px;
   padding: 0;
 }
+.ant-card-head-wrapper {
+  margin-top: 1rem;
+}
 
 .task-list {
   min-height: 100px;
