@@ -9,6 +9,7 @@ const getAllCompanies = async (
   type?: string,
   requestId?: string | undefined,
   statues?: number,
+  GetCompaniesThatNeedToUpdate?: boolean,
 ) => {
   const skip = (page - 1) * pageSize;
   return await httpApi.get(`${apiPrefix.companies}/GetAll`, {
@@ -19,6 +20,7 @@ const getAllCompanies = async (
       statues: statues,
       RequestId: type === 'companiesThatBoughtInfo' ? requestId : undefined,
       WhichBoughtInfoContact: type === 'companiesThatBoughtInfo' ? true : false,
+      GetCompaniesThatNeedToUpdate: GetCompaniesThatNeedToUpdate,
     },
   });
 };

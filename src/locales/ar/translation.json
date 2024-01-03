@@ -1071,7 +1071,8 @@
     "FeaturedBundles": "الباقات المُمَيِزة",
     "ApplicationsVersions": "إصدارات التطبيقات",
     "Payments": "المدفوعات",
-    "PaymentPrivacy": "خصوصية الدفع"
+    "PaymentPrivacy": "خصوصية الدفع",
+    "needToUpdate": "تحتاج إلى تحديث"
   },
 
   "header": {
