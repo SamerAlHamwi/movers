@@ -594,7 +594,7 @@ export const Companies: React.FC = () => {
       ? (setCompanyStatus(undefined), setNeedToUpdate(false))
       : key === NEED_TO_UPDATE
       ? (setCompanyStatus(undefined), setNeedToUpdate(true))
-      : setCompanyStatus(key);
+      : (setCompanyStatus(key), setNeedToUpdate(false));
   };
 
   return (
