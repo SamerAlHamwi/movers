@@ -345,7 +345,8 @@
     "needToUpdate": "Need To Update",
     "oldCompany": "Old Company Info",
     "newCompany": "New Company Info",
-    "timeOfWorks": "Work Time"
+    "timeOfWorks": "Work Time",
+    "compare": "Comparison"
   },
 
   "_comment7": "*********************************** subServices ************************************************",

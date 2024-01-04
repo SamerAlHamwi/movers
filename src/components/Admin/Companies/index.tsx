@@ -132,7 +132,7 @@ export const Companies: React.FC = () => {
   );
 
   const { refetch: refetchCompaniesThatBoughtInfo, isRefetching: isRefetchingCompaniesThatBoughtInfo } = useQuery(
-    ['AllCompanies', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
+    ['AllCompaniesThatBoughtInfo', page, pageSize, isDelete, isEdit, isApproved, isChanged, isRejected],
     () =>
       getAllCompanies(page, pageSize, searchString, type, requestId, companyStatus)
         .then((data) => {
@@ -561,16 +561,18 @@ export const Companies: React.FC = () => {
                   </TableButton>
                 </Tooltip>
 
-                <Tooltip placement="top" title={t('companies.compare')}>
-                  <TableButton
-                    severity="warning"
-                    onClick={() => {
-                      Navigate(`${record.id}/comparison`, { replace: false });
-                    }}
-                  >
-                    <MergeCellsOutlined />
-                  </TableButton>
-                </Tooltip>
+                {needToUpdate && (
+                  <Tooltip placement="top" title={t('companies.compare')}>
+                    <TableButton
+                      severity="warning"
+                      onClick={() => {
+                        Navigate(`${record.id}/comparison`, { replace: false });
+                      }}
+                    >
+                      <MergeCellsOutlined />
+                    </TableButton>
+                  </Tooltip>
+                )}
 
                 <Tooltip placement="top" title={t('common.edit')}>
                   <TableButton
