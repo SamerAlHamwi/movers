@@ -124,7 +124,7 @@ const ReviewsDetails: React.FC = () => {
                   <Row key={review.user?.id}>
                     <ColStyle style={{ borderBottom: '1px solid' }}>
                       <DetailsTitle>{review.user?.fullName} :</DetailsTitle>
-                      <DetailsTitle>{review?.reviewDescription}</DetailsTitle>
+                      <DetailsTitle style={{ wordBreak: 'break-all' }}>{review?.reviewDescription}</DetailsTitle>
                     </ColStyle>
                     <ColStyle style={{ display: 'flex', borderBottom: '1px solid' }}>
                       <Row>
