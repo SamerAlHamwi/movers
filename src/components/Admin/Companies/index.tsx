@@ -16,6 +16,7 @@ import {
   SnippetsOutlined,
   LeftOutlined,
   RetweetOutlined,
+  MergeCellsOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { Table } from '@app/components/common/Table/Table';
@@ -321,6 +322,7 @@ export const Companies: React.FC = () => {
     { label: t('companies.returnedRequests'), value: CompanyStatus.RejectedNeedToEdit },
     { label: t('companies.needToUpdate'), value: NEED_TO_UPDATE },
   ];
+
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, return: returnCompany.isLoading }));
   }, [returnCompany.isLoading]);
@@ -556,6 +558,17 @@ export const Companies: React.FC = () => {
                     }}
                   >
                     <TeamOutlined />
+                  </TableButton>
+                </Tooltip>
+
+                <Tooltip placement="top" title={t('companies.compare')}>
+                  <TableButton
+                    severity="warning"
+                    onClick={() => {
+                      Navigate(`${record.id}/comparison`, { replace: false });
+                    }}
+                  >
+                    <MergeCellsOutlined />
                   </TableButton>
                 </Tooltip>
 

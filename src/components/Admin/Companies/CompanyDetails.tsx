@@ -55,7 +55,6 @@ const CompanyDetails: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [companyData, setCompanyData] = useState<any>();
-  const [companyReviewData, setCompanyReviewData] = useState<any>();
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
 

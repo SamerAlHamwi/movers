@@ -281,7 +281,7 @@
     "rejectcompanyModalTitle": "Reject Company",
     "rejectcompanyModalDescription": "Are You Sure To Reject This Company?",
     "companyInfo": "Company Information",
-    "companyProfile": "Compainy Profile",
+    "companyProfile": "Company Profile",
     "name": "Name",
     "address": "Address",
     "bio": "BIO",
@@ -342,7 +342,9 @@
     "returnCompanySuccessMessage": "The Company Has Been Returned Successfully",
     "RejectedNeedToEdit": "Company Has Been Returned",
     "returnedRequests": "Returned Companies",
-    "needToUpdate": "Need To Update"
+    "needToUpdate": "Need To Update",
+    "oldCompany": "Old Company Info",
+    "newCompany": "New Company Info"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -1077,7 +1079,8 @@
     "ApplicationsVersions": "Applications Versions",
     "Payments": "Payments",
     "PaymentPrivacy": "Payment Privacy",
-    "needToUpdate": "Need To Update"
+    "needToUpdate": "Need To Update",
+    "ComparePage": "Comparison Company Info"
   },
 
   "header": {

@@ -317,7 +317,7 @@ export interface RequestModel {
   serviceType: number;
   statues?: number;
   sourceType: SourceTypeModel;
-  attributeForSourceTypeValues: [{ attributeForSourcType: any; attributeChoice: any }];
+  attributeForSourceTypeValues: [{ attributeForSourcType: number; attributeChoice: number }];
   requestForQuotationContacts: any;
   moveAtUtc: Date;
   arrivalAtUtc: Date;
@@ -330,6 +330,7 @@ export interface RequestModel {
   attributeChoiceAndAttachments: any[];
   isFeature: boolean;
   user: User;
+  userId: number;
 }
 
 export interface User {

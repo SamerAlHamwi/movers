@@ -344,7 +344,9 @@
     "returnCompanySuccessMessage": "تم إعادة طلب تسجيل الشركة بنجاح",
     "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الشركة",
     "returnedRequests": "الشركات المُعادة",
-    "needToUpdate": "تحتاج إلى تحديث"
+    "needToUpdate": "تحتاج إلى تحديث",
+    "oldCompany": "المعلومات القديمة للشركة",
+    "newCompany": "المعلومات الحديثة للشركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -1074,7 +1076,8 @@
     "ApplicationsVersions": "إصدارات التطبيقات",
     "Payments": "المدفوعات",
     "PaymentPrivacy": "خصوصية الدفع",
-    "needToUpdate": "تحتاج إلى تحديث"
+    "needToUpdate": "تحتاج إلى تحديث",
+    "ComparePage": "مقارنة معلومات الشركة"
   },
 
   "header": {
