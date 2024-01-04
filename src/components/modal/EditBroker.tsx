@@ -13,6 +13,8 @@ import { LableText } from '../GeneralStyles';
 import { Select, Option } from '../common/selects/Select/Select';
 import { getCities, getCountries } from '@app/services/locations';
 import { useQuery } from 'react-query';
+import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
+import { validationInputNumber } from '../functions/ValidateInputNumber';
 
 const generateRandomCode = () => {
   const min = 10000000;
@@ -114,7 +116,16 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <Input />
+          <Input
+            addonBefore={PHONE_NUMBER_CODE}
+            onChange={(e: any) => {
+              if (validationInputNumber(e.target.value)) {
+                form.setFieldValue('mediatorPhoneNumber', e.target.value);
+              } else form.setFieldValue('mediatorPhoneNumber', '');
+            }}
+            maxLength={9}
+            style={{ width: '100%' }}
+          />
         </BaseForm.Item>
 
         <BaseForm.Item
