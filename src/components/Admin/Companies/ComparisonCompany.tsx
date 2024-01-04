@@ -1,20 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
+import { useMutation, useQuery } from 'react-query';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Tag, Col, Input } from 'antd';
+import { Row, Tree, Image, Tag, Col, Input, Alert, message } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { GetCompaniesToCompare } from '@app/services/companies';
+import { GetCompaniesToCompare, approveUpdateCompany, confirmCompany } from '@app/services/companies';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
-import { LableText, TextBack } from '@app/components/GeneralStyles';
+import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralStyles';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
 
@@ -55,6 +55,35 @@ const ComparisonCompany: React.FC = () => {
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
         setLoading(false);
+      }),
+  );
+
+  const confirmUpdateCompany = useMutation((data: string[]) =>
+    approveUpdateCompany(data)
+      .then((res) => {
+        res.data?.success &&
+          message.open({
+            content: <Alert message={t('companies.approveCompanySuccessMessage')} type={`success`} showIcon />,
+          });
+        Navigate('/companies');
+      })
+      .catch((error) =>
+        message.open({ content: <Alert message={error.message || error.error?.message} type={`error`} showIcon /> }),
+      ),
+  );
+
+  const rejectCompany = useMutation((data: any) =>
+    confirmCompany(data)
+      .then((data) => {
+        data.data?.success &&
+          message.open({
+            content: <Alert message={t('companies.rejectCompanySuccessMessage')} type={`success`} showIcon />,
+          });
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
       }),
   );
 
@@ -749,6 +778,32 @@ const ComparisonCompany: React.FC = () => {
             </Spinner>
           </Cardd>
         </Col>
+      </Row>
+
+      <Row style={{ margin: '1rem', justifyContent: 'space-evenly' }}>
+        <Button
+          type="primary"
+          style={{
+            marginBottom: '.5rem',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() => confirmUpdateCompany.mutateAsync(newCompanyData)}
+        >
+          <CreateButtonText>{t('common.approve')}</CreateButtonText>
+        </Button>
+
+        <Button
+          type="default"
+          style={{
+            marginBottom: '.5rem',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() => rejectCompany.mutateAsync({ companyId: oldCompanyData.id, statues: 3 })}
+        >
+          <CreateButtonText>{t('common.reject')}</CreateButtonText>
+        </Button>
       </Row>
     </>
   );
