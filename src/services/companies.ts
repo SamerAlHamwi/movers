@@ -80,6 +80,10 @@ const confirmCompany = async (data: any) => {
   return await httpApi.post(`${apiPrefix.companies}/ConfirmCompanyByAdmin`, data);
 };
 
+const approveUpdateCompany = async (data: any) => {
+  return await httpApi.post(`${apiPrefix.companies}/ApproveUpdateCompany`, data);
+};
+
 export {
   getAllCompanies,
   getAllSuitableCompanies,
@@ -92,4 +96,5 @@ export {
   updateCompany,
   DeleteCompany,
   confirmCompany,
+  approveUpdateCompany,
 };

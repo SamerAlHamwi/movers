@@ -1,51 +1,34 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useQuery } from 'react-query';
-import styled from 'styled-components';
+import { useMutation, useQuery } from 'react-query';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Tag, Space, Progress, Avatar, Segmented, Tooltip, Layout, Col, Input } from 'antd';
+import { Row, Tree, Image, Tag, Col, Input, Alert, message } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { GetCompaniesToCompare } from '@app/services/companies';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { GetCompaniesToCompare, approveUpdateCompany, confirmCompany } from '@app/services/companies';
+import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import {
-  CheckOutlined,
-  CloseOutlined,
-  CommentOutlined,
-  DollarOutlined,
-  DropboxOutlined,
-  GiftOutlined,
-  LeftOutlined,
-} from '@ant-design/icons';
-import { LableText, TableButton, TextBack } from '@app/components/GeneralStyles';
+import { LeftOutlined } from '@ant-design/icons';
+import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralStyles';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
+import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
 
-export type specifierType = {
-  name: string;
-  value: number | undefined;
+const treeStyle = {
+  width: '96%',
+  margin: '0 2%',
+  padding: '0.5rem',
+  borderRadius: '0.25rem',
+  border: '1px solid #d9d9d9',
+  backgroundColor: '#fff',
 };
 
-// export type companyData = {
-//   companyCode: string;
-//   id: number;
-// };
-
-// const treeStyle = {
-//   width: '96%',
-//   margin: '0 2%',
-//   padding: '0.5rem',
-//   borderRadius: '0.25rem',
-//   border: '1px solid #d9d9d9',
-//   backgroundColor: '#fff',
-// };
-
-// let treeData: DataNode[] = [];
+let oldTreeData: DataNode[] = [];
+let newTreeData: DataNode[] = [];
 
 const ComparisonCompany: React.FC = () => {
   const { t } = useTranslation();
@@ -75,83 +58,104 @@ const ComparisonCompany: React.FC = () => {
       }),
   );
 
+  const confirmUpdateCompany = useMutation((data: string[]) =>
+    approveUpdateCompany(data)
+      .then((res) => {
+        res.data?.success &&
+          message.open({
+            content: <Alert message={t('companies.approveCompanySuccessMessage')} type={`success`} showIcon />,
+          });
+        Navigate('/companies');
+      })
+      .catch((error) =>
+        message.open({ content: <Alert message={error.message || error.error?.message} type={`error`} showIcon /> }),
+      ),
+  );
+
+  const rejectCompany = useMutation((data: any) =>
+    confirmCompany(data)
+      .then((data) => {
+        data.data?.success &&
+          message.open({
+            content: <Alert message={t('companies.rejectCompanySuccessMessage')} type={`success`} showIcon />,
+          });
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const getDayName = (dayValue: number) => {
+    const dayName = Object.keys(DaysOfWeek).find((key: any) => +DaysOfWeek[key] === dayValue);
+    return dayName ? t(`${dayName}`) : ''; // Adjust the translation key as needed
+  };
+
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
     setAutoExpandParent(false);
   };
 
-  //   if (companyData && companyData?.services) {
-  //     treeData = companyData?.services.map((service: any) => ({
-  //       title: (
-  //         <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //           <Image src={service?.attachment?.url} width={27} height={27} />
-  //           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
-  //         </span>
-  //       ),
-  //       key: service?.id,
-  //       children: service?.subServices.map((subService: any) => ({
-  //         title: (
-  //           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //             <Image src={subService?.attachment?.url} width={27} height={27} />
-  //             {subService?.name}
-  //           </span>
-  //         ),
-  //         key: subService?.id,
-  //         children: subService?.tools.map((tool: any) => ({
-  //           title: (
-  //             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-  //               <Image src={tool?.attachment?.url} width={27} height={27} />
-  //               {tool?.name}
-  //             </span>
-  //           ),
-  //           key: tool?.id,
-  //         })),
-  //       })),
-  //     }));
-  //   }
+  if (oldCompanyData && oldCompanyData?.services) {
+    oldTreeData = oldCompanyData?.services.map((service: any) => ({
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={27} height={27} />
+          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+        </span>
+      ),
+      key: service?.id,
+      children: service?.subServices.map((subService: any) => ({
+        title: (
+          <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+            <Image src={subService?.attachment?.url} width={27} height={27} />
+            {subService?.name}
+          </span>
+        ),
+        key: subService?.id,
+        children: subService?.tools.map((tool: any) => ({
+          title: (
+            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <Image src={tool?.attachment?.url} width={27} height={27} />
+              {tool?.name}
+            </span>
+          ),
+          key: tool?.id,
+        })),
+      })),
+    }));
+  }
 
-  //   const DetailsRow = styled.div`
-  //     display: flex;
-  //     justify-content: flex-start;
-  //   `;
-
-  //   const DetailsTitle = styled.div`
-  //     color: var(--text-light-color);
-  //     font-size: ${FONT_SIZE.lg};
-  //     font-weight: ${FONT_WEIGHT.semibold};
-  //     margin-right: 0.5rem;
-  //     width: 100%;
-  //   `;
-
-  //   const DetailsValue = styled.div`
-  //     color: var(--text-main-color);
-  //     font-size: ${FONT_SIZE.md};
-  //     font-weight: ${FONT_WEIGHT.medium};
-  //     margin-bottom: 1rem;
-  //   `;
-
-  //   const ColStyle =
-  //     isDesktop || isTablet
-  //       ? styled.div`
-  //           width: 46%;
-  //           margin: 0 2%;
-  //         `
-  //       : styled.div`
-  //           width: 80%;
-  //           margin: 0 10%;
-  //         `;
-
-  //   const Details = styled.div`
-  //     display: flex;
-  //     flex-direction: column;
-  //     gap: 1.25rem;
-  //     margin: 1.25rem 0.5rem;
-  //   `;
-
-  //   const conicPinkColors = { '0%': '#ffba6f', '50%': '#ff6f61', '100%': '#ff4369' };
-  //   const conicGreenColors = { '0%': '#f6ff00', '50%': '#b3ff00', '100%': '#73d13d' };
-  //   const conicBlueColors = { '0%': '#a6dcef', '50%': '#2e93e5', '100%': '#0050b3' };
-  //   const conicRedColors = { '0%': '#ffbb96', '50%': '#ff6b45', '100%': '#e62b1d' };
+  if (newCompanyData && newCompanyData?.services) {
+    newTreeData = newCompanyData?.services.map((service: any) => ({
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={27} height={27} />
+          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+        </span>
+      ),
+      key: service?.id,
+      children: service?.subServices.map((subService: any) => ({
+        title: (
+          <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+            <Image src={subService?.attachment?.url} width={27} height={27} />
+            {subService?.name}
+          </span>
+        ),
+        key: subService?.id,
+        children: subService?.tools.map((tool: any) => ({
+          title: (
+            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <Image src={tool?.attachment?.url} width={27} height={27} />
+              {tool?.name}
+            </span>
+          ),
+          key: tool?.id,
+        })),
+      })),
+    }));
+  }
 
   useEffect(() => {
     if (isRefetching) {
@@ -166,7 +170,7 @@ const ComparisonCompany: React.FC = () => {
 
   return (
     <>
-      <PageTitle>{t('companies.companyInfo')}</PageTitle>
+      <PageTitle>{t('companies.companyProfile')}</PageTitle>
       <Row justify={'end'}>
         <Button
           style={{
@@ -183,7 +187,7 @@ const ComparisonCompany: React.FC = () => {
       </Row>
 
       <Row>
-        <Col style={{ width: '40%', margin: 'auto 5%' }}>
+        <Col style={{ width: '44%', margin: 'auto 3%' }}>
           <Cardd
             title={t('companies.oldCompany')}
             padding="0 1.25rem 1rem 1.25rem"
@@ -191,25 +195,86 @@ const ComparisonCompany: React.FC = () => {
           >
             <Spinner spinning={loading}>
               <BaseForm form={form} name="OldCompanyForm">
-                <BaseForm.Item label={<LableText>{t('common.name')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.companyProfile')} :
+                </h3>
+                <Row style={{ margin: '2rem auto', justifyContent: 'space-around' }}>
+                  <Image
+                    key={oldCompanyData?.companyProfile?.id}
+                    src={oldCompanyData?.companyProfile?.url}
+                    style={{ width: '150px', height: '140px' }}
+                  />
+                </Row>
+                <BaseForm.Item label={<LableText>{t('common.name_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={oldCompanyData?.name}
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'ar').name}
                     readOnly
-                    status={oldCompanyData?.name != newCompanyData?.name ? 'error' : ''}
+                    status={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'ar').name !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'ar').name
+                        ? 'error'
+                        : ''
+                    }
                   />
                 </BaseForm.Item>
-                <BaseForm.Item label={<LableText>{t('common.bio')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                <BaseForm.Item label={<LableText>{t('common.name_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={oldCompanyData?.bio}
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'en').name}
                     readOnly
-                    status={oldCompanyData?.bio != newCompanyData?.bio ? 'error' : ''}
+                    status={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'en').name !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'en').name
+                        ? 'error'
+                        : ''
+                    }
                   />
                 </BaseForm.Item>
-                <BaseForm.Item label={<LableText>{t('common.address')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                <BaseForm.Item label={<LableText>{t('common.bio_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={oldCompanyData?.address}
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'ar').bio}
                     readOnly
-                    status={oldCompanyData?.address != newCompanyData?.address ? 'error' : ''}
+                    status={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'ar').bio !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'ar').bio
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('common.bio_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'en').bio}
+                    readOnly
+                    status={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'en').bio !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'en').bio
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('common.address_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'ar').address}
+                    readOnly
+                    status={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'ar').address !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'ar').address
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('common.address_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'en').address}
+                    readOnly
+                    status={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'en').address !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'en').address
+                        ? 'error'
+                        : ''
+                    }
                   />
                 </BaseForm.Item>
                 <BaseForm.Item label={<LableText>{t('companies.country')}</LableText>} style={{ marginTop: '-.5rem' }}>
@@ -237,6 +302,10 @@ const ComparisonCompany: React.FC = () => {
                     status={oldCompanyData?.region?.name != newCompanyData?.region?.name ? 'error' : ''}
                   />
                 </BaseForm.Item>
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.availableCities')} :
+                </h3>
                 <BaseForm.Item
                   label={<LableText>{t('companies.availableCities')}</LableText>}
                   style={{ marginTop: '-.5rem' }}
@@ -255,12 +324,160 @@ const ComparisonCompany: React.FC = () => {
                     );
                   })}
                 </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('requests.comment')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={oldCompanyData?.comment}
+                    readOnly
+                    status={oldCompanyData?.comment != newCompanyData?.comment ? 'error' : ''}
+                  />
+                </BaseForm.Item>
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.companyInfo')} :
+                </h3>
+                <BaseForm.Item label={<LableText>{t('common.phoneNumber')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    addonBefore={oldCompanyData?.companyContact?.dialCode}
+                    value={oldCompanyData?.companyContact?.phoneNumber}
+                    readOnly
+                    status={
+                      oldCompanyData?.companyContact?.phoneNumber != newCompanyData?.companyContact?.phoneNumber
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('common.emailAddress')}</LableText>}
+                  style={{ marginTop: '-.5rem' }}
+                >
+                  <Input
+                    value={oldCompanyData?.companyContact?.emailAddress}
+                    readOnly
+                    status={
+                      oldCompanyData?.companyContact?.emailAddress != newCompanyData?.companyContact?.emailAddress
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('companies.webSite')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={oldCompanyData?.companyContact?.webSite}
+                    readOnly
+                    status={
+                      oldCompanyData?.companyContact?.webSite != newCompanyData?.companyContact?.webSite ? 'error' : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('requests.serviceType')}</LableText>}
+                  style={{ marginTop: '-.5rem' }}
+                >
+                  <Tag color={oldCompanyData?.serviceType != newCompanyData?.serviceType ? 'error' : ''}>
+                    {oldCompanyData?.serviceType == 1
+                      ? t('requests.Internal')
+                      : oldCompanyData?.serviceType == 2
+                      ? t('requests.External')
+                      : oldCompanyData?.serviceType == 3
+                      ? t('requests.both')
+                      : ''}
+                  </Tag>
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('companies.timeOfWorks')}</LableText>}
+                  style={{ marginTop: '-.5rem' }}
+                >
+                  {oldCompanyData?.timeOfWorks.map((item: any) => {
+                    const isTimeInOldCompany = newCompanyData?.timeOfWorks.some(
+                      (oldTime: any) =>
+                        oldTime.day === item.day &&
+                        oldTime.startDate === item.startDate &&
+                        oldTime.endDate === item.endDate,
+                    );
+
+                    const tagColor = isTimeInOldCompany ? '' : 'success';
+
+                    return (
+                      <Tag key={item.id} color={tagColor}>
+                        {getDayName(item.day)} : {item.startDate} - {item.endDate}
+                      </Tag>
+                    );
+                  })}
+                </BaseForm.Item>
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.services')} :
+                </h3>
+                <Tree
+                  className="specialTree"
+                  key={100}
+                  style={treeStyle}
+                  defaultExpandAll
+                  defaultExpandParent
+                  expandedKeys={expandedKeys}
+                  autoExpandParent={autoExpandParent}
+                  onExpand={onExpand}
+                  treeData={oldTreeData as DataNode[]}
+                />
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.attachments')} :
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <h5>{t('companies.companyOwnerIdentity')}</h5>
+                  <Row>
+                    {oldCompanyData?.companyOwnerIdentity.map((attachment: any) => (
+                      <div key={attachment?.id}>
+                        {attachment.url.includes('.pdf') ? (
+                          <a href={attachment?.url} target="_blank" rel="noopener noreferrer">
+                            <img src="/pdf.jfif" style={{ width: '150px', height: '140px' }} />
+                          </a>
+                        ) : (
+                          <Image src={attachment?.url} style={{ width: '150px', height: '140px' }} />
+                        )}
+                      </div>
+                    ))}
+                  </Row>
+                  <h5>{t('companies.companyCommercialRegister')}</h5>
+                  <Row>
+                    {oldCompanyData?.companyCommercialRegister.map((attachment: any) => (
+                      <div key={attachment?.id}>
+                        {attachment.url.includes('.pdf') ? (
+                          <a href={attachment?.url} target="_blank" rel="noopener noreferrer">
+                            <img src="/pdf.jfif" style={{ width: '150px', height: '140px' }} />
+                          </a>
+                        ) : (
+                          <Image src={attachment?.url} style={{ width: '150px', height: '140px' }} />
+                        )}
+                      </div>
+                    ))}
+                  </Row>
+                  {oldCompanyData?.additionalAttachment.length > 0 && (
+                    <>
+                      <h5>{t('companies.additionalAttachment')}</h5>
+                      <Row>
+                        {oldCompanyData?.additionalAttachment.map((attachment: any) => (
+                          <div key={attachment?.id}>
+                            {attachment.url.includes('.pdf') ? (
+                              <a href={attachment?.url} target="_blank" rel="noopener noreferrer">
+                                <img src="/pdf.jfif" style={{ width: '150px', height: '140px' }} />
+                              </a>
+                            ) : (
+                              <Image src={attachment?.url} style={{ width: '150px', height: '140px' }} />
+                            )}
+                          </div>
+                        ))}
+                      </Row>
+                    </>
+                  )}
+                </div>
               </BaseForm>
             </Spinner>
           </Cardd>
         </Col>
 
-        <Col style={{ width: '40%', margin: 'auto 5%' }}>
+        <Col style={{ width: '44%', margin: 'auto 3%' }}>
           <Cardd
             title={t('companies.newCompany')}
             padding="0 1.25rem 1rem 1.25rem"
@@ -268,30 +485,83 @@ const ComparisonCompany: React.FC = () => {
           >
             <Spinner spinning={loading}>
               <BaseForm form={form} name="NewCompanyForm">
-                <BaseForm.Item label={<LableText>{t('common.name')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.companyProfile')} :
+                </h3>
+                <Row style={{ margin: '2rem auto', justifyContent: 'space-around' }}>
+                  <Image
+                    key={newCompanyData?.companyProfile?.id}
+                    src={newCompanyData?.companyProfile?.url}
+                    style={{ width: '150px', height: '140px' }}
+                  />
+                </Row>
+                <BaseForm.Item label={<LableText>{t('common.name_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={newCompanyData?.name}
+                    value={newCompanyData?.translations.find((item: any) => item.language == 'ar').name}
                     readOnly
                     style={
-                      oldCompanyData?.name != newCompanyData?.name ? { borderColor: 'var(--ant-success-color)' } : {}
+                      oldCompanyData?.translations.find((item: any) => item.language == 'ar').name !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'ar').name
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
                     }
                   />
                 </BaseForm.Item>
-                <BaseForm.Item label={<LableText>{t('common.bio')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                <BaseForm.Item label={<LableText>{t('common.name_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={newCompanyData?.bio}
+                    value={newCompanyData?.translations.find((item: any) => item.language == 'en').name}
                     readOnly
                     style={
-                      oldCompanyData?.bio != newCompanyData?.bio ? { borderColor: 'var(--ant-success-color)' } : {}
+                      oldCompanyData?.translations.find((item: any) => item.language == 'en').name !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'en').name
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
                     }
                   />
                 </BaseForm.Item>
-                <BaseForm.Item label={<LableText>{t('common.address')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                <BaseForm.Item label={<LableText>{t('common.bio_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={newCompanyData?.address}
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'ar').bio}
                     readOnly
                     style={
-                      oldCompanyData?.address != newCompanyData?.address
+                      oldCompanyData?.translations.find((item: any) => item.language == 'ar').bio !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'ar').bio
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('common.bio_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={oldCompanyData?.translations.find((item: any) => item.language == 'en').bio}
+                    readOnly
+                    style={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'en').bio !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'en').bio
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('common.address_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={newCompanyData?.translations.find((item: any) => item.language == 'ar').address}
+                    readOnly
+                    style={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'ar').address !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'ar').address
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('common.address_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={newCompanyData?.translations.find((item: any) => item.language == 'en').address}
+                    readOnly
+                    style={
+                      oldCompanyData?.translations.find((item: any) => item.language == 'en').address !=
+                      newCompanyData?.translations.find((item: any) => item.language == 'en').address
                         ? { borderColor: 'var(--ant-success-color)' }
                         : {}
                     }
@@ -330,6 +600,10 @@ const ComparisonCompany: React.FC = () => {
                     }
                   />
                 </BaseForm.Item>
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.availableCities')} :
+                </h3>
                 <BaseForm.Item
                   label={<LableText>{t('companies.availableCities')}</LableText>}
                   style={{ marginTop: '-.5rem' }}
@@ -348,10 +622,188 @@ const ComparisonCompany: React.FC = () => {
                     );
                   })}
                 </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('requests.comment')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={newCompanyData?.comment}
+                    readOnly
+                    style={
+                      oldCompanyData?.comment != newCompanyData?.comment
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
+                    }
+                  />
+                </BaseForm.Item>
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.companyInfo')} :
+                </h3>
+                <BaseForm.Item label={<LableText>{t('common.phoneNumber')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    addonBefore={newCompanyData?.companyContact?.dialCode}
+                    value={newCompanyData?.companyContact?.phoneNumber}
+                    readOnly
+                    status={
+                      oldCompanyData?.companyContact?.phoneNumber != newCompanyData?.companyContact?.phoneNumber
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('common.emailAddress')}</LableText>}
+                  style={{ marginTop: '-.5rem' }}
+                >
+                  <Input
+                    value={newCompanyData?.companyContact?.emailAddress}
+                    readOnly
+                    status={
+                      oldCompanyData?.companyContact?.emailAddress != newCompanyData?.companyContact?.emailAddress
+                        ? 'error'
+                        : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item label={<LableText>{t('companies.webSite')}</LableText>} style={{ marginTop: '-.5rem' }}>
+                  <Input
+                    value={newCompanyData?.companyContact?.webSite}
+                    readOnly
+                    status={
+                      oldCompanyData?.companyContact?.webSite != newCompanyData?.companyContact?.webSite ? 'error' : ''
+                    }
+                  />
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('requests.serviceType')}</LableText>}
+                  style={{ marginTop: '-.5rem' }}
+                >
+                  <Tag color={newCompanyData?.serviceType != oldCompanyData?.serviceType ? 'success' : ''}>
+                    {newCompanyData?.serviceType == 1
+                      ? t('requests.Internal')
+                      : newCompanyData?.serviceType == 2
+                      ? t('requests.External')
+                      : newCompanyData?.serviceType == 3
+                      ? t('requests.both')
+                      : ''}
+                  </Tag>
+                </BaseForm.Item>
+                <BaseForm.Item
+                  label={<LableText>{t('companies.timeOfWorks')}</LableText>}
+                  style={{ marginTop: '-.5rem' }}
+                >
+                  {newCompanyData?.timeOfWorks.map((item: any) => {
+                    const isTimeInOldCompany = oldCompanyData?.timeOfWorks.some(
+                      (oldTime: any) =>
+                        oldTime.day === item.day &&
+                        oldTime.startDate === item.startDate &&
+                        oldTime.endDate === item.endDate,
+                    );
+
+                    const tagColor = isTimeInOldCompany ? '' : 'success';
+
+                    return (
+                      <Tag key={item.id} color={tagColor}>
+                        {getDayName(item.day)} : {item.startDate} - {item.endDate}
+                      </Tag>
+                    );
+                  })}
+                </BaseForm.Item>
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.services')} :
+                </h3>
+                <Tree
+                  className="specialTree"
+                  key={100}
+                  style={treeStyle}
+                  defaultExpandAll
+                  defaultExpandParent
+                  expandedKeys={expandedKeys}
+                  autoExpandParent={autoExpandParent}
+                  onExpand={onExpand}
+                  treeData={newTreeData as DataNode[]}
+                />
+
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('companies.attachments')} :
+                </h3>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                  <h5>{t('companies.companyOwnerIdentity')}</h5>
+                  <Row>
+                    {newCompanyData?.companyOwnerIdentity.map((attachment: any) => (
+                      <div key={attachment?.id}>
+                        {attachment.url.includes('.pdf') ? (
+                          <a href={attachment?.url} target="_blank" rel="noopener noreferrer">
+                            <img src="/pdf.jfif" style={{ width: '150px', height: '140px' }} />
+                          </a>
+                        ) : (
+                          <Image src={attachment?.url} style={{ width: '150px', height: '140px' }} />
+                        )}
+                      </div>
+                    ))}
+                  </Row>
+                  <h5>{t('companies.companyCommercialRegister')}</h5>
+                  <Row>
+                    {newCompanyData?.companyCommercialRegister.map((attachment: any) => (
+                      <div key={attachment?.id}>
+                        {attachment.url.includes('.pdf') ? (
+                          <a href={attachment?.url} target="_blank" rel="noopener noreferrer">
+                            <img src="/pdf.jfif" style={{ width: '150px', height: '140px' }} />
+                          </a>
+                        ) : (
+                          <Image src={attachment?.url} style={{ width: '150px', height: '140px' }} />
+                        )}
+                      </div>
+                    ))}
+                  </Row>
+                  {newCompanyData?.additionalAttachment.length > 0 && (
+                    <>
+                      <h5>{t('companies.additionalAttachment')}</h5>
+                      <Row>
+                        {newCompanyData?.additionalAttachment.map((attachment: any) => (
+                          <div key={attachment?.id}>
+                            {attachment.url.includes('.pdf') ? (
+                              <a href={attachment?.url} target="_blank" rel="noopener noreferrer">
+                                <img src="/pdf.jfif" style={{ width: '150px', height: '140px' }} />
+                              </a>
+                            ) : (
+                              <Image src={attachment?.url} style={{ width: '150px', height: '140px' }} />
+                            )}
+                          </div>
+                        ))}
+                      </Row>
+                    </>
+                  )}
+                </div>
               </BaseForm>
             </Spinner>
           </Cardd>
         </Col>
+      </Row>
+
+      <Row style={{ margin: '1rem', justifyContent: 'space-evenly' }}>
+        <Button
+          type="primary"
+          style={{
+            marginBottom: '.5rem',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() => confirmUpdateCompany.mutateAsync(newCompanyData)}
+        >
+          <CreateButtonText>{t('common.approve')}</CreateButtonText>
+        </Button>
+
+        <Button
+          type="default"
+          style={{
+            marginBottom: '.5rem',
+            width: 'auto',
+            height: 'auto',
+          }}
+          onClick={() => rejectCompany.mutateAsync({ companyId: oldCompanyData.id, statues: 3 })}
+        >
+          <CreateButtonText>{t('common.reject')}</CreateButtonText>
+        </Button>
       </Row>
     </>
   );
