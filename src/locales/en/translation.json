@@ -344,7 +344,8 @@
     "returnedRequests": "Returned Companies",
     "needToUpdate": "Need To Update",
     "oldCompany": "Old Company Info",
-    "newCompany": "New Company Info"
+    "newCompany": "New Company Info",
+    "timeOfWorks": "Work Time"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
