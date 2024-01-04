@@ -56,7 +56,8 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
   };
 
   const onFinish = (value: Broker) => {
-    value = Object.assign({}, value, { cityId: cityId });
+    const dialCode = { dialCode: '+971' };
+    value = Object.assign({}, value, { cityId: cityId }, dialCode);
     onEdit(value);
   };
 
