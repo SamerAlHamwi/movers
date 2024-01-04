@@ -814,7 +814,8 @@
     "emailAddress": "Email Address",
     "SelectedByUser": "Selected By User",
     "RejectedByUser": "Rejected By User",
-    "returnOfferSuccessMessage": "The Offer Has Been Returned Successfully"
+    "returnOfferSuccessMessage": "The Offer Has Been Returned Successfully",
+    "offerDetails": "Offer Details"
   },
 
   "_comment24": "*********************************** points ************************************************",
