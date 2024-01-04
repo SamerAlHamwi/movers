@@ -18,6 +18,7 @@ import { BankOutlined, CheckOutlined, CloseOutlined, StopOutlined, TagOutlined }
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
+import { getAllOffers } from '@app/services/offers';
 
 const { Meta } = Card;
 
@@ -151,6 +152,7 @@ const RequestDetails: React.FC = () => {
   useEffect(() => {
     setLoading(true);
     refetch();
+    // refetchOffers();
   }, [refetch, language]);
 
   if (requestData && requestData?.attributeChoiceAndAttachments) {
@@ -164,6 +166,8 @@ const RequestDetails: React.FC = () => {
       },
     );
   }
+
+  console.log('req', requestData?.statues);
 
   return (
     <>
@@ -569,6 +573,31 @@ const RequestDetails: React.FC = () => {
                         severity="success"
                         onClick={() => {
                           Navigate(`wasSent/2`);
+                        }}
+                      >
+                        <BankOutlined />
+                      </TableButton>
+                    </Tooltip>
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
+              {(requestData?.statues === 4 || requestData?.statues === 5) && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('offers.offerDetails')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('offers.offerDetails')}>
+                      <TableButton
+                        severity="success"
+                        onClick={() => {
+                          Navigate(`/requests/${requestId}/details/allOffers/allOffers`);
                         }}
                       >
                         <BankOutlined />
