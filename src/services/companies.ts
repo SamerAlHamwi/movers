@@ -52,6 +52,10 @@ const getCompanyById = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/Get?Id=${id}`);
 };
 
+const GetCompaniesToCompare = async (id: string | undefined) => {
+  return await httpApi.get(`${apiPrefix.companies}/GetCompaniesToCompare?newCompanyId=${id}`);
+};
+
 const GetReviewDetailsByCompanyId = async (id: string | undefined) => {
   return await httpApi.get(`${apiPrefix.companies}/GetReviewDetailsById?Id=${id}`);
 };
@@ -81,6 +85,7 @@ export {
   getAllSuitableCompanies,
   getSuitableCompanies,
   getCompanyById,
+  GetCompaniesToCompare,
   GetReviewDetailsByCompanyId,
   createCompany,
   ChangeAcceptRequestOrPossibleRequestForCompany,

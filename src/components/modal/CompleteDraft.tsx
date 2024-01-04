@@ -88,7 +88,7 @@ export const CompleteDraft: React.FC = () => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
-  const { userId, draftId } = useParams();
+  const { draftId } = useParams();
   const { language } = useLanguage();
   const Navigate = useNavigate();
 
@@ -120,7 +120,7 @@ export const CompleteDraft: React.FC = () => {
   const [cityId, setCityId] = useState({ source: '0', destination: '0' });
   // select attributeChoice state
   const [selectedRadio, setSelectedRadio] = useState<
-    Array<{ attributeForSourcTypeId: number; attributeChoiceId: number }>
+    Array<{ attributeForSourcTypeId: number; attributeChoiceId: number }> | any
   >([]);
   const [childAttributeChoices, setChildAttributeChoices] = useState<any>();
   // images state
@@ -162,15 +162,15 @@ export const CompleteDraft: React.FC = () => {
               attributeChoiceId: item.attributeChoice?.id,
             };
           });
-          status === 'success' &&
-            setSelectedRadio(
-              data.data?.result.attributeForSourceTypeValues.map((item: any) => {
-                return {
-                  attributeForSourcTypeId: item.attributeForSourcType?.id,
-                  attributeChoiceId: item.attributeChoice?.id,
-                };
-              }),
-            );
+          // status === 'success' &&
+          //   setSelectedRadio(
+          //     data.data?.result.attributeForSourceTypeValues.map((item: any) => {
+          //       return {
+          //         attributeForSourcTypeId: item.attributeForSourcType?.id,
+          //         attributeChoiceId: item.attributeChoice?.id,
+          //       };
+          //     }),
+          //   );
 
           status === 'success' && setAttributeChoiceAndAttachments(imageRequest ?? []);
           setGetRequest(false);
@@ -183,6 +183,8 @@ export const CompleteDraft: React.FC = () => {
     },
   );
 
+  console.log(selectedRadio);
+
   const GetAllServices = useQuery('getAllServices', getServices);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
   const {
@@ -193,20 +195,35 @@ export const CompleteDraft: React.FC = () => {
     enabled: countryId != '0',
   });
 
+  useEffect(() => {
+    if (status == 'success') {
+      console.log(RequestData?.attributeForSourceTypeValues);
+
+      setSelectedRadio(
+        RequestData?.attributeForSourceTypeValues.map((item: any) => {
+          return {
+            attributeForSourcTypeId: item.attributeForSourcType?.id,
+            attributeChoiceId: item.attributeChoice?.id,
+          };
+        }),
+      );
+    }
+  }, [status]);
+
   const {
     data: attributeForSourceTypesData,
     refetch: attributeForSourceTypesRefetch,
     isRefetching: attributeForSourceTypesIsRefetching,
     isLoading: attributeForSourceTypesIsLoading,
   } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
-    enabled: RequestData?.sourceType?.id != undefined,
+    enabled: RequestData?.sourceType?.id !== undefined,
   });
 
   useEffect(() => {
     if (selectedRadio?.length > 0) {
       const fetchData = async () => {
         try {
-          const promises = selectedRadio.map(async (item) => {
+          const promises = selectedRadio.map(async (item: any) => {
             const data: any = item.attributeChoiceId && (await getChildAttributeChoice(item.attributeChoiceId));
             return data?.data?.result?.items || [];
           });
@@ -398,7 +415,7 @@ export const CompleteDraft: React.FC = () => {
   };
 
   const updateRequestMutation = useMutation((id: any) =>
-    UpdateDraft(id)
+    createRequest(id)
       .then((data) => {
         data.data?.success &&
           message.open({
@@ -495,17 +512,13 @@ export const CompleteDraft: React.FC = () => {
     });
     const allAttachments = [...y, ...x];
 
-    console.log(cityId.source);
-    console.log(RequestData?.sourceCity.id);
-    console.log(cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source);
-
     requestData = {
       sourceTypeId: RequestData?.sourceType?.id,
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio == 0 ? RequestData?.serviceType : valueRadio,
       moveAtUtc:
         form.getFieldValue('moveAtUtc') == undefined ? RequestData?.moveAtUtc : form.getFieldValue('moveAtUtc'),
-      sourceCityId: cityId.source == '0' ? RequestData?.sourceCity.id : cityId.source,
+      sourceCityId: cityId.source == '0' ? RequestData?.sourceCity?.id : cityId.source,
       sourceAddress:
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
@@ -528,7 +541,7 @@ export const CompleteDraft: React.FC = () => {
       comment: form.getFieldValue('comment'),
       attributeForSourceTypeValues: selectedRadio,
       attributeChoiceAndAttachments: allAttachments,
-      userId: RequestData?.user?.id,
+      userId: RequestData?.userId,
       id: draftId,
     };
     setValidations(true);
@@ -562,12 +575,16 @@ export const CompleteDraft: React.FC = () => {
         !checkField(['requestForQuotationContacts', 0, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField(['requestForQuotationContacts', 1, 'fullName'], t('addRequest.enterFullName')) ||
         !checkField('sourceAddress', t('addRequest.enterAddress')) ||
-        !checkField('sourceCityId', t('addRequest.enterCity')) ||
         !checkField('destinationAddress', t('addRequest.enterAddress')) ||
         !checkField('moveAtUtc', t('addRequest.enterDate')) ||
         !checkField('arrivalAtUtc', t('addRequest.enterDate'))
       ) {
         return;
+      } else if (
+        (!RequestData?.sourceCity?.id && cityId.source == '0') ||
+        (!RequestData?.destinationCity?.id && cityId.destination == '0')
+      ) {
+        showError(t('addRequest.enterCity'));
       } else {
         updateRequestMutation.mutateAsync(requestData);
         requestServices = [];
@@ -798,7 +815,7 @@ export const CompleteDraft: React.FC = () => {
                                 className="radios"
                                 style={{ display: 'flex', justifyContent: 'space-around', margin: '1rem' }}
                                 onChange={(e) => {
-                                  setSelectedRadio((prevSelectedChoices) => {
+                                  setSelectedRadio((prevSelectedChoices: any[]) => {
                                     const existingIndex = prevSelectedChoices.findIndex(
                                       (choice) => choice.attributeForSourcTypeId === sourceTypeItem.id,
                                     );
@@ -959,7 +976,7 @@ export const CompleteDraft: React.FC = () => {
                         optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
                       }
                       onChange={(e) => ChangeCountryHandler(e, 'source')}
-                      defaultValue={RequestData.sourceCity.country.name}
+                      defaultValue={RequestData?.sourceCity?.country?.name}
                     >
                       {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
                         return (
@@ -993,7 +1010,7 @@ export const CompleteDraft: React.FC = () => {
                         optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
                       }
                       onChange={(e) => ChangeCityHandler(e, 'source')}
-                      defaultValue={RequestData.sourceCity.name}
+                      defaultValue={RequestData?.sourceCity?.name}
                     >
                       {cityData?.data?.result?.items?.map((ele: any) => {
                         return (
@@ -1021,7 +1038,7 @@ export const CompleteDraft: React.FC = () => {
                         : {}
                     }
                   >
-                    <Input defaultValue={RequestData.sourceAddress} />
+                    <Input defaultValue={RequestData?.sourceAddress} />
                   </BaseForm.Item>
                   <BaseForm.Item
                     name="moveAtUtc"
@@ -1043,7 +1060,7 @@ export const CompleteDraft: React.FC = () => {
                   >
                     <DatePicker
                       style={{ width: '100%' }}
-                      defaultValue={RequestData?.moveAtUtc ? moment(RequestData.moveAtUtc) : undefined}
+                      defaultValue={RequestData?.moveAtUtc ? moment(RequestData?.moveAtUtc) : undefined}
                     />
                   </BaseForm.Item>
                   <div
@@ -1222,7 +1239,7 @@ export const CompleteDraft: React.FC = () => {
                     ]}
                     style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                   >
-                    <Input defaultValue={RequestData.requestForQuotationContacts[0].fullName} />
+                    <Input defaultValue={RequestData?.requestForQuotationContacts[0].fullName} />
                   </BaseForm.Item>
 
                   <BaseForm.Item

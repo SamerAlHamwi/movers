@@ -67,6 +67,7 @@ const CommissionGroupPage = lazy(() => import('@app/pages/CommissionGroupsPages/
 const FeaturedBundlePage = lazy(() => import('@app/pages/PointsPages/FeaturedBundlesPage'));
 const ApplicationsVersionPage = lazy(() => import('@app/pages/ApplicationsVersionsPages/ApplicationsVersionsPage'));
 const PaymentPage = lazy(() => import('@app/pages/Payments/PaymentsPage'));
+const ComparePage = lazy(() => import('@app/pages/CompaniesPages/ComparePage'));
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -123,6 +124,7 @@ const CommissionGroupsPage = withLoading(CommissionGroupPage);
 const FeaturedBundlesPage = withLoading(FeaturedBundlePage);
 const ApplicationsVersionsPage = withLoading(ApplicationsVersionPage);
 const PaymentsPage = withLoading(PaymentPage);
+const ComparisonPage = withLoading(ComparePage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -383,6 +385,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ReviewsDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="companies/:companyId/comparison"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <ComparisonPage />
               </PrivateRoute>
             }
           />
