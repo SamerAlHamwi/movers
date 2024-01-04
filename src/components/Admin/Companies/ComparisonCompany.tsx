@@ -642,10 +642,10 @@ const ComparisonCompany: React.FC = () => {
                     addonBefore={newCompanyData?.companyContact?.dialCode}
                     value={newCompanyData?.companyContact?.phoneNumber}
                     readOnly
-                    status={
+                    style={
                       oldCompanyData?.companyContact?.phoneNumber != newCompanyData?.companyContact?.phoneNumber
-                        ? 'error'
-                        : ''
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
                     }
                   />
                 </BaseForm.Item>
@@ -656,10 +656,10 @@ const ComparisonCompany: React.FC = () => {
                   <Input
                     value={newCompanyData?.companyContact?.emailAddress}
                     readOnly
-                    status={
+                    style={
                       oldCompanyData?.companyContact?.emailAddress != newCompanyData?.companyContact?.emailAddress
-                        ? 'error'
-                        : ''
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
                     }
                   />
                 </BaseForm.Item>
@@ -667,8 +667,10 @@ const ComparisonCompany: React.FC = () => {
                   <Input
                     value={newCompanyData?.companyContact?.webSite}
                     readOnly
-                    status={
-                      oldCompanyData?.companyContact?.webSite != newCompanyData?.companyContact?.webSite ? 'error' : ''
+                    style={
+                      oldCompanyData?.companyContact?.webSite != newCompanyData?.companyContact?.webSite
+                        ? { borderColor: 'var(--ant-success-color)' }
+                        : {}
                     }
                   />
                 </BaseForm.Item>
