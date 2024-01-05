@@ -287,8 +287,8 @@ export const Companies: React.FC = () => {
       }),
   );
 
-  const handleReject = (id: any) => {
-    const data = { companyId: id, statues: 3 };
+  const handleReject = (id: any, reasonRefuse: any) => {
+    const data = { companyId: id, statues: 3, reasonRefuse: reasonRefuse.reasonRefuse };
     rejectCompany.mutateAsync(data);
   };
 
@@ -701,18 +701,14 @@ export const Companies: React.FC = () => {
 
           {/*    Reject    */}
           {modalState.reject && (
-            <ActionModal
+            <SendRejectReason
               visible={modalState.reject}
               onCancel={() => handleModalClose('reject')}
-              onOK={() => {
-                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id);
+              onCreate={(info) => {
+                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id, info);
               }}
-              width={isDesktop || isTablet ? '450px' : '350px'}
-              title={t('companies.rejectcompanyModalTitle')}
-              okText={t('common.reject')}
-              cancelText={t('common.cancel')}
-              description={t('companies.rejectcompanyModalDescription')}
               isLoading={approveCompany.isLoading}
+              type="rejectRequest"
             />
           )}
 
