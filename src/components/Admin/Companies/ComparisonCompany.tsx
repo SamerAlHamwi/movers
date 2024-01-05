@@ -17,6 +17,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralStyles';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 
 const treeStyle = {
   width: '96%',
@@ -43,6 +44,7 @@ const ComparisonCompany: React.FC = () => {
   const [newCompanyData, setNewCompanyData] = useState<any>();
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [visible, setVisible] = useState<boolean>(false);
 
   const { refetch, isRefetching } = useQuery(['GetCompaniesToCompare'], () =>
     GetCompaniesToCompare(companyId)
@@ -84,7 +86,8 @@ const ComparisonCompany: React.FC = () => {
         message.open({
           content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
         });
-      }),
+      })
+      .finally(() => setVisible(false)),
   );
 
   const getDayName = (dayValue: number) => {
@@ -800,10 +803,25 @@ const ComparisonCompany: React.FC = () => {
             width: 'auto',
             height: 'auto',
           }}
-          onClick={() => rejectCompany.mutateAsync({ companyId: oldCompanyData.id, statues: 3 })}
+          onClick={() => setVisible(true)}
         >
           <CreateButtonText>{t('common.reject')}</CreateButtonText>
         </Button>
+        {
+          <SendRejectReason
+            visible={visible}
+            onCancel={() => setVisible(false)}
+            onCreate={(info) => {
+              rejectCompany.mutateAsync({
+                companyId: oldCompanyData.id,
+                statues: 3,
+                reasonRefuse: info.reasonRefuse,
+              });
+            }}
+            isLoading={rejectCompany.isLoading}
+            type="rejectRequest"
+          />
+        }
       </Row>
     </>
   );
