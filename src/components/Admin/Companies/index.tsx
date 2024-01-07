@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, message, Radio, RadioChangeEvent, Row, Space, Tabs, Tag, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Rate, Row, Space, Tabs, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -328,6 +328,15 @@ export const Companies: React.FC = () => {
   }, [returnCompany.isLoading]);
 
   const columns = [
+    {
+      rowScope: 'row',
+      render: (record: any) =>
+        record.isFeature && (
+          <Tooltip placement="top" title={t('requests.featured')}>
+            <Rate disabled defaultValue={1} count={1} style={{ fontSize: '15px' }} />
+          </Tooltip>
+        ),
+    },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.image')}</Header>,
@@ -779,7 +788,7 @@ export const Companies: React.FC = () => {
                   dataSource={dataSource}
                   scroll={{ x: isTablet || isMobile ? 950 : 800 }}
                   rowKey={(record: CompanyRecord) => record.id.toString()}
-                  rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
+                  // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
                 />
               ),
             };
