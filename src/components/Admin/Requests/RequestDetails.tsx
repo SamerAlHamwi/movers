@@ -83,7 +83,8 @@ const RequestDetails: React.FC = () => {
           <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
         </span>
       ),
-      key: service?.id,
+      key: `service ${service?.id}`,
+
       children: service?.subServices.map((subService: any) => ({
         title: (
           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
@@ -91,7 +92,7 @@ const RequestDetails: React.FC = () => {
             {subService?.name}
           </span>
         ),
-        key: subService?.id,
+        key: `subService ${subService?.id}`,
         children: subService?.tools.map((tool: any) => ({
           title: (
             <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
@@ -99,7 +100,7 @@ const RequestDetails: React.FC = () => {
               {tool?.name}
             </span>
           ),
-          key: tool?.id,
+          key: `tool ${tool?.id}`,
         })),
       })),
     }));
