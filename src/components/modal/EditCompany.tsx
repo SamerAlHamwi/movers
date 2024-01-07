@@ -570,107 +570,100 @@ export const EditCompany: React.FC = () => {
 
   //  Form
   const onFinish = (values: any) => {
-    console.log('values', values);
-    form.validateFields().then(() => {
-      function extractServicesIds(input: any) {
-        requestServices = [];
-        input.map((obj: any) => {
-          const parts = obj.split(' ');
-          let result = {};
-          if (parts[0] == 'withTool') {
-            result = {
-              serviceId: parseInt(parts[1].replace('service', '')),
-              subServiceId: parseInt(parts[2].replace('sub', '')),
-              toolId: parseInt(parts[3].replace('tool', '')),
-            };
-            if (!requestServices.includes(result)) {
-              requestServices.push(result);
-            }
-          } else if (parts[0] == 'onlySub') {
-            result = {
-              serviceId: parseInt(parts[1].replace('service', '')),
-              subServiceId: parseInt(parts[2].replace('sub', '')),
-              toolId: null,
-            };
-            if (!requestServices.includes(result)) {
-              requestServices.push(result);
-            }
+    function extractServicesIds(input: any) {
+      requestServices = [];
+      input.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
           }
-          return result;
-        });
-      }
-      extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
-      const updatedFormData = { ...formData };
-      companyInfo = {
-        ...companyInfo,
-        translations: [
-          {
-            name: form.getFieldValue(['translations', lang?.ar, 'name']),
-            bio: form.getFieldValue(['translations', lang?.ar, 'bio']),
-            address: form.getFieldValue(['translations', lang?.ar, 'address']),
-            language: 'ar',
-          },
-          {
-            name: form.getFieldValue(['translations', lang?.en, 'name']),
-            bio: form.getFieldValue(['translations', lang?.en, 'bio']),
-            address: form.getFieldValue(['translations', lang?.en, 'address']),
-            language: 'en',
-          },
-        ],
-        companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
-        regionId: regionId != '0' ? regionId : companyData?.region?.id,
-        companyContact: {
-          dialCode: companyData?.companyContact?.dialCode,
-          phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
-          emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
-          webSite: form.getFieldValue(['companyContact', 'webSite']),
-          isForBranchCompany: false,
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
+          }
+        }
+        return result;
+      });
+    }
+    extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
+    const updatedFormData = { ...formData };
+
+    companyInfo = {
+      ...companyInfo,
+      translations: [
+        {
+          name: form.getFieldValue(['translations', lang?.ar, 'name']),
+          bio: form.getFieldValue(['translations', lang?.ar, 'bio']),
+          address: form.getFieldValue(['translations', lang?.ar, 'address']),
+          language: 'ar',
         },
-        id: companyData?.id,
-        availableCitiesIds:
-          selectedCityValues.length == 0
-            ? companyData?.availableCities.map((city: any) => city?.id)
-            : selectedCityValues,
-        serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
-        services: requestServices,
-        comment: form.getFieldValue('comment'),
-        companyOwnerIdentityIds: [
-          OwnerImageIdentityId,
-          OwnerFileIdentityId,
-          imageOwnerList[0]?.id,
-          fileOwnerList[0]?.id,
-        ].filter((value) => value !== undefined),
-        companyCommercialRegisterIds: [
-          CommercialImageRegisterId,
-          CommercialFileRegisterId,
-          imageCommercialList[0]?.id,
-          fileCommercialList[0]?.id,
-        ].filter((value) => value !== undefined),
-        additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
-      };
-      updatedFormData.translations = companyInfo.translations;
-      updatedFormData.translations = companyInfo.translations;
-      setEnableEdit(true);
+        {
+          name: form.getFieldValue(['translations', lang?.en, 'name']),
+          bio: form.getFieldValue(['translations', lang?.en, 'bio']),
+          address: form.getFieldValue(['translations', lang?.en, 'address']),
+          language: 'en',
+        },
+      ],
+      companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
+      regionId: regionId != '0' ? regionId : companyData?.region?.id,
+      companyContact: {
+        dialCode: companyData?.companyContact?.dialCode,
+        phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
+        emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
+        webSite: form.getFieldValue(['companyContact', 'webSite']),
+        isForBranchCompany: false,
+      },
+      id: companyData?.id,
+      availableCitiesIds:
+        selectedCityValues.length == 0 ? companyData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
+      serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
+      services: requestServices,
+      comment: form.getFieldValue('comment'),
+      companyOwnerIdentityIds: [
+        OwnerImageIdentityId,
+        OwnerFileIdentityId,
+        imageOwnerList[0]?.id,
+        fileOwnerList[0]?.id,
+      ].filter((value) => value !== undefined),
+      companyCommercialRegisterIds: [
+        CommercialImageRegisterId,
+        CommercialFileRegisterId,
+        imageCommercialList[0]?.id,
+        fileCommercialList[0]?.id,
+      ].filter((value) => value !== undefined),
 
-      updatedFormData.translations = companyInfo.translations;
-      setEnableEdit(true);
+      additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
+    };
 
-      if (companyInfo.companyOwnerIdentityIds == 0) {
-        message.open({
-          content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
-        });
-        setEnableEdit(false);
-        return;
-      }
-      if (companyInfo.companyCommercialRegisterIds == 0) {
-        message.open({
-          content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
-        });
-        setEnableEdit(false);
-        return;
-      }
-      setEnableEdit(true);
-    });
+    updatedFormData.translations = companyInfo.translations;
+    setEnableEdit(true);
+
+    if (companyInfo.companyOwnerIdentityIds == 0) {
+      message.open({
+        content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
+      });
+      setEnableEdit(false);
+      return;
+    }
+    if (companyInfo.companyCommercialRegisterIds == 0) {
+      message.open({
+        content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
+      });
+      setEnableEdit(false);
+      return;
+    }
   };
 
   return (
@@ -962,14 +955,14 @@ export const EditCompany: React.FC = () => {
                   </Select>
                 </BaseForm.Item>
                 <BaseForm.Item
-                  name={'region'}
+                  name={['regions']}
                   label={<LableText>{t('companies.region')}</LableText>}
                   style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                   rules={[
                     { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
                   ]}
                 >
-                  <Select onChange={ChangeRegionHandler} defaultValue={companyData?.region?.name}>
+                  <Select onChange={ChangeRegionHandler} defaultValue={companyData.region.name}>
                     {RegionsData?.data?.result?.items.map((Region: any) => (
                       <Option key={Region?.name} value={Region.id}>
                         {Region?.name}
