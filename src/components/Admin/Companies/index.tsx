@@ -368,6 +368,10 @@ export const Companies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.region')}</Header>,
+      dataIndex: ['region', 'name'],
+    },
     type === undefined &&
       requestId === undefined && {
         title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,

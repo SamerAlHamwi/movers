@@ -197,18 +197,6 @@ export const EditCompany: React.FC = () => {
   }, [cityId]);
 
   useEffect(() => {
-    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
-      availableCitiesRefetch();
-    }
-  }, [countryIdForAvailableCities]);
-
-  useEffect(() => {
-    if (companyData?.availableCities) {
-      setCountryIdForAvailableCities(companyData?.availableCities[0]?.countryId);
-    }
-  }, [companyData?.availableCities]);
-
-  useEffect(() => {
     const updateFormValues = async () => {
       const checkedKeysById: any[] = [];
       companyData?.services?.map((item: any) => {
@@ -319,6 +307,18 @@ export const EditCompany: React.FC = () => {
   } = useQuery('getCitiesForAvailabel', () => getCities(countryIdForAvailableCities), {
     enabled: countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined,
   });
+
+  useEffect(() => {
+    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForAvailableCities]);
+
+  useEffect(() => {
+    if (companyData?.availableCities) {
+      setCountryIdForAvailableCities(companyData?.availableCities[0]?.countryId);
+    }
+  }, [companyData?.availableCities]);
 
   const { data: citiesData, refetch: citiesRefetch } = useQuery(
     'getCities',
@@ -676,6 +676,19 @@ export const EditCompany: React.FC = () => {
   return (
     <Card title={t('companies.EditCompany')} padding="1.25rem 1.25rem 1.25rem">
       <Row justify={'end'} align={'middle'} style={{ width: '100%' }}>
+        <Btn
+          style={{
+            margin: '1rem 1rem 1rem 0',
+            width: 'auto',
+            height: 'auto',
+          }}
+          type="ghost"
+          onClick={() => Navigate(-1)}
+          icon={<LeftOutlined />}
+        >
+          <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+        </Btn>
+
         {current > 0 && (
           <>
             <Button
@@ -692,18 +705,6 @@ export const EditCompany: React.FC = () => {
         )}
         {current < steps.length - 1 && (
           <>
-            <Btn
-              style={{
-                margin: '1rem 1rem 1rem 0',
-                width: 'auto',
-                height: 'auto',
-              }}
-              type="ghost"
-              onClick={() => Navigate(-1)}
-              icon={<LeftOutlined />}
-            >
-              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-            </Btn>
             <Button
               type="primary"
               style={{
@@ -1053,6 +1054,7 @@ export const EditCompany: React.FC = () => {
                 </BaseForm.Item>
               </>
             )}
+
             {current === 1 && (
               <>
                 <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
@@ -1139,6 +1141,7 @@ export const EditCompany: React.FC = () => {
                 </Spin>
               </>
             )}
+
             {current === 2 && (
               <>
                 <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('branch.selectService')} :</h4>
@@ -1167,6 +1170,7 @@ export const EditCompany: React.FC = () => {
                 </BaseForm.Item>
               </>
             )}
+
             {current === 3 && (
               <>
                 <Text
