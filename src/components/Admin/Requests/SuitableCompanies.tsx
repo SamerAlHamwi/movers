@@ -203,7 +203,11 @@ export const SuitableCompanies: React.FC = () => {
     {
       rowScope: 'row',
       render: (record: any) =>
-        record.isFeature && <Rate disabled defaultValue={1} count={1} style={{ fontSize: '15px' }} />,
+        record.isFeature && (
+          <Tooltip placement="top" title={t('requests.featured')}>
+            <Rate disabled defaultValue={1} count={1} style={{ fontSize: '15px' }} />
+          </Tooltip>
+        ),
     },
     type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.selected')}</Header>,
