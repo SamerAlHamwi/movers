@@ -90,7 +90,9 @@
     "refetch": "Refetch Data",
     "yes": "Yes",
     "no": "No",
-    "return": "Return"
+    "return": "Return",
+    "deleteConfirm": "Are you Sure To Delete This Attachment",
+    "confirmationMessage": "Confirmation Message"
   },
 
   "_comment0": "*********************************** auth ************************************************",

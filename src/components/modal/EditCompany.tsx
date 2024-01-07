@@ -25,15 +25,14 @@ import { getServices } from '@app/services/services';
 import { getCompanyById, updateCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
-import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
-import { AR } from '@app/constants/appConstants';
+import { AR, PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 import { Btn } from '../common/MoonSunSwitch/MoonSunSwitch.styles';
+import { ActionModal } from './ActionModal';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -139,6 +138,15 @@ export const EditCompany: React.FC = () => {
   const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [selectedServices, setSelectedServices] = useState<any[]>([]);
   const [picturesList, setPicturesList] = useState<any[]>([]);
+  const [visibleLogo, setVisibleLogo] = useState<boolean>(false);
+  const [visibleOwner, setVisibleOwner] = useState<boolean>(false);
+  const [visibleRegister, setVisibleRegister] = useState<boolean>(false);
+  const [visibleAddition, setVisibleAddition] = useState<boolean>(false);
+  const [additionalImages, setAdditionalImages] = useState<any>();
+  const [visibleOwnerFile, setVisibleOwnerFile] = useState<boolean>(false);
+  const [visibleRegisterFile, setVisibleRegisterFile] = useState<boolean>(false);
+  const [visibleAdditionFile, setVisibleAdditionFile] = useState<boolean>(false);
+  const [additionalFiles, setAdditionalFiles] = useState<any>();
   const [test, setTest] = useState<any[]>([]);
   const { desktopOnly } = useResponsive();
   const [lang, setLang] = useState<{ en: any; ar: any }>({
@@ -570,7 +578,6 @@ export const EditCompany: React.FC = () => {
 
   //  Form
   const onFinish = (values: any) => {
-    console.log('values', values);
     form.validateFields().then(() => {
       function extractServicesIds(input: any) {
         requestServices = [];
@@ -671,6 +678,43 @@ export const EditCompany: React.FC = () => {
       }
       setEnableEdit(true);
     });
+  };
+
+  const onRemove = (setVisible: any) => {
+    setVisible(true);
+    return false;
+  };
+  const onOk = (setImg: any, setVisible: any) => {
+    setImg([]);
+    setVisible(false);
+  };
+
+  const onRemoveAdditional = (file: any) => {
+    setAdditionalImages(file);
+    setVisibleAddition(true);
+    return false;
+  };
+
+  const onOkAddition = () => {
+    setImageOtherList((prev: any[]) => {
+      const items = prev.filter((item: any) => item?.uid !== additionalImages?.uid);
+      return items;
+    });
+    setVisibleAddition(false);
+  };
+
+  const onRemoveAdditionalFiles = (file: any) => {
+    setAdditionalFiles(file);
+    setVisibleAdditionFile(true);
+    return false;
+  };
+
+  const onOkAdditionFiles = () => {
+    setFileOtherList((prev: any[]) => {
+      const items = prev.filter((item: any) => item?.uid !== additionalFiles?.uid);
+      return items;
+    });
+    setVisibleAdditionFile(false);
   };
 
   return (
@@ -787,6 +831,7 @@ export const EditCompany: React.FC = () => {
                       onChange={(e: any) => {
                         setImageLogoList(e.fileList);
                       }}
+                      onRemove={() => onRemove(setVisibleLogo)}
                     >
                       {imageLogoList.length >= 1 ? null : uploadLogoButton}
                     </Upload>
@@ -1041,7 +1086,7 @@ export const EditCompany: React.FC = () => {
                   style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
                 >
                   <Input
-                    addonBefore={'+971'}
+                    addonBefore={PHONE_NUMBER_CODE}
                     value={companyData?.companyContact?.phoneNumber}
                     onChange={(e) => {
                       if (validationInputNumber(e.target.value)) {
@@ -1202,6 +1247,7 @@ export const EditCompany: React.FC = () => {
                       }}
                       onChange={(e: any) => setImageOwnerList(e.fileList)}
                       maxCount={1}
+                      onRemove={() => onRemove(setVisibleOwner)}
                     >
                       {imageOwnerList.length >= 1 ? null : uploadImageButton}
                     </Upload>
@@ -1227,6 +1273,7 @@ export const EditCompany: React.FC = () => {
                       }}
                       onChange={(e: any) => setFileOwnerList(e.fileList)}
                       maxCount={1}
+                      onRemove={() => onRemove(setVisibleOwnerFile)}
                     >
                       {fileOwnerList.length >= 1 ? null : uploadFileButton}
                     </Upload>
@@ -1265,6 +1312,7 @@ export const EditCompany: React.FC = () => {
                       }}
                       onChange={(e: any) => setImageCommercialList(e.fileList)}
                       maxCount={1}
+                      onRemove={() => onRemove(setVisibleRegister)}
                     >
                       {imageCommercialList.length >= 1 ? null : uploadImageButton}
                     </Upload>
@@ -1288,6 +1336,7 @@ export const EditCompany: React.FC = () => {
                         return false;
                       }}
                       onChange={(e: any) => setFileCommercialList(e.fileList)}
+                      onRemove={() => onRemove(setVisibleRegisterFile)}
                       maxCount={1}
                     >
                       {fileCommercialList.length >= 1 ? null : uploadFileButton}
@@ -1318,14 +1367,7 @@ export const EditCompany: React.FC = () => {
                       fileList={imageOtherList}
                       onPreview={handlePreviews}
                       maxCount={3}
-                      onRemove={(file) => {
-                        setImageOtherList((prev: any[]) => {
-                          const test = prev.filter((item: any) => item?.uid !== file?.uid);
-
-                          return test;
-                        });
-                        return;
-                      }}
+                      onRemove={(file) => onRemoveAdditional(file)}
                       customRequest={UploadAttachments}
                     >
                       {imageOtherList.length >= 3 ? null : uploadButtonForAllRequest}
@@ -1343,14 +1385,7 @@ export const EditCompany: React.FC = () => {
                       fileList={fileOtherList}
                       onPreview={handlePreviews}
                       maxCount={3}
-                      onRemove={(file) => {
-                        setFileOtherList((prev: any[]) => {
-                          const test = prev.filter((item: any) => item?.uid !== file?.uid);
-
-                          return test;
-                        });
-                        return;
-                      }}
+                      onRemove={(file) => onRemoveAdditionalFiles(file)}
                       customRequest={UploadAttachments}
                     >
                       {fileOtherList.length >= 3 ? null : uploadButtonForAllRequest}
@@ -1362,6 +1397,76 @@ export const EditCompany: React.FC = () => {
                 </Row>
               </>
             )}
+            {
+              <>
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleLogo(false)}
+                  onOK={() => onOk(setImageLogoList, setVisibleLogo)}
+                  visible={visibleLogo}
+                />
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleOwner(false)}
+                  onOK={() => onOk(setImageOwnerList, setVisibleOwner)}
+                  visible={visibleOwner}
+                />
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleRegister(false)}
+                  onOK={() => onOk(setImageCommercialList, setVisibleRegister)}
+                  visible={visibleRegister}
+                />
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleAddition(false)}
+                  onOK={() => onOkAddition()}
+                  visible={visibleAddition}
+                />
+
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleOwnerFile(false)}
+                  onOK={() => onOk(setFileOwnerList, setVisibleOwnerFile)}
+                  visible={visibleOwnerFile}
+                />
+
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleRegisterFile(false)}
+                  onOK={() => onOk(setFileCommercialList, setVisibleRegisterFile)}
+                  visible={visibleRegisterFile}
+                />
+
+                <ActionModal
+                  title={t('common.confirmationMessage')}
+                  description={t('common.deleteConfirm')}
+                  okText={t('common.confrim')}
+                  cancelText={t('common.cancel')}
+                  onCancel={() => setVisibleAdditionFile(false)}
+                  onOK={() => onOkAdditionFiles()}
+                  visible={visibleAdditionFile}
+                />
+              </>
+            }
           </BaseForm>
         )}
       </Spin>

@@ -821,7 +821,7 @@ const ComparisonCompany: React.FC = () => {
               });
             }}
             isLoading={rejectCompany.isLoading}
-            type="rejectRequest"
+            type="returnCompany"
           />
         }
       </Row>
