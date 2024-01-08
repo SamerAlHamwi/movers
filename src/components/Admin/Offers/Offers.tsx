@@ -64,7 +64,6 @@ export const Offers: React.FC = () => {
         requestId != undefined ? requestId : '',
         companyId != undefined ? companyId : '',
         branchId != undefined ? branchId : '',
-        type === 'rejectedoffers' ? 4 : undefined,
       )
         .then((data) => {
           const result = data.data?.result?.items;
@@ -81,7 +80,7 @@ export const Offers: React.FC = () => {
     },
   );
 
-  const allRejectedOffers = useQuery(
+  const { refetch: refetchRejectedOffers, isRefetching: isRefetchingRejectedOffers } = useQuery(
     ['Offers', page, pageSize],
     () =>
       getrejectedOffers(page, pageSize, searchString, requestId)
@@ -96,7 +95,7 @@ export const Offers: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined && type === 'rejectedoffers',
+      enabled: type === 'rejectedoffers',
     },
   );
 
@@ -131,9 +130,18 @@ export const Offers: React.FC = () => {
   }, [isRefetching]);
 
   useEffect(() => {
-    setLoading(true);
-    refetch();
+    if (type === undefined) {
+      setLoading(true);
+      refetch();
+    }
   }, [page, pageSize, language, searchString, refetch, refetchData, isReturned]);
+
+  useEffect(() => {
+    if (type === 'rejectedoffers') {
+      setLoading(true);
+      refetchRejectedOffers();
+    }
+  }, [page, pageSize, language, searchString, refetchRejectedOffers, refetchData, isReturned]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {

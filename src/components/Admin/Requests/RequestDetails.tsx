@@ -580,31 +580,6 @@ const RequestDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
-              {requestData?.statues === 5 && (
-                <DetailsRow>
-                  <DetailsTitle
-                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                  >
-                    {t('offers.offerDetails')}
-                  </DetailsTitle>
-
-                  <DetailsValue
-                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                  >
-                    <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('offers.offerDetails')}>
-                      <TableButton
-                        severity="success"
-                        onClick={() => {
-                          Navigate(`/requests/${requestId}/details/allOffers/allOffers`);
-                        }}
-                      >
-                        <BankOutlined />
-                      </TableButton>
-                    </Tooltip>
-                  </DetailsValue>
-                </DetailsRow>
-              )}
-
               {/* reasonRefuse */}
               {requestData?.statues == 3 && requestData?.reasonRefuse && (
                 <DetailsRow>
@@ -662,6 +637,7 @@ const RequestDetails: React.FC = () => {
 
               {/* Rejected offers  */}
               {(requestData?.statues == 4 ||
+                requestData?.statues === 5 ||
                 requestData?.statues == 6 ||
                 requestData?.statues == 7 ||
                 requestData?.statues == 8 ||
