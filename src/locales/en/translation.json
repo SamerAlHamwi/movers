@@ -348,7 +348,8 @@
     "oldCompany": "Old Company Info",
     "newCompany": "New Company Info",
     "timeOfWorks": "Work Time",
-    "compare": "Comparison"
+    "compare": "Comparison",
+    "compatibilityRate": "Compatibility Rate"
   },
 
   "_comment7": "*********************************** subServices ************************************************",

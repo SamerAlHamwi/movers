@@ -788,7 +788,6 @@ export const Companies: React.FC = () => {
                   dataSource={dataSource}
                   scroll={{ x: isTablet || isMobile ? 950 : 800 }}
                   rowKey={(record: CompanyRecord) => record.id.toString()}
-                  // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
                 />
               ),
             };
