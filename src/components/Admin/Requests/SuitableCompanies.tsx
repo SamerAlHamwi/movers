@@ -239,7 +239,7 @@ export const SuitableCompanies: React.FC = () => {
       },
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
-    {
+    type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.compatibilityRate')}</Header>,
       dataIndex: 'compatibilityRate',
       render: (record: any) => <>{record}%</>,
@@ -318,7 +318,7 @@ export const SuitableCompanies: React.FC = () => {
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
-    {
+    type == '1' && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.compatibilityRate')}</Header>,
       dataIndex: 'compatibilityRate',
       render: (record: any) => <>{record}%</>,
