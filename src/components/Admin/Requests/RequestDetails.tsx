@@ -18,7 +18,6 @@ import { BankOutlined, CheckOutlined, CloseOutlined, StopOutlined, TagOutlined }
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
-import { getAllOffers } from '@app/services/offers';
 
 const { Meta } = Card;
 
@@ -167,8 +166,6 @@ const RequestDetails: React.FC = () => {
       },
     );
   }
-
-  console.log('req', requestData?.statues);
 
   return (
     <>
@@ -583,7 +580,7 @@ const RequestDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
-              {(requestData?.statues === 4 || requestData?.statues === 5) && (
+              {requestData?.statues === 5 && (
                 <DetailsRow>
                   <DetailsTitle
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}

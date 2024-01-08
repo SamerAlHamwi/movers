@@ -64,6 +64,7 @@ export const Offers: React.FC = () => {
         requestId != undefined ? requestId : '',
         companyId != undefined ? companyId : '',
         branchId != undefined ? branchId : '',
+        type === 'rejectedoffers' ? 4 : undefined,
       )
         .then((data) => {
           const result = data.data?.result?.items;
