@@ -102,7 +102,8 @@ export const EditCompany: React.FC = () => {
   const { t } = useTranslation();
   const queryClient = useQueryClient();
   const Navigate = useNavigate();
-  const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
+  const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
+
   const [current, setCurrent] = useState(0);
   const [attachmentId, setAttachmentId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
@@ -148,7 +149,7 @@ export const EditCompany: React.FC = () => {
   const [visibleAdditionFile, setVisibleAdditionFile] = useState<boolean>(false);
   const [additionalFiles, setAdditionalFiles] = useState<any>();
   const [test, setTest] = useState<any[]>([]);
-  const { desktopOnly } = useResponsive();
+
   const [lang, setLang] = useState<{ en: any; ar: any }>({
     en: undefined,
     ar: undefined,
@@ -578,190 +579,107 @@ export const EditCompany: React.FC = () => {
 
   //  Form
   const onFinish = (values: any) => {
-    form.validateFields().then(() => {
-      function extractServicesIds(input: any) {
-        requestServices = [];
-        input.map((obj: any) => {
-          const parts = obj.split(' ');
-          let result = {};
-          if (parts[0] == 'withTool') {
-            result = {
-              serviceId: parseInt(parts[1].replace('service', '')),
-              subServiceId: parseInt(parts[2].replace('sub', '')),
-              toolId: parseInt(parts[3].replace('tool', '')),
-            };
-            if (!requestServices.includes(result)) {
-              requestServices.push(result);
-            }
-          } else if (parts[0] == 'onlySub') {
-            result = {
-              serviceId: parseInt(parts[1].replace('service', '')),
-              subServiceId: parseInt(parts[2].replace('sub', '')),
-              toolId: null,
-            };
-            if (!requestServices.includes(result)) {
-              requestServices.push(result);
-            }
+    function extractServicesIds(input: any) {
+      requestServices = [];
+      input.map((obj: any) => {
+        const parts = obj.split(' ');
+        let result = {};
+        if (parts[0] == 'withTool') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: parseInt(parts[3].replace('tool', '')),
+          };
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
           }
-          return result;
-        });
-      }
-      extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
-      const updatedFormData = { ...formData };
-      companyInfo = {
-        ...companyInfo,
-        translations: [
-          {
-            name: form.getFieldValue(['translations', lang?.ar, 'name']),
-            bio: form.getFieldValue(['translations', lang?.ar, 'bio']),
-            address: form.getFieldValue(['translations', lang?.ar, 'address']),
-            language: 'ar',
-          },
-          {
-            name: form.getFieldValue(['translations', lang?.en, 'name']),
-            bio: form.getFieldValue(['translations', lang?.en, 'bio']),
-            address: form.getFieldValue(['translations', lang?.en, 'address']),
-            language: 'en',
-          },
-        ],
-        companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
-        regionId: regionId != '0' ? regionId : companyData?.region?.id,
-        companyContact: {
-          dialCode: companyData?.companyContact?.dialCode,
-          phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
-          emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
-          webSite: form.getFieldValue(['companyContact', 'webSite']),
-          isForBranchCompany: false,
-        },
-        id: companyData?.id,
-        availableCitiesIds:
-          selectedCityValues.length == 0
-            ? companyData?.availableCities.map((city: any) => city?.id)
-            : selectedCityValues,
-        serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
-        services: requestServices,
-        comment: form.getFieldValue('comment'),
-        companyOwnerIdentityIds: [
-          OwnerImageIdentityId,
-          OwnerFileIdentityId,
-          imageOwnerList[0]?.id,
-          fileOwnerList[0]?.id,
-        ].filter((value) => value !== undefined),
-        companyCommercialRegisterIds: [
-          CommercialImageRegisterId,
-          CommercialFileRegisterId,
-          imageCommercialList[0]?.id,
-          fileCommercialList[0]?.id,
-        ].filter((value) => value !== undefined),
-        additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
-      };
-      updatedFormData.translations = companyInfo.translations;
-      updatedFormData.translations = companyInfo.translations;
-      setEnableEdit(true);
-      function extractServicesIds(input: any) {
-        requestServices = [];
-        input.map((obj: any) => {
-          const parts = obj.split(' ');
-          let result = {};
-          if (parts[0] == 'withTool') {
-            result = {
-              serviceId: parseInt(parts[1].replace('service', '')),
-              subServiceId: parseInt(parts[2].replace('sub', '')),
-              toolId: parseInt(parts[3].replace('tool', '')),
-            };
-            if (!requestServices.includes(result)) {
-              requestServices.push(result);
-            }
-          } else if (parts[0] == 'onlySub') {
-            result = {
-              serviceId: parseInt(parts[1].replace('service', '')),
-              subServiceId: parseInt(parts[2].replace('sub', '')),
-              toolId: null,
-            };
-            if (!requestServices.includes(result)) {
-              requestServices.push(result);
-            }
+        } else if (parts[0] == 'onlySub') {
+          result = {
+            serviceId: parseInt(parts[1].replace('service', '')),
+            subServiceId: parseInt(parts[2].replace('sub', '')),
+            toolId: null,
+          };
+          if (!requestServices.includes(result)) {
+            requestServices.push(result);
           }
-          return result;
-        });
-      }
-      extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
-      const updatedFormData = { ...formData };
+        }
+        return result;
+      });
+    }
+    extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
+    const updatedFormData = { ...formData };
 
-      companyInfo = {
-        ...companyInfo,
-        translations: [
-          {
-            name: form.getFieldValue(['translations', lang?.ar, 'name']),
-            bio: form.getFieldValue(['translations', lang?.ar, 'bio']),
-            address: form.getFieldValue(['translations', lang?.ar, 'address']),
-            language: 'ar',
-          },
-          {
-            name: form.getFieldValue(['translations', lang?.en, 'name']),
-            bio: form.getFieldValue(['translations', lang?.en, 'bio']),
-            address: form.getFieldValue(['translations', lang?.en, 'address']),
-            language: 'en',
-          },
-        ],
-        companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
-        regionId: regionId != '0' ? regionId : companyData?.region?.id,
-        companyContact: {
-          dialCode: companyData?.companyContact?.dialCode,
-          phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
-          emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
-          webSite: form.getFieldValue(['companyContact', 'webSite']),
-          isForBranchCompany: false,
+    companyInfo = {
+      ...companyInfo,
+      translations: [
+        {
+          name: form.getFieldValue(['translations', lang?.ar, 'name']),
+          bio: form.getFieldValue(['translations', lang?.ar, 'bio']),
+          address: form.getFieldValue(['translations', lang?.ar, 'address']),
+          language: 'ar',
         },
-        id: companyData?.id,
-        availableCitiesIds:
-          selectedCityValues.length == 0
-            ? companyData?.availableCities.map((city: any) => city?.id)
-            : selectedCityValues,
-        serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
-        services: requestServices,
-        comment: form.getFieldValue('comment'),
-        companyOwnerIdentityIds: [
-          OwnerImageIdentityId,
-          OwnerFileIdentityId,
-          imageOwnerList[0]?.id,
-          fileOwnerList[0]?.id,
-        ].filter((value) => value !== undefined),
-        companyCommercialRegisterIds: [
-          CommercialImageRegisterId,
-          CommercialFileRegisterId,
-          imageCommercialList[0]?.id,
-          fileCommercialList[0]?.id,
-        ].filter((value) => value !== undefined),
+        {
+          name: form.getFieldValue(['translations', lang?.en, 'name']),
+          bio: form.getFieldValue(['translations', lang?.en, 'bio']),
+          address: form.getFieldValue(['translations', lang?.en, 'address']),
+          language: 'en',
+        },
+      ],
+      companyProfilePhotoId: logo ? logo : imageLogoList[0].id,
+      regionId: regionId != '0' ? regionId : companyData?.region?.id,
+      companyContact: {
+        dialCode: companyData?.companyContact?.dialCode,
+        phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
+        emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
+        webSite: form.getFieldValue(['companyContact', 'webSite']),
+        isForBranchCompany: false,
+      },
+      id: companyData?.id,
+      availableCitiesIds:
+        selectedCityValues.length == 0 ? companyData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
+      serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
+      services: requestServices,
+      comment: form.getFieldValue('comment'),
+      companyOwnerIdentityIds: [
+        OwnerImageIdentityId,
+        OwnerFileIdentityId,
+        imageOwnerList[0]?.id,
+        fileOwnerList[0]?.id,
+      ].filter((value) => value !== undefined),
+      companyCommercialRegisterIds: [
+        CommercialImageRegisterId,
+        CommercialFileRegisterId,
+        imageCommercialList[0]?.id,
+        fileCommercialList[0]?.id,
+      ].filter((value) => value !== undefined),
 
-        additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
-      };
+      additionalAttachmentIds: imageOtherList.map((file) => file.id).concat(fileOtherList.map((file) => file.id)),
+    };
 
-      updatedFormData.translations = companyInfo.translations;
-      setEnableEdit(true);
+    updatedFormData.translations = companyInfo.translations;
+    setEnableEdit(true);
 
-      if (companyInfo.companyOwnerIdentityIds == 0) {
-        message.open({
-          content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
-        });
-        setEnableEdit(false);
-        return;
-      }
-      if (companyInfo.companyCommercialRegisterIds == 0) {
-        message.open({
-          content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
-        });
-        setEnableEdit(false);
-        return;
-      }
-      setEnableEdit(true);
-    });
+    if (companyInfo.companyOwnerIdentityIds == 0) {
+      message.open({
+        content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
+      });
+      setEnableEdit(false);
+      return;
+    }
+    if (companyInfo.companyCommercialRegisterIds == 0) {
+      message.open({
+        content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
+      });
+      setEnableEdit(false);
+      return;
+    }
   };
 
   const onRemove = (setVisible: any) => {
     setVisible(true);
     return false;
   };
+
   const onOk = (setImg: any, setVisible: any) => {
     setImg([]);
     setVisible(false);
@@ -1414,8 +1332,8 @@ export const EditCompany: React.FC = () => {
                         return false;
                       }}
                       onChange={(e: any) => setFileCommercialList(e.fileList)}
-                      onRemove={() => onRemove(setVisibleRegisterFile)}
                       maxCount={1}
+                      onRemove={() => onRemove(setVisibleRegisterFile)}
                     >
                       {fileCommercialList.length >= 1 ? null : uploadFileButton}
                     </Upload>
