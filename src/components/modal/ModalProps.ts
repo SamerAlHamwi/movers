@@ -23,6 +23,7 @@ import {
   HoursConfig,
   ApplicationsVersion,
   DiscountPercentageConfig,
+  offerModel,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -142,6 +143,11 @@ export interface EditServiceProps extends ModalProps {
   values: ServiceModel | undefined;
   onEdit: (data: ServiceModel) => void;
   AttachmentId: number;
+}
+
+export interface EditOfferProps extends ModalProps {
+  values: offerModel | undefined;
+  onEdit: (data: offerModel) => void;
 }
 
 export interface EditFAQProps extends ModalProps {

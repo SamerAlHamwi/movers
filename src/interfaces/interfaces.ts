@@ -270,6 +270,15 @@ export interface ServiceModel {
   isForTruck?: boolean;
 }
 
+export interface offerModel {
+  id?: string | undefined;
+  note: string;
+  isExtendStorage: boolean;
+  priceForOnDayStorage: number;
+  serviceValueForOffers: any;
+  price?: number;
+}
+
 export interface faqModel {
   id: number;
   translations: Translation[];

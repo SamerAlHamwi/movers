@@ -821,7 +821,9 @@
     "SelectedByUser": "تم إختياره من قبل المستخدم",
     "RejectedByUser": "تم رفضه من قبل المستخدم",
     "returnOfferSuccessMessage": "تمت إعادة عرض السعر لمُقدِمه بنجاح",
-    "offerDetails": "تفاصيل الغروض"
+    "offerDetails": "تفاصيل الغروض",
+    "editOfferSuccessMessage": "تم تعديل عرض السعر بنجاح",
+    "editOfferModalTitle": "تعديل الملاحظة"
   },
 
   "_comment24": "*********************************** points ************************************************",
@@ -1022,6 +1024,7 @@
     "OnHim": "المال له"
   },
 
+  "_comment32": "*********************************** paymentPrivacy ************************************************",
   "paymentPrivacy": {
     "paymentPrivacyList": "لائحة خصوصية الدفع",
     "addPrivacy": "إضافة خصوصية الدفع",
@@ -1063,6 +1066,7 @@
     "companies": "الشركات",
     "AddBranch": "إضافة فرع لشركة",
     "branches": "الفروع",
+    "branchesWithoutCompany": "فروع بلا شركة",
     "branchDetails": "تفاصيل الفرع",
     "EditBranch": "تعديل فرع الشركة",
     "AskForHelp": "طلبات المساعدة",

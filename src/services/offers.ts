@@ -43,4 +43,8 @@ const returnOfferToProvider = async (data: any) => {
   return await httpApi.post(`${apiPrefix.offers}/RejectOfferToEditItByAdmin`, data);
 };
 
-export { getAllOffers, getrejectedOffers, getOfferById, sendForUser, returnOfferToProvider };
+const updateOfferToProvider = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.offers}/Update`, data);
+};
+
+export { getAllOffers, getrejectedOffers, getOfferById, sendForUser, returnOfferToProvider, updateOfferToProvider };

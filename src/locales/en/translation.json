@@ -823,7 +823,9 @@
     "SelectedByUser": "Selected By User",
     "RejectedByUser": "Rejected By User",
     "returnOfferSuccessMessage": "The Offer Has Been Returned Successfully",
-    "offerDetails": "Offer Details"
+    "offerDetails": "Offer Details",
+    "editOfferSuccessMessage": "The Offer Has Been Edited Successfully",
+    "editOfferModalTitle": "Edit The Note"
   },
 
   "_comment24": "*********************************** points ************************************************",
@@ -1024,6 +1026,7 @@
     "OnHim": "He paid the money"
   },
 
+  "_comment32": "*********************************** paymentPrivacy ************************************************",
   "paymentPrivacy": {
     "paymentPrivacyList": "Payment Privacy List",
     "addPrivacy": "Add Payment Privacy",
@@ -1066,6 +1069,7 @@
     "companies": "Companies",
     "AddBranch": "Add Branch",
     "branches": "Branches",
+    "branchesWithoutCompany": "Branches Without Company",
     "branchDetails": "Branch Details",
     "EditBranch": "Edit Branch",
     "AskForHelp": "Help Requests",
