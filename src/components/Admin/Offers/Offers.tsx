@@ -203,6 +203,64 @@ export const Offers: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerName')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 && record.selectedCompanies.company.name}
+            {record.provider === 2 && record.selectedCompanies.companyBranch.name}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerPhoneNumber')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 &&
+              record.selectedCompanies.company.companyContact?.dialCode +
+                ' ' +
+                record.selectedCompanies.company.companyContact?.phoneNumber}
+            {record.provider === 2 &&
+              record.selectedCompanies.companyBranch.companyContact?.dialCode +
+                ' ' +
+                record.selectedCompanies.companyBranch.companyContact?.phoneNumber}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerEmailAddress')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 && record.selectedCompanies.company.companyContact?.emailAddress}
+            {record.provider === 2 && record.selectedCompanies.companyBranch.companyContact?.emailAddress}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerNumberOfTransfers')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 && record.selectedCompanies.company.numberOfTransfers}
+            {record.provider === 2 && record.selectedCompanies.companyBranch.numberOfTransfers}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.comment')}</Header>,
+      dataIndex: 'note',
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
