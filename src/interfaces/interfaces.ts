@@ -167,6 +167,7 @@ export interface CompanyModal {
   additionalAttachment?: any;
   comment?: 'string';
   serviceType?: 1;
+  commissionGroup: number;
 }
 
 export interface Services {
@@ -306,6 +307,7 @@ export interface BranchModel {
   userDto?: UserDto;
   serviceType: number;
   availableCities: any[];
+  commissionGroup: number;
 }
 export interface RequestModel {
   id: number;

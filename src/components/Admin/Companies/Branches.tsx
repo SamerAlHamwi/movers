@@ -174,6 +174,13 @@ export const Branches: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
+      dataIndex: ['company', 'commissionGroup'],
+      render: (record: BranchModel) => {
+        return <> {record ? record + '%' : ''}</>;
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
       render: (record: number) => {
@@ -198,7 +205,6 @@ export const Branches: React.FC = () => {
         return (
           <Space>
             <Button
-              // disabled={record.statues !== 2}
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
