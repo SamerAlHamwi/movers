@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Row, Space, Tag, Tooltip } from 'antd';
+import { message, Rate, Row, Space, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -161,11 +161,25 @@ export const Branches: React.FC = () => {
   }, [page, data]);
 
   const columns = [
+    {
+      rowScope: 'row',
+      render: (record: any) =>
+        record.isFeature && (
+          <Tooltip placement="top" title={t('requests.featured')}>
+            <Rate disabled defaultValue={1} count={1} style={{ fontSize: '15px' }} />
+          </Tooltip>
+        ),
+    },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
-    // { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
-    // { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
+      dataIndex: ['company', 'commissionGroup'],
+      render: (record: BranchModel) => {
+        return <> {record ? record + '%' : ''}</>;
+      },
+    },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
@@ -191,7 +205,6 @@ export const Branches: React.FC = () => {
         return (
           <Space>
             <Button
-              // disabled={record.statues !== 2}
               style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
               severity="info"
               onClick={() => {
@@ -360,7 +373,6 @@ export const Branches: React.FC = () => {
           dataSource={data}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
-          rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
         />
       </Card>
     </>

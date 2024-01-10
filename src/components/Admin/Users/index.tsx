@@ -476,6 +476,20 @@ export const User: React.FC = () => {
         }
       >
         <Row align={'middle'} justify={'end'}>
+          {codeBroker !== undefined && (
+            <Btn
+              style={{
+                margin: '0 .5rem .5rem 0',
+                width: 'auto',
+              }}
+              type="ghost"
+              onClick={() => Navigate(-1)}
+              icon={<LeftOutlined />}
+            >
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+          )}
+
           <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    Delete    */}

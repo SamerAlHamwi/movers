@@ -353,7 +353,8 @@
     "oldCompany": "المعلومات القديمة للشركة",
     "newCompany": "المعلومات الحديثة للشركة",
     "timeOfWorks": "ساعات العمل",
-    "compare": "مقارنة التحديث"
+    "compare": "مقارنة التحديث",
+    "compatibilityRate": "معدل التوافق"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -798,6 +799,10 @@
     "offerInfo": "معلومات العرض",
     "price": "السعر",
     "provider": "مُقدّم العرض",
+    "providerName": "إسم مُقدّم العرض",
+    "providerNumberOfTransfers": "عدد عمليات نقل مُقدّم العرض",
+    "providerPhoneNumber": "رقم الموبايل لمُقدّم العرض",
+    "providerEmailAddress": "البريد الإلكتروني لمُقدّم العرض",
     "selectedByUser": "مُحددة من قِبَل المستخدم",
     "company": "شركة",
     "branch": "فرع",
@@ -819,7 +824,9 @@
     "SelectedByUser": "تم إختياره من قبل المستخدم",
     "RejectedByUser": "تم رفضه من قبل المستخدم",
     "returnOfferSuccessMessage": "تمت إعادة عرض السعر لمُقدِمه بنجاح",
-    "offerDetails": "تفاصيل الغروض"
+    "offerDetails": "تفاصيل الغروض",
+    "editOfferSuccessMessage": "تم تعديل عرض السعر بنجاح",
+    "editOfferModalTitle": "تعديل الملاحظة"
   },
 
   "_comment24": "*********************************** points ************************************************",
@@ -1020,6 +1027,7 @@
     "OnHim": "المال له"
   },
 
+  "_comment32": "*********************************** paymentPrivacy ************************************************",
   "paymentPrivacy": {
     "paymentPrivacyList": "لائحة خصوصية الدفع",
     "addPrivacy": "إضافة خصوصية الدفع",
@@ -1042,7 +1050,6 @@
     "Brokers": "الوسطاء",
     "BrokerDetails": "تفاصيل الوسيط",
     "Companies": "الشركات",
-    "commissionGroups": "مجموعات العمولة",
     "CompanieDetails": "تفاصيل الشركة",
     "Services": "الخدمات",
     "SubServices": "الخدمات الفرعية",
@@ -1062,6 +1069,7 @@
     "companies": "الشركات",
     "AddBranch": "إضافة فرع لشركة",
     "branches": "الفروع",
+    "branchesWithoutCompany": "فروع بلا شركة",
     "branchDetails": "تفاصيل الفرع",
     "EditBranch": "تعديل فرع الشركة",
     "AskForHelp": "طلبات المساعدة",

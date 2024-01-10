@@ -357,6 +357,17 @@ export const Companies: React.FC = () => {
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.region')}</Header>,
+      dataIndex: ['region', 'name'],
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
+      dataIndex: 'commissionGroup',
+      render: (record: CompanyModal) => {
+        return <> {record ? record + '%' : ''}</>;
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.serviceType')}</Header>,
       dataIndex: 'serviceType',
       render: (record: number) => {
@@ -376,10 +387,6 @@ export const Companies: React.FC = () => {
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
-    },
-    {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.region')}</Header>,
-      dataIndex: ['region', 'name'],
     },
     type === undefined &&
       requestId === undefined && {
@@ -788,7 +795,6 @@ export const Companies: React.FC = () => {
                   dataSource={dataSource}
                   scroll={{ x: isTablet || isMobile ? 950 : 800 }}
                   rowKey={(record: CompanyRecord) => record.id.toString()}
-                  // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
                 />
               ),
             };

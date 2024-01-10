@@ -351,7 +351,8 @@
     "oldCompany": "Old Company Info",
     "newCompany": "New Company Info",
     "timeOfWorks": "Work Time",
-    "compare": "Comparison"
+    "compare": "Comparison",
+    "compatibilityRate": "Compatibility Rate"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -800,6 +801,10 @@
     "offerInfo": "Offer Information",
     "price": "Price",
     "provider": "Offer Provider",
+    "providerName": "Provider Name",
+    "providerNumberOfTransfers": "Number Of Transfers For Provider",
+    "providerPhoneNumber": "Provider Phone Number",
+    "providerEmailAddress": "Provider Email Address",
     "selectedByUser": "Selected By User",
     "company": "Company",
     "branch": "Branch",
@@ -821,7 +826,9 @@
     "SelectedByUser": "Selected By User",
     "RejectedByUser": "Rejected By User",
     "returnOfferSuccessMessage": "The Offer Has Been Returned Successfully",
-    "offerDetails": "Offer Details"
+    "offerDetails": "Offer Details",
+    "editOfferSuccessMessage": "The Offer Has Been Edited Successfully",
+    "editOfferModalTitle": "Edit The Note"
   },
 
   "_comment24": "*********************************** points ************************************************",
@@ -1022,6 +1029,7 @@
     "OnHim": "He paid the money"
   },
 
+  "_comment32": "*********************************** paymentPrivacy ************************************************",
   "paymentPrivacy": {
     "paymentPrivacyList": "Payment Privacy List",
     "addPrivacy": "Add Payment Privacy",
@@ -1044,7 +1052,6 @@
     "Brokers": "Brokers",
     "BrokerDetails": "Broker Details",
     "Companies": "Companies",
-    "commissionGroups": "Commission Groups",
     "CompanieDetails": "Company Details",
     "Services": "Services",
     "SubServices": "Sub Services",
@@ -1065,6 +1072,7 @@
     "companies": "Companies",
     "AddBranch": "Add Branch",
     "branches": "Branches",
+    "branchesWithoutCompany": "Branches Without Company",
     "branchDetails": "Branch Details",
     "EditBranch": "Edit Branch",
     "AskForHelp": "Help Requests",

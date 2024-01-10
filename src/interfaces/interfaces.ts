@@ -167,6 +167,7 @@ export interface CompanyModal {
   additionalAttachment?: any;
   comment?: 'string';
   serviceType?: 1;
+  commissionGroup: number;
 }
 
 export interface Services {
@@ -269,6 +270,15 @@ export interface ServiceModel {
   isForTruck?: boolean;
 }
 
+export interface offerModel {
+  id?: string | undefined;
+  note: string;
+  isExtendStorage: boolean;
+  priceForOnDayStorage: number;
+  serviceValueForOffers: any;
+  price?: number;
+}
+
 export interface faqModel {
   id: number;
   translations: Translation[];
@@ -306,6 +316,7 @@ export interface BranchModel {
   userDto?: UserDto;
   serviceType: number;
   availableCities: any[];
+  commissionGroup: number;
 }
 export interface RequestModel {
   id: number;

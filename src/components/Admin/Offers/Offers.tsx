@@ -5,13 +5,19 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import Button from 'antd/es/button/button';
 import { useQuery, useMutation } from 'react-query';
-import { getAllOffers, getrejectedOffers, returnOfferToProvider, sendForUser } from '@app/services/offers';
+import {
+  getAllOffers,
+  getrejectedOffers,
+  returnOfferToProvider,
+  sendForUser,
+  updateOfferToProvider,
+} from '@app/services/offers';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { Header, CreateButtonText, TableButton } from '../../GeneralStyles';
-import { RequestModel } from '@app/interfaces/interfaces';
+import { RequestModel, offerModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
 import Tag from 'antd/es/tag';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -19,11 +25,11 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined, ReloadOutlined, RetweetOutlined, TagOutlined } from '@ant-design/icons';
+import { EditOutlined, LeftOutlined, RetweetOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
-import { confirmRequest } from '@app/services/requests';
+import { EditOffer } from '@app/components/modal/EditOffer';
 
 export const Offers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -34,6 +40,7 @@ export const Offers: React.FC = () => {
   const { requestId, companyId, branchId, type } = useParams();
 
   const [modalState, setModalState] = useState({
+    edit: false,
     return: false,
   });
   const [page, setPage] = useState<number>(1);
@@ -45,6 +52,8 @@ export const Offers: React.FC = () => {
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [isReturned, setIsReturned] = useState(false);
   const [returnmodaldata, setReturnmodaldata] = useState<RequestModel | undefined>(undefined);
+  const [isEdited, setIsEdited] = useState(false);
+  const [editmodaldata, setEditmodaldata] = useState<offerModel | undefined>(undefined);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -55,7 +64,7 @@ export const Offers: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['Offers', page, pageSize, isReturned],
+    ['Offers', page, pageSize, isReturned, isEdited],
     () =>
       getAllOffers(
         page,
@@ -64,7 +73,6 @@ export const Offers: React.FC = () => {
         requestId != undefined ? requestId : '',
         companyId != undefined ? companyId : '',
         branchId != undefined ? branchId : '',
-        type === 'rejectedoffers' ? 4 : undefined,
       )
         .then((data) => {
           const result = data.data?.result?.items;
@@ -81,7 +89,7 @@ export const Offers: React.FC = () => {
     },
   );
 
-  const allRejectedOffers = useQuery(
+  const { refetch: refetchRejectedOffers, isRefetching: isRefetchingRejectedOffers } = useQuery(
     ['Offers', page, pageSize],
     () =>
       getrejectedOffers(page, pageSize, searchString, requestId)
@@ -96,9 +104,40 @@ export const Offers: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined && type === 'rejectedoffers',
+      enabled: type === 'rejectedoffers',
     },
   );
+
+  const editOffer = useMutation((data: any) =>
+    updateOfferToProvider(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsEdited(data.data?.success),
+          message.open({
+            content: <Alert message={t('offers.editOfferSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleEdit = (info: any) => {
+    const data = {
+      ...info,
+      id: editmodaldata?.id,
+      price: editmodaldata?.price,
+      requestId: requestId,
+      serviceValueForOffers: info.serviceValueForOffers,
+    };
+    editOffer.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editOffer.isLoading }));
+  }, [editOffer.isLoading]);
 
   const returnOffer = useMutation((data: any) =>
     returnOfferToProvider(data)
@@ -131,9 +170,18 @@ export const Offers: React.FC = () => {
   }, [isRefetching]);
 
   useEffect(() => {
-    setLoading(true);
-    refetch();
-  }, [page, pageSize, language, searchString, refetch, refetchData, isReturned]);
+    if (type === undefined) {
+      setLoading(true);
+      refetch();
+    }
+  }, [page, pageSize, language, searchString, refetch, refetchData, isReturned, isEdited]);
+
+  useEffect(() => {
+    if (type === 'rejectedoffers') {
+      setLoading(true);
+      refetchRejectedOffers();
+    }
+  }, [page, pageSize, language, searchString, refetchRejectedOffers, refetchData, isReturned, isEdited]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -195,6 +243,64 @@ export const Offers: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerName')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 && record.selectedCompanies.company.name}
+            {record.provider === 2 && record.selectedCompanies.companyBranch.name}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerPhoneNumber')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 &&
+              record.selectedCompanies.company.companyContact?.dialCode +
+                ' ' +
+                record.selectedCompanies.company.companyContact?.phoneNumber}
+            {record.provider === 2 &&
+              record.selectedCompanies.companyBranch.companyContact?.dialCode +
+                ' ' +
+                record.selectedCompanies.companyBranch.companyContact?.phoneNumber}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerEmailAddress')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 && record.selectedCompanies.company.companyContact?.emailAddress}
+            {record.provider === 2 && record.selectedCompanies.companyBranch.companyContact?.emailAddress}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.providerNumberOfTransfers')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.provider === 1 && record.selectedCompanies.company.numberOfTransfers}
+            {record.provider === 2 && record.selectedCompanies.companyBranch.numberOfTransfers}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.comment')}</Header>,
+      dataIndex: 'note',
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
@@ -221,6 +327,18 @@ export const Offers: React.FC = () => {
                 }}
               >
                 <RetweetOutlined />
+              </TableButton>
+            </Tooltip>
+
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setEditmodaldata(record);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
               </TableButton>
             </Tooltip>
           </Space>
@@ -265,6 +383,19 @@ export const Offers: React.FC = () => {
               }}
               isLoading={returnOffer.isLoading}
               type="returnOffer"
+            />
+          )}
+
+          {/*    Edit    */}
+          {modalState.edit && (
+            <EditOffer
+              values={editmodaldata}
+              visible={modalState.edit}
+              onCancel={() => handleModalClose('edit')}
+              onEdit={(data) => {
+                editmodaldata !== undefined && handleEdit(data);
+              }}
+              isLoading={editOffer.isLoading}
             />
           )}
         </Row>

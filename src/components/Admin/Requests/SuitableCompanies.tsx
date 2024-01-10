@@ -36,6 +36,7 @@ interface ForRequest {
 interface CompanyRecord {
   id: number;
   isFeature: boolean;
+  compatibilityRate: number;
 }
 
 export const SuitableCompanies: React.FC = () => {
@@ -238,6 +239,11 @@ export const SuitableCompanies: React.FC = () => {
       },
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    type == '1' && {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.compatibilityRate')}</Header>,
+      dataIndex: 'compatibilityRate',
+      render: (record: any) => <>{record}%</>,
+    },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
@@ -312,6 +318,11 @@ export const SuitableCompanies: React.FC = () => {
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    type == '1' && {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('companies.compatibilityRate')}</Header>,
+      dataIndex: 'compatibilityRate',
+      render: (record: any) => <>{record}%</>,
+    },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.address')}</Header>, dataIndex: 'address' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.bio')}</Header>, dataIndex: 'bio' },
     {
@@ -437,7 +448,7 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataCompany}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
-          // rowClassName={(record: CompanyRecord) => (record.isFeature ? 'feature-row' : '')}
+          rowClassName={(record: CompanyRecord) => (record.compatibilityRate == 100 ? 'feature-row' : '')}
         />
       </Card>
 
@@ -473,6 +484,7 @@ export const SuitableCompanies: React.FC = () => {
           dataSource={dataBranch}
           scroll={{ x: isTablet || isMobile ? 950 : 800 }}
           rowKey={(record: CompanyRecord) => record.id.toString()}
+          rowClassName={(record: CompanyRecord) => (record.compatibilityRate == 100 ? 'feature-row' : '')}
         />
       </Card>
 
