@@ -3,7 +3,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText, TextBack, treeStyle } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { BranchModel } from '@app/interfaces/interfaces';
+import { BranchModel, TimeworksProps } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined } from '@ant-design/icons';
@@ -23,6 +23,7 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { TextArea } from '../Admin/Translations';
 import { PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
+import WorkTimes from '../common/WorkTimes';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -89,6 +90,7 @@ export const EditBranch: React.FC = () => {
   const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
   const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
   const [enableEdit, setEnableEdit] = useState(false);
+  const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
 
   const { data, status, refetch, isRefetching, isLoading } = useQuery(
     ['GetBranchById'],
@@ -98,6 +100,7 @@ export const EditBranch: React.FC = () => {
           const result = data.data?.result;
           setbranchData(result);
           setGetBranch(false);
+          setSelectedDays(result?.timeOfWorks);
         })
         .catch((error) => {
           notificationController.error({ message: error.message || error.error?.message });
@@ -311,6 +314,8 @@ export const EditBranch: React.FC = () => {
       availableCitiesIds:
         selectedCityValues.length == 0 ? branchData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
       regionId: regionId != '0' ? regionId : branchData?.region?.id,
+      timeworks: selectedDays,
+      isWithCompany: true,
     };
     updatedFormData.translations = branchInfo.translations;
     setEnableEdit(true);
@@ -717,6 +722,14 @@ export const EditBranch: React.FC = () => {
                         }}
                       />
                     </BaseButtonsForm.Item>
+                  </Col>
+                </Row>
+
+                <Row style={{ justifyContent: 'flex-start', margin: '1rem 5%' }}>
+                  <Col span={24}>
+                    <BaseForm.Item label={<LableText>{t('common.workTimes')}</LableText>}>
+                      <WorkTimes selectedDays={selectedDays} setSelectedDays={setSelectedDays} />
+                    </BaseForm.Item>
                   </Col>
                 </Row>
               </>

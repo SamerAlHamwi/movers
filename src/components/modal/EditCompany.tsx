@@ -3,7 +3,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText, treeStyle, Text, TextBack } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { CompanyModal } from '@app/interfaces/interfaces';
+import { CompanyModal, TimeworksProps } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { UploadMultiAttachment, uploadAttachment } from '@app/services/Attachment';
@@ -33,6 +33,7 @@ import { AR, PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 import { Btn } from '../common/MoonSunSwitch/MoonSunSwitch.styles';
 import { ActionModal } from './ActionModal';
+import WorkTimes from '../common/WorkTimes';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -150,6 +151,8 @@ export const EditCompany: React.FC = () => {
   const [additionalFiles, setAdditionalFiles] = useState<any>();
   const [test, setTest] = useState<any[]>([]);
 
+  const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
+
   const [lang, setLang] = useState<{ en: any; ar: any }>({
     en: undefined,
     ar: undefined,
@@ -163,6 +166,7 @@ export const EditCompany: React.FC = () => {
           const result = data.data?.result;
           setCompanyData(result);
           setTestTest(false);
+          setSelectedDays(result?.timeOfWorks ?? []);
           setLoading(!data.data?.success);
         })
         .catch((error) => {
@@ -637,6 +641,7 @@ export const EditCompany: React.FC = () => {
       id: companyData?.id,
       availableCitiesIds:
         selectedCityValues.length == 0 ? companyData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
+      timeworks: selectedDays,
       serviceType: valueRadio == 0 ? companyData?.serviceType : valueRadio,
       services: requestServices,
       comment: form.getFieldValue('comment'),
@@ -1092,6 +1097,11 @@ export const EditCompany: React.FC = () => {
                     maxLength={9}
                     style={{ width: '100%' }}
                   />
+                </BaseForm.Item>
+                <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('common.workTimes')}</h4>
+
+                <BaseForm.Item>
+                  <WorkTimes selectedDays={selectedDays} setSelectedDays={setSelectedDays} />
                 </BaseForm.Item>
               </>
             )}
