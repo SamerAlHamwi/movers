@@ -469,3 +469,9 @@ export interface BlogCardProps {
   isActive: boolean;
   id: number;
 }
+
+export interface TimeworksProps {
+  day: number;
+  startDate: number;
+  endDate: number;
+}

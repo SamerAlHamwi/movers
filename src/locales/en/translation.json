@@ -92,7 +92,10 @@
     "no": "No",
     "return": "Return",
     "deleteConfirm": "Are you Sure To Delete This Attachment",
-    "confirmationMessage": "Confirmation Message"
+    "confirmationMessage": "Confirmation Message",
+    "from": "from",
+    "to": "to",
+    "workTimes": "Works Time"
   },
 
   "_comment0": "*********************************** auth ************************************************",

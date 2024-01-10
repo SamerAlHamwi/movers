@@ -19,6 +19,7 @@ export const DAYS_OF_WEEK_NAME = [
 ];
 
 export const TIME_HOURS_MINUTES = 'HH:mm:ss';
+export const TIME_HOURS = 'HH';
 
 export const REQUEST_STATUS = [
   { type: RequestStatus.Checking, name: 'checking' },
@@ -46,3 +47,6 @@ export const COMPANY_STATUS_NAMES = [
 ];
 
 export const NEED_TO_UPDATE = 'needToUpate';
+
+export const DEFAULT_START_DATE = 9;
+export const DEFAULT_END_DATE = 5;

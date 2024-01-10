@@ -3,7 +3,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText, TextBack, treeStyle } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { BranchModel, CompanyModal } from '@app/interfaces/interfaces';
+import { BranchModel, CompanyModal, TimeworksProps } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined, UserAddOutlined } from '@ant-design/icons';
@@ -25,6 +25,7 @@ import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordIn
 import ReloadBtn from '../Admin/ReusableComponents/ReloadBtn';
 import { PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
+import WorkTimes from '../common/WorkTimes';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -96,6 +97,8 @@ export const AddBranch: React.FC = () => {
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [valueRadio, setValueRadio] = useState(1);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+
+  const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
 
   const GetAllServices = useQuery('getAllServices', getServices);
 
@@ -283,6 +286,8 @@ export const AddBranch: React.FC = () => {
       services: requestServices,
       regionId: regionId,
       availableCitiesIds: selectedCityValues,
+      timeworks: selectedDays,
+      isWithCompany: true,
     };
     updatedFormData.translations = branchInfo.translations;
     if (requestServices.length == 0) {
@@ -354,7 +359,6 @@ export const AddBranch: React.FC = () => {
             {t('common.done')}
           </Button>
         )}
-        <ReloadBtn setRefetchData={setRefetchData} />
       </Row>
       <Steps current={current} style={{ margin: '10px 10px 30px 0', padding: '0px 40px' }}>
         {steps.map((step, index) => (
@@ -621,6 +625,22 @@ export const AddBranch: React.FC = () => {
                 </BaseButtonsForm.Item>
               </Col>
             </Row>
+            <h2
+              style={{
+                color: 'black',
+                paddingTop: '7px',
+                paddingBottom: '15px',
+                fontSize: FONT_SIZE.xxl,
+                fontWeight: 'Bold',
+                margin: '3rem 5% 2rem',
+              }}
+            >
+              {t('common.workTimes')}
+            </h2>
+
+            <BaseForm.Item>
+              <WorkTimes selectedDays={selectedDays} setSelectedDays={setSelectedDays} />
+            </BaseForm.Item>
           </>
         )}
         {current === 1 && (

@@ -3,7 +3,7 @@ import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { CreateButtonText, LableText, treeStyle, Text } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
-import { CompanyModal } from '@app/interfaces/interfaces';
+import { CompanyModal, TimeworksProps } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
@@ -18,7 +18,23 @@ import {
   PictureOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image, Spin } from 'antd';
+import {
+  message,
+  Alert,
+  Button,
+  Col,
+  Input,
+  Modal,
+  Radio,
+  Row,
+  Steps,
+  Upload,
+  Tree,
+  Image,
+  Spin,
+  Checkbox,
+  TimePicker,
+} from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
@@ -41,6 +57,12 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import CreatableSelect from 'react-select/creatable';
 import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
+import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE } from '@app/constants/appConstants';
+import { CheckBox } from '../header/components/searchDropdown/searchOverlay/SearchFilter/SearchFilter.styles';
+import { DayOfWeek } from '@app/constants/enums/dayOfWeek';
+import moment from 'moment';
+import dayjs from 'dayjs';
+import WorkTimes from '../common/WorkTimes';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -145,7 +167,7 @@ export const AddCompany: React.FC = () => {
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
-
+  const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
   const { data, refetch, isRefetching } = useQuery('getAllServices', getServices);
 
   useEffect(() => {
@@ -376,14 +398,14 @@ export const AddCompany: React.FC = () => {
         },
       ],
       companyContact: {
-        dialCode: '+971',
+        dialCode: PHONE_NUMBER_CODE,
         phoneNumber: form.getFieldValue(['companyContact', 'phoneNumber']),
         emailAddress: form.getFieldValue(['companyContact', 'emailAddress']),
         webSite: form.getFieldValue(['companyContact', 'webSite']),
         isForBranchCompany: false,
       },
       userDto: {
-        dialCode: '+971',
+        dialCode: PHONE_NUMBER_CODE,
         phoneNumber: form.getFieldValue(['userDto', 'phoneNumber']),
         emailAddress: form.getFieldValue(['userDto', 'emailAddress']),
         password: form.getFieldValue(['userDto', 'password']),
@@ -397,6 +419,7 @@ export const AddCompany: React.FC = () => {
       comment: form.getFieldValue('comment'),
       regionId: regionId,
       availableCitiesIds: selectedCityValues,
+      timeworks: selectedDays,
     };
 
     updatedFormData.translations = companyInfo.translations;
@@ -688,6 +711,7 @@ export const AddCompany: React.FC = () => {
                 ))}
               </Select>
             </BaseForm.Item>
+
             <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('companies.companyContact')}:</h4>
             <Row>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
@@ -747,7 +771,7 @@ export const AddCompany: React.FC = () => {
               style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
             >
               <Input
-                addonBefore={'+971'}
+                addonBefore={PHONE_NUMBER_CODE}
                 onChange={(e: any) => {
                   if (validationInputNumber(e.target.value)) {
                     form.setFieldValue(['companyContact', 'phoneNumber'], e.target.value);
@@ -757,6 +781,10 @@ export const AddCompany: React.FC = () => {
                 style={{ width: '100%' }}
               />
             </BaseButtonsForm.Item>
+            <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('common.workTimes')}</h4>
+            <BaseForm.Item>
+              <WorkTimes selectedDays={selectedDays} setSelectedDays={setSelectedDays} />
+            </BaseForm.Item>
           </>
         )}
         {current === 1 && (
@@ -797,7 +825,7 @@ export const AddCompany: React.FC = () => {
               }
             >
               <Input
-                addonBefore={'+971'}
+                addonBefore={PHONE_NUMBER_CODE}
                 onChange={(e: any) => {
                   if (validationInputNumber(e.target.value)) {
                     form.setFieldValue(['userDto', 'phoneNumber'], e.target.value);
