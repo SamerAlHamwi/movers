@@ -7,7 +7,7 @@ const getAllServices = async (page: number, pageSize: number, search: string, is
   const skip = (page - 1) * pageSize;
   let url = `${apiPrefix.services}/GetAll?`;
   if (isActive !== undefined) {
-    url += `IsActive=${isActive}&`;
+    url += `Active=${isActive}&`;
   }
   url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
   return await httpApi.get(url);
