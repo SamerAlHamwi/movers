@@ -225,7 +225,8 @@
     "deactivateRegionSuccessMessage": "تم إلغاء تفعيل المنطقة",
     "editRegionSuccessMessage": "تم تعديل معلومات المنطقة",
     "deactivateRegionConfirm": "إلغاء تفعيل المنطقة؟",
-    "activateRegionConfirm": "تفعيل المنطقة"
+    "activateRegionConfirm": "تفعيل المنطقة",
+    "type": "نوع الخدمة"
   },
 
   "_comment4": "*********************************** contact-us ************************************************",
