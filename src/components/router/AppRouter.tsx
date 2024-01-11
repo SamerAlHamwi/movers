@@ -68,6 +68,9 @@ const FeaturedBundlePage = lazy(() => import('@app/pages/PointsPages/FeaturedBun
 const ApplicationsVersionPage = lazy(() => import('@app/pages/ApplicationsVersionsPages/ApplicationsVersionsPage'));
 const PaymentPage = lazy(() => import('@app/pages/Payments/PaymentsPage'));
 const ComparePage = lazy(() => import('@app/pages/CompaniesPages/ComparePage'));
+const BranchesWithoutCompanyPage = lazy(
+  () => import('@app/pages/BranchesWithoutCompanyPages/BranchesWithoutCompanyPages'),
+);
 
 const ServerError = withLoading(ServerErrorPage);
 const Error404 = withLoading(Error404Page);
@@ -125,6 +128,7 @@ const FeaturedBundlesPage = withLoading(FeaturedBundlePage);
 const ApplicationsVersionsPage = withLoading(ApplicationsVersionPage);
 const PaymentsPage = withLoading(PaymentPage);
 const ComparisonPage = withLoading(ComparePage);
+const BranchWithoutCompanyPage = withLoading(BranchesWithoutCompanyPage);
 
 export const AppRouter: React.FC = () => {
   const user = useAppSelector((state) => state.user.user);
@@ -394,6 +398,16 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ComparisonPage />
+              </PrivateRoute>
+            }
+          />
+
+          {/* Branches Without Company */}
+          <Route
+            path="branchesWithoutCompany"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <BranchWithoutCompanyPage />
               </PrivateRoute>
             }
           />

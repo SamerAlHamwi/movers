@@ -9,6 +9,18 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
   );
 };
 
+const getAllBranchesWithoutCompany = async (
+  CompanyId: string | undefined,
+  page: number,
+  pageSize: number,
+  search: string,
+) => {
+  const skip = (page - 1) * pageSize;
+  return await httpApi.get(
+    `${apiPrefix.branches}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&GetBranchesWithoutCompany=true`,
+  );
+};
+
 const getAllSuitableBranches = async (type: string | undefined, requestId: string | undefined) => {
   return await httpApi.get(
     `${apiPrefix.branches}/GetAll?GetCompnyBranchesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true&AcceptRequests=true`,
@@ -58,6 +70,7 @@ const DeleteBranch = async (id: number) => {
 
 export {
   getAllBranches,
+  getAllBranchesWithoutCompany,
   getAllSuitableBranches,
   getSuitableBranches,
   getBranch,

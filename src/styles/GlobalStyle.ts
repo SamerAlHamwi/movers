@@ -388,7 +388,5 @@ export default createGlobalStyle`
     right: 1.1rem;
     background-color: #fff;
     padding: 2px 3px;
-  }
-
-  
+  }  
 `;

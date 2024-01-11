@@ -28,6 +28,7 @@ import {
   SyncOutlined,
   WalletOutlined,
   SafetyOutlined,
+  ApartmentOutlined,
 } from '@ant-design/icons';
 
 export interface SidebarNavigationItem {
@@ -74,13 +75,19 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     icon: <BankOutlined />,
   },
   {
+    title: 'sidebarNavigation.branchesWithoutCompany',
+    key: 'branchesWithoutCompany',
+    url: '/branchesWithoutCompany',
+    icon: <ApartmentOutlined />,
+  },
+  {
     title: 'sidebarNavigation.Payments',
     key: 'Payments',
     url: '/Payments',
     icon: <WalletOutlined />,
   },
   {
-    title: 'sidebarNavigation.commissionGroups',
+    title: 'sidebarNavigation.CommissionGroups',
     key: 'commissionGroups',
     url: '/commissionGroups',
     icon: <AppstoreOutlined />,
