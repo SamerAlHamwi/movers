@@ -13,8 +13,12 @@ const getAllServices = async (page: number, pageSize: number, search: string, is
   return await httpApi.get(url);
 };
 
+const getServicesForCompany = async () => {
+  return await httpApi.get(`${apiPrefix.services}/GetAll?Active=true&IsForStorage=false`);
+};
+
 const getServices = async () => {
-  return await httpApi.get(`${apiPrefix.services}/GetAll`);
+  return await httpApi.get(`${apiPrefix.services}/GetAll?Active=true`);
 };
 
 const createService = async (data: ServiceModel) => {
@@ -63,6 +67,7 @@ const UpdateSubService = async (data: any) => {
 
 export {
   getAllServices,
+  getServicesForCompany,
   getServices,
   createService,
   DeleteService,

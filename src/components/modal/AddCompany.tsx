@@ -41,7 +41,7 @@ import { getAllCity, getCities, getCountries, getRegions } from '@app/services/l
 import { countries } from '../Admin/Locations/Countries';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
-import { getServices } from '@app/services/services';
+import { getServicesForCompany } from '@app/services/services';
 import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
@@ -168,7 +168,8 @@ export const AddCompany: React.FC = () => {
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
   const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
-  const { data, refetch, isRefetching } = useQuery('getAllServices', getServices);
+
+  const { data, refetch, isRefetching } = useQuery('getServicesForCompany', getServicesForCompany);
 
   useEffect(() => {
     refetch();

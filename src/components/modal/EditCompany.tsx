@@ -21,7 +21,7 @@ import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getServices } from '@app/services/services';
+import { getServicesForCompany } from '@app/services/services';
 import { getCompanyById, updateCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
@@ -310,7 +310,7 @@ export const EditCompany: React.FC = () => {
     }
   }, [enableEdit]);
 
-  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllServices = useQuery('getServicesForCompany', getServicesForCompany);
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
   const {
