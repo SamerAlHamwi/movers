@@ -1,10 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@app/components/common/Card/Card';
-import { Alert, Row, Space, Tag, Tooltip, message } from 'antd';
+import { Alert, Col, Popconfirm, Radio, RadioChangeEvent, Row, Space, Tag, Tooltip, message } from 'antd';
 import { Table } from 'components/common/Table/Table';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
-import { getAllServices, createService, DeleteService, UpdateService } from '@app/services/services';
+import {
+  getAllServices,
+  createService,
+  DeleteService,
+  UpdateService,
+  DeActivateService,
+  ActivateService,
+} from '@app/services/services';
 import { useNavigate } from 'react-router-dom';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
 import { useAtom } from 'jotai';
@@ -14,14 +21,17 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, ServiceModel, translation } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined, CloseOutlined, CheckOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, CloseOutlined, CheckOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddService } from '@app/components/modal/AddService';
 import { EditService } from '@app/components/modal/EditService';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
-import { Header, Modal, Image, CreateButtonText, TableButton } from '../../GeneralStyles';
+import { Header, Modal, Image, CreateButtonText, TableButton, LableText } from '../../GeneralStyles';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { defineColorBySeverity } from '@app/utils/utils';
+import styled from 'styled-components';
+import { RadioGroup } from '@app/components/common/Radio/Radio';
 
 export type services = {
   id: number;
@@ -37,7 +47,7 @@ export const Services: React.FC = () => {
   const navigate = useNavigate();
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { mobileOnly, isTablet, isMobile, isDesktop } = useResponsive();
+  const { mobileOnly, isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
 
   const [modalState, setModalState] = useState({
     add: false,
@@ -58,6 +68,11 @@ export const Services: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<ServiceModel | undefined>(undefined);
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [isActivate, setIsActivate] = useState(false);
+  const [isDeActivate, setIsDeActivate] = useState(false);
+  const [isHover, setIsHover] = useState(false);
+  const [temp, setTemp] = useState<any>();
+  const [serviceStatus, setRejectReasonStatus] = useState<boolean | undefined>(undefined);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -67,10 +82,15 @@ export const Services: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
   };
 
+  const TableText = styled.div`
+    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
+    font-weight: ${FONT_WEIGHT.regular};
+  `;
+
   const { refetch, isRefetching } = useQuery(
-    ['Services', page, pageSize],
+    ['Services', page, pageSize, serviceStatus],
     () =>
-      getAllServices(page, pageSize, searchString)
+      getAllServices(page, pageSize, searchString, serviceStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
@@ -98,7 +118,21 @@ export const Services: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAddService(false);
-  }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch, refetchData]);
+    setIsActivate(false);
+    setIsDeActivate(false);
+  }, [
+    isDelete,
+    isEdit,
+    refetchOnAddService,
+    page,
+    pageSize,
+    searchString,
+    refetch,
+    serviceStatus,
+    refetchData,
+    isActivate,
+    isDeActivate,
+  ]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -169,6 +203,32 @@ export const Services: React.FC = () => {
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editService.isLoading }));
   }, [editService.isLoading]);
+
+  const activateBundle = useMutation((id: number) =>
+    ActivateService(id)
+      .then((data) => {
+        message.open({
+          content: <Alert message={t('services.activateServicesSuccessMessage')} type="success" showIcon />,
+        });
+        setIsActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
+      }),
+  );
+
+  const deActivateBundle = useMutation((id: number) =>
+    DeActivateService(id)
+      .then((data) => {
+        message.open({
+          content: <Alert message={t('services.deactivateServicesSuccessMessage')} type="success" showIcon />,
+        });
+        setIsDeActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
+      }),
+  );
 
   useEffect(() => {
     setLoading(true);
@@ -274,6 +334,59 @@ export const Services: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('services.serviceStatus')}</Header>,
+      dataIndex: 'active',
+      render: (serviceStatus: boolean) => {
+        return <>{(serviceStatus = serviceStatus ? t('common.active') : t('common.inactive'))}</>;
+      },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              <Radio style={{ display: 'block', fontSize }} value={true}>
+                {t('common.active')}
+              </Radio>
+              <Radio style={{ display: 'block', fontSize }} value={false}>
+                {t('common.inactive')}
+              </Radio>
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  disabled={serviceStatus === undefined ? true : false}
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setRejectReasonStatus(undefined);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setRejectReasonStatus(temp === false ? 'false' : temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: ServiceModel) => {
@@ -302,6 +415,96 @@ export const Services: React.FC = () => {
                 <DeleteOutlined />
               </TableButton>
             </Tooltip>
+
+            {record.active === true ? (
+              <Tooltip placement="top" title={t('common.deactivate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('services.deactivateServiceConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {deActivateBundle.isLoading ? (
+                        <>
+                          {t(`common.deactivate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.deactivate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => deActivateBundle.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.deactivate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            ) : (
+              <Tooltip placement="top" title={t('common.activate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('services.activateServiceConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {activateBundle.isLoading ? (
+                        <>
+                          {t(`common.activate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.activate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => activateBundle.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.activate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            )}
           </Space>
         );
       },
