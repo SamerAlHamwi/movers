@@ -3,11 +3,14 @@ import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
 // Services
-const getAllServices = async (page: number, pageSize: number, search: string) => {
+const getAllServices = async (page: number, pageSize: number, search: string, isActive?: boolean) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.services}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`,
-  );
+  let url = `${apiPrefix.services}/GetAll?`;
+  if (isActive !== undefined) {
+    url += `IsActive=${isActive}&`;
+  }
+  url += `SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+  return await httpApi.get(url);
 };
 
 const getServices = async () => {
@@ -24,6 +27,14 @@ const DeleteService = async (id: number) => {
 
 const UpdateService = async (data: any) => {
   return await httpApi.put(`${apiPrefix.services}/Update`, data);
+};
+
+const ActivateService = async (id: number) => {
+  return await httpApi.put(`${apiPrefix.services}/SwitchActivation`, { id, isActive: true });
+};
+
+const DeActivateService = async (id: number) => {
+  return await httpApi.put(`${apiPrefix.services}/SwitchActivation`, { id, isActive: false });
 };
 
 // Sub Services
@@ -56,6 +67,8 @@ export {
   createService,
   DeleteService,
   UpdateService,
+  ActivateService,
+  DeActivateService,
   getAllSubServices,
   getSubServices,
   createSubService,

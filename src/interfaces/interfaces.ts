@@ -268,6 +268,7 @@ export interface ServiceModel {
   serviceId?: string | undefined;
   isForStorage?: boolean;
   isForTruck?: boolean;
+  active: boolean;
 }
 
 export interface offerModel {

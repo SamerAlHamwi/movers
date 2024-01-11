@@ -271,7 +271,12 @@
     "isForStorage": "من أجل التخزين",
     "isNotForStorage": "ليس من أجل التخزين",
     "isForTruck": "من أجل الشحن",
-    "isNotForTruck": "ليس من أجل الشحن"
+    "isNotForTruck": "ليس من أجل الشحن",
+    "activateServicesSuccessMessage": "تم تفعيل الخدمة",
+    "deactivateServicesSuccessMessage": "تم إلغاء تفعيل الخدمة",
+    "activateServiceConfirm": "تفعيل الخدمة؟",
+    "deactivateServiceConfirm": "إلغاء تفعيل الخدمة؟",
+    "serviceStatus": "حالة الخدمة"
   },
 
   "_comment6": "*********************************** companies ***************************",
