@@ -226,7 +226,8 @@
     "deactivateRegionConfirm": "Deactivate Region?",
     "activateRegionConfirm": "Activate Region?",
     "editRegionModalTitle": "Edit Region Info",
-    "editRegionSuccessMessage": "Region info Has Been successfully modified"
+    "editRegionSuccessMessage": "Region info Has Been successfully modified",
+    "type": "Service Type"
   },
 
   "_comment4": "*********************************** contact-us ************************************************",

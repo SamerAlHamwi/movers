@@ -361,6 +361,7 @@ export interface CountryModel {
   translations: Translation[];
   dialCode: string;
   isActive?: boolean | string;
+  type?: number;
 }
 
 export interface CityModel {

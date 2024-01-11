@@ -33,6 +33,7 @@ import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radi
 import { defineColorBySeverity } from '@app/utils/utils';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { LocationServicesType, LocationServicesValues } from '@app/constants/enums/locationServicesType';
 
 export type countries = {
   id: number;
@@ -231,6 +232,19 @@ export const Country: React.FC = () => {
     font-weight: ${FONT_WEIGHT.regular};
   `;
 
+  const getServiceTypeName = (record: any) => {
+    switch (record) {
+      case LocationServicesValues.Internal: {
+        return <div>{LocationServicesType.Internal}</div>;
+      }
+      case LocationServicesValues.External: {
+        return <div>{LocationServicesType.External}</div>;
+      }
+      default:
+        break;
+    }
+  };
+
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
@@ -288,6 +302,14 @@ export const Country: React.FC = () => {
         );
       },
     },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('locations.type')}</Header>,
+      dataIndex: 'type',
+      render: (record: any) => {
+        return <Space>{getServiceTypeName(record)}</Space>;
+      },
+    },
+
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('locations.cities')}</Header>,
       dataIndex: 'cities',
