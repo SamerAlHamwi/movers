@@ -12,7 +12,7 @@ import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
 import { getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
-import { getServices } from '@app/services/services';
+import { getServicesForCompany } from '@app/services/services';
 import { getBranch, UpdateBranch } from '@app/services/branches';
 import { Card } from '@app/components/common/Card/Card';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
@@ -110,7 +110,7 @@ export const EditBranch: React.FC = () => {
     },
   );
 
-  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllServices = useQuery('getServicesForCompany', getServicesForCompany);
 
   const treeData: any = GetAllServices?.data?.data?.result?.items?.map((service: any) => {
     return {
