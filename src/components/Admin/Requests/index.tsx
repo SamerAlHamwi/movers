@@ -258,7 +258,7 @@ export const Requests: React.FC = () => {
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>,
       render: (record: RequestModel) => {
-        return <>{record?.user?.fullName}</>;
+        return <>{record?.user?.registrationFullName}</>;
       },
     },
     {

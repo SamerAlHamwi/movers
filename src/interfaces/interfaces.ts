@@ -350,6 +350,7 @@ export interface User {
   name: string;
   surname: string;
   fullName: string;
+  registrationFullName: string;
   userName: string;
   phoneNumber: string;
   emailAddress: string;
