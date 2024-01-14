@@ -27,6 +27,7 @@ type User = {
   user: {
     id: number;
     fullName: string;
+    registrationFullName: string;
     phoneNumber: string;
     emailAddress: string;
     creationTime: string;
@@ -155,7 +156,7 @@ export const AskForHelp: React.FC = () => {
             textAlign: 'center',
           }}
         >
-          {record?.fullName === ' ' ? '___' : record?.fullName}
+          {record?.registrationFullName === ' ' ? '___' : record?.registrationFullName}
         </div>
       ),
     },
