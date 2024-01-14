@@ -262,7 +262,7 @@ export const BranchesWithoutCompany: React.FC = () => {
               <TableButton
                 severity="info"
                 onClick={() => {
-                  Navigate(`/companies/${companyId}/branches/${record.id}/EditBranch`);
+                  Navigate(`/branchesWithoutCompany/${record.id}/EditBranch`);
                 }}
               >
                 <EditOutlined />

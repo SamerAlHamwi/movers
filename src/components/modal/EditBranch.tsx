@@ -64,6 +64,7 @@ let branchInfo: any = {
     isForBranchCompany: false,
   },
   availableCitiesIds: [],
+  companyId: 0,
 };
 
 export const EditBranch: React.FC = () => {
@@ -247,7 +248,7 @@ export const EditBranch: React.FC = () => {
       .then((data: any) => {
         notificationController.success({ message: t('branch.editBranchSuccessMessage') });
         queryClient.invalidateQueries('getAllBranches');
-        Navigate(`/companies/${companyId}/branches`);
+        companyId !== undefined ? Navigate(`/companies/${companyId}/branches`) : Navigate(`/branchesWithoutCompany`);
       })
       .catch((error) => {
         notificationController.error({ message: error.message || error.error?.message });
@@ -285,10 +286,11 @@ export const EditBranch: React.FC = () => {
     extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
 
     const updatedFormData = { ...formData };
+    console.log('companyId', companyId);
+
     branchInfo = {
-      ...branchInfo,
       id: branchId,
-      companyId: companyId ?? '0',
+      companyId: companyId == undefined ? 0 : companyId,
       translations: [
         {
           name: form.getFieldValue(['translations', 0, 'name']),
@@ -316,10 +318,11 @@ export const EditBranch: React.FC = () => {
         selectedCityValues.length == 0 ? branchData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
       regionId: regionId != '0' ? regionId : branchData?.region?.id,
       timeworks: selectedDays,
-      isWithCompany: companyId ? true : false,
+      isWithCompany: companyId == undefined ? false : true,
     };
-    updatedFormData.translations = branchInfo.translations;
     setEnableEdit(true);
+
+    console.log('branchInfo', branchInfo);
   };
 
   useEffect(() => {
@@ -678,7 +681,7 @@ export const EditBranch: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input value={branchInfo?.companyContact?.webSite} />
+                      <Input />
                     </BaseForm.Item>
                   </Col>
                 </Row>
