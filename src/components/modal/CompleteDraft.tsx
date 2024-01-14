@@ -47,6 +47,7 @@ import { notificationController } from '@app/controllers/notificationController'
 import _ from 'lodash';
 import UploadImageRequest, { IUploadImage } from './upload-image';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
+import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -136,6 +137,8 @@ export const CompleteDraft: React.FC = () => {
   const [picturesList, setPicturesList] = useState<any[]>([]);
   const [validations, setValidations] = useState<boolean>(false);
 
+  const [needStorage, setNeedStorage] = useState<boolean>(false);
+
   const {
     data: dataRequest,
     status,
@@ -172,8 +175,6 @@ export const CompleteDraft: React.FC = () => {
       enabled: draftId !== undefined,
     },
   );
-
-  console.log(selectedRadio);
 
   const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
@@ -425,7 +426,7 @@ export const CompleteDraft: React.FC = () => {
 
   const onFinish = async (values: any) => {
     const sourceContact = {
-      dailCode: '+971',
+      dailCode: PHONE_NUMBER_CODE,
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
       fullName:
         form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']) == undefined
@@ -513,10 +514,7 @@ export const CompleteDraft: React.FC = () => {
         form.getFieldValue('sourceAddress') == undefined
           ? RequestData?.sourceAddress
           : form.getFieldValue('sourceAddress'),
-      arrivalAtUtc:
-        form.getFieldValue('arrivalAtUtc') == undefined
-          ? RequestData?.arrivalAtUtc
-          : form.getFieldValue('arrivalAtUtc'),
+
       destinationCityId: cityId.destination == '0' ? RequestData?.destinationCity?.id : cityId.destination,
       destinationAddress:
         form.getFieldValue('destinationAddress') == undefined
@@ -527,6 +525,7 @@ export const CompleteDraft: React.FC = () => {
       destinationLongitude: destinationPosition.lng,
       destinationLatitude: destinationPosition.lat,
       services: requestServices,
+      arrivalAtUtc: needStorage ? form.getFieldValue('arrivalAtUtc') : form.getFieldValue('moveAtUtc'),
 
       comment: form.getFieldValue('comment'),
       attributeForSourceTypeValues: selectedRadio,
@@ -567,7 +566,8 @@ export const CompleteDraft: React.FC = () => {
         !checkField('sourceAddress', t('addRequest.enterAddress')) ||
         !checkField('destinationAddress', t('addRequest.enterAddress')) ||
         !checkField('moveAtUtc', t('addRequest.enterDate')) ||
-        !checkField('arrivalAtUtc', t('addRequest.enterDate'))
+        !checkField('arrivalAtUtc', t('addRequest.enterDate')) ||
+        (needStorage && !checkField('arrivalAtUtc', t('addRequest.enterDate')))
       ) {
         return;
       } else if (
@@ -944,128 +944,138 @@ export const CompleteDraft: React.FC = () => {
                   </BaseForm.Item>
 
                   <h4 style={{ margin: '4rem 0', fontWeight: '700' }}>{t('addRequest.sourceLocations')}:</h4>
-                  <BaseForm.Item
-                    label={<LableText>{t('addRequest.country')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                    }
-                  >
-                    <Select
-                      showSearch
-                      optionFilterProp="children"
-                      filterOption={(input, option: any) =>
-                        option!.children?.toLowerCase().includes(input?.toLowerCase())
-                      }
-                      filterSort={(optionA: any, optionB: any) =>
-                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                      }
-                      onChange={(e) => ChangeCountryHandler(e, 'source')}
-                      defaultValue={RequestData?.sourceCity?.country?.name}
-                    >
-                      {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
-                        return (
-                          <Option value={ele.id} key={ele?.id}>
-                            {ele.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </BaseForm.Item>
-                  <BaseForm.Item
-                    name={['sourceCityId']}
-                    label={<LableText>{t('addRequest.city')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                    }
-                  >
-                    <Select
-                      showSearch
-                      optionFilterProp="children"
-                      filterOption={(input, option: any) =>
-                        option!.children?.toLowerCase().includes(input?.toLowerCase())
-                      }
-                      filterSort={(optionA: any, optionB: any) =>
-                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                      }
-                      onChange={(e) => ChangeCityHandler(e, 'source')}
-                      defaultValue={RequestData?.sourceCity?.name}
-                    >
-                      {cityData?.data?.result?.items?.map((ele: any) => {
-                        return (
-                          <Select value={ele.id} key={ele?.id}>
-                            {ele.name}
-                          </Select>
-                        );
-                      })}
-                    </Select>
-                  </BaseForm.Item>
-                  <BaseForm.Item
-                    name="sourceAddress"
-                    label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet
-                        ? { width: '40%', margin: '0 2%', display: 'inline-block' }
-                        : isMobile
-                        ? { width: '100%', display: 'block' }
-                        : {}
-                    }
-                  >
-                    <Input defaultValue={RequestData?.sourceAddress} />
-                  </BaseForm.Item>
-                  <BaseForm.Item
-                    name="moveAtUtc"
-                    label={<LableText>{t('addRequest.date')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet
-                        ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                        : isMobile
-                        ? { width: '100%', marginBottom: '5rem' }
-                        : {}
-                    }
-                    valuePropName="data"
-                  >
-                    <DatePicker
-                      style={{ width: '100%' }}
-                      defaultValue={RequestData?.moveAtUtc ? moment(RequestData?.moveAtUtc) : undefined}
-                    />
-                  </BaseForm.Item>
-                  <div
-                    style={
-                      lang == 'en' && (isDesktop || isTablet)
-                        ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
-                        : lang == 'en' && isMobile
-                        ? { right: '0', float: 'right', position: 'relative', width: '100%', marginBottom: '4rem' }
-                        : lang == 'ar' && (isDesktop || isTablet)
-                        ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
-                        : lang == 'ar' && isMobile
-                        ? { left: '0', float: 'left', position: 'relative', width: '100%', marginBottom: '4rem' }
-                        : {}
-                    }
-                  >
+                  <Row justify={'space-around'}>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        label={<LableText>{t('addRequest.country')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                      >
+                        <Select
+                          showSearch
+                          optionFilterProp="children"
+                          filterOption={(input, option: any) =>
+                            option!.children?.toLowerCase().includes(input?.toLowerCase())
+                          }
+                          filterSort={(optionA: any, optionB: any) =>
+                            optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                          }
+                          onChange={(e) => ChangeCountryHandler(e, 'source')}
+                          defaultValue={RequestData?.sourceCity?.country?.name}
+                        >
+                          {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                            return (
+                              <Option value={ele.id} key={ele?.id}>
+                                {ele.name}
+                              </Option>
+                            );
+                          })}
+                        </Select>
+                      </BaseForm.Item>
+                    </Col>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        name={['sourceCityId']}
+                        label={<LableText>{t('addRequest.city')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                      >
+                        <Select
+                          showSearch
+                          optionFilterProp="children"
+                          filterOption={(input, option: any) =>
+                            option!.children?.toLowerCase().includes(input?.toLowerCase())
+                          }
+                          filterSort={(optionA: any, optionB: any) =>
+                            optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                          }
+                          onChange={(e) => ChangeCityHandler(e, 'source')}
+                          defaultValue={RequestData?.sourceCity?.name}
+                        >
+                          {cityData?.data?.result?.items?.map((ele: any) => {
+                            return (
+                              <Select value={ele.id} key={ele?.id}>
+                                {ele.name}
+                              </Select>
+                            );
+                          })}
+                        </Select>
+                      </BaseForm.Item>
+                    </Col>
+                  </Row>
+
+                  <Row justify={'center'}>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        name="sourceAddress"
+                        label={<LableText>{t('addRequest.sourceAddress')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                      >
+                        <Input defaultValue={RequestData?.sourceAddress} />
+                      </BaseForm.Item>
+                    </Col>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        name="moveAtUtc"
+                        label={<LableText>{t('addRequest.date')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                        valuePropName="data"
+                      >
+                        <DatePicker
+                          style={{ width: '100%' }}
+                          defaultValue={RequestData?.moveAtUtc ? moment(RequestData?.moveAtUtc) : undefined}
+                        />
+                      </BaseForm.Item>
+                    </Col>
+                  </Row>
+
+                  <Row>
                     <div style={{ width: '100%', height: '400px' }}>
                       <GoogleMap
                         center={centerSource}
@@ -1076,131 +1086,149 @@ export const CompleteDraft: React.FC = () => {
                         <Marker key="source" position={sourcePosition} />
                       </GoogleMap>
                     </div>
-                  </div>
+                  </Row>
+
+                  <Row justify={'space-around'} style={{ margin: '3rem' }}>
+                    <Checkbox onClick={() => setNeedStorage(!needStorage)}>
+                      <h4 style={{ fontWeight: '700' }}>{t('addRequest.needStorage')}</h4>
+                    </Checkbox>
+                  </Row>
 
                   <h4 style={{ margin: '5rem 0 2rem', fontWeight: '700' }}>{t('addRequest.destinationLocations')}:</h4>
-                  <BaseForm.Item
-                    label={<LableText>{t('addRequest.country')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                    }
-                  >
-                    <Select
-                      showSearch
-                      optionFilterProp="children"
-                      filterOption={(input, option: any) =>
-                        option!.children?.toLowerCase().includes(input?.toLowerCase())
-                      }
-                      filterSort={(optionA: any, optionB: any) =>
-                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                      }
-                      onChange={(e) => ChangeCountryHandler(e, 'destination')}
-                      defaultValue={RequestData?.destinationCity?.country?.name}
-                    >
-                      {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
-                        return (
-                          <Option value={ele.id} key={ele?.id}>
-                            {ele.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </BaseForm.Item>
-                  <BaseForm.Item
-                    name={['destinationCityId']}
-                    label={<LableText>{t('addRequest.city')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet ? { margin: '0 2% 2rem', width: '40%' } : isMobile ? { width: '100%' } : {}
-                    }
-                  >
-                    <Select
-                      showSearch
-                      optionFilterProp="children"
-                      filterOption={(input, option: any) =>
-                        option!.children?.toLowerCase().includes(input?.toLowerCase())
-                      }
-                      filterSort={(optionA: any, optionB: any) =>
-                        optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
-                      }
-                      onChange={(e) => ChangeCityHandler(e, 'destination')}
-                      defaultValue={RequestData?.destinationCity?.name}
-                    >
-                      {cityData?.data?.result?.items?.map((ele: any) => {
-                        return (
-                          <Option value={ele.id} key={ele?.id}>
-                            {ele.name}
-                          </Option>
-                        );
-                      })}
-                    </Select>
-                  </BaseForm.Item>
-                  <BaseForm.Item
-                    name="destinationAddress"
-                    label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet
-                        ? { width: '40%', margin: '0 2%', display: 'inline-block' }
-                        : isMobile
-                        ? { width: '100%', display: 'block' }
-                        : {}
-                    }
-                  >
-                    <Input defaultValue={RequestData?.destinationAddress} />
-                  </BaseForm.Item>
-                  <BaseForm.Item
-                    name="arrivalAtUtc"
-                    label={<LableText>{t('addRequest.date')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet
-                        ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                        : isMobile
-                        ? { width: '100%', marginBottom: '5rem' }
-                        : {}
-                    }
-                    valuePropName="data"
-                  >
-                    <DatePicker
-                      style={{ width: '100%' }}
-                      defaultValue={RequestData?.arrivalAtUtc ? moment(RequestData.arrivalAtUtc) : undefined}
-                    />
-                  </BaseForm.Item>
-                  <div
-                    style={
-                      lang == 'en' && (isDesktop || isTablet)
-                        ? { right: '0', float: 'right', position: 'relative', width: '50%', top: '-450px' }
-                        : lang == 'en' && isMobile
-                        ? { right: '0', float: 'right', position: 'relative', width: '100%' }
-                        : lang == 'ar' && (isDesktop || isTablet)
-                        ? { left: '0', float: 'left', position: 'relative', width: '50%', top: '-450px' }
-                        : lang == 'ar' && isMobile
-                        ? { left: '0', float: 'left', position: 'relative', width: '100%' }
-                        : {}
-                    }
-                  >
+                  <Row justify={'space-around'}>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        label={<LableText>{t('addRequest.country')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                      >
+                        <Select
+                          showSearch
+                          optionFilterProp="children"
+                          filterOption={(input, option: any) =>
+                            option!.children?.toLowerCase().includes(input?.toLowerCase())
+                          }
+                          filterSort={(optionA: any, optionB: any) =>
+                            optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                          }
+                          onChange={(e) => ChangeCountryHandler(e, 'destination')}
+                          defaultValue={RequestData?.destinationCity?.country?.name}
+                        >
+                          {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                            return (
+                              <Option value={ele.id} key={ele?.id}>
+                                {ele.name}
+                              </Option>
+                            );
+                          })}
+                        </Select>
+                      </BaseForm.Item>
+                    </Col>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        name={['destinationCityId']}
+                        label={<LableText>{t('addRequest.city')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                      >
+                        <Select
+                          showSearch
+                          optionFilterProp="children"
+                          filterOption={(input, option: any) =>
+                            option!.children?.toLowerCase().includes(input?.toLowerCase())
+                          }
+                          filterSort={(optionA: any, optionB: any) =>
+                            optionA!.children?.toLowerCase()?.localeCompare(optionB!.children?.toLowerCase())
+                          }
+                          onChange={(e) => ChangeCityHandler(e, 'destination')}
+                          defaultValue={RequestData?.destinationCity?.name}
+                        >
+                          {cityData?.data?.result?.items?.map((ele: any) => {
+                            return (
+                              <Option value={ele.id} key={ele?.id}>
+                                {ele.name}
+                              </Option>
+                            );
+                          })}
+                        </Select>
+                      </BaseForm.Item>
+                    </Col>
+                  </Row>
+
+                  <Row justify={'space-around'}>
+                    <Col span={12}>
+                      <BaseForm.Item
+                        name="destinationAddress"
+                        label={<LableText>{t('addRequest.destinationAddress')}</LableText>}
+                        rules={[
+                          {
+                            required: true,
+                            message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                          },
+                        ]}
+                        style={
+                          isDesktop || isTablet
+                            ? { margin: '0 2% 3rem', display: 'inline-block', width: '98%' }
+                            : isMobile
+                            ? { width: '100%', display: 'block' }
+                            : {}
+                        }
+                      >
+                        <Input defaultValue={RequestData?.destinationAddress} />
+                      </BaseForm.Item>
+                    </Col>
+                    <Col span={12}>
+                      {needStorage && (
+                        <BaseForm.Item
+                          name="arrivalAtUtc"
+                          label={<LableText>{t('addRequest.date')}</LableText>}
+                          rules={[
+                            {
+                              required: true,
+                              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                            },
+                          ]}
+                          style={
+                            isDesktop || isTablet
+                              ? { margin: '0 2% 3rem', width: '98%' }
+                              : isMobile
+                              ? { width: '100%', marginBottom: '5rem' }
+                              : {}
+                          }
+                          valuePropName="data"
+                        >
+                          <DatePicker
+                            style={{ width: '100%' }}
+                            defaultValue={RequestData?.arrivalAtUtc ? moment(RequestData.arrivalAtUtc) : undefined}
+                          />
+                        </BaseForm.Item>
+                      )}
+                    </Col>
+                  </Row>
+
+                  <Row>
                     <div style={{ width: '100%', height: '400px' }}>
                       <GoogleMap
                         center={centerDestination}
@@ -1211,7 +1239,7 @@ export const CompleteDraft: React.FC = () => {
                         <Marker key="destination" position={destinationPosition} />
                       </GoogleMap>
                     </div>
-                  </div>
+                  </Row>
                 </>
               )}
 

@@ -20,6 +20,7 @@ export const DAYS_OF_WEEK_NAME = [
 
 export const TIME_HOURS_MINUTES = 'HH:mm:ss';
 export const TIME_HOURS = 'HH';
+export const DATE_TIME = 'YYYY-MM-DD HH:mm:ss';
 
 export const REQUEST_STATUS = [
   { type: RequestStatus.Checking, name: 'checking' },

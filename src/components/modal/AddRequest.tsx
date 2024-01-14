@@ -32,6 +32,7 @@ import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import Map from '../Admin/ReusableComponents/Map';
+import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -381,13 +382,13 @@ export const AddRequest: React.FC = () => {
 
   const onFinish = async (values: any) => {
     const sourceContact = {
-      dailCode: '+971',
+      dailCode: PHONE_NUMBER_CODE,
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 0, 'phoneNumber']),
       fullName: form.getFieldValue(['requestForQuotationContacts', 0, 'fullName']),
       requestForQuotationContactType: 1,
     };
     const destinationContact = {
-      dailCode: '+971',
+      dailCode: PHONE_NUMBER_CODE,
       phoneNumber: form.getFieldValue(['requestForQuotationContacts', 1, 'phoneNumber']),
       fullName: form.getFieldValue(['requestForQuotationContacts', 1, 'fullName']),
       requestForQuotationContactType: 2,
@@ -988,7 +989,7 @@ export const AddRequest: React.FC = () => {
               </div>
             </Row>
 
-            <Row style={{ margin: '4rem', justifyContent: 'space-around' }}>
+            <Row justify={'space-around'} style={{ margin: '3rem' }}>
               <Checkbox onClick={() => setNeedStorage(!needStorage)}>
                 <h4 style={{ fontWeight: '700' }}>{t('addRequest.needStorage')}</h4>
               </Checkbox>
