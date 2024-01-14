@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Space } from 'antd';
+import { Modal, Radio, RadioChangeEvent, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -12,8 +12,11 @@ import { CountryModel, LanguageType } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
 import { AR } from '@app/constants/appConstants';
+import { LocationServicesType, LocationServicesValues } from '@app/constants/enums/locationServicesType';
 
 export const EditCountry: React.FC<EditCountryProps> = ({ visible, onCancel, country_values, onEdit, isLoading }) => {
+  const [type, setType] = useState<number>();
+
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
@@ -57,6 +60,10 @@ export const EditCountry: React.FC<EditCountryProps> = ({ visible, onCancel, cou
       ],
     });
     onEdit(value);
+  };
+
+  const handleType = (e: RadioChangeEvent) => {
+    setType(e.target.value);
   };
 
   return (
@@ -119,7 +126,19 @@ export const EditCountry: React.FC<EditCountryProps> = ({ visible, onCancel, cou
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <Input />
+          <Input maxLength={5} />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="type"
+          label={<LableText>{t('locations.type')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group value={type} onChange={handleType}>
+            <Radio value={LocationServicesValues.Internal}>{t(`${LocationServicesType.Internal}`)}</Radio>
+            <Radio value={LocationServicesValues.External}>{t(`${LocationServicesType.External}`)}</Radio>
+          </Radio.Group>
         </BaseForm.Item>
       </BaseForm>
     </Modal>
