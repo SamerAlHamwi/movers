@@ -24,6 +24,8 @@ import {
   LeftOutlined,
 } from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
+import moment from 'moment';
+import { DATE_TIME } from '@app/constants/appConstants';
 
 export type specifierType = {
   name: string;
@@ -547,7 +549,7 @@ const CompanyDetails: React.FC = () => {
                   <DetailsTitle>{t('companies.creationTime')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{companyData?.user?.creationTime}</DetailsValue>
+                  <DetailsValue>{moment(companyData?.user?.creationTime).format(DATE_TIME)}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
 

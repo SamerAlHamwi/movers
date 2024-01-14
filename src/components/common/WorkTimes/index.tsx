@@ -16,7 +16,7 @@ const WorkTimes: React.FC<WorkTimesProps> = ({ selectedDays, setSelectedDays }) 
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
 
-  const handleTimeChange = (day: any, time: any, isStartDate: any) => {
+  const handleTimeChange = (day: number, time: any, isStartDate: boolean) => {
     const data = new Date(time);
     const updatedDays = selectedDays.map((selectedDay: any) => {
       if (selectedDays.length > 0 && selectedDay.day === day) {
