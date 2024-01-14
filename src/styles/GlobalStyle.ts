@@ -384,22 +384,88 @@ export default createGlobalStyle`
   }
 
   .deleteImageIcon{
-        position: absolute;
+    position: absolute;
     right: 1.1rem;
     background-color: #fff;
     padding: 2px 3px;
   }
 
   .leaflet-geosearch-bar {
-		form {
-			display: grid;
-			grid-auto-flow: column;
-			justify-content: space-between;
-			grid-template-columns: 1fr 30px;
+    position: relative;
+    display: block;
+    height: auto;
+    width: 400px;
+    max-width: calc(100% - 120px);
+    margin: 10px auto 0;
+    cursor: auto;
+    z-index: 1000;
+}
 
-			.reset {
-				position: relative;
-			}
-		}
-	}
+  .leaflet-touch .leaflet-geosearch-bar form input {
+    height: 30px;
+}
+
+  .leaflet-geosearch-bar form input {
+    min-width: 100%;
+    width: 100%;
+}
+
+  .leaflet-control-geosearch form input {
+    min-width: 200px;
+    width: 100%;
+    outline: none;
+    margin: 0;
+    padding: 0;
+    font-size: 12px;
+    height: 30px;
+    border: none;
+    border-radius: 0 4px 4px 0;
+    text-indent: 8px;
+  }
+
+   .leaflet-control-geosearch .reset {
+    color: #000;
+    font-weight: 700;
+    position: absolute !important;
+    padding: 0 8px;
+    right: 2%;
+    top: 0;
+    cursor: pointer;
+    border: none;
+    text-decoration: none;
+    background-color: #fff;
+    border-radius: 0 4px 4px 0;
+    line-height: 30px;
+    font-size: medium;
+  }
+
+  .leaflet-top .leaflet-geosearch-bar {
+    display: none;
+  }
+
+  .leaflet-control-geosearch .results.active {
+    background-color: white;
+    border-top: 1px solid;
+    padding: 0.8rem;
+  }
+
+  .leaflet-control-geosearch .results>* {
+    line-height: 24px;
+    padding: 0 8px;
+    border: 1px solid transparent;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: small;
+    cursor: pointer
+  }
+
+  .leaflet-control-geosearch .results>*:hover {
+    background-color: #ccc;
+  }
+
+  .leaflet-marker-pane img {
+    width: 70px !important;
+    height: 70px !important;
+  }
 `;
