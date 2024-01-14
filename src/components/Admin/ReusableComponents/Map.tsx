@@ -6,6 +6,9 @@ import { FC, useEffect } from 'react';
 import { GeoSearchControl, OpenStreetMapProvider } from 'leaflet-geosearch';
 
 const Map: FC<any> = ({ field, value, handleChange }) => {
+  console.log('value is', value);
+  console.log('map.damascusPosition', map.damascusPosition);
+  console.log('field is', field);
   const { search } = 'أدخل العنوان أو اسم المنطقة أو الإحداثيات';
   const { name = '' } = field;
 
