@@ -27,7 +27,7 @@ const getAllCompanies = async (
 
 const getAllSuitableCompanies = async (type: string | undefined, requestId: string | undefined) => {
   return await httpApi.get(
-    `${apiPrefix.companies}/GetAll?GetCompaniesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true&AcceptRequests=true`,
+    `${apiPrefix.companies}/GetAll?GetCompaniesWithRequest=false&statues=2&RequestId=${requestId}&IsForFilter=true&AcceptRequests=true&MaxResultCount=10000`,
   );
 };
 
