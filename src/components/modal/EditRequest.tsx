@@ -35,6 +35,7 @@ import { RequestModel } from '@app/interfaces/interfaces';
 import UploadImageRequest, { IUploadImage } from './upload-image';
 import moment from 'moment';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
+import Map from '../Admin/ReusableComponents/Map';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -282,10 +283,11 @@ export const EditRequest: React.FC = () => {
     return imagesData;
   };
 
-  const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
+  const handleMapClick = (event: any, positionType: 'source' | 'destination') => {
     if (event.latLng) {
-      const newLat = event.latLng.lat();
-      const newLng = event.latLng.lng();
+      const newLat = event.latLng.lat;
+      const newLng = event.latLng.lng;
+
       if (positionType === 'source') {
         setSourcePosition({ lat: newLat, lng: newLng });
       } else if (positionType === 'destination') {
@@ -1038,15 +1040,14 @@ export const EditRequest: React.FC = () => {
               </Row>
 
               <Row>
-                <div style={{ width: '100%', height: '400px' }}>
-                  <GoogleMap
-                    center={centerSource}
-                    zoom={12}
-                    mapContainerStyle={{ width: '100%', height: '100%' }}
-                    onClick={(event) => handleMapClick(event, 'source')}
-                  >
-                    <Marker key="source" position={sourcePosition} />
-                  </GoogleMap>
+                <div style={{ width: '100%', height: '350px' }}>
+                  <Map
+                    field="source"
+                    value={destinationPosition}
+                    handleChange={(name: any, position: any) =>
+                      handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'source')
+                    }
+                  />
                 </div>
               </Row>
 
@@ -1164,29 +1165,6 @@ export const EditRequest: React.FC = () => {
                 </Col>
 
                 <Col span={12}>
-                  {/* <BaseForm.Item
-                    name="arrivalAtUtc"
-                    label={<LableText>{t('addRequest.date')}</LableText>}
-                    rules={[
-                      {
-                        required: true,
-                        message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                      },
-                    ]}
-                    style={
-                      isDesktop || isTablet
-                        ? { margin: '0 2% 6rem', width: '40%', marginBottom: '5rem' }
-                        : isMobile
-                        ? { width: '100%', marginBottom: '5rem' }
-                        : {}
-                    }
-                    valuePropName="data"
-                  >
-                    <DatePicker
-                      style={{ width: '100%' }}
-                      defaultValue={RequestData?.arrivalAtUtc ? moment(RequestData.arrivalAtUtc) : undefined}
-                    />
-                  </BaseForm.Item> */}
                   {needStorage && (
                     <BaseForm.Item
                       name="arrivalAtUtc"
@@ -1216,15 +1194,14 @@ export const EditRequest: React.FC = () => {
               </Row>
 
               <Row>
-                <div style={{ width: '100%', height: '400px' }}>
-                  <GoogleMap
-                    center={centerDestination}
-                    zoom={12}
-                    mapContainerStyle={{ width: '100%', height: '100%' }}
-                    onClick={(event) => handleMapClick(event, 'destination')}
-                  >
-                    <Marker key="destination" position={destinationPosition} />
-                  </GoogleMap>
+                <div style={{ width: '100%', height: '350px' }}>
+                  <Map
+                    field="destination"
+                    value={destinationPosition}
+                    handleChange={(name: any, position: any) =>
+                      handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'destination')
+                    }
+                  />
                 </div>
               </Row>
             </>

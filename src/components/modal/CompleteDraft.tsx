@@ -48,6 +48,7 @@ import _ from 'lodash';
 import UploadImageRequest, { IUploadImage } from './upload-image';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
+import Map from '../Admin/ReusableComponents/Map';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -302,10 +303,23 @@ export const CompleteDraft: React.FC = () => {
     return imagesData;
   };
 
-  const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
+  // const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
+  //   if (event.latLng) {
+  //     const newLat = event.latLng.lat();
+  //     const newLng = event.latLng.lng();
+  //     if (positionType === 'source') {
+  //       setSourcePosition({ lat: newLat, lng: newLng });
+  //     } else if (positionType === 'destination') {
+  //       setDestinationPosition({ lat: newLat, lng: newLng });
+  //     }
+  //   }
+  // };
+
+  const handleMapClick = (event: any, positionType: 'source' | 'destination') => {
     if (event.latLng) {
-      const newLat = event.latLng.lat();
-      const newLng = event.latLng.lng();
+      const newLat = event.latLng.lat;
+      const newLng = event.latLng.lng;
+
       if (positionType === 'source') {
         setSourcePosition({ lat: newLat, lng: newLng });
       } else if (positionType === 'destination') {
@@ -1076,15 +1090,14 @@ export const CompleteDraft: React.FC = () => {
                   </Row>
 
                   <Row>
-                    <div style={{ width: '100%', height: '400px' }}>
-                      <GoogleMap
-                        center={centerSource}
-                        zoom={12}
-                        mapContainerStyle={{ width: '100%', height: '100%' }}
-                        onClick={(event) => handleMapClick(event, 'source')}
-                      >
-                        <Marker key="source" position={sourcePosition} />
-                      </GoogleMap>
+                    <div style={{ width: '100%', height: '350px' }}>
+                      <Map
+                        field="source"
+                        value={sourcePosition}
+                        handleChange={(name: any, position: any) =>
+                          handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'source')
+                        }
+                      />
                     </div>
                   </Row>
 
@@ -1229,15 +1242,14 @@ export const CompleteDraft: React.FC = () => {
                   </Row>
 
                   <Row>
-                    <div style={{ width: '100%', height: '400px' }}>
-                      <GoogleMap
-                        center={centerDestination}
-                        zoom={12}
-                        mapContainerStyle={{ width: '100%', height: '100%' }}
-                        onClick={(event) => handleMapClick(event, 'destination')}
-                      >
-                        <Marker key="destination" position={destinationPosition} />
-                      </GoogleMap>
+                    <div style={{ width: '100%', height: '350px' }}>
+                      <Map
+                        field="destination"
+                        value={destinationPosition}
+                        handleChange={(name: any, position: any) =>
+                          handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'destination')
+                        }
+                      />
                     </div>
                   </Row>
                 </>
