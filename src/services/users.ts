@@ -16,7 +16,7 @@ const getAllUsers = async (
 
   let url = `${apiPrefix.users}/GetAll?`;
   if (MediatorCode !== undefined) {
-    url += `MediatorCode=${MediatorCode}&UserType=2&`;
+    url += `MediatorCode=${MediatorCode}&`;
   } else {
     url += `UserType=${userType}&GetAdminsAndCustomerServices=${GetAdminsAndCustomerServices}&`;
   }

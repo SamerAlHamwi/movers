@@ -12,7 +12,6 @@ import { BankOutlined, ClearOutlined, LeftOutlined, PushpinOutlined, UserOutline
 import { useResponsive } from '@app/hooks/useResponsive';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
 import { getServicesForRequest } from '@app/services/services';
@@ -856,7 +855,6 @@ export const AddRequest: React.FC = () => {
 
         {current === 1 && (
           <>
-            {/* <Map field="map"></Map> */}
             <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.typeMove')}:</h4>
             <BaseForm.Item
               name={['serviceType']}
@@ -981,14 +979,13 @@ export const AddRequest: React.FC = () => {
             </Row>
             <Row>
               <div style={{ width: '100%', height: '350px' }}>
-                <GoogleMap
-                  center={centerSource}
-                  zoom={12}
-                  mapContainerStyle={{ width: '100%', height: '100%' }}
-                  onClick={(event) => handleMapClick(event, 'source')}
-                >
-                  <Marker key="source" position={sourcePosition} />
-                </GoogleMap>
+                <Map
+                  field="source"
+                  value={sourcePosition}
+                  handleChange={(name: any, position: any) =>
+                    handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'source')
+                  }
+                />
               </div>
             </Row>
 
@@ -1105,20 +1102,12 @@ export const AddRequest: React.FC = () => {
             <Row>
               <div style={{ width: '100%', height: '350px' }}>
                 <Map
-                  field="destinationMap" // You may want to change the field name
-                  value={destinationPosition} // Pass the destinationPosition as value
+                  field="destination"
+                  value={destinationPosition}
                   handleChange={(name: any, position: any) =>
                     handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'destination')
-                  } // Adjust the handleChange function accordingly
+                  }
                 />
-                {/* <GoogleMap
-                  center={centerDestination}
-                  zoom={12}
-                  mapContainerStyle={{ width: '100%', height: '100%' }}
-                  onClick={(event) => handleMapClick(event, 'destination')}
-                >
-                  <Marker key="destination" position={destinationPosition} />
-                </GoogleMap> */}
               </div>
             </Row>
           </>
