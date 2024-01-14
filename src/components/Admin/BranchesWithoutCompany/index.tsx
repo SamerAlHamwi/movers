@@ -229,61 +229,61 @@ export const BranchesWithoutCompany: React.FC = () => {
         );
       },
     },
-    // {
-    //   title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
-    //   dataIndex: 'actions',
-    //   render: (index: number, record: any) => {
-    //     return (
-    //       <Space>
-    //         <Tooltip placement="top" title={t('common.details')}>
-    //           <TableButton
-    //             severity="success"
-    //             onClick={() => {
-    //               Navigate(`${record.id}/details`, { state: record.name });
-    //             }}
-    //           >
-    //             <TagOutlined />
-    //           </TableButton>
-    //         </Tooltip>
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
+      dataIndex: 'actions',
+      render: (index: number, record: any) => {
+        return (
+          <Space>
+            <Tooltip placement="top" title={t('common.details')}>
+              <TableButton
+                severity="success"
+                onClick={() => {
+                  Navigate(`${record.id}/details`, { state: record.name });
+                }}
+              >
+                <TagOutlined />
+              </TableButton>
+            </Tooltip>
 
-    //         <Tooltip placement="top" title={t('branch.ChangeAcceptRequestOrPotentialClient')}>
-    //           <TableButton
-    //             severity="info"
-    //             onClick={() => {
-    //               setAcceptRequestOrPotentialClientmodaldata(record);
-    //               handleModalOpen('acceptRequestOrPotentialClient');
-    //             }}
-    //           >
-    //             <SnippetsOutlined />
-    //           </TableButton>
-    //         </Tooltip>
+            <Tooltip placement="top" title={t('branch.ChangeAcceptRequestOrPotentialClient')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setAcceptRequestOrPotentialClientmodaldata(record);
+                  handleModalOpen('acceptRequestOrPotentialClient');
+                }}
+              >
+                <SnippetsOutlined />
+              </TableButton>
+            </Tooltip>
 
-    //         <Tooltip placement="top" title={t('common.edit')}>
-    //           <TableButton
-    //             severity="info"
-    //             onClick={() => {
-    //               Navigate(`/companies/${companyId}/branches/${record.id}/EditBranch`);
-    //             }}
-    //           >
-    //             <EditOutlined />
-    //           </TableButton>
-    //         </Tooltip>
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  Navigate(`/companies/${companyId}/branches/${record.id}/EditBranch`);
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
 
-    //         <Tooltip placement="top" title={t('common.delete')}>
-    //           <TableButton
-    //             severity="error"
-    //             onClick={() => {
-    //               setDeletemodaldata(record);
-    //               handleModalOpen('delete');
-    //             }}
-    //           >
-    //             <DeleteOutlined />
-    //           </TableButton>
-    //         </Tooltip>
-    //       </Space>
-    //     );
-    //   },
-    // },
+            <Tooltip placement="top" title={t('common.delete')}>
+              <TableButton
+                severity="error"
+                onClick={() => {
+                  setDeletemodaldata(record);
+                  handleModalOpen('delete');
+                }}
+              >
+                <DeleteOutlined />
+              </TableButton>
+            </Tooltip>
+          </Space>
+        );
+      },
+    },
   ];
 
   return (

@@ -468,7 +468,7 @@ const BranchDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.emailAddress')}</DetailsTitle>
+                  <DetailsTitle>{t('common.emailAddress')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{branchData?.user?.emailAddress}</DetailsValue>
@@ -477,7 +477,7 @@ const BranchDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('companies.phoneNumber')}</DetailsTitle>
+                  <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>{branchData?.user?.phoneNumber}</DetailsValue>
