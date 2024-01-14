@@ -19,7 +19,7 @@ import {
 import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image, Spin, Form } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getCities, getCountries, getRegions } from '@app/services/locations';
+import { GetUAE, getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getServicesForCompany } from '@app/services/services';
 import { getCompanyById, updateCompany } from '@app/services/companies';
@@ -313,6 +313,7 @@ export const EditCompany: React.FC = () => {
   const GetAllServices = useQuery('getServicesForCompany', getServicesForCompany);
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const GetUAECountry = useQuery('GetUAECountry', GetUAE);
   const {
     data: availableCitiesData,
     refetch: availableCitiesRefetch,
@@ -984,7 +985,7 @@ export const EditCompany: React.FC = () => {
                   ]}
                 >
                   <Select onChange={ChangeCountryHandler} defaultValue={companyData?.region?.city?.country?.name}>
-                    {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                    {GetUAECountry?.data?.data?.result?.items.map((country: any) => (
                       <Option key={country.id} value={country.id}>
                         {country?.name}
                       </Option>

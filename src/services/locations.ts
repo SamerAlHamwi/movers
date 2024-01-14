@@ -17,6 +17,10 @@ const getCountries = async () => {
   return await httpApi.get(`${apiPrefix.countries}/GetAll?IsActive=true`);
 };
 
+const GetUAE = async () => {
+  return await httpApi.get(`${apiPrefix.countries}/GetAll?IsActive=true&type=1`);
+};
+
 const createCountry = async (data: CountryModel) => {
   return await httpApi.post(`${apiPrefix.countries}/Create`, data);
 };
@@ -125,6 +129,7 @@ const DeActivateRegion = async (id: number) => {
 
 export {
   getAllCountries,
+  GetUAE,
   getCountries,
   createCountry,
   Update,

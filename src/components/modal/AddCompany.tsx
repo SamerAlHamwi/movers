@@ -37,7 +37,7 @@ import {
 } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getAllCity, getCities, getCountries, getRegions } from '@app/services/locations';
+import { getAllCity, getCities, getCountries, getRegions, GetUAE } from '@app/services/locations';
 import { countries } from '../Admin/Locations/Countries';
 import { useNavigate } from 'react-router-dom';
 import { cities } from '../Admin/Locations/Cities';
@@ -237,6 +237,7 @@ export const AddCompany: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const GetUAECountry = useQuery('GetUAECountry', GetUAE);
   const {
     data: availableCitiesData,
     refetch: availableCitiesRefetch,
@@ -673,7 +674,7 @@ export const AddCompany: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeCountryHandler}>
-                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                {GetUAECountry?.data?.data?.result?.items.map((country: any) => (
                   <Option key={country.id} value={country.id}>
                     {country?.name}
                   </Option>

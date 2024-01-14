@@ -10,7 +10,7 @@ import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined } from '@ant-de
 import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Spin, message, Alert } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getCities, getCountries, getRegions } from '@app/services/locations';
+import { GetUAE, getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getServicesForCompany } from '@app/services/services';
 import { getBranch, UpdateBranch } from '@app/services/branches';
@@ -173,6 +173,7 @@ export const EditBranch: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const GetUAECountry = useQuery('GetUAECountry', GetUAE);
   const {
     data: availableCitiesData,
     refetch: availableCitiesRefetch,
@@ -287,7 +288,7 @@ export const EditBranch: React.FC = () => {
     branchInfo = {
       ...branchInfo,
       id: branchId,
-      companyId: companyId,
+      companyId: companyId ?? '0',
       translations: [
         {
           name: form.getFieldValue(['translations', 0, 'name']),
@@ -315,7 +316,7 @@ export const EditBranch: React.FC = () => {
         selectedCityValues.length == 0 ? branchData?.availableCities.map((city: any) => city?.id) : selectedCityValues,
       regionId: regionId != '0' ? regionId : branchData?.region?.id,
       timeworks: selectedDays,
-      isWithCompany: true,
+      isWithCompany: companyId ? true : false,
     };
     updatedFormData.translations = branchInfo.translations;
     setEnableEdit(true);
@@ -586,7 +587,7 @@ export const EditBranch: React.FC = () => {
                   ]}
                 >
                   <Select onChange={ChangeCountryHandler} defaultValue={branchData?.region?.city?.country?.name}>
-                    {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                    {GetUAECountry?.data?.data?.result?.items.map((country: any) => (
                       <Option key={country.id} value={country.id}>
                         {country?.name}
                       </Option>

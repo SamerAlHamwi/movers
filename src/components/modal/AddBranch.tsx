@@ -10,7 +10,7 @@ import { BankOutlined, ClearOutlined, HomeOutlined, LeftOutlined, UserAddOutline
 import { Button, Col, Input, Row, Steps, Image, Tree, Radio, Alert, message } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getCities, getCountries, getRegions } from '@app/services/locations';
+import { GetUAE, getCities, getCountries, getRegions } from '@app/services/locations';
 import { useNavigate, useParams } from 'react-router-dom';
 import { getServicesForCompany } from '@app/services/services';
 import { createBranch } from '@app/services/branches';
@@ -156,6 +156,7 @@ export const AddBranch: React.FC = () => {
   };
 
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+  const GetUAECountry = useQuery('GetUAECountry', GetUAE);
   const { data: availableCitiesData, refetch: availableCitiesRefetch } = useQuery(
     'getCities',
     () => getCities(countryIdForCities),
@@ -500,7 +501,7 @@ export const AddBranch: React.FC = () => {
               ]}
             >
               <Select onChange={ChangeCountryHandler}>
-                {GetAllCountries?.data?.data?.result?.items.map((country: any) => (
+                {GetUAECountry?.data?.data?.result?.items.map((country: any) => (
                   <Option key={country.id} value={country.id}>
                     {country?.name}
                   </Option>
