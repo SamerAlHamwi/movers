@@ -179,10 +179,10 @@ export const Brokers: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
       dataIndex: 'commissionPercentage',
     },
-    // {
-    //   title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.numberServiceUsers')}</Header>,
-    //   dataIndex: 'numberServiceUsers',
-    // },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.numberServiceUsers')}</Header>,
+      dataIndex: 'numberServiceUsers',
+    },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.points')}</Header>, dataIndex: 'points' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
