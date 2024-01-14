@@ -421,6 +421,15 @@ export const AppRouter: React.FC = () => {
             }
           />
 
+          <Route
+            path="branchesWithoutCompany/:branchId/details/reviewsDetails"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <ReviewsDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
           {/* Commission groups */}
           <Route
             path="commissionGroups"
