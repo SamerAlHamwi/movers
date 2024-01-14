@@ -17,7 +17,7 @@ const getServicesForCompany = async () => {
   return await httpApi.get(`${apiPrefix.services}/GetAll?Active=true&IsForStorage=false`);
 };
 
-const getServices = async () => {
+const getServicesForRequest = async () => {
   return await httpApi.get(`${apiPrefix.services}/GetAll?Active=true`);
 };
 
@@ -68,7 +68,7 @@ const UpdateSubService = async (data: any) => {
 export {
   getAllServices,
   getServicesForCompany,
-  getServices,
+  getServicesForRequest,
   createService,
   DeleteService,
   UpdateService,

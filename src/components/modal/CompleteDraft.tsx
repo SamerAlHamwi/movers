@@ -24,7 +24,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
-import { getServices } from '@app/services/services';
+import { getServicesForRequest } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';
 import type { DataNode } from 'antd/es/tree';
 import { createRequest } from '@app/services/requests';
@@ -162,16 +162,6 @@ export const CompleteDraft: React.FC = () => {
               attributeChoiceId: item.attributeChoice?.id,
             };
           });
-          // status === 'success' &&
-          //   setSelectedRadio(
-          //     data.data?.result.attributeForSourceTypeValues.map((item: any) => {
-          //       return {
-          //         attributeForSourcTypeId: item.attributeForSourcType?.id,
-          //         attributeChoiceId: item.attributeChoice?.id,
-          //       };
-          //     }),
-          //   );
-
           status === 'success' && setAttributeChoiceAndAttachments(imageRequest ?? []);
           setGetRequest(false);
         })
@@ -185,7 +175,7 @@ export const CompleteDraft: React.FC = () => {
 
   console.log(selectedRadio);
 
-  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
   const {
     data: cityData,

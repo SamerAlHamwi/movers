@@ -692,7 +692,8 @@
     "atLeastOneAttachment": "At Least Upload One Attachment",
     "Attachment": "Attachments",
     "enterDate": "Please Enter The Date",
-    "sourceTypeRequired": "Please Choose The Moving Type"
+    "sourceTypeRequired": "Please Choose The Moving Type",
+    "needStorage": "Do You Need Storage?"
   },
 
   "_comment18": "*********************************** Branches ************************************************",

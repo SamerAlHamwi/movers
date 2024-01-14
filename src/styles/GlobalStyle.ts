@@ -388,5 +388,18 @@ export default createGlobalStyle`
     right: 1.1rem;
     background-color: #fff;
     padding: 2px 3px;
-  }  
+  }
+
+  .leaflet-geosearch-bar {
+		form {
+			display: grid;
+			grid-auto-flow: column;
+			justify-content: space-between;
+			grid-template-columns: 1fr 30px;
+
+			.reset {
+				position: relative;
+			}
+		}
+	}
 `;

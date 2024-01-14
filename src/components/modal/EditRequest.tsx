@@ -15,7 +15,7 @@ import { isValidPhoneNumber } from 'react-phone-number-input';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { TextArea } from '../Admin/Translations';
 import { useQuery } from 'react-query';
-import { getServices } from '@app/services/services';
+import { getServicesForRequest } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes } from '@app/services/sourceTypes';
 import { UpdateRequest, getRequestById } from '@app/services/requests';
 import { useMutation } from 'react-query';
@@ -170,7 +170,7 @@ export const EditRequest: React.FC = () => {
     },
   );
 
-  const GetAllServices = useQuery('getAllServices', getServices);
+  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
   const {
     data: cityData,
