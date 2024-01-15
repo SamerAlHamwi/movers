@@ -315,7 +315,6 @@
     "checking": "Checking",
     "approved": "Approved",
     "rejected": "Rejected",
-    "rejectedNeedToEdit": "Rejected Need To Edit",
     "deleteCompanySuccessMessage": "The Company Has Been Deleted Successfully",
     "addCompany": "Add Company",
     "deletecompanyModalTitle": "Delete Company",
@@ -358,7 +357,9 @@
     "newCompany": "New Company Info",
     "timeOfWorks": "Work Time",
     "compare": "Comparison",
-    "compatibilityRate": "Compatibility Rate"
+    "compatibilityRate": "Compatibility Rate",
+    "sendRejectCompanyReason": "Send Reason For The Rejected Company",
+    "reasonRejectCompany": "The Reason For Rejecting The Company"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -721,7 +722,17 @@
     "status": "Status",
     "approveBranchSuccessMessage": "The Branch Has Been Approved Successfully",
     "approvebranchModalTitle": "Approve Branch",
-    "approvebranchModalDescription": "Are You Sure To Approve on This Branch?"
+    "approvebranchModalDescription": "Are You Sure To Approve on This Branch?",
+    "sendRejectBranchReason": "Send Reason For The Reject Branch",
+    "reasonRejectBranch": "The Reason For Rejecting The Branch",
+    "rejectBranchSuccessMessage": "The Branch Has Been Rejected Successfully",
+    "sendReturnBranchReason": "Send Reason For The Return Branch",
+    "reasonReturnBranch": "The Reason For Returning The Branch",
+    "returnBranchSuccessMessage": "The Branch Has Been Returned Successfully",
+    "checking": "Checking",
+    "approved": "Approved",
+    "rejected": "Rejected",
+    "RejectedNeedToEdit": "Branch Has Been Returned"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

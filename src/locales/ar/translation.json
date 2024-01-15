@@ -316,7 +316,6 @@
     "additionalAttachment": "صور | ملفات إضافية",
     "checking": "قيد المعالجة",
     "approved": "تم قبولها",
-    "rejectedNeedToEdit": "مرفوض بحاجة تعديل",
     "rejected": "تم رفضها",
     "deleteCompanySuccessMessage": "تم حذف هذه الشركة بنجاح",
     "addCompany": "إضافة شركة",
@@ -360,7 +359,9 @@
     "newCompany": "المعلومات الحديثة للشركة",
     "timeOfWorks": "ساعات العمل",
     "compare": "مقارنة التحديث",
-    "compatibilityRate": "معدل التوافق"
+    "compatibilityRate": "معدل التوافق",
+    "sendRejectCompanyReason": "إرسال سبب رفض طلب تسجيل الشركة",
+    "reasonRejectCompany": "سبب رفض طلب تسجيل شركة"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -719,7 +720,17 @@
     "status": "حالة الفرع",
     "approveBranchSuccessMessage": "تمت الموافقة على هذا الفرع بنجاح",
     "approvebranchModalTitle": "الموافقة على الفرع",
-    "approvebranchModalDescription": "هل أنت متأكد من الموافقة على طلب تسجيل هذا الفؤع؟"
+    "approvebranchModalDescription": "هل أنت متأكد من الموافقة على طلب تسجيل هذا الفؤع؟",
+    "sendRejectBranchReason": "إرسال سبب رفض طلب تسجيل الفرع",
+    "reasonRejectBranch": "سبب رفض طلب تسجيل فرع",
+    "rejectBranchSuccessMessage": "تم رفض هذا الفرع بنجاح",
+    "sendReturnBranchReason": "إرسال سبب إعادة طلب تسجيل الفرع",
+    "reasonReturnBranch": "سبب إعادة طلب تسجيل الفرع",
+    "returnBranchSuccessMessage": "تمت إعادة هذا الفرع بنجاح",
+    "checking": "قيد المعالجة",
+    "approved": "تم قبولها",
+    "rejected": "تم رفضها",
+    "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الفرع"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

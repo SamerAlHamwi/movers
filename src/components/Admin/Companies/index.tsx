@@ -728,7 +728,7 @@ export const Companies: React.FC = () => {
                 rejectmodaldata !== undefined && handleReject(rejectmodaldata.id, info);
               }}
               isLoading={approveCompany.isLoading}
-              type="returnCompany"
+              type="rejectCompany"
             />
           )}
 

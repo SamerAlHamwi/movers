@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Rate, Row, Space, Tag, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Rate, Row, Space, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -12,6 +12,8 @@ import {
   SnippetsOutlined,
   ReloadOutlined,
   CheckOutlined,
+  CloseOutlined,
+  RetweetOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import {
@@ -37,6 +39,8 @@ import { TextBack } from '@app/components/GeneralStyles';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
+import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
 
 interface CompanyRecord {
   id: number;
@@ -55,6 +59,8 @@ export const BranchesWithoutCompany: React.FC = () => {
     add: false,
     edit: false,
     approve: false,
+    reject: false,
+    return: false,
     delete: false,
     acceptRequestOrPotentialClient: false,
   });
@@ -64,13 +70,19 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [approvemodaldata, setApprovemodaldata] = useState<BranchModel | undefined>(undefined);
+  const [rejectmodaldata, setRejectmodaldata] = useState<BranchModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
   const [isApproved, setIsApproved] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
+  const [isReturned, setIsReturned] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
   const [isChanged, setIsChanged] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [returnmodaldata, setReturnmodaldata] = useState<BranchModel | undefined>(undefined);
+  const [temp, setTemp] = useState<any>();
+  const [companyStatus, setCompanyStatus] = useState<any>();
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -81,9 +93,9 @@ export const BranchesWithoutCompany: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved],
+    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved, isRejected, isReturned],
     () =>
-      getAllBranchesWithoutCompany(companyId, page, pageSize, searchString)
+      getAllBranchesWithoutCompany(page, pageSize, searchString, companyStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setData(result);
@@ -153,6 +165,56 @@ export const BranchesWithoutCompany: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, approve: approveBranch.isLoading }));
   }, [approveBranch.isLoading]);
 
+  const rejectCompany = useMutation((data: any) =>
+    confirmBranch(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsRejected(data.data?.success),
+          message.open({
+            content: <Alert message={t('branch.rejectBranchSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReject = (id: any, reasonRefuse: any) => {
+    const data = { companyBranchId: id, statues: 3, reasonRefuse: reasonRefuse.reasonRefuse };
+    rejectCompany.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, reject: rejectCompany.isLoading }));
+  }, [rejectCompany.isLoading]);
+
+  const returnBranch = useMutation((data: any) =>
+    confirmBranch(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsReturned(data.data?.success),
+          message.open({
+            content: <Alert message={t('branch.returnBranchSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReturn = (info: any) => {
+    const data = { companyBranchId: returnmodaldata?.id, statues: 4, reasonRefuse: info.reasonRefuse };
+    returnBranch.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, return: returnBranch.isLoading }));
+  }, [returnBranch.isLoading]);
+
   const acceptRequestOrPotentialClient = useMutation((data: any) =>
     ChangeAcceptRequestOrPossibleRequestForBranch(data)
       .then((data) => {
@@ -193,7 +255,21 @@ export const BranchesWithoutCompany: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isApproved, isChanged, page, pageSize, searchString, language, refetch, refetchData]);
+  }, [
+    isDelete,
+    isEdit,
+    isApproved,
+    isRejected,
+    isReturned,
+    isChanged,
+    page,
+    pageSize,
+    searchString,
+    language,
+    companyStatus,
+    refetch,
+    refetchData,
+  ]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {
@@ -285,7 +361,7 @@ export const BranchesWithoutCompany: React.FC = () => {
                   </TableButton>
                 </Tooltip>
 
-                {/* <Tooltip placement="top" title={t('common.reject')}>
+                <Tooltip placement="top" title={t('common.reject')}>
                   <TableButton
                     severity="error"
                     onClick={() => {
@@ -295,9 +371,9 @@ export const BranchesWithoutCompany: React.FC = () => {
                   >
                     <CloseOutlined />
                   </TableButton>
-                </Tooltip> */}
+                </Tooltip>
 
-                {/* <Tooltip placement="top" title={t('common.return')}>
+                <Tooltip placement="top" title={t('common.return')}>
                   <TableButton
                     disabled={record.statues !== 1}
                     severity="warning"
@@ -308,7 +384,7 @@ export const BranchesWithoutCompany: React.FC = () => {
                   >
                     <RetweetOutlined />
                   </TableButton>
-                </Tooltip> */}
+                </Tooltip>
               </Space>
             )}
             {record.statues === 2 && (
@@ -323,58 +399,58 @@ export const BranchesWithoutCompany: React.FC = () => {
             )}
             {record.statues === 4 && (
               <Tag key={record?.id} color="#ba4e63" style={{ padding: '4px' }}>
-                {t('companies.RejectedNeedToEdit')}
+                {t('branch.RejectedNeedToEdit')}
               </Tag>
             )}
           </>
         );
       },
-      // filterDropdown: () => {
-      //   const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
-      //   return (
-      //     <div style={{ padding: 8 }}>
-      //       <RadioGroup
-      //         size="small"
-      //         onChange={(e: RadioChangeEvent) => {
-      //           setTemp(e.target.value);
-      //         }}
-      //         value={temp}
-      //       >
-      //         {COMPANY_STATUS_NAMES.map((item: any, index: number) => {
-      //           return (
-      //             <Radio key={index} style={{ display: 'block', fontSize }} value={item.value}>
-      //               {t(`branch.${item.name}`)}
-      //             </Radio>
-      //           );
-      //         })}
-      //       </RadioGroup>
-      //       <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
-      //         <Col>
-      //           <Button
-      //             style={{ fontSize, fontWeight: '400' }}
-      //             size="small"
-      //             onClick={() => {
-      //               setTemp(undefined);
-      //               setCompanyStatus(undefined);
-      //             }}
-      //           >
-      //             {t('common.reset')}
-      //           </Button>
-      //         </Col>
-      //         <Col>
-      //           <Button
-      //             size="small"
-      //             type="primary"
-      //             style={{ fontSize, fontWeight: '400' }}
-      //             onClick={() => setCompanyStatus(temp)}
-      //           >
-      //             {t('common.apply')}
-      //           </Button>
-      //         </Col>
-      //       </Row>
-      //     </div>
-      //   );
-      // },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              {COMPANY_STATUS_NAMES.map((item: any, index: number) => {
+                return (
+                  <Radio key={index} style={{ display: 'block', fontSize }} value={item.value}>
+                    {t(`branch.${item.name}`)}
+                  </Radio>
+                );
+              })}
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setCompanyStatus(undefined);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setCompanyStatus(temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
     },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
@@ -432,6 +508,14 @@ export const BranchesWithoutCompany: React.FC = () => {
       },
     },
   ];
+
+  // const onChange = (key: any) => {
+  //   key === 'undefined'
+  //     ? (setCompanyStatus(undefined), setNeedToUpdate(false))
+  //     : key === NEED_TO_UPDATE
+  //     ? (setCompanyStatus(undefined), setNeedToUpdate(true))
+  //     : (setCompanyStatus(key), setNeedToUpdate(false));
+  // };
 
   return (
     <>
@@ -493,6 +577,32 @@ export const BranchesWithoutCompany: React.FC = () => {
               cancelText={t('common.cancel')}
               description={t('branch.approvebranchModalDescription')}
               isLoading={approveBranch.isLoading}
+            />
+          )}
+
+          {/*    Reject    */}
+          {modalState.reject && (
+            <SendRejectReason
+              visible={modalState.reject}
+              onCancel={() => handleModalClose('reject')}
+              onCreate={(info) => {
+                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id, info);
+              }}
+              isLoading={approveBranch.isLoading}
+              type="rejectBranch"
+            />
+          )}
+
+          {/*    Return    */}
+          {modalState.return && (
+            <SendRejectReason
+              visible={modalState.return}
+              onCancel={() => handleModalClose('return')}
+              onCreate={(info) => {
+                handleReturn(info);
+              }}
+              isLoading={returnBranch.isLoading}
+              type="returnBranch"
             />
           )}
         </Row>
