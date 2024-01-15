@@ -18,6 +18,7 @@ import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralSt
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
+import { getDayName } from '@app/constants/appFunctions';
 
 const treeStyle = {
   width: '96%',
@@ -89,11 +90,6 @@ const ComparisonCompany: React.FC = () => {
       })
       .finally(() => setVisible(false)),
   );
-
-  const getDayName = (dayValue: number) => {
-    const dayName = Object.keys(DaysOfWeek).find((key: any) => +DaysOfWeek[key] === dayValue);
-    return dayName ? t(`${dayName}`) : ''; // Adjust the translation key as needed
-  };
 
   const onExpand = (expandedKeysValue: React.Key[]) => {
     setExpandedKeys(expandedKeysValue);
@@ -405,7 +401,7 @@ const ComparisonCompany: React.FC = () => {
 
                     return (
                       <Tag key={item.id} color={tagColor}>
-                        {getDayName(item.day)} : {item.startDate} - {item.endDate}
+                        {getDayName(item.day, t)} : {item.startDate} - {item.endDate}
                       </Tag>
                     );
                   })}
@@ -709,7 +705,7 @@ const ComparisonCompany: React.FC = () => {
 
                     return (
                       <Tag key={item.id} color={tagColor}>
-                        {getDayName(item.day)} : {item.startDate} - {item.endDate}
+                        {getDayName(item.day, t)} : {item.startDate} - {item.endDate}
                       </Tag>
                     );
                   })}
