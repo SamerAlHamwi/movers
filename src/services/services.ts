@@ -17,8 +17,14 @@ const getServicesForCompany = async () => {
   return await httpApi.get(`${apiPrefix.services}/GetAll?Active=true&IsForStorage=false`);
 };
 
-const getServicesForRequest = async () => {
-  return await httpApi.get(`${apiPrefix.services}/GetAll?Active=true`);
+const getServicesForRequest = async (IsForStorage?: boolean | undefined, IsForTruck?: boolean | undefined) => {
+  return await httpApi.get(`${apiPrefix.services}/GetAll`, {
+    params: {
+      Active: true,
+      IsForStorage: IsForStorage,
+      IsForTruck: IsForTruck,
+    },
+  });
 };
 
 const createService = async (data: ServiceModel) => {
