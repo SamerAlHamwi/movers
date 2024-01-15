@@ -60,6 +60,10 @@ const ChangeAcceptRequestOrPossibleRequestForBranch = async (data: any) => {
   return await httpApi.put(`${apiPrefix.branches}/ChangeAcceptRequestOrPossibleRequestForCompanyBranch`, data);
 };
 
+const confirmBranch = async (data: any) => {
+  return await httpApi.put(`${apiPrefix.branches}/ConfirmCompanyBranchByAdmin`, data);
+};
+
 const UpdateBranch = async (data: any) => {
   return await httpApi.put(`${apiPrefix.branches}/Update`, data);
 };
@@ -77,6 +81,7 @@ export {
   GetReviewDetailsByBranchId,
   createBranch,
   ChangeAcceptRequestOrPossibleRequestForBranch,
+  confirmBranch,
   UpdateBranch,
   DeleteBranch,
 };

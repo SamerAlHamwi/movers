@@ -318,6 +318,7 @@ export interface BranchModel {
   serviceType: number;
   availableCities: any[];
   commissionGroup: number;
+  statues?: number;
 }
 export interface RequestModel {
   id: number;

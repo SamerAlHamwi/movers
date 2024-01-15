@@ -5,11 +5,19 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { useQuery, useMutation } from 'react-query';
-import { EditOutlined, DeleteOutlined, TagOutlined, SnippetsOutlined, ReloadOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  TagOutlined,
+  SnippetsOutlined,
+  ReloadOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import {
   ChangeAcceptRequestOrPossibleRequestForBranch,
   DeleteBranch,
+  confirmBranch,
   getAllBranchesWithoutCompany,
 } from '@app/services/branches';
 import { Table } from '@app/components/common/Table/Table';
@@ -28,6 +36,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { RadioGroup } from '@app/components/common/Radio/Radio';
 
 interface CompanyRecord {
   id: number;
@@ -45,6 +54,7 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
+    approve: false,
     delete: false,
     acceptRequestOrPotentialClient: false,
   });
@@ -53,7 +63,9 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [data, setData] = useState<BranchModel[] | undefined>(undefined);
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
+  const [approvemodaldata, setApprovemodaldata] = useState<BranchModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
+  const [isApproved, setIsApproved] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
@@ -69,7 +81,7 @@ export const BranchesWithoutCompany: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged],
+    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved],
     () =>
       getAllBranchesWithoutCompany(companyId, page, pageSize, searchString)
         .then((data) => {
@@ -116,6 +128,31 @@ export const BranchesWithoutCompany: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteBranch.isLoading }));
   }, [deleteBranch.isLoading]);
 
+  const approveBranch = useMutation((data: any) =>
+    confirmBranch(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsApproved(data.data?.success),
+          message.open({
+            content: <Alert message={t('branch.approveBranchSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleApprove = (id: any) => {
+    const data = { companyBranchId: id, statues: 2 };
+    approveBranch.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, approve: approveBranch.isLoading }));
+  }, [approveBranch.isLoading]);
+
   const acceptRequestOrPotentialClient = useMutation((data: any) =>
     ChangeAcceptRequestOrPossibleRequestForBranch(data)
       .then((data) => {
@@ -156,7 +193,7 @@ export const BranchesWithoutCompany: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isChanged, page, pageSize, searchString, language, refetch, refetchData]);
+  }, [isDelete, isEdit, isApproved, isChanged, page, pageSize, searchString, language, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {
@@ -201,7 +238,6 @@ export const BranchesWithoutCompany: React.FC = () => {
         );
       },
     },
-
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
@@ -228,6 +264,117 @@ export const BranchesWithoutCompany: React.FC = () => {
           </Space>
         );
       },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('branch.status')}</Header>,
+      dataIndex: 'status',
+      render: (index: number, record: BranchModel) => {
+        return (
+          <>
+            {(record.statues === 0 || record.statues === 1) && (
+              <Space>
+                <Tooltip placement="top" title={t('common.approve')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setApprovemodaldata(record);
+                      handleModalOpen('approve');
+                    }}
+                  >
+                    <CheckOutlined />
+                  </TableButton>
+                </Tooltip>
+
+                {/* <Tooltip placement="top" title={t('common.reject')}>
+                  <TableButton
+                    severity="error"
+                    onClick={() => {
+                      setRejectmodaldata(record);
+                      handleModalOpen('reject');
+                    }}
+                  >
+                    <CloseOutlined />
+                  </TableButton>
+                </Tooltip> */}
+
+                {/* <Tooltip placement="top" title={t('common.return')}>
+                  <TableButton
+                    disabled={record.statues !== 1}
+                    severity="warning"
+                    onClick={() => {
+                      setReturnmodaldata(record);
+                      handleModalOpen('return');
+                    }}
+                  >
+                    <RetweetOutlined />
+                  </TableButton>
+                </Tooltip> */}
+              </Space>
+            )}
+            {record.statues === 2 && (
+              <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
+                {t('companies.approved')}
+              </Tag>
+            )}
+            {record.statues === 3 && (
+              <Tag key={record?.id} color="#ff5252" style={{ padding: '4px' }}>
+                {t('companies.rejected')}
+              </Tag>
+            )}
+            {record.statues === 4 && (
+              <Tag key={record?.id} color="#ba4e63" style={{ padding: '4px' }}>
+                {t('companies.RejectedNeedToEdit')}
+              </Tag>
+            )}
+          </>
+        );
+      },
+      // filterDropdown: () => {
+      //   const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+      //   return (
+      //     <div style={{ padding: 8 }}>
+      //       <RadioGroup
+      //         size="small"
+      //         onChange={(e: RadioChangeEvent) => {
+      //           setTemp(e.target.value);
+      //         }}
+      //         value={temp}
+      //       >
+      //         {COMPANY_STATUS_NAMES.map((item: any, index: number) => {
+      //           return (
+      //             <Radio key={index} style={{ display: 'block', fontSize }} value={item.value}>
+      //               {t(`branch.${item.name}`)}
+      //             </Radio>
+      //           );
+      //         })}
+      //       </RadioGroup>
+      //       <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+      //         <Col>
+      //           <Button
+      //             style={{ fontSize, fontWeight: '400' }}
+      //             size="small"
+      //             onClick={() => {
+      //               setTemp(undefined);
+      //               setCompanyStatus(undefined);
+      //             }}
+      //           >
+      //             {t('common.reset')}
+      //           </Button>
+      //         </Col>
+      //         <Col>
+      //           <Button
+      //             size="small"
+      //             type="primary"
+      //             style={{ fontSize, fontWeight: '400' }}
+      //             onClick={() => setCompanyStatus(temp)}
+      //           >
+      //             {t('common.apply')}
+      //           </Button>
+      //         </Col>
+      //       </Row>
+      //     </div>
+      //   );
+      // },
     },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
@@ -329,6 +476,23 @@ export const BranchesWithoutCompany: React.FC = () => {
               isLoading={acceptRequestOrPotentialClient.isLoading}
               values={acceptRequestOrPotentialClientmodaldata}
               title="branch"
+            />
+          )}
+
+          {/*    Approve    */}
+          {modalState.approve && (
+            <ActionModal
+              visible={modalState.approve}
+              onCancel={() => handleModalClose('approve')}
+              onOK={() => {
+                approvemodaldata !== undefined && handleApprove(approvemodaldata.id);
+              }}
+              width={isDesktop || isTablet ? '450px' : '350px'}
+              title={t('branch.approvebranchModalTitle')}
+              okText={t('common.approve')}
+              cancelText={t('common.cancel')}
+              description={t('branch.approvebranchModalDescription')}
+              isLoading={approveBranch.isLoading}
             />
           )}
         </Row>

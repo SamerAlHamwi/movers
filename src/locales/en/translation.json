@@ -717,7 +717,11 @@
     "BranchInformation": "Branch Information",
     "Services": "Services",
     "typeMove": "Type Of Moving",
-    "selectService": "Select Services That You Provide"
+    "selectService": "Select Services That You Provide",
+    "status": "Status",
+    "approveBranchSuccessMessage": "The Branch Has Been Approved Successfully",
+    "approvebranchModalTitle": "Approve Branch",
+    "approvebranchModalDescription": "Are You Sure To Approve on This Branch?"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",

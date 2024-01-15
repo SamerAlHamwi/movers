@@ -288,7 +288,7 @@
     "approveCompanySuccessMessage": "تمت الموافقة على هذه الشركة بنجاح",
     "rejectCompanySuccessMessage": "تم رفض هذه الشركة بنجاح",
     "approvecompanyModalTitle": "الموافقة على الشركة",
-    "approvecompanyModalDescription": "هل أنت متأكد من الموافقة على طلب تسجيل هذه الشركة",
+    "approvecompanyModalDescription": "هل أنت متأكد من الموافقة على طلب تسجيل هذه الشركة؟",
     "rejectcompanyModalTitle": "رفض الشركة",
     "rejectcompanyModalDescription": "هل أنت متأكد من رفض طلب تسجيل هذه الشركة",
     "companyInfo": "معلومات الشركة",
@@ -715,7 +715,11 @@
     "BranchInformation": "معلومات الفرع",
     "Services": "الخدمات",
     "typeMove": "طريقة النقل",
-    "selectService": "إختر الخدمات التي تُخدّمها"
+    "selectService": "إختر الخدمات التي تُخدّمها",
+    "status": "حالة الفرع",
+    "approveBranchSuccessMessage": "تمت الموافقة على هذا الفرع بنجاح",
+    "approvebranchModalTitle": "الموافقة على الفرع",
+    "approvebranchModalDescription": "هل أنت متأكد من الموافقة على طلب تسجيل هذا الفؤع؟"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
