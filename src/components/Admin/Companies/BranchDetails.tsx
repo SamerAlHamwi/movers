@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next';
 import { useQuery } from 'react-query';
 import styled from 'styled-components';
 import { Card as Cardd } from '@app/components/common/Card/Card';
-import { Row, Tree, Image, Space, Progress, Avatar, Segmented, Tooltip } from 'antd';
+import { Row, Tree, Image, Space, Progress, Avatar, Segmented, Tooltip, Tag, Col } from 'antd';
 import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
@@ -24,6 +24,9 @@ import {
   LeftOutlined,
 } from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
+import { getDayName } from '@app/constants/appFunctions';
+import { DATE_TIME } from '@app/constants/appConstants';
+import moment from 'moment';
 
 export type specifierType = {
   name: string;
@@ -301,6 +304,28 @@ const BranchDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('companies.timeOfWorks')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  {branchData?.timeOfWorks?.map((item: any, index: number) => {
+                    return (
+                      <DetailsValue key={index}>
+                        <Tag key={item.id} style={{ minWidth: '180px' }}>
+                          <Row justify={'space-between'}>
+                            <Col span={14}>{getDayName(item.day, t)}</Col>
+                            <Col span={10}>
+                              {item.startDate} - {item.endDate}
+                            </Col>
+                          </Row>
+                        </Tag>
+                      </DetailsValue>
+                    );
+                  })}
+                </ColStyle>
+              </DetailsRow>
+
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.points')} :
               </h3>
@@ -498,7 +523,7 @@ const BranchDetails: React.FC = () => {
                   <DetailsTitle>{t('companies.creationTime')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{branchData?.user?.creationTime}</DetailsValue>
+                  <DetailsValue>{moment(branchData?.user?.creationTime).format(DATE_TIME)}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
 
