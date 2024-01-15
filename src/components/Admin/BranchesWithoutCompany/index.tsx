@@ -13,6 +13,7 @@ import {
   ReloadOutlined,
   CheckOutlined,
   CloseOutlined,
+  RetweetOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import {
@@ -58,6 +59,7 @@ export const BranchesWithoutCompany: React.FC = () => {
     edit: false,
     approve: false,
     reject: false,
+    return: false,
     delete: false,
     acceptRequestOrPotentialClient: false,
   });
@@ -71,11 +73,13 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
   const [isApproved, setIsApproved] = useState(false);
   const [isRejected, setIsRejected] = useState(false);
+  const [isReturned, setIsReturned] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
   const [isChanged, setIsChanged] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [returnmodaldata, setReturnmodaldata] = useState<BranchModel | undefined>(undefined);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -86,7 +90,7 @@ export const BranchesWithoutCompany: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved, isRejected],
+    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved, isRejected, isReturned],
     () =>
       getAllBranchesWithoutCompany(companyId, page, pageSize, searchString)
         .then((data) => {
@@ -164,7 +168,7 @@ export const BranchesWithoutCompany: React.FC = () => {
         data.data?.success &&
           (setIsRejected(data.data?.success),
           message.open({
-            content: <Alert message={t('companies.rejectCompanySuccessMessage')} type={`success`} showIcon />,
+            content: <Alert message={t('branch.rejectBranchSuccessMessage')} type={`success`} showIcon />,
           }));
       })
       .catch((error) => {
@@ -182,6 +186,31 @@ export const BranchesWithoutCompany: React.FC = () => {
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, reject: rejectCompany.isLoading }));
   }, [rejectCompany.isLoading]);
+
+  const returnBranch = useMutation((data: any) =>
+    confirmBranch(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsReturned(data.data?.success),
+          message.open({
+            content: <Alert message={t('branch.returnBranchSuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReturn = (info: any) => {
+    const data = { companyBranchId: returnmodaldata?.id, statues: 4, reasonRefuse: info.reasonRefuse };
+    returnBranch.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, return: returnBranch.isLoading }));
+  }, [returnBranch.isLoading]);
 
   const acceptRequestOrPotentialClient = useMutation((data: any) =>
     ChangeAcceptRequestOrPossibleRequestForBranch(data)
@@ -228,6 +257,7 @@ export const BranchesWithoutCompany: React.FC = () => {
     isEdit,
     isApproved,
     isRejected,
+    isReturned,
     isChanged,
     page,
     pageSize,
@@ -339,7 +369,7 @@ export const BranchesWithoutCompany: React.FC = () => {
                   </TableButton>
                 </Tooltip>
 
-                {/* <Tooltip placement="top" title={t('common.return')}>
+                <Tooltip placement="top" title={t('common.return')}>
                   <TableButton
                     disabled={record.statues !== 1}
                     severity="warning"
@@ -350,7 +380,7 @@ export const BranchesWithoutCompany: React.FC = () => {
                   >
                     <RetweetOutlined />
                   </TableButton>
-                </Tooltip> */}
+                </Tooltip>
               </Space>
             )}
             {record.statues === 2 && (
@@ -365,7 +395,7 @@ export const BranchesWithoutCompany: React.FC = () => {
             )}
             {record.statues === 4 && (
               <Tag key={record?.id} color="#ba4e63" style={{ padding: '4px' }}>
-                {t('companies.RejectedNeedToEdit')}
+                {t('branch.RejectedNeedToEdit')}
               </Tag>
             )}
           </>
@@ -548,6 +578,19 @@ export const BranchesWithoutCompany: React.FC = () => {
               }}
               isLoading={approveBranch.isLoading}
               type="rejectBranch"
+            />
+          )}
+
+          {/*    Return    */}
+          {modalState.return && (
+            <SendRejectReason
+              visible={modalState.return}
+              onCancel={() => handleModalClose('return')}
+              onCreate={(info) => {
+                handleReturn(info);
+              }}
+              isLoading={returnBranch.isLoading}
+              type="returnBranch"
             />
           )}
         </Row>

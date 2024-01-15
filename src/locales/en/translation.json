@@ -725,7 +725,12 @@
     "approvebranchModalTitle": "Approve Branch",
     "approvebranchModalDescription": "Are You Sure To Approve on This Branch?",
     "sendRejectBranchReason": "Send Reason For The Reject Branch",
-    "reasonRejectBranch": "The Reason For Rejecting The Branch"
+    "reasonRejectBranch": "The Reason For Rejecting The Branch",
+    "rejectBranchSuccessMessage": "The Branch Has Been Rejected Successfully",
+    "sendReturnBranchReason": "Send Reason For The Return Branch",
+    "reasonReturnBranch": "The Reason For Returning The Branch",
+    "returnBranchSuccessMessage": "The Branch Has Been Returned Successfully",
+    "RejectedNeedToEdit": "Branch Has Been Returned"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
