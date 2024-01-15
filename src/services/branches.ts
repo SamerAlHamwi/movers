@@ -17,7 +17,7 @@ const getAllBranchesWithoutCompany = async (page: number, pageSize: number, sear
       MaxResultCount: pageSize,
       KeyWord: search,
       GetBranchesWithoutCompany: true,
-      Statues: statues,
+      BranchStatues: statues,
     },
   });
 };
