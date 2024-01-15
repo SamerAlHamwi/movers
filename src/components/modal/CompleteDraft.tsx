@@ -30,7 +30,7 @@ import type { DataNode } from 'antd/es/tree';
 import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
-import { getCountries, getCities } from '@app/services/locations';
+import { getCountries, getCities, GetUAE } from '@app/services/locations';
 import { Alert } from '../common/Alert/Alert';
 import { UploadMultiAttachment, uploadAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
@@ -49,6 +49,7 @@ import UploadImageRequest, { IUploadImage } from './upload-image';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 import Map from '../Admin/ReusableComponents/Map';
+import { LocationServicesValues } from '@app/constants/enums/locationServicesType';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -156,6 +157,8 @@ export const CompleteDraft: React.FC = () => {
             ...result,
             moveAtUtc: new Date(`${result.moveAtUtc}`),
           });
+          setValueRadio(result?.serviceType);
+
           form.setFieldsValue({
             ...result,
             moveAtUtc: new Date(`${result.moveAtUtc}`),
@@ -177,8 +180,12 @@ export const CompleteDraft: React.FC = () => {
     },
   );
 
-  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
+  const GetAllServices = useQuery(['getServicesForRequest', needStorage], () =>
+    getServicesForRequest(needStorage ? undefined : false, false),
+  );
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
+  const UAE = useQuery('GetUAE', GetUAE);
+
   const {
     data: cityData,
     refetch,
@@ -189,8 +196,6 @@ export const CompleteDraft: React.FC = () => {
 
   useEffect(() => {
     if (status == 'success') {
-      console.log(RequestData?.attributeForSourceTypeValues);
-
       setSelectedRadio(
         RequestData?.attributeForSourceTypeValues.map((item: any) => {
           return {
@@ -302,18 +307,6 @@ export const CompleteDraft: React.FC = () => {
     });
     return imagesData;
   };
-
-  // const handleMapClick = (event: google.maps.MapMouseEvent, positionType: 'source' | 'destination') => {
-  //   if (event.latLng) {
-  //     const newLat = event.latLng.lat();
-  //     const newLng = event.latLng.lng();
-  //     if (positionType === 'source') {
-  //       setSourcePosition({ lat: newLat, lng: newLng });
-  //     } else if (positionType === 'destination') {
-  //       setDestinationPosition({ lat: newLat, lng: newLng });
-  //     }
-  //   }
-  // };
 
   const handleMapClick = (event: any, positionType: 'source' | 'destination') => {
     if (event.latLng) {
@@ -988,7 +981,10 @@ export const CompleteDraft: React.FC = () => {
                           onChange={(e) => ChangeCountryHandler(e, 'source')}
                           defaultValue={RequestData?.sourceCity?.country?.name}
                         >
-                          {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                          {(valueRadio === LocationServicesValues.Internal
+                            ? UAE
+                            : GetAllCountry
+                          )?.data?.data?.result?.items?.map((ele: any) => {
                             return (
                               <Option value={ele.id} key={ele?.id}>
                                 {ele.name}

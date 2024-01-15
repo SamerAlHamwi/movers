@@ -20,7 +20,7 @@ import { getChildAttributeChoice, getAttributeForSourceTypes } from '@app/servic
 import { UpdateRequest, getRequestById } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
-import { getCountries, getCities } from '@app/services/locations';
+import { getCountries, getCities, GetUAE } from '@app/services/locations';
 import { Alert } from '../common/Alert/Alert';
 import { uploadAttachment, UploadMultiAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
@@ -36,6 +36,7 @@ import UploadImageRequest, { IUploadImage } from './upload-image';
 import moment from 'moment';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import Map from '../Admin/ReusableComponents/Map';
+import { LocationServicesValues } from '@app/constants/enums/locationServicesType';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -158,6 +159,7 @@ export const EditRequest: React.FC = () => {
             ...result,
             moveAtUtc: new Date(`${result.moveAtUtc}`),
           });
+          setValueRadio(result?.serviceType);
           form.setFieldsValue({
             ...result,
             moveAtUtc: new Date(`${result.moveAtUtc}`),
@@ -172,8 +174,12 @@ export const EditRequest: React.FC = () => {
     },
   );
 
-  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
+  const GetAllServices = useQuery(['getServicesForRequest', needStorage], () =>
+    getServicesForRequest(needStorage ? undefined : false, false),
+  );
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
+  const UAE = useQuery('GetUAE', GetUAE);
+
   const {
     data: cityData,
     refetch,
@@ -938,7 +944,10 @@ export const EditRequest: React.FC = () => {
                       onChange={(e) => ChangeCountryHandler(e, 'source')}
                       defaultValue={RequestData.sourceCity.country.name}
                     >
-                      {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                      {(valueRadio === LocationServicesValues.Internal
+                        ? UAE
+                        : GetAllCountry
+                      )?.data?.data?.result?.items?.map((ele: any) => {
                         return (
                           <Option value={ele.id} key={ele?.id}>
                             {ele.name}

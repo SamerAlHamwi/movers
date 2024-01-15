@@ -20,7 +20,7 @@ import type { DataNode } from 'antd/es/tree';
 import { createRequest } from '@app/services/requests';
 import { useMutation } from 'react-query';
 import { Select, Option } from '../common/selects/Select/Select';
-import { getCountries, getCities } from '@app/services/locations';
+import { getCountries, getCities, GetUAE } from '@app/services/locations';
 import { Alert } from '../common/Alert/Alert';
 import { uploadAttachment, UploadMultiAttachment } from '@app/services/Attachment';
 import { PlusOutlined } from '@ant-design/icons';
@@ -33,6 +33,7 @@ import { useLanguage } from '@app/hooks/useLanguage';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import Map from '../Admin/ReusableComponents/Map';
 import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
+import { LocationServicesValues } from '@app/constants/enums/locationServicesType';
 
 const getBase64 = (file: RcFile): Promise<string> =>
   new Promise((resolve, reject) => {
@@ -214,9 +215,12 @@ export const AddRequest: React.FC = () => {
     },
   });
 
-  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
+  const GetAllServices = useQuery(['getServicesForRequest', needStorage], () =>
+    getServicesForRequest(needStorage ? undefined : false, false),
+  );
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
+  const UAE = useQuery('GetUAE', GetUAE);
   const {
     data: cityData,
     refetch,
@@ -338,10 +342,6 @@ export const AddRequest: React.FC = () => {
 
   const prev = () => {
     setCurrent(current - 1);
-  };
-
-  const handleFormattedValueChange = (value: string) => {
-    setFormattedPhoneNumber(value);
   };
 
   const ChangeCountryHandler = (e: any, positionType: 'source' | 'destination') => {
@@ -565,6 +565,11 @@ export const AddRequest: React.FC = () => {
 
       setFileList(fileList.concat(x));
     }
+  };
+
+  const handleMovingTypeChange = (event: any) => {
+    form.setFieldsValue({ ['serviceType']: event.target.value });
+    setValueRadio(event.target.value);
   };
 
   return (
@@ -864,10 +869,7 @@ export const AddRequest: React.FC = () => {
             >
               <Radio.Group
                 style={{ display: 'flex', width: '100%' }}
-                onChange={(event) => {
-                  form.setFieldsValue({ ['serviceType']: event.target.value });
-                  setValueRadio(event.target.value);
-                }}
+                onChange={(event) => handleMovingTypeChange(event)}
               >
                 <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
                   {t('requests.Internal')}
@@ -901,7 +903,10 @@ export const AddRequest: React.FC = () => {
                     }
                     onChange={(e) => ChangeCountryHandler(e, 'source')}
                   >
-                    {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                    {(valueRadio === LocationServicesValues.Internal
+                      ? UAE
+                      : GetAllCountry
+                    )?.data?.data?.result?.items?.map((ele: any) => {
                       return (
                         <Option value={ele.id} key={ele?.id}>
                           {ele.name}
