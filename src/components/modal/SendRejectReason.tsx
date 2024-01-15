@@ -38,6 +38,10 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
             ? t('requests.sendReturnOfferReason')
             : type == 'returnCompany'
             ? t('requests.sendReturnCompanyReason')
+            : type == 'rejectCompany'
+            ? t('companies.sendRejectCompanyReason')
+            : type == 'rejectBranch'
+            ? t('branch.sendRejectBranchReason')
             : ''}
         </div>
       }
@@ -59,6 +63,10 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
                   ? t('requests.sendReturnOfferReason')
                   : type == 'returnCompany'
                   ? t('requests.sendReturnCompanyReason')
+                  : type == 'rejectCompany'
+                  ? t('companies.sendRejectCompanyReason')
+                  : type == 'rejectBranch'
+                  ? t('branch.sendRejectBranchReason')
                   : ''}
               </P1>
             </Button>
@@ -79,6 +87,10 @@ export const SendRejectReason: React.FC<SendRejectReasons> = ({ visible, onCance
                 ? t('requests.reasonReturnOffer')
                 : type == 'returnCompany'
                 ? t('requests.reasonReturnCompany')
+                : type == 'rejectCompany'
+                ? t('companies.reasonRejectCompany')
+                : type == 'rejectBranch'
+                ? t('branch.reasonRejectBranch')
                 : ''}
             </LableText>
           }

@@ -12,6 +12,7 @@ import {
   SnippetsOutlined,
   ReloadOutlined,
   CheckOutlined,
+  CloseOutlined,
 } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import {
@@ -37,6 +38,7 @@ import { TextBack } from '@app/components/GeneralStyles';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
+import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 
 interface CompanyRecord {
   id: number;
@@ -55,6 +57,7 @@ export const BranchesWithoutCompany: React.FC = () => {
     add: false,
     edit: false,
     approve: false,
+    reject: false,
     delete: false,
     acceptRequestOrPotentialClient: false,
   });
@@ -64,8 +67,10 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [approvemodaldata, setApprovemodaldata] = useState<BranchModel | undefined>(undefined);
+  const [rejectmodaldata, setRejectmodaldata] = useState<BranchModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<BranchModel | undefined>(undefined);
   const [isApproved, setIsApproved] = useState(false);
+  const [isRejected, setIsRejected] = useState(false);
   const [isDelete, setIsDelete] = useState(false);
   const [isEdit, setIsEdit] = useState(false);
   const [acceptRequestOrPotentialClientmodaldata, setAcceptRequestOrPotentialClientmodaldata] = useState<any>();
@@ -81,7 +86,7 @@ export const BranchesWithoutCompany: React.FC = () => {
   };
 
   const { refetch, isRefetching } = useQuery(
-    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved],
+    ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved, isRejected],
     () =>
       getAllBranchesWithoutCompany(companyId, page, pageSize, searchString)
         .then((data) => {
@@ -153,6 +158,31 @@ export const BranchesWithoutCompany: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, approve: approveBranch.isLoading }));
   }, [approveBranch.isLoading]);
 
+  const rejectCompany = useMutation((data: any) =>
+    confirmBranch(data)
+      .then((data) => {
+        data.data?.success &&
+          (setIsRejected(data.data?.success),
+          message.open({
+            content: <Alert message={t('companies.rejectCompanySuccessMessage')} type={`success`} showIcon />,
+          }));
+      })
+      .catch((error) => {
+        message.open({
+          content: <Alert message={error.message || error.error?.message} type={`error`} showIcon />,
+        });
+      }),
+  );
+
+  const handleReject = (id: any, reasonRefuse: any) => {
+    const data = { companyBranchId: id, statues: 3, reasonRefuse: reasonRefuse.reasonRefuse };
+    rejectCompany.mutateAsync(data);
+  };
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, reject: rejectCompany.isLoading }));
+  }, [rejectCompany.isLoading]);
+
   const acceptRequestOrPotentialClient = useMutation((data: any) =>
     ChangeAcceptRequestOrPossibleRequestForBranch(data)
       .then((data) => {
@@ -193,7 +223,19 @@ export const BranchesWithoutCompany: React.FC = () => {
     refetch();
     setIsEdit(false);
     setIsDelete(false);
-  }, [isDelete, isEdit, isApproved, isChanged, page, pageSize, searchString, language, refetch, refetchData]);
+  }, [
+    isDelete,
+    isEdit,
+    isApproved,
+    isRejected,
+    isChanged,
+    page,
+    pageSize,
+    searchString,
+    language,
+    refetch,
+    refetchData,
+  ]);
 
   useEffect(() => {
     if (page > 1 && data?.length === 0) {
@@ -285,7 +327,7 @@ export const BranchesWithoutCompany: React.FC = () => {
                   </TableButton>
                 </Tooltip>
 
-                {/* <Tooltip placement="top" title={t('common.reject')}>
+                <Tooltip placement="top" title={t('common.reject')}>
                   <TableButton
                     severity="error"
                     onClick={() => {
@@ -295,7 +337,7 @@ export const BranchesWithoutCompany: React.FC = () => {
                   >
                     <CloseOutlined />
                   </TableButton>
-                </Tooltip> */}
+                </Tooltip>
 
                 {/* <Tooltip placement="top" title={t('common.return')}>
                   <TableButton
@@ -493,6 +535,19 @@ export const BranchesWithoutCompany: React.FC = () => {
               cancelText={t('common.cancel')}
               description={t('branch.approvebranchModalDescription')}
               isLoading={approveBranch.isLoading}
+            />
+          )}
+
+          {/*    Reject    */}
+          {modalState.reject && (
+            <SendRejectReason
+              visible={modalState.reject}
+              onCancel={() => handleModalClose('reject')}
+              onCreate={(info) => {
+                rejectmodaldata !== undefined && handleReject(rejectmodaldata.id, info);
+              }}
+              isLoading={approveBranch.isLoading}
+              type="rejectBranch"
             />
           )}
         </Row>

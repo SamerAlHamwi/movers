@@ -358,7 +358,9 @@
     "newCompany": "New Company Info",
     "timeOfWorks": "Work Time",
     "compare": "Comparison",
-    "compatibilityRate": "Compatibility Rate"
+    "compatibilityRate": "Compatibility Rate",
+    "sendRejectCompanyReason": "Send Reason For The Rejected Company",
+    "reasonRejectCompany": "The Reason For Rejecting The Company"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -721,7 +723,9 @@
     "status": "Status",
     "approveBranchSuccessMessage": "The Branch Has Been Approved Successfully",
     "approvebranchModalTitle": "Approve Branch",
-    "approvebranchModalDescription": "Are You Sure To Approve on This Branch?"
+    "approvebranchModalDescription": "Are You Sure To Approve on This Branch?",
+    "sendRejectBranchReason": "Send Reason For The Reject Branch",
+    "reasonRejectBranch": "The Reason For Rejecting The Branch"
   },
 
   "_comment19": "*********************************** Notifications ************************************************",
