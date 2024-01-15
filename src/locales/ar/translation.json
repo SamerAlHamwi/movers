@@ -316,7 +316,6 @@
     "additionalAttachment": "صور | ملفات إضافية",
     "checking": "قيد المعالجة",
     "approved": "تم قبولها",
-    "rejectedNeedToEdit": "مرفوض بحاجة تعديل",
     "rejected": "تم رفضها",
     "deleteCompanySuccessMessage": "تم حذف هذه الشركة بنجاح",
     "addCompany": "إضافة شركة",
@@ -728,6 +727,9 @@
     "sendReturnBranchReason": "إرسال سبب إعادة طلب تسجيل الفرع",
     "reasonReturnBranch": "سبب إعادة طلب تسجيل الفرع",
     "returnBranchSuccessMessage": "تمت إعادة هذا الفرع بنجاح",
+    "checking": "قيد المعالجة",
+    "approved": "تم قبولها",
+    "rejected": "تم رفضها",
     "RejectedNeedToEdit": "طلب التسجيل مُعاد إلى الفرع"
   },
 

@@ -9,16 +9,17 @@ const getAllBranches = async (CompanyId: string | undefined, page: number, pageS
   );
 };
 
-const getAllBranchesWithoutCompany = async (
-  CompanyId: string | undefined,
-  page: number,
-  pageSize: number,
-  search: string,
-) => {
+const getAllBranchesWithoutCompany = async (page: number, pageSize: number, search: string, statues?: number) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.branches}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&GetBranchesWithoutCompany=true`,
-  );
+  return await httpApi.get(`${apiPrefix.branches}/GetAll`, {
+    params: {
+      SkipCount: skip,
+      MaxResultCount: pageSize,
+      KeyWord: search,
+      GetBranchesWithoutCompany: true,
+      Statues: statues,
+    },
+  });
 };
 
 const getAllSuitableBranches = async (type: string | undefined, requestId: string | undefined) => {

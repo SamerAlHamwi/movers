@@ -44,7 +44,7 @@ export const COMPANY_STATUS_NAMES = [
   { value: CompanyStatus.Checking, name: 'checking' },
   { value: CompanyStatus.Approved, name: 'approved' },
   { value: CompanyStatus.Rejected, name: 'rejected' },
-  { value: CompanyStatus.RejectedNeedToEdit, name: 'rejectedNeedToEdit' },
+  { value: CompanyStatus.RejectedNeedToEdit, name: 'RejectedNeedToEdit' },
 ];
 
 export const NEED_TO_UPDATE = 'needToUpate';

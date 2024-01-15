@@ -315,7 +315,6 @@
     "checking": "Checking",
     "approved": "Approved",
     "rejected": "Rejected",
-    "rejectedNeedToEdit": "Rejected Need To Edit",
     "deleteCompanySuccessMessage": "The Company Has Been Deleted Successfully",
     "addCompany": "Add Company",
     "deletecompanyModalTitle": "Delete Company",
@@ -730,6 +729,9 @@
     "sendReturnBranchReason": "Send Reason For The Return Branch",
     "reasonReturnBranch": "The Reason For Returning The Branch",
     "returnBranchSuccessMessage": "The Branch Has Been Returned Successfully",
+    "checking": "Checking",
+    "approved": "Approved",
+    "rejected": "Rejected",
     "RejectedNeedToEdit": "Branch Has Been Returned"
   },
 

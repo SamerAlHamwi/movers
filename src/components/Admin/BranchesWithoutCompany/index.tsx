@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { message, Rate, Row, Space, Tag, Tooltip } from 'antd';
+import { Col, message, Radio, RadioChangeEvent, Rate, Row, Space, Tag, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
 import { Button } from '@app/components/common/buttons/Button/Button';
@@ -40,6 +40,7 @@ import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/Chan
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
+import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
 
 interface CompanyRecord {
   id: number;
@@ -80,6 +81,8 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [isChanged, setIsChanged] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [returnmodaldata, setReturnmodaldata] = useState<BranchModel | undefined>(undefined);
+  const [temp, setTemp] = useState<any>();
+  const [companyStatus, setCompanyStatus] = useState<any>();
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -92,7 +95,7 @@ export const BranchesWithoutCompany: React.FC = () => {
   const { refetch, isRefetching } = useQuery(
     ['getAllBranchesWithoutCompany', page, pageSize, isDelete, isEdit, isChanged, isApproved, isRejected, isReturned],
     () =>
-      getAllBranchesWithoutCompany(companyId, page, pageSize, searchString)
+      getAllBranchesWithoutCompany(page, pageSize, searchString, companyStatus)
         .then((data) => {
           const result = data.data?.result?.items;
           setData(result);
@@ -263,6 +266,7 @@ export const BranchesWithoutCompany: React.FC = () => {
     pageSize,
     searchString,
     language,
+    companyStatus,
     refetch,
     refetchData,
   ]);
@@ -401,52 +405,52 @@ export const BranchesWithoutCompany: React.FC = () => {
           </>
         );
       },
-      // filterDropdown: () => {
-      //   const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
-      //   return (
-      //     <div style={{ padding: 8 }}>
-      //       <RadioGroup
-      //         size="small"
-      //         onChange={(e: RadioChangeEvent) => {
-      //           setTemp(e.target.value);
-      //         }}
-      //         value={temp}
-      //       >
-      //         {COMPANY_STATUS_NAMES.map((item: any, index: number) => {
-      //           return (
-      //             <Radio key={index} style={{ display: 'block', fontSize }} value={item.value}>
-      //               {t(`branch.${item.name}`)}
-      //             </Radio>
-      //           );
-      //         })}
-      //       </RadioGroup>
-      //       <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
-      //         <Col>
-      //           <Button
-      //             style={{ fontSize, fontWeight: '400' }}
-      //             size="small"
-      //             onClick={() => {
-      //               setTemp(undefined);
-      //               setCompanyStatus(undefined);
-      //             }}
-      //           >
-      //             {t('common.reset')}
-      //           </Button>
-      //         </Col>
-      //         <Col>
-      //           <Button
-      //             size="small"
-      //             type="primary"
-      //             style={{ fontSize, fontWeight: '400' }}
-      //             onClick={() => setCompanyStatus(temp)}
-      //           >
-      //             {t('common.apply')}
-      //           </Button>
-      //         </Col>
-      //       </Row>
-      //     </div>
-      //   );
-      // },
+      filterDropdown: () => {
+        const fontSize = isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs;
+        return (
+          <div style={{ padding: 8 }}>
+            <RadioGroup
+              size="small"
+              onChange={(e: RadioChangeEvent) => {
+                setTemp(e.target.value);
+              }}
+              value={temp}
+            >
+              {COMPANY_STATUS_NAMES.map((item: any, index: number) => {
+                return (
+                  <Radio key={index} style={{ display: 'block', fontSize }} value={item.value}>
+                    {t(`branch.${item.name}`)}
+                  </Radio>
+                );
+              })}
+            </RadioGroup>
+            <Row gutter={[5, 5]} style={{ marginTop: '.35rem' }}>
+              <Col>
+                <Button
+                  style={{ fontSize, fontWeight: '400' }}
+                  size="small"
+                  onClick={() => {
+                    setTemp(undefined);
+                    setCompanyStatus(undefined);
+                  }}
+                >
+                  {t('common.reset')}
+                </Button>
+              </Col>
+              <Col>
+                <Button
+                  size="small"
+                  type="primary"
+                  style={{ fontSize, fontWeight: '400' }}
+                  onClick={() => setCompanyStatus(temp)}
+                >
+                  {t('common.apply')}
+                </Button>
+              </Col>
+            </Row>
+          </div>
+        );
+      },
     },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
@@ -504,6 +508,14 @@ export const BranchesWithoutCompany: React.FC = () => {
       },
     },
   ];
+
+  // const onChange = (key: any) => {
+  //   key === 'undefined'
+  //     ? (setCompanyStatus(undefined), setNeedToUpdate(false))
+  //     : key === NEED_TO_UPDATE
+  //     ? (setCompanyStatus(undefined), setNeedToUpdate(true))
+  //     : (setCompanyStatus(key), setNeedToUpdate(false));
+  // };
 
   return (
     <>
