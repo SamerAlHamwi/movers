@@ -215,7 +215,9 @@ export const AddRequest: React.FC = () => {
     },
   });
 
-  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
+  const GetAllServices = useQuery(['getServicesForRequest', needStorage], () =>
+    getServicesForRequest(needStorage ? undefined : false, false),
+  );
   const GetAllSourceType = useQuery('GetAllSourceType', getSourceTypes);
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
   const UAE = useQuery('GetUAE', GetUAE);
@@ -341,10 +343,6 @@ export const AddRequest: React.FC = () => {
   const prev = () => {
     setCurrent(current - 1);
   };
-
-  // const handleFormattedValueChange = (value: string) => {
-  //   setFormattedPhoneNumber(value);
-  // };
 
   const ChangeCountryHandler = (e: any, positionType: 'source' | 'destination') => {
     setCountryId(e);

@@ -180,7 +180,9 @@ export const CompleteDraft: React.FC = () => {
     },
   );
 
-  const GetAllServices = useQuery('getServicesForRequest', getServicesForRequest);
+  const GetAllServices = useQuery(['getServicesForRequest', needStorage], () =>
+    getServicesForRequest(needStorage ? undefined : false, false),
+  );
   const GetAllCountry = useQuery('GetAllCountry', getCountries);
   const UAE = useQuery('GetUAE', GetUAE);
 
