@@ -212,9 +212,18 @@ export const CompleteDraft: React.FC = () => {
     refetch: attributeForSourceTypesRefetch,
     isRefetching: attributeForSourceTypesIsRefetching,
     isLoading: attributeForSourceTypesIsLoading,
-  } = useQuery('AttributeForSourceType', () => getAttributeForSourceTypes(RequestData?.sourceType?.id ?? '0'), {
-    enabled: RequestData?.sourceType?.id !== undefined,
-  });
+  } = useQuery(
+    'AttributeForSourceType',
+    () => {
+      if (RequestData?.sourceType?.id !== undefined) {
+        return getAttributeForSourceTypes(RequestData.sourceType.id ?? undefined);
+      }
+      return undefined;
+    },
+    {
+      enabled: RequestData?.sourceType?.id !== undefined,
+    },
+  );
 
   useEffect(() => {
     if (selectedRadio?.length > 0) {
@@ -532,7 +541,7 @@ export const CompleteDraft: React.FC = () => {
       destinationLongitude: destinationPosition.lng,
       destinationLatitude: destinationPosition.lat,
       services: requestServices,
-      arrivalAtUtc: needStorage ? form.getFieldValue('arrivalAtUtc') : form.getFieldValue('moveAtUtc'),
+      arrivalAtUtc: needStorage ? form.getFieldValue('arrivalAtUtc') : null,
 
       comment: form.getFieldValue('comment'),
       attributeForSourceTypeValues: selectedRadio,
