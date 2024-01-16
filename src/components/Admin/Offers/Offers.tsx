@@ -80,7 +80,11 @@ export const Offers: React.FC = () => {
         requestId != undefined ? requestId : '',
         companyId != undefined ? companyId : '',
         branchId != undefined ? branchId : '',
-        requestId != undefined ? '1' : '',
+        requestId != undefined && type === 'offersThatHeHave'
+          ? '2'
+          : requestId != undefined && type !== 'offersThatHeHave'
+          ? '1'
+          : '',
       )
         .then((data) => {
           const result = data.data?.result?.items;
@@ -93,7 +97,7 @@ export const Offers: React.FC = () => {
           notificationController.error({ message: err?.message || err.error?.message });
         }),
     {
-      enabled: dataSource === undefined && type === undefined,
+      enabled: (dataSource === undefined && type === undefined) || type === 'offersThatHeHave',
     },
   );
 
