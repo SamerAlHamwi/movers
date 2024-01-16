@@ -104,14 +104,6 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
         </BaseForm.Item>
 
         <BaseForm.Item
-          name="companyName"
-          label={<LableText>{t('brokers.companyName')}</LableText>}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <Input />
-        </BaseForm.Item>
-
-        <BaseForm.Item
           name="mediatorPhoneNumber"
           label={<LableText>{t('common.phoneNumber')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
@@ -123,6 +115,32 @@ export const EditBroker: React.FC<EditBrokerProps> = ({ visible, onCancel, value
               if (validationInputNumber(e.target.value)) {
                 form.setFieldValue('mediatorPhoneNumber', e.target.value);
               } else form.setFieldValue('mediatorPhoneNumber', '');
+            }}
+            maxLength={9}
+            style={{ width: '100%' }}
+          />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="companyName"
+          label={<LableText>{t('brokers.companyName')}</LableText>}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="companyPhoneNumber"
+          label={<LableText>{t('brokers.companyPhoneNumber')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input
+            addonBefore={PHONE_NUMBER_CODE}
+            onChange={(e: any) => {
+              if (validationInputNumber(e.target.value)) {
+                form.setFieldValue('companyPhoneNumber', e.target.value);
+              } else form.setFieldValue('companyPhoneNumber', '');
             }}
             maxLength={9}
             style={{ width: '100%' }}

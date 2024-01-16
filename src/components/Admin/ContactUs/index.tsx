@@ -149,7 +149,7 @@ const ContactUs: React.FC = () => {
               </DetailsRow>
               <DetailsRow key={5}>
                 <DetailsTitle> {t('contactUs.phoneNumber')} </DetailsTitle>
-                <DetailsValue>{PHONE_NUMBER_CODE + contactData?.phoneNumber}</DetailsValue>
+                <DetailsValue>{PHONE_NUMBER_CODE + ' ' + contactData?.phoneNumber}</DetailsValue>
               </DetailsRow>
               <DetailsRow key={6}>
                 <DetailsTitle> {t('contactUs.facebook')} </DetailsTitle>

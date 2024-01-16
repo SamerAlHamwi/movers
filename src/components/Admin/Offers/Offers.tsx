@@ -25,7 +25,14 @@ import { useSelector } from 'react-redux';
 import Checkbox from 'antd/lib/checkbox/Checkbox';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { EditOutlined, LeftOutlined, RetweetOutlined, TagOutlined } from '@ant-design/icons';
+import {
+  CheckOutlined,
+  CloseOutlined,
+  EditOutlined,
+  LeftOutlined,
+  RetweetOutlined,
+  TagOutlined,
+} from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
@@ -294,6 +301,33 @@ export const Offers: React.FC = () => {
             {record.provider === 2 && record.selectedCompanies.companyBranch.numberOfTransfers}
           </>
         );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.isExtendStorage')}</Header>,
+      dataIndex: 'provider',
+      render: (index: number, record: any) => {
+        return (
+          <>
+            {record.isExtendStorage === true && (
+              <TableButton severity="success">
+                <CheckOutlined />
+              </TableButton>
+            )}
+            {record.isExtendStorage === false && (
+              <TableButton severity="error">
+                <CloseOutlined />
+              </TableButton>
+            )}
+          </>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('offers.priceForOnDayStorage')}</Header>,
+      dataIndex: 'priceForOnDayStorage',
+      render: (index: number, record: any) => {
+        return <>{record.priceForOnDayStorage == null ? '___' : record.priceForOnDayStorage}</>;
       },
     },
     {

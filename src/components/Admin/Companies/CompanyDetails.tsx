@@ -536,7 +536,7 @@ const CompanyDetails: React.FC = () => {
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>
-                    {companyData?.user?.registrationFullName == ' ' ? companyData?.user?.registrationFullName : '___'}
+                    {companyData?.user?.registrationFullName == ' ' ? '___' : companyData?.user?.registrationFullName}
                   </DetailsValue>
                 </ColStyle>
               </DetailsRow>

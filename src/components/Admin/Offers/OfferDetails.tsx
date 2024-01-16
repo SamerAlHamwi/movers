@@ -14,8 +14,8 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DataNode } from 'antd/es/tree';
 import { Button } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined } from '@ant-design/icons';
-import { TextBack } from '@app/components/GeneralStyles';
+import { CheckOutlined, CloseOutlined, LeftOutlined } from '@ant-design/icons';
+import { TableButton, TextBack } from '@app/components/GeneralStyles';
 
 export type specifierType = {
   name: string;
@@ -239,6 +239,36 @@ const OfferDetails: React.FC = () => {
                   )}
                 </ColStyle>
               </DetailsRow>
+
+              <DetailsRow>
+                <ColStyle>
+                  <DetailsTitle>{t('offers.isExtendStorage')}</DetailsTitle>
+                </ColStyle>
+                <ColStyle>
+                  <DetailsValue>
+                    {offerData?.isExtendStorage == false ? (
+                      <TableButton severity="error">
+                        <CloseOutlined />
+                      </TableButton>
+                    ) : (
+                      <TableButton severity="success">
+                        <CheckOutlined />
+                      </TableButton>
+                    )}
+                  </DetailsValue>
+                </ColStyle>
+              </DetailsRow>
+
+              {offerData?.isExtendStorage == true && (
+                <DetailsRow>
+                  <ColStyle>
+                    <DetailsTitle>{t('offers.priceForOnDayStorage')}</DetailsTitle>
+                  </ColStyle>
+                  <ColStyle>
+                    <DetailsValue>{offerData?.priceForOnDayStorage}</DetailsValue>
+                  </ColStyle>
+                </DetailsRow>
+              )}
 
               <DetailsRow>
                 <ColStyle>
