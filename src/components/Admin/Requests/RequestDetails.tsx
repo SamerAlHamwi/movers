@@ -18,6 +18,8 @@ import { BankOutlined, CheckOutlined, CloseOutlined, StopOutlined, TagOutlined }
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
+import moment from 'moment';
+import { DATE_TIME } from '@app/constants/appConstants';
 
 const { Meta } = Card;
 
@@ -363,7 +365,7 @@ const RequestDetails: React.FC = () => {
                   <DetailsTitle>{t('companies.creationTime')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{requestData?.user?.creationTime}</DetailsValue>
+                  <DetailsValue>{moment(requestData?.user?.creationTime).format(DATE_TIME)}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
 
@@ -393,7 +395,7 @@ const RequestDetails: React.FC = () => {
                 <DetailsValue
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                 >
-                  {requestData?.creationTime}
+                  {moment(requestData?.creationTime).format(DATE_TIME)}
                 </DetailsValue>
               </DetailsRow>
 
