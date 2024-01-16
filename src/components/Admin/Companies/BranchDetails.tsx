@@ -486,7 +486,7 @@ const BranchDetails: React.FC = () => {
                 </ColStyle>
                 <ColStyle>
                   <DetailsValue>
-                    {branchData?.user?.registrationFullName == ' ' ? branchData?.user?.registrationFullName : '___'}
+                    {branchData?.user?.registrationFullName == ' ' ? '___' : branchData?.user?.registrationFullName}
                   </DetailsValue>
                 </ColStyle>
               </DetailsRow>

@@ -848,7 +848,9 @@
     "returnOfferSuccessMessage": "تمت إعادة عرض السعر لمُقدِمه بنجاح",
     "offerDetails": "تفاصيل الغروض",
     "editOfferSuccessMessage": "تم تعديل عرض السعر بنجاح",
-    "editOfferModalTitle": "تعديل الملاحظة"
+    "editOfferModalTitle": "تعديل الملاحظة",
+    "isExtendStorage": "إمكانية تمديد فترة التخزين",
+    "priceForOnDayStorage": "تكلفة التخزين لليوم الإضافي الواحد"
   },
 
   "_comment24": "*********************************** points ************************************************",

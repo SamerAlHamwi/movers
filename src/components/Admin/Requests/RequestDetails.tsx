@@ -327,7 +327,7 @@ const RequestDetails: React.FC = () => {
                   <DetailsTitle>{t('companies.fullName')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{requestData?.user?.fullName ?? '___'}</DetailsValue>
+                  <DetailsValue>{requestData?.user?.registrationFullName ?? '___'}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
 

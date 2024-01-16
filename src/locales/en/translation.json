@@ -850,7 +850,9 @@
     "returnOfferSuccessMessage": "The Offer Has Been Returned Successfully",
     "offerDetails": "Offer Details",
     "editOfferSuccessMessage": "The Offer Has Been Edited Successfully",
-    "editOfferModalTitle": "Edit The Note"
+    "editOfferModalTitle": "Edit The Note",
+    "isExtendStorage": "Possibility Of Extending The Storage Period",
+    "priceForOnDayStorage": "Storage Cost For One Additional Day"
   },
 
   "_comment24": "*********************************** points ************************************************",

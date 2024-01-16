@@ -246,7 +246,7 @@ const BrokerDetails: React.FC = () => {
                   <DetailsValue>
                     {brokerData?.companyPhoneNumber == null || brokerData?.companyPhoneNumber == ' '
                       ? '___'
-                      : brokerData?.companyPhoneNumber}
+                      : brokerData?.dialCode + ' ' + brokerData?.companyPhoneNumber}
                   </DetailsValue>
                 </ColStyle>
               </DetailsRow>

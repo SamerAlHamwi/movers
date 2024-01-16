@@ -164,7 +164,9 @@ export const Brokers: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.companyName')}</Header>, dataIndex: 'companyName' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.phoneNumber')}</Header>,
-      dataIndex: 'mediatorPhoneNumber',
+      render: (record: any) => {
+        return <Space>{record?.dialCode + ' ' + record?.mediatorPhoneNumber}</Space>;
+      },
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.emailAddress')}</Header>, dataIndex: 'email' },
     {
