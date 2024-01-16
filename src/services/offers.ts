@@ -8,7 +8,7 @@ const getAllOffers = async (
   requestId?: string | undefined,
   companyId?: string | undefined,
   branchId?: string | undefined,
-  statues?: number | undefined,
+  statues?: string | undefined,
 ) => {
   const skip = page && pageSize ? (page - 1) * pageSize : undefined;
   return await httpApi.get(`${apiPrefix.offers}/GetAll`, {

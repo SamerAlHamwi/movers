@@ -80,6 +80,7 @@ export const Offers: React.FC = () => {
         requestId != undefined ? requestId : '',
         companyId != undefined ? companyId : '',
         branchId != undefined ? branchId : '',
+        requestId != undefined ? '1' : '',
       )
         .then((data) => {
           const result = data.data?.result?.items;
