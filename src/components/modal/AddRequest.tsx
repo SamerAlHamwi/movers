@@ -446,7 +446,7 @@ export const AddRequest: React.FC = () => {
       destinationAddress: form.getFieldValue('destinationAddress'),
       destinationLongitude: destinationPosition.lng,
       destinationLatitude: destinationPosition.lat,
-      arrivalAtUtc: needStorage ? form.getFieldValue('arrivalAtUtc') : form.getFieldValue('moveAtUtc'),
+      arrivalAtUtc: needStorage ? form.getFieldValue('arrivalAtUtc') : null,
 
       requestForQuotationContacts: [sourceContact, destinationContact],
       serviceType: valueRadio,
