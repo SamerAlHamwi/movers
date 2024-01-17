@@ -10,7 +10,6 @@ import {
   DeleteOutlined,
   TagOutlined,
   SnippetsOutlined,
-  ReloadOutlined,
   CheckOutlined,
   CloseOutlined,
   RetweetOutlined,
@@ -26,16 +25,13 @@ import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
-import { Header, CreateButtonText } from '../../GeneralStyles';
+import { Header } from '../../GeneralStyles';
 import { BranchModel } from '@app/interfaces/interfaces';
 import { TableButton } from '../../GeneralStyles';
 import { useParams, useNavigate } from 'react-router-dom';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
-import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { LeftOutlined } from '@ant-design/icons';
-import { TextBack } from '@app/components/GeneralStyles';
 import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
@@ -292,7 +288,7 @@ export const BranchesWithoutCompany: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('branch.region')}</Header>, dataIndex: ['region', 'name'] },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
-      dataIndex: ['company', 'commissionGroup'],
+      dataIndex: ['commissionForBranchWithOutCompany'],
       render: (record: BranchModel) => {
         return <> {record ? record + '%' : ''}</>;
       },

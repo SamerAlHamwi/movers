@@ -1,4 +1,4 @@
-import { CountryModel } from '../interfaces/interfaces';
+import { CommiossionSettingConfig } from '../interfaces/interfaces';
 import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
 
@@ -42,6 +42,16 @@ const UpdateDiscountPercentageSetting = async (data: any) => {
   return await httpApi.post(`${apiPrefix.configurations}/SetDiscountPercentage`, data);
 };
 
+const GetCommissionForBranchesWithoutCompany = async () => {
+  return await httpApi.get(`${apiPrefix.configurations}/GetCommissionForBranchesWithoutCompany`);
+};
+
+const SetCommissionForBranchesWithoutCompany = async (data: CommiossionSettingConfig) => {
+  console.log('data', data);
+
+  return await httpApi.post(`${apiPrefix.configurations}/SetCommissionForBranchesWithoutCompany`, data);
+};
+
 export {
   GetEmailSetting,
   UpdateEmailSetting,
@@ -53,4 +63,6 @@ export {
   UpdateHoursInSystemSetting,
   GetDiscountPercentageSetting,
   UpdateDiscountPercentageSetting,
+  GetCommissionForBranchesWithoutCompany,
+  SetCommissionForBranchesWithoutCompany,
 };

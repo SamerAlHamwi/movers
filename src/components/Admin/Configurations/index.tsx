@@ -6,6 +6,7 @@ import { SmsSetting } from './SmsSetting';
 import { FileSizeSetting } from './FileSizeSetting';
 import { HoursInSystemSetting } from './HoursInSystemSetting';
 import { DiscountPercentageSetting } from './DiscountPercentageSetting';
+import CommissionSetting from './CommissionSetting';
 
 export const Configurations: React.FC = () => {
   const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
@@ -25,6 +26,9 @@ export const Configurations: React.FC = () => {
         </Col>
         <Col span={24} style={{ marginBottom: '2rem' }}>
           <DiscountPercentageSetting />
+        </Col>
+        <Col span={24} style={{ marginBottom: '2rem' }}>
+          <CommissionSetting />
         </Col>
       </Row>
     </>

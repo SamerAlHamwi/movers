@@ -18,7 +18,7 @@ import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralSt
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
-import { getDayName } from '@app/constants/appFunctions';
+import { getDayName } from '@app/components/functions/GetDayName';
 
 const treeStyle = {
   width: '96%',

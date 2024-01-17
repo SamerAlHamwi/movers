@@ -24,7 +24,7 @@ import {
   LeftOutlined,
 } from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
-import { getDayName } from '@app/constants/appFunctions';
+import { getDayName } from '@app/components/functions/GetDayName';
 import { DATE_TIME } from '@app/constants/appConstants';
 import moment from 'moment';
 
