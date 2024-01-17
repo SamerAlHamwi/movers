@@ -45,17 +45,26 @@ export const SearchDropdown: React.FC<SearchOverlayProps> = ({
 
   const ref = useRef<any>(null);
 
+  console.log(location.pathname);
+
   return (
     <>
       <HeaderActionWrapper>
-        <InputSearch
-          width="100%"
-          value={query}
-          placeholder={t('header.search')}
-          onChange={handleSearchChange}
-          enterButton={null}
-          addonAfter={null}
-        />
+        {!(
+          location.pathname === '/' ||
+          location.pathname === '/commissionGroups' ||
+          location.pathname === '/contactUs' ||
+          location.pathname === '/Configurations'
+        ) && (
+          <InputSearch
+            width="100%"
+            value={query}
+            placeholder={t('header.search')}
+            onChange={handleSearchChange}
+            enterButton={null}
+            addonAfter={null}
+          />
+        )}
         <div ref={ref} />
       </HeaderActionWrapper>
     </>
