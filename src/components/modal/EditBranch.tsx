@@ -286,8 +286,6 @@ export const EditBranch: React.FC = () => {
     extractServicesIds(requestServices.length == 0 ? selectedServices : requestServicesArray);
 
     const updatedFormData = { ...formData };
-    console.log('companyId', companyId);
-
     branchInfo = {
       id: branchId,
       companyId: companyId == undefined ? 0 : companyId,
@@ -321,8 +319,6 @@ export const EditBranch: React.FC = () => {
       isWithCompany: companyId == undefined ? false : true,
     };
     setEnableEdit(true);
-
-    console.log('branchInfo', branchInfo);
   };
 
   useEffect(() => {
