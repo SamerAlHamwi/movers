@@ -26,6 +26,7 @@
     "leaflet-geosearch": "latest",
     "lodash": "^4.17.21",
     "moment": "latest",
+    "patch-package": "^6.4.7",
     "rc-picker": "latest",
     "react": "^17.0.2",
     "react-apexcharts": "^1.4.1",
