@@ -993,7 +993,12 @@
     "DiscountPercentageSetting": "Discount Percentage Setting",
     "discountPercentageIfUserCancelHisRequest": "Discount Percentage From The User If He Cancels His Request",
     "editDiscountPercentageSetting": "Edit Discount Percentages Setting",
-    "editDiscountPercentageSettingSuccessMessage": "The Discount Percentage Setting Has Been Edited Successfully"
+    "editDiscountPercentageSettingSuccessMessage": "The Discount Percentage Setting Has Been Edited Successfully",
+    "commissionSettings": "Commission Settings",
+    "commissionForBranchesWithOutCompany": "Commission For Branches With Out Company",
+    "editCommissionSetting": " Edit Commission Setting",
+
+    "editCommissionSettingSuccessMessage": "The Commission Setting Has Been Edited Successfully"
   },
 
   "_comment29": "*********************************** groups ************************************************",

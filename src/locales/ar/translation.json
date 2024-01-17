@@ -991,7 +991,11 @@
     "DiscountPercentageSetting": "إعدادات نسبة الخصم من المستخدم",
     "discountPercentageIfUserCancelHisRequest": "نسبة الخصم من المستخدم اذا قام بإلغاء طلبه",
     "editDiscountPercentageSetting": "تعديل إعدادات نسبة الخصم",
-    "editDiscountPercentageSettingSuccessMessage": "تم تعديل إعدادات نسبة الخصم بنجاح"
+    "editDiscountPercentageSettingSuccessMessage": "تم تعديل إعدادات نسبة الخصم بنجاح",
+    "commissionSettings": "إعدادات العمولة  ",
+    "commissionForBranchesWithOutCompany": "عمولة الفروع بدون شركة",
+    "editCommissionSetting": " تعديل إعدادات العمولة",
+    "editCommissionSettingSuccessMessage": "تم تعديل إعدادات العمولة بنجاح"
   },
 
   "_comment29": "*********************************** groups ************************************************",

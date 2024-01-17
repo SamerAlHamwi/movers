@@ -27,7 +27,7 @@ import { TableButton, TextBack } from '@app/components/GeneralStyles';
 import moment from 'moment';
 import { DATE_TIME } from '@app/constants/appConstants';
 import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
-import { getDayName } from '@app/constants/appFunctions';
+import { getDayName } from '@app/components/functions/GetDayName';
 
 export type specifierType = {
   name: string;

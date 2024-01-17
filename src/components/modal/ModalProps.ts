@@ -24,6 +24,7 @@ import {
   ApplicationsVersion,
   DiscountPercentageConfig,
   offerModel,
+  CommiossionSettingConfig,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -220,6 +221,11 @@ export interface EditEmailSettingProps extends ModalProps {
 export interface EditDiscountPercentageSettingProps extends ModalProps {
   values: DiscountPercentageConfig | undefined;
   onEdit: (data: DiscountPercentageConfig) => void;
+}
+
+export interface EditCommissionSettingProps extends ModalProps {
+  values: CommiossionSettingConfig | undefined;
+  onEdit: (data: CommiossionSettingConfig) => void;
 }
 
 export interface EditSmsSettingProps extends ModalProps {

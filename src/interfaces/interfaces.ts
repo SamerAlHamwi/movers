@@ -409,6 +409,10 @@ export interface DiscountPercentageConfig {
   discountPercentageIfUserCancelHisRequest: number;
 }
 
+export interface CommiossionSettingConfig {
+  commissionForBranchesWithOutCompany: number;
+}
+
 export interface SmsConfig {
   smsUserName: string;
   smsPassword: string;
