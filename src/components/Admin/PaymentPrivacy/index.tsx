@@ -62,7 +62,6 @@ const PaymentPolicy = () => {
         .then((data) => {
           const result = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
-          console.log('results', result);
           result?.forEach((element: PrivacyPolicy) => {
             const enTranslationIndex = element.translations?.findIndex(
               (translation: Translation) => translation.language === 'en',
@@ -87,7 +86,6 @@ const PaymentPolicy = () => {
   const pushprivacy = useMutation((data: PrivacyPolicy) =>
     createPrivacy({ ...data, isForMoney: true })
       .then((data) => {
-        console.log('data', data);
         notificationController.success({ message: t('paymentPrivacy.addPrivacySuccessMessage') });
         setRefetchOnAdd(data.data?.success);
       })

@@ -7,8 +7,11 @@ const searchSlice = createSlice({
     setSearchString: (state, action) => {
       return action.payload;
     },
+    resetSearch: (state) => {
+      return '';
+    },
   },
 });
 
-export const { setSearchString } = searchSlice.actions;
+export const { setSearchString, resetSearch } = searchSlice.actions;
 export default searchSlice.reducer;
