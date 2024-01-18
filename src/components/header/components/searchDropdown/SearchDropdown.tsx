@@ -30,7 +30,6 @@ export const SearchDropdown: React.FC<SearchOverlayProps> = ({
     const searchString = event?.target?.value ?? '';
     dispatch(setSearchString(searchString));
     setQuery(searchString);
-    console.log(searchString);
   };
 
   const [isFilterVisible, setFilterActive] = useState(false);

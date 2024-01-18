@@ -47,8 +47,6 @@ const GetCommissionForBranchesWithoutCompany = async () => {
 };
 
 const SetCommissionForBranchesWithoutCompany = async (data: CommiossionSettingConfig) => {
-  console.log('data', data);
-
   return await httpApi.post(`${apiPrefix.configurations}/SetCommissionForBranchesWithoutCompany`, data);
 };
 

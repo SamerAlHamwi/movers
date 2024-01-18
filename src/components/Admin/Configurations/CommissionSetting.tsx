@@ -82,8 +82,6 @@ const CommissionSetting = () => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
   };
 
-  console.log('commissionForBranchesWithOutCompany', commissionForBranchesWithOutCompany);
-
   return (
     <>
       <Row justify={'end'}>

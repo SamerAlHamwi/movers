@@ -21,8 +21,6 @@ const EditCommissionSetting: React.FC<EditCommissionSettingProps> = ({
   const { t } = useTranslation();
   const [form] = useForm();
 
-  console.log('values', values);
-
   const onOk = () => {
     form.submit();
   };
