@@ -28,7 +28,7 @@ const getAllUsers = async (
 };
 
 const getAllUsersForAddRequest = async (search: string) => {
-  return await httpApi.get(`${apiPrefix.users}/GetAll?UserType=2&KeyWord=${search}`);
+  return await httpApi.get(`${apiPrefix.users}/GetAll?GetBasicUserAndBrokerUsers=true&KeyWord=${search}`);
 };
 
 const Delete = async (id: number) => {
