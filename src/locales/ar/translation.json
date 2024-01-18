@@ -992,9 +992,9 @@
     "discountPercentageIfUserCancelHisRequest": "نسبة الخصم من المستخدم اذا قام بإلغاء طلبه",
     "editDiscountPercentageSetting": "تعديل إعدادات نسبة الخصم",
     "editDiscountPercentageSettingSuccessMessage": "تم تعديل إعدادات نسبة الخصم بنجاح",
-    "commissionSettings": "إعدادات العمولة  ",
+    "commissionSettings": "إعدادات العمولة",
     "commissionForBranchesWithOutCompany": "عمولة الفروع بدون شركة",
-    "editCommissionSetting": " تعديل إعدادات العمولة",
+    "editCommissionSetting": "تعديل إعدادات العمولة",
     "editCommissionSettingSuccessMessage": "تم تعديل إعدادات العمولة بنجاح"
   },
 

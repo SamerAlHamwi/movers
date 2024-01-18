@@ -190,10 +190,6 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
               pattern: /^[0-9]+$/,
               message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyNumbers')}</p>,
             },
-            // {
-            //   max: 8,
-            //   message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('brokers.tooManyNumbers')}</p>,
-            // },
           ]}
           style={{ marginTop: '-.5rem' }}
         >
@@ -206,14 +202,7 @@ export const AddBrokr: React.FC<CreateBrokrModalProps> = ({ visible, onCancel, o
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber
-            defaultValue={0}
-            min={0}
-            max={100}
-            formatter={(value) => `${value}%`}
-            parser={(value: any) => value!.replace('%', '')}
-            style={{ width: '100%' }}
-          />
+          <InputNumber defaultValue={0} min={0} max={100} style={{ width: '100%' }} addonAfter="%" />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

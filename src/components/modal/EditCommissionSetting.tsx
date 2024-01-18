@@ -21,6 +21,8 @@ const EditCommissionSetting: React.FC<EditCommissionSettingProps> = ({
   const { t } = useTranslation();
   const [form] = useForm();
 
+  console.log('values', values);
+
   const onOk = () => {
     form.submit();
   };
@@ -59,7 +61,7 @@ const EditCommissionSetting: React.FC<EditCommissionSettingProps> = ({
         initialValues={values}
         layout="vertical"
         onFinish={onFinish}
-        name="commissionForBranchesWithOutCompany"
+        name="EditCommissionForBranchesWithOutCompanySettingForm"
       >
         <BaseForm.Item
           name="commissionForBranchesWithOutCompany"

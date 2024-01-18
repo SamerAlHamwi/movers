@@ -1,3 +1,5 @@
+import { useEffect, useState } from 'react';
+import { useMutation, useQuery } from 'react-query';
 import { EditOutlined } from '@ant-design/icons';
 import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '@app/components/GeneralStyles';
 import EditCommissionSetting from '@app/components/modal/EditCommissionSetting';
@@ -9,10 +11,9 @@ import {
   GetCommissionForBranchesWithoutCompany,
   SetCommissionForBranchesWithoutCompany,
 } from '@app/services/configurations';
-import { Alert, Card, Row, Tooltip, message } from 'antd';
-import React, { useEffect, useState } from 'react';
+import { Alert, Row, Tooltip, message } from 'antd';
+import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
-import { useMutation, useQuery } from 'react-query';
 
 const CommissionSetting = () => {
   const [loading, setLoading] = useState(true);
@@ -22,7 +23,9 @@ const CommissionSetting = () => {
   const [editmodaldata, setEditmodaldata] = useState<any>(undefined);
   const [isEdit, setIsEdit] = useState<boolean>(false);
 
-  const [commissionForBranchesWithOutCompany, setCommissionForBranchesWithOutCompany] = useState<number>(0);
+  const [commissionForBranchesWithOutCompany, setCommissionForBranchesWithOutCompany] = useState<
+    CommiossionSettingConfig | undefined
+  >(undefined);
 
   const { t } = useTranslation();
   const { language } = useLanguage();
@@ -33,7 +36,7 @@ const CommissionSetting = () => {
     GetCommissionForBranchesWithoutCompany()
       .then((data: any) => {
         const result = data?.data?.result;
-        setCommissionForBranchesWithOutCompany(result?.commissionForBranchesWithOutCompany);
+        setCommissionForBranchesWithOutCompany(result);
         setLoading(!data.data?.success);
       })
       .catch((err: any) => {
@@ -79,6 +82,8 @@ const CommissionSetting = () => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
   };
 
+  console.log('commissionForBranchesWithOutCompany', commissionForBranchesWithOutCompany);
+
   return (
     <>
       <Row justify={'end'}>
@@ -93,6 +98,7 @@ const CommissionSetting = () => {
           />
         )}
       </Row>
+
       <Card
         title={t('config.commissionSettings')}
         bordered={false}
@@ -117,7 +123,7 @@ const CommissionSetting = () => {
             <DetailsTitle style={{ width: '95%', marginRight: '0' }}>
               {t('config.commissionForBranchesWithOutCompany')}
             </DetailsTitle>
-            <DetailsValue>{commissionForBranchesWithOutCompany}</DetailsValue>
+            <DetailsValue>{commissionForBranchesWithOutCompany?.commissionForBranchesWithOutCompany}</DetailsValue>
           </DetailsRow>
         </Details>
       </Card>

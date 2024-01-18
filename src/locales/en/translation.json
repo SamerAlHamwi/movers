@@ -995,9 +995,8 @@
     "editDiscountPercentageSetting": "Edit Discount Percentages Setting",
     "editDiscountPercentageSettingSuccessMessage": "The Discount Percentage Setting Has Been Edited Successfully",
     "commissionSettings": "Commission Settings",
-    "commissionForBranchesWithOutCompany": "Commission For Branches With Out Company",
+    "commissionForBranchesWithOutCompany": "Commission For Branches Without Company",
     "editCommissionSetting": " Edit Commission Setting",
-
     "editCommissionSettingSuccessMessage": "The Commission Setting Has Been Edited Successfully"
   },
 
