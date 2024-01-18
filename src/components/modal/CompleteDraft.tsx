@@ -990,10 +990,7 @@ export const CompleteDraft: React.FC = () => {
                           onChange={(e) => ChangeCountryHandler(e, 'source')}
                           defaultValue={RequestData?.sourceCity?.country?.name}
                         >
-                          {(valueRadio === LocationServicesValues.Internal
-                            ? UAE
-                            : GetAllCountry
-                          )?.data?.data?.result?.items?.map((ele: any) => {
+                          {UAE?.data?.data?.result?.items?.map((ele: any) => {
                             return (
                               <Option value={ele.id} key={ele?.id}>
                                 {ele.name}
@@ -1143,7 +1140,10 @@ export const CompleteDraft: React.FC = () => {
                           onChange={(e) => ChangeCountryHandler(e, 'destination')}
                           defaultValue={RequestData?.destinationCity?.country?.name}
                         >
-                          {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                          {(valueRadio === LocationServicesValues.Internal
+                            ? UAE
+                            : GetAllCountry
+                          )?.data?.data?.result?.items?.map((ele: any) => {
                             return (
                               <Option value={ele.id} key={ele?.id}>
                                 {ele.name}

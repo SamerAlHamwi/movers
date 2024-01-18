@@ -840,23 +840,24 @@ export const EditRequest: React.FC = () => {
 
           {current === 1 && (
             <Row className="fullContent" justify={'center'}>
-              {childAttributeChoices.map((item: any) => {
-                return (
-                  <Col key={item.id} span={12}>
-                    <UploadImageRequest
-                      item={item}
-                      uploadImageAction={uploadImageAction}
-                      images={filterImage(item.id) ?? []}
-                      handleDeleteImage={handleDeleteImage}
-                      previewOpen={previewOpen}
-                      previewTitle={previewTitle}
-                      handleCancel={handleCancel}
-                      previewImage={previewImage}
-                      handlePreviews={handlePreviews}
-                    />
-                  </Col>
-                );
-              })}
+              {childAttributeChoices &&
+                childAttributeChoices.map((item: any) => {
+                  return (
+                    <Col key={item.id} span={12}>
+                      <UploadImageRequest
+                        item={item}
+                        uploadImageAction={uploadImageAction}
+                        images={filterImage(item.id) ?? []}
+                        handleDeleteImage={handleDeleteImage}
+                        previewOpen={previewOpen}
+                        previewTitle={previewTitle}
+                        handleCancel={handleCancel}
+                        previewImage={previewImage}
+                        handlePreviews={handlePreviews}
+                      />
+                    </Col>
+                  );
+                })}
               <Row>
                 <p> add additional attachments for your request: </p>
                 <Upload
@@ -944,10 +945,7 @@ export const EditRequest: React.FC = () => {
                       onChange={(e) => ChangeCountryHandler(e, 'source')}
                       defaultValue={RequestData.sourceCity.country.name}
                     >
-                      {(valueRadio === LocationServicesValues.Internal
-                        ? UAE
-                        : GetAllCountry
-                      )?.data?.data?.result?.items?.map((ele: any) => {
+                      {UAE?.data?.data?.result?.items?.map((ele: any) => {
                         return (
                           <Option value={ele.id} key={ele?.id}>
                             {ele.name}
@@ -1098,7 +1096,10 @@ export const EditRequest: React.FC = () => {
                       onChange={(e) => ChangeCountryHandler(e, 'destination')}
                       defaultValue={RequestData.destinationCity.country.name}
                     >
-                      {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                      {(valueRadio === LocationServicesValues.Internal
+                        ? UAE
+                        : GetAllCountry
+                      )?.data?.data?.result?.items?.map((ele: any) => {
                         return (
                           <Option value={ele.id} key={ele?.id}>
                             {ele.name}

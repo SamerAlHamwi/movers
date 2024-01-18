@@ -903,10 +903,7 @@ export const AddRequest: React.FC = () => {
                     }
                     onChange={(e) => ChangeCountryHandler(e, 'source')}
                   >
-                    {(valueRadio === LocationServicesValues.Internal
-                      ? UAE
-                      : GetAllCountry
-                    )?.data?.data?.result?.items?.map((ele: any) => {
+                    {UAE?.data?.data?.result?.items?.map((ele: any) => {
                       return (
                         <Option value={ele.id} key={ele?.id}>
                           {ele.name}
@@ -1023,7 +1020,10 @@ export const AddRequest: React.FC = () => {
                     }
                     onChange={(e) => ChangeCountryHandler(e, 'destination')}
                   >
-                    {GetAllCountry?.data?.data?.result?.items?.map((ele: any) => {
+                    {(valueRadio === LocationServicesValues.Internal
+                      ? UAE
+                      : GetAllCountry
+                    )?.data?.data?.result?.items?.map((ele: any) => {
                       return (
                         <Option value={ele.id} key={ele?.id}>
                           {ele.name}
