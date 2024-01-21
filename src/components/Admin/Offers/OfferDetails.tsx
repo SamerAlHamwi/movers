@@ -270,6 +270,27 @@ const OfferDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
+              {/* reasonRefuse */}
+              {offerData?.statues == 7 && offerData?.reasonRefuse && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {t('requests.reasonReturnOffer')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={
+                      isDesktop || isTablet
+                        ? { width: '46%', margin: '0 2%', color: '#ff5252' }
+                        : { width: '80%', margin: '0 10%', color: '#ff5252' }
+                    }
+                  >
+                    {offerData?.reasonRefuse}
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('requests.comment')}</DetailsTitle>
