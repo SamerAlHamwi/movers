@@ -452,6 +452,7 @@ export interface Broker {
   isActive?: boolean | string;
   commissionPercentage: number;
   mediatorProfit: number;
+  moneyOwed: number;
 }
 export interface RegionModel {
   id: number;

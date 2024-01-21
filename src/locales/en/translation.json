@@ -437,7 +437,8 @@
     "viewRequestsViaBroker": "View Finished Requests Through This Broker",
     "points": "Broker Points",
     "companyPhoneNumber": "Company Phone Number",
-    "achievement": "Broker's Achievements"
+    "achievement": "Broker's Achievements",
+    "moneyOwed": "Amount Earned"
   },
 
   "_comment11": "*********************************** partners ************************************************",

@@ -184,6 +184,12 @@ export const Brokers: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.moneyOwed')}</Header>,
+      render: (index: number, record: Broker) => {
+        return <>{record.moneyOwed} </>;
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.numberServiceUsers')}</Header>,
       dataIndex: 'numberServiceUsers',
     },

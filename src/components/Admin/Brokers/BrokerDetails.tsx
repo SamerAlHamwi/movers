@@ -185,10 +185,10 @@ const BrokerDetails: React.FC = () => {
 
               <DetailsRow>
                 <ColStyle>
-                  <DetailsTitle>{t('brokers.points')}</DetailsTitle>
+                  <DetailsTitle>{t('brokers.moneyOwed')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{brokerData?.points}</DetailsValue>
+                  <DetailsValue>{brokerData?.moneyOwed}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
 
