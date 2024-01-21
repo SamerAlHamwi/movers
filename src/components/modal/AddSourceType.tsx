@@ -113,14 +113,6 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
           <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
         </BaseForm.Item>
         <BaseForm.Item
-          name="pointsToGiftMediator"
-          label={<LableText>{t('sourceTypes.pointsToGiftMediator')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
-        </BaseForm.Item>
-        <BaseForm.Item
           name="pointsToBuyRequest"
           label={<LableText>{t('sourceTypes.pointsToBuyRequest')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
