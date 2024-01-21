@@ -304,6 +304,27 @@ const BranchDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
+              {/* reasonRefuse */}
+              {(branchData?.statues == 3 || branchData?.statues == 4) && branchData?.reasonRefuse && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {branchData?.statues == 3 ? t('branch.reasonRejectBranch') : t('branch.reasonReturnBranch')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={
+                      isDesktop || isTablet
+                        ? { width: '46%', margin: '0 2%', color: '#ff5252' }
+                        : { width: '80%', margin: '0 10%', color: '#ff5252' }
+                    }
+                  >
+                    {branchData?.reasonRefuse}
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.timeOfWorks')}</DetailsTitle>

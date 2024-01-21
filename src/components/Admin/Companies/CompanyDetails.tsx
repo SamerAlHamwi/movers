@@ -329,6 +329,27 @@ const CompanyDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
+              {/* reasonRefuse */}
+              {(companyData?.statues == 3 || companyData?.statues == 4) && companyData?.reasonRefuse && (
+                <DetailsRow>
+                  <DetailsTitle
+                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  >
+                    {companyData?.statues == 3 ? t('companies.reasonRejectCompany') : t('requests.reasonReturnCompany')}
+                  </DetailsTitle>
+
+                  <DetailsValue
+                    style={
+                      isDesktop || isTablet
+                        ? { width: '46%', margin: '0 2%', color: '#ff5252' }
+                        : { width: '80%', margin: '0 10%', color: '#ff5252' }
+                    }
+                  >
+                    {companyData?.reasonRefuse}
+                  </DetailsValue>
+                </DetailsRow>
+              )}
+
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.timeOfWorks')}</DetailsTitle>

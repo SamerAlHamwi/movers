@@ -588,7 +588,7 @@ const RequestDetails: React.FC = () => {
                   <DetailsTitle
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
                   >
-                    {t('requests.reasonRefuse')}
+                    {t('reasonRefuseRequest.reasonRefuse')}
                   </DetailsTitle>
 
                   <DetailsValue
