@@ -68,7 +68,8 @@
   },
   "scripts": {
     "start": "yarn buildThemes && craco start",
-    "build": "yarn buildThemes && craco build",
+    "build": "yarn update-timestamp && yarn buildThemes && craco build",
+    "update-timestamp": "ts-node update-timestamp.ts",
     "test": "craco test",
     "eject": "craco eject",
     "lint": "eslint \"*/**/*.{js,ts,tsx}\" --fix",
@@ -112,6 +113,7 @@
     "stylelint-config-recommended": "^5.0.0",
     "stylelint-config-styled-components": "^0.1.1",
     "stylelint-processor-styled-components": "^1.10.0",
+    "ts-node": "^10.9.2",
     "webpack-bundle-analyzer": "^4.4.2",
     "webpackbar": "^5.0.0-3"
   },
