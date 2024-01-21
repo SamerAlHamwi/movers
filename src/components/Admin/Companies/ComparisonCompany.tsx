@@ -522,7 +522,7 @@ const ComparisonCompany: React.FC = () => {
                 </BaseForm.Item>
                 <BaseForm.Item label={<LableText>{t('common.bio_ar')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={oldCompanyData?.translations.find((item: any) => item.language == 'ar').bio}
+                    value={newCompanyData?.translations.find((item: any) => item.language == 'ar').bio}
                     readOnly
                     style={
                       oldCompanyData?.translations.find((item: any) => item.language == 'ar').bio !=
@@ -534,7 +534,7 @@ const ComparisonCompany: React.FC = () => {
                 </BaseForm.Item>
                 <BaseForm.Item label={<LableText>{t('common.bio_en')}</LableText>} style={{ marginTop: '-.5rem' }}>
                   <Input
-                    value={oldCompanyData?.translations.find((item: any) => item.language == 'en').bio}
+                    value={newCompanyData?.translations.find((item: any) => item.language == 'en').bio}
                     readOnly
                     style={
                       oldCompanyData?.translations.find((item: any) => item.language == 'en').bio !=
