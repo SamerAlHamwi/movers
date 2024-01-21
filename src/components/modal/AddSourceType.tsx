@@ -52,7 +52,7 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
 
   return (
     <Modal
-      style={{ marginTop: '0rem' }}
+      style={{ marginTop: '-4rem' }}
       open={visible}
       width={isDesktop ? '550px' : isTablet ? '500px' : '450px'}
       title={
