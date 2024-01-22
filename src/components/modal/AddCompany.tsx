@@ -5,7 +5,6 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE } from '@app/styles/themes/constants';
 import { CompanyModal, TimeworksProps } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
-import { UploadDragger } from '../common/Upload/Upload';
 import { useMutation, useQuery, useQueryClient } from 'react-query';
 import { uploadAttachment } from '@app/services/Attachment';
 import {
@@ -13,55 +12,28 @@ import {
   ClearOutlined,
   FileAddOutlined,
   HomeOutlined,
-  InboxOutlined,
-  LoadingOutlined,
   PictureOutlined,
   UserAddOutlined,
 } from '@ant-design/icons';
-import {
-  message,
-  Alert,
-  Button,
-  Col,
-  Input,
-  Modal,
-  Radio,
-  Row,
-  Steps,
-  Upload,
-  Tree,
-  Image,
-  Spin,
-  Checkbox,
-  TimePicker,
-} from 'antd';
+import { message, Alert, Button, Col, Input, Modal, Radio, Row, Steps, Upload, Tree, Image } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { notificationController } from '@app/controllers/notificationController';
-import { getAllCity, getCities, getCountries, getRegions, GetUAE } from '@app/services/locations';
-import { countries } from '../Admin/Locations/Countries';
+import { getCities, getCountries, getRegions, GetUAE } from '@app/services/locations';
 import { useNavigate } from 'react-router-dom';
-import { cities } from '../Admin/Locations/Cities';
 import { getServicesForCompany } from '@app/services/services';
-import { services } from '../Admin/Services';
 import { createCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
 import { TextArea } from '../Admin/Translations';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
-import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { RcFile, UploadFile } from 'antd/es/upload';
 import type { DataNode } from 'antd/es/tree';
 import { useLanguage } from '@app/hooks/useLanguage';
-import CreatableSelect from 'react-select/creatable';
 import CustomPasswordInput from '../common/inputs/InputPassword/CustomPasswordInput';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
-import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE } from '@app/constants/appConstants';
-import { CheckBox } from '../header/components/searchDropdown/searchOverlay/SearchFilter/SearchFilter.styles';
-import { DayOfWeek } from '@app/constants/enums/dayOfWeek';
-import moment from 'moment';
-import dayjs from 'dayjs';
+import { PHONE_NUMBER_CODE } from '@app/constants/appConstants';
 import WorkTimes from '../common/WorkTimes';
 
 const { Step } = Steps;
@@ -137,8 +109,8 @@ export const AddCompany: React.FC = () => {
   const { language } = useLanguage();
   const { isDesktop, isTablet, isMobile, mobileOnly } = useResponsive();
 
-  const [countryIdForCities, setCountryIdForCities] = useState<string>('0');
-  const [selectedCityValues, setSelectedCityValues] = useState<number[]>([]);
+  const [selectedCityIDs, setSelectedCityIDs] = useState<number[]>([]);
+  const [selectedCityNames, setSelectedCityNames] = useState<string[]>([]);
   const [countryId, setCountryId] = useState<string>('0');
   const [cityId, setCityId] = useState<string>('0');
   const [regionId, setRegionId] = useState<string>('0');
@@ -151,7 +123,6 @@ export const AddCompany: React.FC = () => {
   const [CommercialRegisterIds, setCommercialRegisterIds] = useState();
   const [additionalAttachmentIds, setAdditionalAttachmentIds] = useState();
   const [formData, setFormData] = useState<CompanyModal>(companyInfo);
-  const [formattedPhoneNumber, setFormattedPhoneNumber] = useState('');
   const [previewOpen, setPreviewOpen] = useState(false);
   const [previewImage, setPreviewImage] = useState('');
   const [previewTitle, setPreviewTitle] = useState('');
@@ -263,15 +234,12 @@ export const AddCompany: React.FC = () => {
       RegionsRefetch();
     }
   }, [cityId]);
+
   useEffect(() => {
     if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
       availableCitiesRefetch();
     }
   }, [countryIdForAvailableCities]);
-
-  const SelectCountryForAvilableCities = (e: any) => {
-    setCountryIdForCities(e);
-  };
 
   const ChangeCountryHandler = (e: any) => {
     setCountryId(e);
@@ -420,7 +388,7 @@ export const AddCompany: React.FC = () => {
       companyCommercialRegisterIds: updatedFormData.companyCommercialRegisterIds,
       comment: form.getFieldValue('comment'),
       regionId: regionId,
-      availableCitiesIds: selectedCityValues,
+      availableCitiesIds: selectedCityIDs,
       timeworks: selectedDays,
     };
 
@@ -457,10 +425,6 @@ export const AddCompany: React.FC = () => {
       <div className="ant-upload-text">Upload File</div>
     </div>
   );
-
-  const selectCities = (cities: any) => {
-    setSelectedCityValues(cities);
-  };
 
   return (
     <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
@@ -932,28 +896,32 @@ export const AddCompany: React.FC = () => {
               </Select>
             </BaseForm.Item>
 
-            <Spin spinning={isLoadingAvailableCities}>
-              <BaseForm.Item
-                label={<LableText>{t('companies.availableCities')}</LableText>}
-                style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
-                rules={[
-                  {
-                    required: true,
-                    message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
-                  },
-                ]}
+            <BaseForm.Item
+              name="citiesAvailable"
+              label={<LableText>{t('companies.availableCities')}</LableText>}
+              style={isDesktop || isTablet ? { width: '50%', margin: 'auto' } : { width: '80%', margin: '0 10%' }}
+              rules={[
+                {
+                  required: true,
+                  message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+                },
+              ]}
+            >
+              <Select
+                mode="multiple"
+                onChange={(selectedCities: any, selectedCityOptions) => {
+                  setSelectedCityNames(selectedCityOptions.map((item: any) => item.children));
+                  setSelectedCityIDs(selectedCityOptions.map((item: any) => item.key));
+                }}
+                value={selectedCityNames}
               >
-                {!isLoadingAvailableCities && (
-                  <Select mode="multiple" onChange={(cities: any) => setSelectedCityValues(cities)}>
-                    {availableCitiesData?.data?.result?.items.map((city: any) => (
-                      <Option key={city.id} value={city.id}>
-                        {city.name}
-                      </Option>
-                    ))}
-                  </Select>
-                )}
-              </BaseForm.Item>
-            </Spin>
+                {availableCitiesData?.data?.result?.items.map((city: any) => (
+                  <Option key={city.id} value={city.name}>
+                    {city.name}
+                  </Option>
+                ))}
+              </Select>
+            </BaseForm.Item>
           </>
         )}
         {current === 3 && (
