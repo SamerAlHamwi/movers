@@ -423,7 +423,7 @@ export const Companies: React.FC = () => {
       render: (index: number, record: CompanyModal) => {
         return (
           <>
-            {(record.statues === 0 || record.statues === 1) && (
+            {(record.statues === 0 || record.statues === 1) && !needToUpdate && (
               <Space>
                 <Tooltip placement="top" title={t('common.approve')}>
                   <TableButton
@@ -462,6 +462,11 @@ export const Companies: React.FC = () => {
                   </TableButton>
                 </Tooltip>
               </Space>
+            )}
+            {(record.statues === 0 || record.statues === 1) && needToUpdate && (
+              <Tag key={record?.id} color="#30af5b" style={{ padding: '4px' }}>
+                {t('companies.checking')}
+              </Tag>
             )}
             {record.statues === 2 && (
               <Tag key={record?.id} color="#01509a" style={{ padding: '4px' }}>
