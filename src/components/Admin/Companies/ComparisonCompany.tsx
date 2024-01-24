@@ -82,6 +82,7 @@ const ComparisonCompany: React.FC = () => {
           message.open({
             content: <Alert message={t('companies.rejectCompanySuccessMessage')} type={`success`} showIcon />,
           });
+        Navigate('/companies');
       })
       .catch((error) => {
         message.open({
@@ -188,7 +189,7 @@ const ComparisonCompany: React.FC = () => {
       </Row>
 
       <Row>
-        <Col style={{ width: '44%', margin: 'auto 3%' }}>
+        <Col style={{ width: '44%', margin: '3%' }}>
           <Cardd
             title={t('companies.oldCompany')}
             padding="0 1.25rem 1rem 1.25rem"
@@ -478,7 +479,7 @@ const ComparisonCompany: React.FC = () => {
           </Cardd>
         </Col>
 
-        <Col style={{ width: '44%', margin: 'auto 3%' }}>
+        <Col style={{ width: '44%', margin: '3%' }}>
           <Cardd
             title={t('companies.newCompany')}
             padding="0 1.25rem 1rem 1.25rem"
@@ -813,7 +814,7 @@ const ComparisonCompany: React.FC = () => {
             onCancel={() => setVisible(false)}
             onCreate={(info) => {
               rejectCompany.mutateAsync({
-                companyId: oldCompanyData.id,
+                companyId: newCompanyData.id,
                 statues: 3,
                 reasonRefuse: info.reasonRefuse,
               });

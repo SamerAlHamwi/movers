@@ -17,7 +17,7 @@ const getAllCompanies = async (
       KeyWord: search,
       SkipCount: skip,
       MaxResultCount: pageSize,
-      statues: statues,
+      statues: GetCompaniesThatNeedToUpdate ? 1 : statues,
       RequestId: type === 'companiesThatBoughtInfo' ? requestId : undefined,
       WhichBoughtInfoContact: type === 'companiesThatBoughtInfo' ? true : false,
       GetCompaniesThatNeedToUpdate: GetCompaniesThatNeedToUpdate,
