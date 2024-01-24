@@ -26,10 +26,9 @@ import {
   offerModel,
   CommiossionSettingConfig,
   TermModal,
+  PrivacyPolicyModal,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
-import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
-import { Term } from '../Admin/Terms';
 
 export interface ModalProps {
   visible: boolean;
@@ -125,7 +124,7 @@ export interface CreateNotificationModalProps extends ModalProps {
   isManager: boolean;
 }
 export interface CreateprivacyModalProps extends ModalProps {
-  onCreateprivacy: (PrivacyPolicy: PrivacyPolicy) => void;
+  onCreateprivacy: (PrivacyPolicy: PrivacyPolicyModal) => void;
 }
 export interface CreateTermModalProps extends ModalProps {
   onCreateTerm: (Term: TermModal) => void;
@@ -254,8 +253,8 @@ export interface EditNotifactionprops extends ModalProps {
   onEdit: (data: Notification) => void;
 }
 export interface Editprivacyprops extends ModalProps {
-  Priv_values: PrivacyPolicy | undefined;
-  onEdit: (data: PrivacyPolicy) => void;
+  values: PrivacyPolicyModal | undefined;
+  onEdit: (data: PrivacyPolicyModal) => void;
 }
 
 export interface EditCompanyProps extends ModalProps {

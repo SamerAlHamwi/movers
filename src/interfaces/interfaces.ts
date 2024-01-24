@@ -207,7 +207,16 @@ export interface TermModal {
   id?: number;
   translations: Translation[];
   app: number;
+  isActive?: boolean;
 }
+
+export type PrivacyPolicyModal = {
+  id?: number;
+  translations: Translation[];
+  isForMoney?: boolean;
+  app: number;
+  isActive?: boolean;
+};
 
 export interface UserModel {
   id: number;

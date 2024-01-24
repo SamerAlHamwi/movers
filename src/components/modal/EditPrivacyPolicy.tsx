@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Space, Modal } from 'antd';
+import { Space, Modal, Radio } from 'antd';
 import { Editprivacyprops } from './ModalProps';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
@@ -9,7 +9,7 @@ import { P1 } from '../common/typography/P1/P1';
 import { LableText } from '@app/components/GeneralStyles';
 import { TextArea } from '../../components/GeneralStyles';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
-import { LanguageType } from '@app/interfaces/interfaces';
+import { LanguageType, PrivacyPolicyModal } from '@app/interfaces/interfaces';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
 import { AR } from '@app/constants/appConstants';
 import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
@@ -18,7 +18,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
   visible,
   onCancel,
   onEdit,
-  Priv_values,
+  values,
   isLoading,
   title,
 }) => {
@@ -31,8 +31,8 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
   });
 
   useEffect(() => {
-    if (Priv_values) {
-      const firstElement = Priv_values?.translations[0];
+    if (values) {
+      const firstElement = values?.translations[0];
       if (firstElement?.language === AR) {
         setLang({
           ar: INDEX_ONE,
@@ -45,18 +45,20 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         });
       }
     }
-  }, [Priv_values]);
+  }, [values]);
 
   useEffect(() => {
-    isLoading ? '' : Priv_values !== undefined && form.setFieldsValue(Priv_values);
-  }, [Priv_values, isLoading]);
+    isLoading ? '' : values !== undefined && form.setFieldsValue(values);
+  }, [values, isLoading]);
 
   const onOk = () => {
     form.submit();
   };
 
-  const onFinish = (info: PrivacyPolicy) => {
-    info = Object.assign({}, info, {
+  const onFinish = (info: PrivacyPolicyModal) => {
+    const edited_data = {
+      app: info.app,
+      id: values?.id,
       translations: [
         {
           title: info.translations[0].title,
@@ -69,8 +71,8 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           language: 'ar' as LanguageType,
         },
       ],
-    });
-    onEdit(info);
+    };
+    onEdit(edited_data);
   };
 
   return (
@@ -78,12 +80,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
       style={{ marginTop: '-4rem' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
-      title={
-        <div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>
-          {/* {t('privacyPolicy.editPrivacyModalTitle')} */}
-          {t(`${title}`)}
-        </div>
-      }
+      title={<div style={{ fontSize: isDesktop || isTablet ? FONT_SIZE.xl : FONT_SIZE.lg }}>{t(`${title}`)}</div>}
       onCancel={onCancel}
       maskClosable={true}
       footer={
@@ -99,20 +96,37 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
         </BaseForm.Item>
       }
     >
-      <BaseForm
-        form={form}
-        layout="vertical"
-        initialValues={Priv_values}
-        onFinish={onFinish}
-        name="editPrivacyPolicyForm"
-      >
+      <BaseForm form={form} layout="vertical" initialValues={values} onFinish={onFinish} name="editPrivacyPolicyForm">
+        <BaseForm.Item
+          name="app"
+          label={<LableText>{t(`applicationsVersions.appType`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('applicationsVersions.Basic')}
+            </Radio>
+            <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('applicationsVersions.Partner')}
+            </Radio>
+            <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('requests.both')}
+            </Radio>
+          </Radio.Group>
+        </BaseForm.Item>
         <BaseForm.Item
           name={['translations', 0, 'title']}
           label={<LableText>{t(`common.title_en`)}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
+          <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name={['translations', 0, 'description']}
@@ -120,7 +134,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
+          <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name={['translations', 1, 'title']}
@@ -136,7 +150,7 @@ export const EditPrivacyPolicy: React.FC<Editprivacyprops> = ({
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'right', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
+          <TextArea style={{ textAlign: 'right', direction: 'ltr' }} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

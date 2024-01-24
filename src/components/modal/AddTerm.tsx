@@ -23,6 +23,7 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
   const onFinish = (value: TermModal) => {
     const data = {
       app: value.app,
+      isActive: true,
       translations: [
         {
           title: value.translations[0].title,

@@ -196,7 +196,7 @@ export const Term: React.FC = () => {
         setIsDeActivate(data.data?.success);
       })
       .catch((error) => {
-        message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
       }),
   );
 
@@ -250,7 +250,7 @@ export const Term: React.FC = () => {
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
-      render: (index: number, record: any) => {
+      render: (index: number, record: TermModal) => {
         return (
           <Space>
             <Tooltip placement="top" title={t('common.edit')}>
@@ -314,7 +314,7 @@ export const Term: React.FC = () => {
                   cancelText={
                     <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
                   }
-                  onConfirm={() => deActivateTerm.mutateAsync(record.id)}
+                  onConfirm={() => record.id && deActivateTerm.mutateAsync(record.id)}
                 >
                   <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
                     <TableText>{t('common.deactivate')}</TableText>
@@ -358,7 +358,7 @@ export const Term: React.FC = () => {
                   cancelText={
                     <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
                   }
-                  onConfirm={() => activateTerm.mutateAsync(record.id)}
+                  onConfirm={() => record.id && activateTerm.mutateAsync(record.id)}
                 >
                   <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
                     <TableText>{t('common.activate')}</TableText>

@@ -956,15 +956,10 @@
     "addPrivacySuccessMessage": "The Privacy Policy Has Been Added Successfully",
     "editPrivacySuccessMessage": "The Privacy Policy Has Been Edited Successfully",
     "deletePrivacySuccessMessage": "The Privacy Policy Has Been Deleted Successfully",
-    "TermsList": "Terms & Conditions List",
-    "addTermModalTitle": "Add Term",
-    "addTermSuccessMessage": "The Term Has Been Added Successfully",
-    "editTermModalTitle": "Edit Term",
-    "deleteTermModalTitle": "Delete Term",
-    "deleteTermModalDescription": "Are You Sure To Delete This Term?",
-    "deleteTermsSuccessMessage": "The Term Has Been Deleted Successfully",
-    "editTermSuccessMessage": "The Term Has Been Edited Successfully",
-    "addTerm": "Add Term"
+    "activatePrivacySuccessMessage": "Activate Privacy Policy Successfully!",
+    "deactivatePrivacySuccessMessage": "Deactivate Privacy Policy Successfully!",
+    "deactivatePrivacyConfirm": "Deactivate Privacy Policy?",
+    "activatePrivacyConfirm": "Activate Privacy Policy?"
   },
 
   "_comment28": "*********************************** config ************************************************",
@@ -1065,14 +1060,18 @@
 
   "_comment32": "*********************************** paymentPrivacy ************************************************",
   "paymentPrivacy": {
-    "paymentPrivacyList": "Payment Privacy List",
-    "addPrivacy": "Add Payment Privacy",
-    "editPrivacySuccessMessage": "The Payment Privacy Has Been Edited Successfully",
-    "deletePrivacySuccessMessage": "The Payment Privacy Has Been Deleted Successfully",
-    "addPrivacySuccessMessage": "The Payment Policy Has Been Added Successfully",
-    "deletePrivacytModalTitle": "Payment Privacy Reason",
-    "editPrivacyModalTitle": "Edit Payment Privacy",
-    "deletePrivacyModalDescription": "Are You Sure To Delete This Payment Privacy?"
+    "paymentPrivacyList": "Payment And Refund Policy List",
+    "addPrivacy": "Add Payment And Refund Policy",
+    "editPrivacySuccessMessage": "The Payment And Refund Policy Has Been Edited Successfully",
+    "deletePrivacySuccessMessage": "The Payment And Refund Policy Has Been Deleted Successfully",
+    "addPrivacySuccessMessage": "The Payment And Refund Policy Has Been Added Successfully",
+    "deletePrivacytModalTitle": "Payment And Refund Policy Reason",
+    "editPrivacyModalTitle": "Edit Payment And Refund Policy",
+    "deletePrivacyModalDescription": "Are You Sure To Delete This Payment And Refund Policy?",
+    "activatePrivacySuccessMessage": "Activate Payment And Refund Policy Successfully!",
+    "deactivatePrivacySuccessMessage": "Deactivate Payment And Refund Policy Successfully!",
+    "deactivatePrivacyConfirm": "Deactivate Payment And Refund Policy?",
+    "activatePrivacyConfirm": "Activate Payment And Refund Policy?"
   },
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",

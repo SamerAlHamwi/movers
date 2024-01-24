@@ -87,7 +87,7 @@ export const EditTerm: React.FC<EditTermprops> = ({ visible, onCancel, onEdit, v
         </BaseForm.Item>
       }
     >
-      <BaseForm form={form} layout="vertical" onFinish={onFinish} name="userForm">
+      <BaseForm form={form} layout="vertical" onFinish={onFinish} name="editTermForm">
         <BaseForm.Item
           name="app"
           label={<LableText>{t(`applicationsVersions.appType`)}</LableText>}

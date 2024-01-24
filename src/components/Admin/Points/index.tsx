@@ -211,7 +211,7 @@ export const Points: React.FC = () => {
         setIsDeActivate(data.data?.success);
       })
       .catch((error) => {
-        message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
       }),
   );
 

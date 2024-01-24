@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Modal } from 'antd';
+import { Space, Modal, Radio } from 'antd';
 import { CreateprivacyModalProps } from './ModalProps';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
@@ -8,9 +8,8 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { P1 } from '../common/typography/P1/P1';
 import { LableText } from '@app/components/GeneralStyles';
 import { TextArea } from '../../components/GeneralStyles';
-import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
-import { LanguageType } from '@app/interfaces/interfaces';
-import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { FONT_SIZE } from '@app/styles/themes/constants';
+import { LanguageType, PrivacyPolicyModal } from '@app/interfaces/interfaces';
 
 export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
   visible,
@@ -27,8 +26,10 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
     form.submit();
   };
 
-  const onFinish = (info: PrivacyPolicy) => {
+  const onFinish = (info: PrivacyPolicyModal) => {
     info = Object.assign({}, info, {
+      app: info.app,
+      isActive: true,
       translations: [
         {
           title: info.translations[0].title,
@@ -69,12 +70,35 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
     >
       <BaseForm form={form} layout="vertical" onFinish={onFinish} name="addPrivacyPolicyForm">
         <BaseForm.Item
+          name="app"
+          label={<LableText>{t(`applicationsVersions.appType`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('applicationsVersions.Basic')}
+            </Radio>
+            <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('applicationsVersions.Partner')}
+            </Radio>
+            <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('requests.both')}
+            </Radio>
+          </Radio.Group>
+        </BaseForm.Item>
+        <BaseForm.Item
           name={['translations', 0, 'title']}
           label={<LableText>{t(`common.title_en`)}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
+          <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name={['translations', 0, 'description']}
@@ -82,7 +106,7 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'left', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
+          <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name={['translations', 1, 'title']}
@@ -98,7 +122,7 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
-          <TextArea style={{ textAlign: 'right', direction: 'ltr', fontFamily: FONT_FAMILY.en }} />
+          <TextArea style={{ textAlign: 'right', direction: 'ltr' }} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>
