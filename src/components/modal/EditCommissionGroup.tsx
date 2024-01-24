@@ -3,7 +3,7 @@ import { Modal, Space } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { Input } from '../Admin/Translations';
+import { Input } from '../../components/GeneralStyles';
 import { EditGroupProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { useResponsive } from '@app/hooks/useResponsive';

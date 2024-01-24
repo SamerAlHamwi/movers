@@ -7,7 +7,7 @@ import { Button } from '../common/buttons/Button/Button';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { P1 } from '../common/typography/P1/P1';
 import { LableText } from '@app/components/GeneralStyles';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { LanguageType } from '@app/interfaces/interfaces';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -90,7 +90,7 @@ export const AddPrivacyPolicy: React.FC<CreateprivacyModalProps> = ({
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ margin: '-.5rem 0' }}
         >
-          <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
+          <TextArea style={{ textAlign: 'right', direction: 'rtl' }} />
         </BaseForm.Item>
         <BaseForm.Item
           name={['translations', 1, 'description']}

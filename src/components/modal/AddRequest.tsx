@@ -5,14 +5,14 @@ import { message, Steps, Radio, Image, Row, Space, Tree, DatePicker, Col } from 
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
-import { Input } from '../Admin/Translations';
+import { Input } from '../../components/GeneralStyles';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Checkbox } from '../common/Checkbox/Checkbox';
 import { BankOutlined, ClearOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
 import { useResponsive } from '@app/hooks/useResponsive';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { useQuery } from 'react-query';
 import { getServicesForRequest } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes, getSourceTypes } from '@app/services/sourceTypes';

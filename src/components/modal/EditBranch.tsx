@@ -20,7 +20,7 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import WorkTimes from '../common/WorkTimes';

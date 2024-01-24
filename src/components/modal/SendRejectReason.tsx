@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Space, Modal } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { SendRejectReasons } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { Button } from '../common/buttons/Button/Button';

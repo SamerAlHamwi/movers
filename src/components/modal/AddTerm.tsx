@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Modal } from 'antd';
+import { Space, Modal, Radio } from 'antd';
 import { CreateTermModalProps } from './ModalProps';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '../common/forms/BaseForm/BaseForm';
@@ -7,12 +7,11 @@ import { Button } from '../common/buttons/Button/Button';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { P1 } from '../common/typography/P1/P1';
 import { LableText } from '@app/components/GeneralStyles';
-import { TextArea } from '../Admin/Translations';
-import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
-import { LanguageType } from '@app/interfaces/interfaces';
-import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
+import { TextArea } from '../../components/GeneralStyles';
+import { FONT_SIZE } from '@app/styles/themes/constants';
+import { LanguageType, TermModal } from '@app/interfaces/interfaces';
 
-export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm, onCancel, isManager, isLoading }) => {
+export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm, onCancel, isLoading }) => {
   const { isDesktop, isTablet } = useResponsive();
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
@@ -21,10 +20,9 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
     form.submit();
   };
 
-  const onFinish = (value: PrivacyPolicy) => {
+  const onFinish = (value: TermModal) => {
     const data = {
-      title: 'string',
-      description: 'string',
+      app: value.app,
       translations: [
         {
           title: value.translations[0].title,
@@ -43,6 +41,7 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
 
   return (
     <Modal
+      style={{ marginTop: '-2rem' }}
       open={visible}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       title={
@@ -67,15 +66,33 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
     >
       <BaseForm form={form} layout="vertical" onFinish={onFinish} name="addTermForm">
         <BaseForm.Item
-          name={['translations', 0, 'title']}
-          label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
+          name="app"
+          label={<LableText>{t(`applicationsVersions.appType`)}</LableText>}
           rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
             {
-              pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
             },
           ]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Radio.Group style={{ display: 'flex', width: '100%' }}>
+            <Radio value={1} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('applicationsVersions.Basic')}
+            </Radio>
+            <Radio value={2} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('applicationsVersions.Partner')}
+            </Radio>
+            <Radio value={3} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('requests.both')}
+            </Radio>
+          </Radio.Group>
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name={['translations', 0, 'title']}
+          label={<LableText>{t(`notifications.englishtitle`)}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
@@ -83,13 +100,7 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 0, 'description']}
           label={<LableText>{t(`notifications.englishdescription`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[A-Za-z 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyEnglishCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'left', direction: 'ltr' }} />
@@ -97,13 +108,7 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 1, 'title']}
           label={<LableText>{t(`notifications.arabictitle`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ margin: '-.5rem 0' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'rtl' }} />
@@ -111,13 +116,7 @@ export const AddTerm: React.FC<CreateTermModalProps> = ({ visible, onCreateTerm,
         <BaseForm.Item
           name={['translations', 1, 'description']}
           label={<LableText>{t(`notifications.arabicdiscription`)}</LableText>}
-          rules={[
-            { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
-            {
-              pattern: /^[\u0600-\u06FF 0-9'"\/\|\-\`:;!@~#$%^&*?><=+_\(\){}\[\].,\\]+$/,
-              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.onlyArabicCharacters')}</p>,
-            },
-          ]}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >
           <TextArea style={{ textAlign: 'right', direction: 'ltr' }} />

@@ -5,6 +5,7 @@ import { InputNumber as In } from '@app/components/common/inputs/InputNumber/Inp
 import { Modal as M } from '@app/components/common/Modal/Modal';
 import { Table as T } from '@app/components/common/Table/Table';
 import { Button } from '@app/components/common/buttons/Button/Button';
+import { Input as Inp, TextArea as TA } from '@app/components/common/inputs/Input/Input';
 
 export const formItemLayout = {
   labelCol: { span: 24 },
@@ -153,4 +154,28 @@ export const Details = styled.div`
   flex-direction: column;
   gap: 1.25rem;
   margin: 1.25rem 0.5rem;
+`;
+
+export const Input = styled(Inp)`
+  font-size: 1rem;
+  display: block;
+  width: 100%;
+  @media only screen and ${media.md} {
+    font-size: 1.09rem;
+  }
+  @media only screen and ${media.xl} {
+    font-size: 1.12rem;
+  }
+`;
+
+export const TextArea = styled(TA)`
+  font-size: 1rem;
+  display: block;
+  width: 100%;
+  @media only screen and ${media.md} {
+    font-size: 1.09rem;
+  }
+  @media only screen and ${media.xl} {
+    font-size: 1.12rem;
+  }
 `;

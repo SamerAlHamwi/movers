@@ -8,7 +8,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { P1 } from '../common/typography/P1/P1';
 import { LableText, Text } from '@app/components/GeneralStyles';
 import { Select, Option } from '@app/components/common/selects/Select/Select';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { Notification } from '@app/components/Admin/Notifications';
@@ -117,7 +117,7 @@ export const PushNotification: React.FC<CreateNotificationModalProps> = ({
           ]}
           style={{ margin: '-.5rem 0' }}
         >
-          <TextArea style={{ textAlign: 'right', direction: 'rtl', fontFamily: FONT_FAMILY.ar }} />
+          <TextArea style={{ textAlign: 'right', direction: 'rtl' }} />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

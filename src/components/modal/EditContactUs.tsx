@@ -9,7 +9,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_FAMILY, FONT_SIZE } from '@app/styles/themes/constants';
 import { ContactUsModel, LanguageType } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
-import { TextArea, Input } from '../Admin/Translations';
+import { TextArea, Input } from '../../components/GeneralStyles';
 import { TimePicker } from 'antd';
 import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
@@ -173,7 +173,6 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
             style={{
               textAlign: 'right',
               direction: 'rtl',
-              fontFamily: FONT_FAMILY.ar,
               height: '5.015rem',
             }}
           />

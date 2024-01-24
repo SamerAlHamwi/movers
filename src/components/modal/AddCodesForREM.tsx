@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Space, Modal, Form, InputNumber, Radio, Select } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { Input } from '../Admin/Translations';
+import { Input } from '../../components/GeneralStyles';
 import { CreateCodeModalProps } from './ModalProps';
 import { P1 } from '../common/typography/P1/P1';
 import { Button } from '../common/buttons/Button/Button';

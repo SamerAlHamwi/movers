@@ -23,7 +23,7 @@ import { useNavigate } from 'react-router-dom';
 import { getServicesForCompany } from '@app/services/services';
 import { createCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { BaseButtonsForm } from '@app/components/common/forms/BaseButtonsForm/BaseButtonsForm';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';

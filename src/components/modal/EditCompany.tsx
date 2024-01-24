@@ -24,7 +24,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { getServicesForCompany } from '@app/services/services';
 import { getCompanyById, updateCompany } from '@app/services/companies';
 import { Card } from '@app/components/common/Card/Card';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { RcFile, UploadFile } from 'antd/es/upload';

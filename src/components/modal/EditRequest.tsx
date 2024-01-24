@@ -5,7 +5,7 @@ import { message, Steps, Radio, Image, Row, Col, Tree, DatePicker, Checkbox } fr
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { Card } from '@app/components/common/Card/Card';
 import { CreateButtonText, treeStyle, LableText, TextBack } from '../GeneralStyles';
-import { Input } from '../Admin/Translations';
+import { Input } from '../../components/GeneralStyles';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import _ from 'lodash';
 import { ClearOutlined, HomeOutlined, LeftOutlined, PushpinOutlined, UserOutlined } from '@ant-design/icons';
@@ -13,7 +13,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import 'react-phone-input-2/lib/style.css';
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { TextArea } from '../Admin/Translations';
+import { TextArea } from '../../components/GeneralStyles';
 import { useQuery } from 'react-query';
 import { getServicesForRequest } from '@app/services/services';
 import { getChildAttributeChoice, getAttributeForSourceTypes } from '@app/services/sourceTypes';
