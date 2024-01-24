@@ -25,6 +25,7 @@ import {
   DiscountPercentageConfig,
   offerModel,
   CommiossionSettingConfig,
+  TermModal,
 } from '@app/interfaces/interfaces';
 import { Notification } from '@app/components/Admin/Notifications';
 import { PrivacyPolicy } from '../Admin/PrivacyPolicy';
@@ -127,12 +128,11 @@ export interface CreateprivacyModalProps extends ModalProps {
   onCreateprivacy: (PrivacyPolicy: PrivacyPolicy) => void;
 }
 export interface CreateTermModalProps extends ModalProps {
-  onCreateTerm: (Term: Term) => void;
-  isManager: boolean;
+  onCreateTerm: (Term: TermModal) => void;
 }
 export interface EditTermprops extends ModalProps {
-  Term_values: Term | undefined;
-  onEdit: (data: Term) => void;
+  values: TermModal | undefined;
+  onEdit: (data: TermModal) => void;
 }
 
 export interface EditManagerProps extends ModalProps {

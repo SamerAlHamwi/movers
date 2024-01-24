@@ -1,23 +1,26 @@
 import React, { useState, useEffect } from 'react';
-import { useTranslation, Trans } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
-import { Alert, Row, Space, Tooltip, message } from 'antd';
+import { Alert, Popconfirm, Row, Space, Tooltip, message } from 'antd';
 import { Card } from 'components/common/Card/Card';
-import { Header, TableButton } from '../../GeneralStyles';
+import { Header, LableText, TableButton } from '../../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { notificationController } from '@app/controllers/notificationController';
 import { useAppSelector } from '@app/hooks/reduxHooks';
 import { Table, CreateButtonText } from '../../GeneralStyles';
-import { LanguageType } from '@app/interfaces/interfaces';
-import { DeleteOutlined, EditOutlined, ReloadOutlined } from '@ant-design/icons';
+import { LanguageType, TermModal } from '@app/interfaces/interfaces';
+import { DeleteOutlined, EditOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
-import { DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/terms';
+import { Activation, DeActivate, DeleteTerm, UpdateTerm, createTerm, getAllTerm } from '@app/services/terms';
 import { EditTerm } from '@app/components/modal/EditTerm';
 import { AddTerm } from '@app/components/modal/AddTerm';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { defineColorBySeverity } from '@app/utils/utils';
+import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import styled from 'styled-components';
 
 export type Translation = {
   title: string;
@@ -25,19 +28,13 @@ export type Translation = {
   language: LanguageType;
 };
 
-export type Term = {
-  id?: number;
-  description: string;
-  title: string;
-  translations: Translation[];
-};
-
 export const Term: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
   const user = useAppSelector((state) => state.user.user);
   const { t } = useTranslation();
+  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
 
-  const [TermsData, setTermsData] = useState<Term[] | undefined>(undefined);
+  const [TermsData, setTermsData] = useState<TermModal[] | undefined>(undefined);
   const [isOpenPushModalForm, setIsOpenPushModalForm] = useState(false);
   const [page, setPage] = useState(1);
   const [totalCount, setTotalCount] = useState<number>(1);
@@ -46,29 +43,36 @@ export const Term: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isOpenDeleteModalForm, setIsOpenDeleteModalForm] = useState(false);
-  const [editmodaldata, setEditmodaldata] = useState<Term | undefined>(undefined);
+  const [editmodaldata, setEditmodaldata] = useState<TermModal | undefined>(undefined);
   const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
-  const [deletemodaldata, setDeletemodaldata] = useState<Term | undefined>(undefined);
-  const { isTablet, isMobile, isDesktop } = useResponsive();
+  const [deletemodaldata, setDeletemodaldata] = useState<TermModal | undefined>(undefined);
   const [refetchOnAddTerm, setRefetchOnAddTerm] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [isActivate, setIsActivate] = useState(false);
+  const [isDeActivate, setIsDeActivate] = useState(false);
+  const [isHover, setIsHover] = useState(false);
+
+  const TableText = styled.div`
+    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
+    font-weight: ${FONT_WEIGHT.regular};
+  `;
 
   const { refetch, isRefetching } = useQuery(
-    ['Term messages', page, isDelete, pageSize, refetchOnAddTerm],
+    ['Terms', page, isDelete, pageSize, refetchOnAddTerm],
     () =>
       getAllTerm(page, pageSize, searchString)
         .then((data) => {
           const Terms = data.data?.result?.items;
           setTotalCount(data.data?.result?.totalCount);
-          Terms?.forEach((element: Term) => {
-            const enTranslationIndex = element.translations?.findIndex(
-              (translation: Translation) => translation.language === 'en',
-            );
-            if (enTranslationIndex > -1) {
-              const enTranslation = element.translations.splice(enTranslationIndex, 1);
-              element.translations.unshift(enTranslation[0]);
-            }
-          });
+          // Terms?.forEach((element: TermModal) => {
+          //   const enTranslationIndex = element.translations?.findIndex(
+          //     (translation: Translation) => translation.language === 'en',
+          //   );
+          //   if (enTranslationIndex > -1) {
+          //     const enTranslation = element.translations.splice(enTranslationIndex, 1);
+          //     element.translations.unshift(enTranslation[0]);
+          //   }
+          // });
           setTermsData(Terms);
           setIsLoading(!data.data?.success);
         })
@@ -87,14 +91,27 @@ export const Term: React.FC = () => {
     setIsDelete(false);
     setIsEdit(false);
     setRefetchOnAddTerm(false);
-  }, [isDelete, isEdit, refetchOnAddTerm, page, pageSize, searchString, refetch, refetchData]);
+    setIsActivate(false);
+    setIsDeActivate(false);
+  }, [
+    isDelete,
+    isEdit,
+    refetchOnAddTerm,
+    page,
+    pageSize,
+    searchString,
+    refetch,
+    refetchData,
+    isActivate,
+    isDeActivate,
+  ]);
 
   useEffect(() => {
     if (isRefetching) setIsLoading(true);
     else setIsLoading(false);
   }, [isRefetching]);
 
-  const addTerm = useMutation((data: Term) =>
+  const addTerm = useMutation((data: TermModal) =>
     createTerm(data)
       .then((data) => {
         notificationController.success({ message: t('terms.addTermSuccessMessage') });
@@ -137,9 +154,9 @@ export const Term: React.FC = () => {
   useEffect(() => {
     setIsOpenDeleteModalForm(deleteTerm.isLoading);
   }, [deleteTerm.isLoading]);
-  const editTerm = useMutation((data: Term) => UpdateTerm(data));
+  const editTerm = useMutation((data: TermModal) => UpdateTerm(data));
 
-  const handleEdit = (data: Term, id: number) => {
+  const handleEdit = (data: TermModal, id: number) => {
     editTerm
       .mutateAsync({ ...data, id })
       .then((data) => {
@@ -156,6 +173,32 @@ export const Term: React.FC = () => {
   useEffect(() => {
     setIsOpenEditModalForm(editTerm.isLoading);
   }, [editTerm.isLoading]);
+
+  const activateTerm = useMutation((id: number) =>
+    Activation(id)
+      .then((data) => {
+        message.open({
+          content: <Alert message={t('terms.activateTermSuccessMessage')} type="success" showIcon />,
+        });
+        setIsActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
+      }),
+  );
+
+  const deActivateTerm = useMutation((id: number) =>
+    DeActivate(id)
+      .then((data) => {
+        message.open({
+          content: <Alert message={t('terms.deactivateTermSuccessMessage')} type="success" showIcon />,
+        });
+        setIsDeActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="success" showIcon /> });
+      }),
+  );
 
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
@@ -188,6 +231,23 @@ export const Term: React.FC = () => {
       },
     },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('applicationsVersions.appType')}</Header>,
+      dataIndex: 'app',
+      render: (record: number) => {
+        return (
+          <>
+            {record === 1
+              ? t('applicationsVersions.Basic')
+              : record === 2
+              ? t('applicationsVersions.Partner')
+              : record === 3
+              ? t('requests.both')
+              : ''}
+          </>
+        );
+      },
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
@@ -216,6 +276,96 @@ export const Term: React.FC = () => {
                 <DeleteOutlined />
               </TableButton>
             </Tooltip>
+
+            {record.isActive === true ? (
+              <Tooltip placement="top" title={t('common.deactivate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('terms.deactivateTermConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {deActivateTerm.isLoading ? (
+                        <>
+                          {t(`common.deactivate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.deactivate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => deActivateTerm.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.deactivate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            ) : (
+              <Tooltip placement="top" title={t('common.activate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('terms.activateTermConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {activateTerm.isLoading ? (
+                        <>
+                          {t(`common.activate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.activate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => activateTerm.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.activate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            )}
           </Space>
         );
       },
@@ -244,13 +394,10 @@ export const Term: React.FC = () => {
           >
             <CreateButtonText>{t('terms.addTerm')}</CreateButtonText>
           </Button>
-
           <ReloadBtn setRefetchData={setRefetchData} />
-
           {/*    Add    */}
           {isOpenPushModalForm && (
             <AddTerm
-              isManager={user.userType === 0 ? false : true}
               visible={isOpenPushModalForm}
               onCancel={() => setIsOpenPushModalForm(false)}
               onCreateTerm={(data) => {
@@ -259,18 +406,17 @@ export const Term: React.FC = () => {
               isLoading={addTerm.isLoading}
             />
           )}
-
+          {console.log(editmodaldata)}
           {/*    EDIT    */}
           {isOpenEditModalForm && (
             <EditTerm
-              Term_values={editmodaldata}
+              values={editmodaldata}
               visible={isOpenEditModalForm}
               onCancel={() => setIsOpenEditModalForm(false)}
               onEdit={(data) => editmodaldata !== undefined && handleEdit(data, editmodaldata.id ?? 0)}
               isLoading={editTerm.isLoading}
             />
           )}
-
           {/*    Delete    */}
           {isOpenDeleteModalForm && (
             <ActionModal

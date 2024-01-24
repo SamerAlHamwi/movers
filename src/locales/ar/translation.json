@@ -777,7 +777,11 @@
     "editTermSuccessMessage": "تم تعديل الشرط بنجاح",
     "deleteTermModalDescription": "هل أنت متأكد من حذف هذا الحُكم",
     "deleteTermsSuccessMessage": "تم حذف الحُكم بنجاح",
-    "addTerm": "إضافة حُكم أو شرط"
+    "addTerm": "إضافة حُكم أو شرط",
+    "activateTermSuccessMessage": "تم تفعيل الحُكم",
+    "deactivateTermSuccessMessage": "تم إلغاء تفعيل الحُكم",
+    "deactivateTermConfirm": "إلغاء تفعيل حالة الحُكم؟",
+    "activateTermConfirm": "تفعيل حالة الحُكم؟"
   },
 
   "_comment21": "*********************************** asks ************************************************",

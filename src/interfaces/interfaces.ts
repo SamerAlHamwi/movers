@@ -203,6 +203,12 @@ export interface UserDto {
   password: string;
 }
 
+export interface TermModal {
+  id?: number;
+  translations: Translation[];
+  app: number;
+}
+
 export interface UserModel {
   id: number;
   userName: string;

@@ -779,7 +779,11 @@
     "deleteTermModalDescription": "Are You Sure To Delete This Term?",
     "deleteTermsSuccessMessage": "The Term Has Been Deleted Successfully",
     "editTermSuccessMessage": "The Term Has Been Edited Successfully",
-    "addTerm": "Add Term"
+    "addTerm": "Add Term",
+    "activateTermSuccessMessage": "Activate Term Successfully!",
+    "deactivateTermSuccessMessage": "Deactivate Term Successfully!",
+    "deactivateTermConfirm": "Deactivate Term?",
+    "activateTermConfirm": "Activate Term?"
   },
 
   "_comment21": "*********************************** asks ************************************************",
