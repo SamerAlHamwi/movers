@@ -508,7 +508,7 @@ export const EditBranch: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input />
+                      <TextArea />
                     </BaseForm.Item>
                   </Col>
                   <Col
@@ -529,7 +529,7 @@ export const EditBranch: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input />
+                      <TextArea />
                     </BaseForm.Item>
                   </Col>
                 </Row>
