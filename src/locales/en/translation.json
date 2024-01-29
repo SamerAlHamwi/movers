@@ -9,6 +9,7 @@
     "attachment": "Attachment",
     "icon": "Icon",
     "phoneNumber": "Phone Number",
+    "telephoneNumber": "Telephone Number",
     "emailAddress": "Email Address",
     "bio": "BIO",
     "bio_ar": "Arabic BIO",
@@ -236,6 +237,7 @@
     "editContactModalTitle": "Edit Contact Information",
     "emailAddress": "Email Address",
     "phoneNumber": "Phone Number",
+    "whatsNumber": "WhatsApp",
     "facebook": "Facebook",
     "instgram": "instgram",
     "twitter": "Twitter",
@@ -253,7 +255,9 @@
       "Thursday": "Thursday",
       "Friday": "Friday",
       "Saturday": "Saturday"
-    }
+    },
+    "addContactUs": "Add Contact Information",
+    "addContactInfoSuccessMessage": "Contact Information Has Been successfully Added"
   },
 
   "_comment5": "*********************************** services ************************************************",

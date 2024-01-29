@@ -51,6 +51,10 @@ export interface CreateNumberModalProps extends ModalProps {
   onCreate: (info: string) => void;
 }
 
+export interface CreateContactModalProps extends ModalProps {
+  onCreate: (info: ContactUsModel) => void;
+}
+
 export interface CreateRejectReasonModalProps extends ModalProps {
   onCreate: (info: RejectReason) => void;
 }

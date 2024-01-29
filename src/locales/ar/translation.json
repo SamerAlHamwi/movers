@@ -8,7 +8,8 @@
     "title_en": "العنوان بالإنكليزية",
     "attachment": "صورة",
     "icon": "الأيقونة",
-    "phoneNumber": "رقم الهاتف",
+    "phoneNumber": "رقم الموبايل",
+    "telephoneNumber": "رقم الهاتف",
     "emailAddress": "عنوان البريد الإلكتروني",
     "bio": "الوصف",
     "bio_ar": "الوصف بالعربية",
@@ -103,7 +104,7 @@
     "loginInfo": "أدخل البريد الإلكتروني وكلمة المرور",
     "noAccount": "ليس لديك حساب؟ قم بتسجيل حساب جديد ",
     "email": "البريد الإلكتروني",
-    "emailOrPhoneNumber": "البريد الإلكتروني أو رقم الهاتف",
+    "emailOrPhoneNumber": "البريد الإلكتروني أو رقم الموبايل",
     "password": "كلمة المرور",
     "rememberMe": "تذكرني",
     "userNameorEmail": "اسم المستخدم أو البريد الإلكتروني",
@@ -234,7 +235,8 @@
     "contactUsInfo": "معلومات التواصل",
     "editContactModalTitle": "تعديل معلومات التواصل",
     "emailAddress": "عنوان البريد الإلكتروني",
-    "phoneNumber": "رقم الهاتف",
+    "phoneNumber": "رقم الموبايل",
+    "whatsNumber": "واتساب",
     "facebook": "فيسبوك",
     "instgram": "إنستغرام",
     "twitter": "تويتر",
@@ -252,7 +254,9 @@
       "Thursday": "الخميس",
       "Friday": "الجمعة",
       "Saturday": "السبت"
-    }
+    },
+    "addContactUs": "إضافة معلومات التواصل",
+    "addContactInfoSuccessMessage": "تمت إضافة معلومات التواصل بنجاح!"
   },
 
   "_comment5": "*********************************** services ************************************************",

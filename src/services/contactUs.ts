@@ -1,12 +1,12 @@
-import { CountryModel } from './../interfaces/interfaces';
 import { httpApi } from '@app/api/httpApi';
 import apiPrefix from '@app/constants/apiPrefix';
+import { ContactUsModel } from '@app/interfaces/interfaces';
 
 const getContactUs = async () => {
   return await httpApi.get(`${apiPrefix.contactUs}/Get`);
 };
 
-const AddCotactUs = async (data: CountryModel) => {
+const AddCotactUs = async (data: ContactUsModel) => {
   return await httpApi.post(`${apiPrefix.contactUs}/Create`, data);
 };
 

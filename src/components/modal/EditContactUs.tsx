@@ -92,6 +92,7 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         >
           <Input />
         </BaseForm.Item>
+
         <BaseForm.Item
           name={['translations', 0, 'name']}
           label={<LableText>{t('common.name_ar')}</LableText>}
@@ -121,6 +122,7 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         >
           <Input />
         </BaseForm.Item>
+
         <BaseForm.Item
           name={['translations', 0, 'address']}
           label={<LableText>{t('common.address_ar')}</LableText>}
@@ -157,6 +159,7 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
             }}
           />
         </BaseForm.Item>
+
         <BaseForm.Item
           name={['translations', 0, 'description']}
           label={<LableText>{t('common.description_ar')}</LableText>}
@@ -192,36 +195,50 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         >
           <Input />
         </BaseForm.Item>
+
         <BaseForm.Item
           name="phoneNumber"
+          label={<LableText>{t('common.phoneNumber')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
-          label={<LableText>{t('contactUs.phoneNumber')}</LableText>}
-          rules={[
-            { required: true, message: t('common.requiredField') },
-            () => ({
-              validator(_, value) {
-                if (!value || isValidPhoneNumber(value)) {
-                  return Promise.resolve();
-                }
-                if (value.length > PHONE_NUMBER_LENGTH) {
-                  return Promise.reject(new Error(t('auth.phoneNumberIsLong')));
-                } else if (value.length < PHONE_NUMBER_LENGTH) {
-                  return Promise.reject(new Error(t('auth.phoneNumberIsShort')));
-                }
-              },
-            }),
-          ]}
         >
           <Input
             addonBefore={PHONE_NUMBER_CODE}
             onChange={(e: any) => {
               if (validationInputNumber(e.target.value)) {
-                form.setFieldValue(['phoneNumber'], e.target.value);
-              } else form.setFieldValue(['phoneNumber'], '');
+                form.setFieldValue('phoneNumber', e.target.value);
+              } else form.setFieldValue('phoneNumber', '');
             }}
             maxLength={9}
+            style={{ width: '100%' }}
           />
         </BaseForm.Item>
+
+        <BaseForm.Item
+          name="telephoneNumber"
+          label={<LableText>{t('common.telephoneNumber')}</LableText>}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+        >
+          <Input
+            onChange={(e: any) => {
+              if (validationInputNumber(e.target.value)) {
+                form.setFieldValue('telephoneNumber', e.target.value);
+              } else form.setFieldValue('telephoneNumber', '');
+            }}
+            style={{ width: '100%' }}
+          />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name="whatsNumber"
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          style={{ marginTop: '-.5rem' }}
+          label={<LableText>{t('contactUs.whatsNumber')}</LableText>}
+        >
+          <Input />
+        </BaseForm.Item>
+
         <BaseForm.Item
           name="facebook"
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
@@ -230,6 +247,7 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         >
           <Input />
         </BaseForm.Item>
+
         <BaseForm.Item
           name="instgram"
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
@@ -238,6 +256,7 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
         >
           <Input />
         </BaseForm.Item>
+
         <BaseForm.Item
           name="twitter"
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}

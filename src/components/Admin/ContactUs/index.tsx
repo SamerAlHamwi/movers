@@ -7,7 +7,7 @@ import { PageTitle } from '@app/components/common/PageTitle/PageTitle';
 import { Spinner } from '@app/components/common/Spinner/Spinner';
 import { notificationController } from '@app/controllers/notificationController';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { UpdateContactUs, getContactUs } from '@app/services/contactUs';
+import { AddCotactUs, UpdateContactUs, getContactUs } from '@app/services/contactUs';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Button } from '@app/components/common/buttons/Button/Button';
 import { EditOutlined } from '@ant-design/icons';
@@ -16,6 +16,8 @@ import { CreateButtonText } from '../../GeneralStyles';
 import styled from 'styled-components';
 import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE, TIME_HOURS_MINUTES } from '@app/constants/appConstants';
 import dayjs from 'dayjs';
+import { ContactUsModel } from '@app/interfaces/interfaces';
+import { AddContactUs } from '@app/components/modal/AddContactUs';
 
 export type specifierType = {
   name: string;
@@ -31,13 +33,27 @@ const ContactUs: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
 
+  const [modalState, setModalState] = useState({
+    add: false,
+    edit: false,
+  });
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [contactData, setContacData] = useState<any>();
-  const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
+  // const [isOpenEditModalForm, setIsOpenEditModalForm] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<any | undefined>(undefined);
   const [startDay, setStartDay] = useState<string | undefined>('');
   const [endDay, setEndDay] = useState<string | undefined>('');
+  const [noData, setNoData] = useState<boolean>(false);
+  const [refetchOnAdd, setRefetchOnAdd] = useState(false);
+
+  const handleModalOpen = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
+  };
+
+  const handleModalClose = (modalType: any) => {
+    setModalState((prevModalState) => ({ ...prevModalState, [modalType]: false }));
+  };
 
   const DetailsRow = styled.div`
     display: flex;
@@ -64,6 +80,7 @@ const ContactUs: React.FC = () => {
     gap: 1.25rem;
     margin: 1.25rem 0.5rem;
   `;
+
   const { refetch, isRefetching } = useQuery(['getContactUs'], () =>
     getContactUs()
       .then((data) => {
@@ -72,12 +89,31 @@ const ContactUs: React.FC = () => {
         setLoading(!data.data?.success);
       })
       .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
+        console.log(error);
+        if ((error = '{0} Not Found700')) {
+          setNoData(true);
+        } else notificationController.error({ message: error.message || error.error?.message });
         setLoading(false);
       }),
   );
 
-  const handleEdit = (data: any) => {
+  const addContactInfo = useMutation((data: ContactUsModel) =>
+    AddCotactUs(data)
+      .then((data) => {
+        notificationController.success({ message: t('contactUs.addContactInfoSuccessMessage') });
+        setRefetchOnAdd(data.data?.success);
+        setNoData(false);
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+      }),
+  );
+
+  useEffect(() => {
+    setModalState((prevModalState) => ({ ...prevModalState, add: addContactInfo.isLoading }));
+  }, [addContactInfo.isLoading]);
+
+  const handleEdit = (data: ContactUsModel) => {
     editContactInfo
       .mutateAsync({ ...data })
       .then((data) => {
@@ -91,7 +127,7 @@ const ContactUs: React.FC = () => {
       });
   };
 
-  const editContactInfo = useMutation((data: any) => UpdateContactUs(data));
+  const editContactInfo = useMutation((data: ContactUsModel) => UpdateContactUs(data));
 
   useEffect(() => {
     if (isRefetching) {
@@ -103,10 +139,11 @@ const ContactUs: React.FC = () => {
     setLoading(true);
     refetch();
     setIsEdit(false);
-  }, [isEdit, refetch, language]);
+    setRefetchOnAdd(false);
+  }, [isEdit, refetch, language, refetchOnAdd]);
 
   useEffect(() => {
-    setIsOpenEditModalForm(editContactInfo.isLoading);
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editContactInfo.isLoading }));
   }, [editContactInfo.isLoading]);
 
   useEffect(() => {
@@ -120,91 +157,139 @@ const ContactUs: React.FC = () => {
     setEndDay(endDay?.dayName);
   };
 
+  console.log('contactData', contactData);
+
   return (
     <>
-      <PageTitle>{t('contactUs.contactUsInfo')}</PageTitle>
-      <Row>
+      {noData && (
         <Card
           title={t('contactUs.contactUsInfo')}
-          padding="0 1.25rem 1rem 1.25rem"
-          style={{ width: '100%', height: 'auto' }}
+          padding={contactData == undefined || contactData == null ? '1.25rem 1.25rem 1.25rem' : '1.25rem 1.25rem 0'}
         >
-          <Spinner spinning={loading}>
-            <Details>
-              <DetailsRow key={1}>
-                <DetailsTitle>{t('common.name')}</DetailsTitle>
-                <DetailsValue>{contactData?.name}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={2}>
-                <DetailsTitle> {t('common.address')} </DetailsTitle>
-                <DetailsValue>{contactData?.address}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={3}>
-                <DetailsTitle> {t('common.description')} </DetailsTitle>
-                <DetailsValue>{contactData?.description}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={4}>
-                <DetailsTitle> {t('contactUs.emailAddress')} </DetailsTitle>
-                <DetailsValue>{contactData?.emailAddress}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={5}>
-                <DetailsTitle> {t('contactUs.phoneNumber')} </DetailsTitle>
-                <DetailsValue>{PHONE_NUMBER_CODE + ' ' + contactData?.phoneNumber}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={6}>
-                <DetailsTitle> {t('contactUs.facebook')} </DetailsTitle>
-                <DetailsValue>{contactData?.facebook}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={7}>
-                <DetailsTitle> {t('contactUs.instgram')} </DetailsTitle>
-                <DetailsValue>{contactData?.instgram}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={8}>
-                <DetailsTitle> {t('contactUs.twitter')} </DetailsTitle>
-                <DetailsValue>{contactData?.twitter}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={9}>
-                <DetailsTitle> {t('contactUs.startDate')} </DetailsTitle>
-                <DetailsValue>{t(`contactUs.daysOfWeek.${startDay}`)}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={10}>
-                <DetailsTitle> {t('contactUs.endDate')} </DetailsTitle>
-                <DetailsValue>{t(`contactUs.daysOfWeek.${endDay}`)}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={11}>
-                <DetailsTitle> {t('contactUs.startTime')} </DetailsTitle>
-                <DetailsValue>{dayjs(contactData?.startTime).format(TIME_HOURS_MINUTES)}</DetailsValue>
-              </DetailsRow>
-              <DetailsRow key={12}>
-                <DetailsTitle> {t('contactUs.endTime')} </DetailsTitle>
-                <DetailsValue>{dayjs(contactData?.endTime).format(TIME_HOURS_MINUTES)}</DetailsValue>
-              </DetailsRow>
-            </Details>
-          </Spinner>
+          <Row justify={'end'}>
+            <Button
+              type="primary"
+              style={{
+                marginBottom: '.5rem',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => handleModalOpen('add')}
+            >
+              <CreateButtonText>{t('contactUs.addContactUs')}</CreateButtonText>
+            </Button>
+          </Row>
         </Card>
+      )}
 
-        <Button
-          type="primary"
-          style={{
-            margin: '1rem 1rem 1rem 0',
-            width: 'auto',
-            height: 'auto',
-          }}
-          onClick={() => {
-            setIsOpenEditModalForm(true);
-            setEditmodaldata(contactData);
-          }}
-          icon={<EditOutlined />}
-        >
-          <CreateButtonText>{t('common.edit')}</CreateButtonText>
-        </Button>
-      </Row>
+      {!noData && (
+        <>
+          <PageTitle>{t('contactUs.contactUsInfo')}</PageTitle>
+          <Row>
+            <Card
+              title={t('contactUs.contactUsInfo')}
+              padding="0 1.25rem 1rem 1.25rem"
+              style={{ width: '100%', height: 'auto' }}
+            >
+              <Spinner spinning={loading}>
+                <Details>
+                  <DetailsRow key={1}>
+                    <DetailsTitle>{t('common.name')}</DetailsTitle>
+                    <DetailsValue>{contactData?.name}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={2}>
+                    <DetailsTitle> {t('common.address')} </DetailsTitle>
+                    <DetailsValue>{contactData?.address}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={3}>
+                    <DetailsTitle> {t('common.description')} </DetailsTitle>
+                    <DetailsValue>{contactData?.description}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={4}>
+                    <DetailsTitle> {t('contactUs.emailAddress')} </DetailsTitle>
+                    <DetailsValue>{contactData?.emailAddress}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={5}>
+                    <DetailsTitle> {t('contactUs.phoneNumber')} </DetailsTitle>
+                    <DetailsValue>{PHONE_NUMBER_CODE + ' ' + contactData?.phoneNumber}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={13}>
+                    <DetailsTitle> {t('common.telephoneNumber')} </DetailsTitle>
+                    <DetailsValue>{contactData?.telephoneNumber}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={14}>
+                    <DetailsTitle> {t('contactUs.whatsNumber')} </DetailsTitle>
+                    <DetailsValue>{contactData?.whatsNumber}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={6}>
+                    <DetailsTitle> {t('contactUs.facebook')} </DetailsTitle>
+                    <DetailsValue>{contactData?.facebook}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={7}>
+                    <DetailsTitle> {t('contactUs.instgram')} </DetailsTitle>
+                    <DetailsValue>{contactData?.instgram}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={8}>
+                    <DetailsTitle> {t('contactUs.twitter')} </DetailsTitle>
+                    <DetailsValue>{contactData?.twitter}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={9}>
+                    <DetailsTitle> {t('contactUs.startDate')} </DetailsTitle>
+                    <DetailsValue>{t(`contactUs.daysOfWeek.${startDay}`)}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={10}>
+                    <DetailsTitle> {t('contactUs.endDate')} </DetailsTitle>
+                    <DetailsValue>{t(`contactUs.daysOfWeek.${endDay}`)}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={11}>
+                    <DetailsTitle> {t('contactUs.startTime')} </DetailsTitle>
+                    <DetailsValue>{dayjs(contactData?.startTime).format(TIME_HOURS_MINUTES)}</DetailsValue>
+                  </DetailsRow>
+                  <DetailsRow key={12}>
+                    <DetailsTitle> {t('contactUs.endTime')} </DetailsTitle>
+                    <DetailsValue>{dayjs(contactData?.endTime).format(TIME_HOURS_MINUTES)}</DetailsValue>
+                  </DetailsRow>
+                </Details>
+              </Spinner>
+            </Card>
 
-      {isOpenEditModalForm && (
+            <Button
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => {
+                setEditmodaldata(contactData);
+                handleModalOpen('edit');
+              }}
+              icon={<EditOutlined />}
+            >
+              <CreateButtonText>{t('common.edit')}</CreateButtonText>
+            </Button>
+          </Row>
+        </>
+      )}
+
+      {/*    Add    */}
+      {modalState.add && (
+        <AddContactUs
+          visible={modalState.add}
+          onCancel={() => handleModalClose('add')}
+          onCreate={(info) => {
+            addContactInfo.mutateAsync(info);
+          }}
+          isLoading={addContactInfo.isLoading}
+        />
+      )}
+
+      {/*    EDIT    */}
+      {modalState.edit && (
         <EditContactUs
           contact_values={editmodaldata}
-          visible={isOpenEditModalForm}
-          onCancel={() => setIsOpenEditModalForm(false)}
+          visible={modalState.edit}
+          onCancel={() => handleModalClose('edit')}
           onEdit={(data: any) => {
             const id = editmodaldata.id;
             const values = { ...data, id };
