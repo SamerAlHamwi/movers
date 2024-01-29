@@ -575,7 +575,7 @@ export const AddCompany: React.FC = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <TextArea />
                 </BaseForm.Item>
               </Col>
               <Col style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}>
@@ -591,7 +591,7 @@ export const AddCompany: React.FC = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <TextArea />
                 </BaseForm.Item>
               </Col>
             </Row>

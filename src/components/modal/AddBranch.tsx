@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { CreateButtonText, LableText, TextBack, treeStyle } from '../GeneralStyles';
+import { CreateButtonText, LableText, TextArea, TextBack, treeStyle } from '../GeneralStyles';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { BranchModel, CompanyModal, TimeworksProps } from '@app/interfaces/interfaces';
@@ -437,7 +437,7 @@ export const AddBranch: React.FC = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <TextArea />
                 </BaseForm.Item>
               </Col>
               <Col style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}>
@@ -453,7 +453,7 @@ export const AddBranch: React.FC = () => {
                     },
                   ]}
                 >
-                  <Input />
+                  <TextArea />
                 </BaseForm.Item>
               </Col>
             </Row>

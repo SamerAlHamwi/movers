@@ -906,7 +906,7 @@ export const EditCompany: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input />
+                      <TextArea />
                     </BaseForm.Item>
                   </Col>
                   <Col
@@ -927,7 +927,7 @@ export const EditCompany: React.FC = () => {
                         },
                       ]}
                     >
-                      <Input />
+                      <TextArea />
                     </BaseForm.Item>
                   </Col>
                 </Row>
