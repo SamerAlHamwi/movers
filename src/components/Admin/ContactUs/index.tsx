@@ -157,8 +157,6 @@ const ContactUs: React.FC = () => {
     setEndDay(endDay?.dayName);
   };
 
-  console.log('contactData', contactData);
-
   return (
     <>
       {noData && (

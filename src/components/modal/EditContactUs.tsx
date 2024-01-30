@@ -13,7 +13,7 @@ import { TextArea, Input } from '../../components/GeneralStyles';
 import { TimePicker } from 'antd';
 import { DAYS_OF_WEEK_NAME, PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
-import { isValidPhoneNumber } from 'react-phone-number-input';
+import moment from 'moment';
 const { Option } = Select;
 
 export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, contact_values, onEdit, isLoading }) => {
@@ -306,7 +306,10 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
           style={{ marginTop: '-.5rem' }}
           label={<LableText>{t('contactUs.workingTime')}</LableText>}
         >
-          <TimePicker.RangePicker onChange={(date, dateString) => getTime(dateString)} />
+          <TimePicker.RangePicker
+            defaultValue={[moment(contact_values?.startTime), moment(contact_values?.endTime)]}
+            onChange={(date, dateString) => getTime(dateString)}
+          />
         </BaseForm.Item>
       </BaseForm>
     </Modal>

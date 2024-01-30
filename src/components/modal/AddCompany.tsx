@@ -142,73 +142,10 @@ export const AddCompany: React.FC = () => {
 
   const { data, refetch, isRefetching } = useQuery('getServicesForCompany', getServicesForCompany);
 
-  useEffect(() => {
-    refetch();
-  }, [language, refetch]);
-
-  const treeData: any = data?.data?.result?.items?.map((service: any) => {
-    const serviceNode: DataNode = {
-      title: (
-        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-          <Image src={service?.attachment?.url} width={27} height={27} />
-          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
-        </span>
-      ),
-      key: `service${service?.id}`,
-      children: [],
-      disabled: service?.subServices?.length > 0 ? false : true,
-    };
-    if (service?.subServices?.length > 0) {
-      serviceNode.children = service.subServices.map((subService: any) => {
-        const subServiceNode = {
-          title: (
-            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-              <Image src={subService?.attachment?.url} width={27} height={27} />
-              {subService?.name}
-            </span>
-          ),
-          key:
-            subService?.tools?.length > 0
-              ? `service${service?.id} sub${subService?.id}`
-              : `onlySub service${service?.id} sub${subService?.id}`,
-          children: [],
-        };
-        if (subService?.tools?.length > 0) {
-          subServiceNode.children = subService.tools.map((tool: any) => ({
-            title: (
-              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
-                <Image src={tool?.attachment?.url} width={27} height={27} />
-                {tool?.name}
-              </span>
-            ),
-            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
-          }));
-        }
-        return subServiceNode;
-      });
-    }
-    return serviceNode;
-  });
-
-  const next = () => {
-    setCurrent(current + 1);
-  };
-
-  const prev = () => {
-    setCurrent(current - 1);
-  };
-
-  const onExpand = (expandedKeysValue: React.Key[]) => {
-    setExpandedKeys(expandedKeysValue);
-    setAutoExpandParent(false);
-  };
-
-  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
-    setSelectedKeys(selectedKeysValue);
-  };
-
   const GetAllCountries = useQuery('GetAllCountries', getCountries);
+
   const GetUAECountry = useQuery('GetUAECountry', GetUAE);
+
   const {
     data: availableCitiesData,
     refetch: availableCitiesRefetch,
@@ -219,55 +156,23 @@ export const AddCompany: React.FC = () => {
   const { data: citiesData, refetch: citiesRefetch } = useQuery('getCities', () => getCities(countryId), {
     enabled: countryId != '0',
   });
+
   const { data: RegionsData, refetch: RegionsRefetch } = useQuery('getRegions', () => getRegions(cityId), {
     enabled: cityId !== '0',
   });
-
-  useEffect(() => {
-    if (countryId !== '0') {
-      citiesRefetch();
-      RegionsRefetch();
-    }
-  }, [countryId]);
-  useEffect(() => {
-    if (cityId !== '0') {
-      RegionsRefetch();
-    }
-  }, [cityId]);
-
-  useEffect(() => {
-    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
-      availableCitiesRefetch();
-    }
-  }, [countryIdForAvailableCities]);
-
-  const ChangeCountryHandler = (e: any) => {
-    setCountryId(e);
-    form.setFieldValue('cityId', '');
-    form.setFieldValue('regionId', '');
-  };
-
-  const ChangeCityHandler = (e: any) => {
-    setCityId(e);
-    form.setFieldValue('regionId', '');
-  };
-
-  const ChangeRegionHandler = (e: any) => {
-    setRegionId(e);
-  };
-
-  const handleCancel = () => {
-    setPreviewOpen(false);
-  };
-
-  const handlePreview = async (file: UploadFile) => {
-    if (!file.url && !file.preview) {
-      file.preview = await getBase64(file.originFileObj as RcFile);
-    }
-    setPreviewImage(file.url || (file.preview as string));
-    setPreviewOpen(true);
-    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
-  };
+  const addCompany = useMutation((data: CompanyModal) =>
+    createCompany(data)
+      .then((data: any) => {
+        notificationController.success({ message: t('companies.addCompanySuccessMessage') });
+        queryClient.invalidateQueries('AllCompanies');
+        navigate('/companies');
+        requestServicesArray = [];
+      })
+      .catch((error) => {
+        notificationController.error({ message: error.message || error.error?.message });
+        requestServicesArray = [];
+      }),
+  );
 
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
@@ -312,19 +217,72 @@ export const AddCompany: React.FC = () => {
       }),
   );
 
-  const addCompany = useMutation((data: CompanyModal) =>
-    createCompany(data)
-      .then((data: any) => {
-        notificationController.success({ message: t('companies.addCompanySuccessMessage') });
-        queryClient.invalidateQueries('AllCompanies');
-        navigate('/companies');
-        requestServicesArray = [];
-      })
-      .catch((error) => {
-        notificationController.error({ message: error.message || error.error?.message });
-        requestServicesArray = [];
-      }),
-  );
+  useEffect(() => {
+    if (countryId !== '0') {
+      citiesRefetch();
+      RegionsRefetch();
+    }
+  }, [countryId]);
+  useEffect(() => {
+    if (cityId !== '0') {
+      RegionsRefetch();
+    }
+  }, [cityId]);
+
+  useEffect(() => {
+    if (countryIdForAvailableCities !== '0' && countryIdForAvailableCities != undefined) {
+      availableCitiesRefetch();
+    }
+  }, [countryIdForAvailableCities]);
+
+  useEffect(() => {
+    refetch();
+  }, [language, refetch]);
+
+  const next = () => {
+    setCurrent(current + 1);
+  };
+
+  const prev = () => {
+    setCurrent(current - 1);
+  };
+
+  const onExpand = (expandedKeysValue: React.Key[]) => {
+    setExpandedKeys(expandedKeysValue);
+    setAutoExpandParent(false);
+  };
+
+  const onSelect = (selectedKeysValue: React.Key[], info: any) => {
+    setSelectedKeys(selectedKeysValue);
+  };
+
+  const ChangeCountryHandler = (e: any) => {
+    setCountryId(e);
+    form.setFieldValue('cityId', '');
+    form.setFieldValue('regionId', '');
+  };
+
+  const ChangeCityHandler = (e: any) => {
+    setCityId(e);
+    form.setFieldValue('regionId', '');
+  };
+
+  const ChangeRegionHandler = (e: any) => {
+    setRegionId(e);
+  };
+
+  const handleCancel = () => {
+    setPreviewOpen(false);
+  };
+
+  const handlePreview = async (file: UploadFile) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj as RcFile);
+    }
+    setPreviewImage(file.url || (file.preview as string));
+    setPreviewOpen(true);
+    setPreviewTitle(file.name || file.url!.substring(file.url!.lastIndexOf('/') + 1));
+  };
 
   const onFinish = (values: any) => {
     function extractServicesIds(input: any) {
@@ -425,6 +383,50 @@ export const AddCompany: React.FC = () => {
       <div className="ant-upload-text">Upload File</div>
     </div>
   );
+
+  const treeData: any = data?.data?.result?.items?.map((service: any) => {
+    const serviceNode: DataNode = {
+      title: (
+        <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+          <Image src={service?.attachment?.url} width={27} height={27} />
+          <span style={{ fontWeight: 'bold' }}>{service?.name}</span>
+        </span>
+      ),
+      key: `service${service?.id}`,
+      children: [],
+      disabled: service?.subServices?.length > 0 ? false : true,
+    };
+    if (service?.subServices?.length > 0) {
+      serviceNode.children = service.subServices.map((subService: any) => {
+        const subServiceNode = {
+          title: (
+            <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+              <Image src={subService?.attachment?.url} width={27} height={27} />
+              {subService?.name}
+            </span>
+          ),
+          key:
+            subService?.tools?.length > 0
+              ? `service${service?.id} sub${subService?.id}`
+              : `onlySub service${service?.id} sub${subService?.id}`,
+          children: [],
+        };
+        if (subService?.tools?.length > 0) {
+          subServiceNode.children = subService.tools.map((tool: any) => ({
+            title: (
+              <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>
+                <Image src={tool?.attachment?.url} width={27} height={27} />
+                {tool?.name}
+              </span>
+            ),
+            key: `withTool service${service?.id} sub${subService?.id} tool${tool?.id}`,
+          }));
+        }
+        return subServiceNode;
+      });
+    }
+    return serviceNode;
+  });
 
   return (
     <Card title={t('companies.addCompany')} padding="1.25rem 1.25rem 1.25rem">
