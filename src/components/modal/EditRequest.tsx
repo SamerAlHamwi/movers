@@ -686,7 +686,7 @@ export const EditRequest: React.FC = () => {
 
   return (
     <Card title={t('requests.editRequest')} padding="1.25rem 1.25rem 1.25rem">
-      <Row justify={'end'} style={{ width: '100%' }}>
+      <Row justify={'space-between'} style={{ width: '100%' }}>
         <Btn
           style={{
             margin: '1rem 1rem 1rem 0',
@@ -699,46 +699,47 @@ export const EditRequest: React.FC = () => {
         >
           <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
         </Btn>
-
-        {current > 0 && (
-          <Button
-            style={{
-              margin: '1rem 1rem 1rem 0',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => prev()}
-          >
-            {t('common.prev')}
-          </Button>
-        )}
-        {current < steps.length - 1 && (
-          <Button
-            type="primary"
-            style={{
-              margin: '1rem 1rem 1rem 0',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => next()}
-          >
-            <CreateButtonText>{t('common.next')}</CreateButtonText>
-          </Button>
-        )}
-        {current === steps.length - 1 && (
-          <Button
-            type="primary"
-            style={{
-              margin: '1rem 1rem 1rem 0',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={onFinish}
-            loading={updateRequestMutation.isLoading}
-          >
-            {t('common.done')}
-          </Button>
-        )}
+        <Row>
+          {current > 0 && (
+            <Button
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => prev()}
+            >
+              {t('common.prev')}
+            </Button>
+          )}
+          {current < steps.length - 1 && (
+            <Button
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => next()}
+            >
+              <CreateButtonText>{t('common.next')}</CreateButtonText>
+            </Button>
+          )}
+          {current === steps.length - 1 && (
+            <Button
+              type="primary"
+              style={{
+                margin: '1rem 1rem 1rem 0',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={onFinish}
+              loading={updateRequestMutation.isLoading}
+            >
+              {t('common.done')}
+            </Button>
+          )}
+        </Row>
       </Row>
       <Steps current={current} style={{ margin: '10px 10px 30px 0', padding: '0px 40px' }}>
         {steps.map((step, index) => (
