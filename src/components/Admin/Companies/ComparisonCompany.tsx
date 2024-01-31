@@ -16,7 +16,6 @@ import { Button } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined } from '@ant-design/icons';
 import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralStyles';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
-import { DaysOfWeek } from '@app/constants/enums/dayOfWeek';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 import { getDayName } from '@app/components/functions/GetDayName';
 
@@ -106,7 +105,6 @@ const ComparisonCompany: React.FC = () => {
         </span>
       ),
       key: `service ${service?.id}`,
-
       children: service?.subServices.map((subService: any) => ({
         title: (
           <span style={{ display: 'flex', alignItems: 'center', margin: '0.7rem 0' }}>

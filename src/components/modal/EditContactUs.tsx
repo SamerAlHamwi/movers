@@ -52,6 +52,9 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
     onEdit(contactInfo);
   };
 
+  console.log('startTime', contact_values?.startTime);
+  console.log('endTime', contact_values?.endTime);
+
   return (
     <Modal
       style={{ marginTop: '0rem', height: '80vh', overflowY: 'scroll' }}
@@ -203,13 +206,12 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
           style={{ marginTop: '-.5rem' }}
         >
           <Input
-            addonBefore={PHONE_NUMBER_CODE}
             onChange={(e: any) => {
               if (validationInputNumber(e.target.value)) {
                 form.setFieldValue('phoneNumber', e.target.value);
               } else form.setFieldValue('phoneNumber', '');
             }}
-            maxLength={9}
+            maxLength={13}
             style={{ width: '100%' }}
           />
         </BaseForm.Item>

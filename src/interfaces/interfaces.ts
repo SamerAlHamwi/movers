@@ -267,6 +267,7 @@ export interface ContactUsModel {
   instgram: string;
   twitter: string;
   phoneNumber: number;
+  telephoneNumber: number;
   startDay: number;
   endDay: number;
   startTime: string;

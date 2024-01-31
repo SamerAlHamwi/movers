@@ -51,6 +51,8 @@ export const AddContactUs: React.FC<CreateContactModalProps> = ({ visible, onCan
       ],
       startTime: timeRange[0],
       endTime: timeRange[1],
+      phoneNumber: PHONE_NUMBER_CODE + contactInfo.phoneNumber,
+      telephoneNumber: PHONE_NUMBER_CODE + contactInfo.telephoneNumber,
     });
     onCreate(contactInfo);
   };
@@ -206,7 +208,6 @@ export const AddContactUs: React.FC<CreateContactModalProps> = ({ visible, onCan
           style={{ marginTop: '-.5rem' }}
         >
           <Input
-            addonBefore={PHONE_NUMBER_CODE}
             onChange={(e: any) => {
               if (validationInputNumber(e.target.value)) {
                 form.setFieldValue('phoneNumber', e.target.value);
