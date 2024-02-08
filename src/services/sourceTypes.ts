@@ -26,6 +26,14 @@ const UpdateSourceType = async (data: any) => {
   return await httpApi.put(`${apiPrefix.sourceType}/Update`, data);
 };
 
+const ActivateSourceType = async (id: number) => {
+  return await httpApi.put(`${apiPrefix.sourceType}/SwitchActivation`, { id, isActive: true });
+};
+
+const DeActivateSourceType = async (id: number) => {
+  return await httpApi.put(`${apiPrefix.sourceType}/SwitchActivation`, { id, isActive: false });
+};
+
 //AttributeForSourceType
 const getAllAttributeForSourceTypes = async (
   id: string | undefined,
@@ -57,6 +65,14 @@ const DeleteAttributeForSourceType = async (id: number) => {
 
 const UpdateAttributeForSourceType = async (data: any) => {
   return await httpApi.put(`${apiPrefix.attributeForSourceType}/Update`, data);
+};
+
+const ActivateAttributeForSourceType = async (id: number) => {
+  return await httpApi.put(`${apiPrefix.attributeForSourceType}/SwitchActivation`, { id, isActive: true });
+};
+
+const DeActivateAttributeForSourceType = async (id: number) => {
+  return await httpApi.put(`${apiPrefix.attributeForSourceType}/SwitchActivation`, { id, isActive: false });
 };
 
 //AttributeChoices
@@ -109,11 +125,15 @@ export {
   createSourceType,
   DeleteSourceType,
   UpdateSourceType,
+  ActivateSourceType,
+  DeActivateSourceType,
   getAllAttributeForSourceTypes,
   getAttributeForSourceTypes,
   createAttributeForSourceType,
   DeleteAttributeForSourceType,
   UpdateAttributeForSourceType,
+  ActivateAttributeForSourceType,
+  DeActivateAttributeForSourceType,
   getAllAttributeChoices,
   createAttributeChoice,
   DeleteAttributeChoice,

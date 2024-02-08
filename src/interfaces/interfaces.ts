@@ -311,6 +311,7 @@ export interface SourceTypeModel {
   sourceTypeIds?: any;
   attachment: any;
   name?: string;
+  isActive: boolean;
 }
 
 export interface RoleModel {

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Card } from '@app/components/common/Card/Card';
-import { Alert, Row, Space, Tooltip, message } from 'antd';
+import { Alert, Popconfirm, Row, Space, Tooltip, message } from 'antd';
 import { Table } from 'components/common/Table/Table';
 import { useTranslation } from 'react-i18next';
 import { useMutation, useQuery } from 'react-query';
@@ -9,6 +9,8 @@ import {
   createAttributeForSourceType,
   DeleteAttributeForSourceType,
   UpdateAttributeForSourceType,
+  ActivateAttributeForSourceType,
+  DeActivateAttributeForSourceType,
 } from '@app/services/sourceTypes';
 import { currentGamesPageAtom, gamesPageSizeAtom } from '@app/constants/atom';
 import { useAtom } from 'jotai';
@@ -17,15 +19,17 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, SourceTypeModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined, LeftOutlined, ReloadOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LeftOutlined, ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddAttributeForSourceType } from '@app/components/modal/AddAttributeForSourceType';
 import { EditAttributeForSourceType } from '@app/components/modal/EditAttributeForSourceType';
-import { TableButton, Header, Modal, Image, TextBack, CreateButtonText } from '../../GeneralStyles';
+import { TableButton, Header, Modal, Image, TextBack, CreateButtonText, LableText } from '../../GeneralStyles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import styled from 'styled-components';
+import { defineColorBySeverity } from '@app/utils/utils';
 
 export type sourceTypes = {
   id: number;
@@ -60,6 +64,14 @@ export const TypesForSource: React.FC = () => {
   const [editmodaldata, setEditmodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [isActivate, setIsActivate] = useState(false);
+  const [isDeActivate, setIsDeActivate] = useState(false);
+  const [isHover, setIsHover] = useState(false);
+
+  const TableText = styled.div`
+    font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
+    font-weight: ${FONT_WEIGHT.regular};
+  `;
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -100,7 +112,7 @@ export const TypesForSource: React.FC = () => {
     setIsEdit(false);
     setIsDelete(false);
     setRefetchOnAdd(false);
-  }, [isDelete, isEdit, refetchOnAdd, page, pageSize, searchString, refetch, refetchData]);
+  }, [isDelete, isEdit, isActivate, isDeActivate, refetchOnAdd, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -186,6 +198,36 @@ export const TypesForSource: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editAttributeForSourceType.isLoading }));
   }, [editAttributeForSourceType.isLoading]);
 
+  const activate = useMutation((id: number) =>
+    ActivateAttributeForSourceType(id)
+      .then((data) => {
+        message.open({
+          content: (
+            <Alert message={t('attributeForSourceTypes.activateSourceTypesSuccessMessage')} type="success" showIcon />
+          ),
+        });
+        setIsActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
+      }),
+  );
+
+  const deActivate = useMutation((id: number) =>
+    DeActivateAttributeForSourceType(id)
+      .then((data) => {
+        message.open({
+          content: (
+            <Alert message={t('attributeForSourceTypes.deactivateSourceTypesSuccessMessage')} type="success" showIcon />
+          ),
+        });
+        setIsDeActivate(data.data?.success);
+      })
+      .catch((error) => {
+        message.open({ content: <Alert message={error.message || error.error?.message} type="error" showIcon /> });
+      }),
+  );
+
   useEffect(() => {
     if (isRefetching) setLoading(true);
     else setLoading(false);
@@ -259,6 +301,96 @@ export const TypesForSource: React.FC = () => {
                 <DeleteOutlined />
               </TableButton>
             </Tooltip>
+
+            {record.isActive === true ? (
+              <Tooltip placement="top" title={t('common.deactivate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('attributeForSourceTypes.deactivateSourceTypesConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {deActivate.isLoading ? (
+                        <>
+                          {t(`common.deactivate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.deactivate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => deActivate.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.deactivate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            ) : (
+              <Tooltip placement="top" title={t('common.activate')}>
+                <Popconfirm
+                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                  title={<LableText>{t('attributeForSourceTypes.activateSourceTypesConfirm')}</LableText>}
+                  okButtonProps={{
+                    onMouseOver: () => {
+                      setIsHover(true);
+                    },
+                    onMouseLeave: () => {
+                      setIsHover(false);
+                    },
+                    loading: false,
+                    style: {
+                      color: `${defineColorBySeverity('info')}`,
+                      background: isHover
+                        ? 'var(--background-color)'
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                      borderColor: isHover
+                        ? `${defineColorBySeverity('info')}`
+                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                    },
+                  }}
+                  okText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                      {activate.isLoading ? (
+                        <>
+                          {t(`common.activate`)} <LoadingOutlined />
+                        </>
+                      ) : (
+                        t(`common.activate`)
+                      )}
+                    </div>
+                  }
+                  cancelText={
+                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
+                  }
+                  onConfirm={() => activate.mutateAsync(record.id)}
+                >
+                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <TableText>{t('common.activate')}</TableText>
+                  </Button>
+                </Popconfirm>
+              </Tooltip>
+            )}
           </Space>
         );
       },

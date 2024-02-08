@@ -363,7 +363,9 @@
     "compare": "Comparison",
     "compatibilityRate": "Compatibility Rate",
     "sendRejectCompanyReason": "Send Reason For The Rejected Company",
-    "reasonRejectCompany": "The Reason For Rejecting The Company"
+    "reasonRejectCompany": "The Reason For Rejecting The Company",
+    "atLeastOneOwnerAttachment": "Please Upload Owner Attachment",
+    "atLeastOneCommercialAttachment": "Please Upload Commercial Attachment"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -394,7 +396,11 @@
     "deleteSourceTypeModalDescription": "Are You Sure To Delete This Moving Type?",
     "pointsToGiftToCompany": "Number Of Points That Will Be Gifted To The Company Or Branch",
     "pointsToGiftMediator": "Number Of Points That Will Be Gifted To The Broker",
-    "pointsToBuyRequest": "Number Of Points That Will Be Deducted For Purchasing Potential Customer Information"
+    "pointsToBuyRequest": "Number Of Points That Will Be Deducted For Purchasing Potential Customer Information",
+    "deactivateSourceTypesConfirm": "Deactivate  Moving Type?",
+    "activateSourceTypesConfirm": "Activate  Moving Type?",
+    "activateSourceTypesSuccessMessage": "Activate Moving Type Successfully!",
+    "deactivateSourceTypesSuccessMessage": "Deactivate Moving Type Successfully!"
   },
 
   "_comment9": "*********************************** tools ************************************************",
@@ -495,7 +501,11 @@
     "editAttributeForSourceTypeSuccessMessage": "The Category Has Been Edited Successfully",
     "editAttributeForSourceTypeModalTitle": "Edit Category",
     "deleteAttributeForSourceTypeModalTitle": "Delete Category",
-    "deleteAttributeForSourceTypeModalDescription": "Are You Sure To Delete This Category?"
+    "deleteAttributeForSourceTypeModalDescription": "Are You Sure To Delete This Category?",
+    "deactivateSourceTypesConfirm": "Deactivate  Category?",
+    "activateSourceTypesConfirm": "Activate  Category?",
+    "activateSourceTypesSuccessMessage": "Activate Category Successfully!",
+    "deactivateSourceTypesSuccessMessage": "Deactivate Category Successfully!"
   },
 
   "_comment13": "*********************************** attributeChoices ************************************************",

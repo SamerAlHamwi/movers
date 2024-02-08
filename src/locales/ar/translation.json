@@ -365,7 +365,9 @@
     "compare": "مقارنة التحديث",
     "compatibilityRate": "معدل التوافق",
     "sendRejectCompanyReason": "إرسال سبب رفض طلب تسجيل الشركة",
-    "reasonRejectCompany": "سبب رفض طلب تسجيل شركة"
+    "reasonRejectCompany": "سبب رفض طلب تسجيل شركة",
+    "atLeastOneOwnerAttachment": "الرجاء إدخال صورة هوية مالك الشركة",
+    "atLeastOneCommercialAttachment": "الرجاء إدخال صورة السجل التجاري"
   },
 
   "_comment7": "*********************************** subServices ************************************************",
@@ -396,7 +398,11 @@
     "deleteSourceTypeModalDescription": "هل أنت متأكد من حذف هذه نوع مكان للنقل",
     "pointsToGiftToCompany": "عدد النقاط التي ستُهدى للشركة أو الفرع",
     "pointsToGiftMediator": "عدد النقاط التي ستُهدى للوسيط",
-    "pointsToBuyRequest": "عدد النقاط التي ستُخصم مقابل شراء معلومات العميل المحتمل"
+    "pointsToBuyRequest": "عدد النقاط التي ستُخصم مقابل شراء معلومات العميل المحتمل",
+    "deactivateSourceTypesConfirm": "إلغاء تفعيل نوع مكان النقل؟",
+    "activateSourceTypesConfirm": "تفعيل نوع مكان النقل؟",
+    "activateSourceTypesSuccessMessage": "تم تفعيل نوع مكان النقل بنجاح",
+    "deactivateSourceTypesSuccessMessage": "تم إلغاء تفعيل نوع مكان النقل لنجلح"
   },
 
   "_comment9": "*********************************** tools ************************************************",
@@ -497,7 +503,11 @@
     "editAttributeForSourceTypeSuccessMessage": "تم تعديل معلومات ميزة لمكان النقل",
     "editAttributeForSourceTypeModalTitle": "تعديل معلومات ميزة لمكان النقل",
     "deleteAttributeForSourceTypeModalTitle": "حذف ميزة لمكان النقل",
-    "deleteAttributeForSourceTypeModalDescription": "هل أنت متأكد من حذف هذه ميزة لمكان النقل"
+    "deleteAttributeForSourceTypeModalDescription": "هل أنت متأكد من حذف هذه ميزة لمكان النقل",
+    "deactivateSourceTypesConfirm": "إلغاء تفعيل مكان النقل؟",
+    "activateSourceTypesConfirm": "تفعيل مكان النقل؟",
+    "activateSourceTypesSuccessMessage": "تم تفعيل مكان النقل بنجاح",
+    "deactivateSourceTypesSuccessMessage": "تم إلغاء تفعيل مكان النقل بنجاح"
   },
 
   "_comment13": "*********************************** attributeChoices ************************************************",
