@@ -402,7 +402,8 @@
     "deactivateSourceTypesConfirm": "إلغاء تفعيل نوع مكان النقل؟",
     "activateSourceTypesConfirm": "تفعيل نوع مكان النقل؟",
     "activateSourceTypesSuccessMessage": "تم تفعيل نوع مكان النقل بنجاح",
-    "deactivateSourceTypesSuccessMessage": "تم إلغاء تفعيل نوع مكان النقل لنجلح"
+    "deactivateSourceTypesSuccessMessage": "تم إلغاء تفعيل نوع مكان النقل لنجلح",
+    "isMainForPoints": "إحتساب النقاط على هذا المستوى"
   },
 
   "_comment9": "*********************************** tools ************************************************",

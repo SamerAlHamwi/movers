@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Space, Modal, message, InputNumber } from 'antd';
+import { Space, Modal, message, InputNumber, Radio } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../../components/GeneralStyles';
@@ -21,8 +21,10 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
+
   const [iconId, setIconId] = useState<number>(0);
   const [urlAfterUpload, setUrlAfterUpload] = useState('');
+  const [valueRadio, setValueRadio] = useState(false);
 
   const uploadImage = useMutation((data: FormData) =>
     uploadAttachment(data)
@@ -45,6 +47,7 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
         ...info.translations[i],
         language: i === 1 ? ('en' as LanguageType) : ('ar' as LanguageType),
       })),
+      isMainForPoints: valueRadio,
     };
     info = Object.assign({}, info, my_data);
     onCreate(info);
@@ -52,7 +55,7 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
 
   return (
     <Modal
-      style={{ marginTop: '-4rem' }}
+      style={{ marginTop: '-5rem', height: '90vh', overflowY: 'scroll' }}
       open={visible}
       width={isDesktop ? '550px' : isTablet ? '500px' : '450px'}
       title={
@@ -105,21 +108,54 @@ export const AddSourceType: React.FC<CreateModalProps> = ({ visible, onCancel, o
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name="pointsToGiftToCompany"
-          label={<LableText>{t('sourceTypes.pointsToGiftToCompany')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+          name={['acceptRequests']}
+          label={<LableText>{t(`companies.acceptRequests`)}</LableText>}
+          rules={[
+            {
+              required: true,
+              message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p>,
+            },
+          ]}
           style={{ marginTop: '-.5rem' }}
         >
-          <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+          <Radio.Group
+            style={{ display: 'flex', width: '100%' }}
+            onChange={(event) => {
+              setValueRadio(event.target.value);
+            }}
+          >
+            <Radio value={true} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('common.true')}
+            </Radio>
+            <Radio value={false} style={{ width: '46%', margin: '2%', display: 'flex', justifyContent: 'center' }}>
+              {t('common.false')}
+            </Radio>
+          </Radio.Group>
         </BaseForm.Item>
-        <BaseForm.Item
-          name="pointsToBuyRequest"
-          label={<LableText>{t('sourceTypes.pointsToBuyRequest')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <InputNumber min={0} max={100} formatter={(value) => `${value}`} style={{ width: '100%' }} />
-        </BaseForm.Item>
+        {valueRadio && (
+          <>
+            <BaseForm.Item
+              name="pointsToGiftToCompany"
+              label={<LableText>{t('sourceTypes.pointsToGiftToCompany')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={{ marginTop: '-.5rem' }}
+            >
+              <InputNumber min={0} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+            </BaseForm.Item>
+            <BaseForm.Item
+              name="pointsToBuyRequest"
+              label={<LableText>{t('sourceTypes.pointsToBuyRequest')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={{ marginTop: '-.5rem' }}
+            >
+              <InputNumber min={0} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+            </BaseForm.Item>
+          </>
+        )}
         <BaseForm.Item
           name={'image'}
           style={{ marginTop: '-1rem' }}

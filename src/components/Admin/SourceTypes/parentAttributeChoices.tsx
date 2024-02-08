@@ -195,6 +195,14 @@ export const ParentAttributeChoices: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
     {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.pointsToGiftToCompany')}</Header>,
+      dataIndex: 'pointsToGiftToCompany',
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.pointsToBuyRequest')}</Header>,
+      dataIndex: 'pointsToBuyRequest',
+    },
+    {
       title: <Header style={{ wordBreak: 'normal' }}>{t('attributeChoices.subAttributeChoice')}</Header>,
       dataIndex: 'types',
       render: (index: number, record: sourceTypes) => {
@@ -278,6 +286,7 @@ export const ParentAttributeChoices: React.FC = () => {
                 addAttributeChoice.mutateAsync(values);
               }}
               isLoading={addAttributeChoice.isLoading}
+              type="parent"
             />
           )}
 

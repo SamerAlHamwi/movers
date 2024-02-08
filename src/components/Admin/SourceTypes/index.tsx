@@ -19,7 +19,14 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, SourceTypeModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined, ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
+import {
+  EditOutlined,
+  DeleteOutlined,
+  ReloadOutlined,
+  LoadingOutlined,
+  CloseOutlined,
+  CheckOutlined,
+} from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddSourceType } from '@app/components/modal/AddSourceType';
 import { EditSourceType } from '@app/components/modal/EditSourceType';
@@ -276,6 +283,25 @@ export const SourceType: React.FC = () => {
                 {t('sourceTypes.attributeForSource')}
               </div>
             </Button>
+          </Space>
+        );
+      },
+    },
+    {
+      title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.isMainForPoints')}</Header>,
+      dataIndex: 'isMainForPoints',
+      render: (record: boolean) => {
+        return (
+          <Space>
+            {record ? (
+              <TableButton severity="success">
+                <CheckOutlined />
+              </TableButton>
+            ) : (
+              <TableButton severity="error">
+                <CloseOutlined />
+              </TableButton>
+            )}
           </Space>
         );
       },

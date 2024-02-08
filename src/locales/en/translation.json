@@ -400,7 +400,8 @@
     "deactivateSourceTypesConfirm": "Deactivate  Moving Type?",
     "activateSourceTypesConfirm": "Activate  Moving Type?",
     "activateSourceTypesSuccessMessage": "Activate Moving Type Successfully!",
-    "deactivateSourceTypesSuccessMessage": "Deactivate Moving Type Successfully!"
+    "deactivateSourceTypesSuccessMessage": "Deactivate Moving Type Successfully!",
+    "isMainForPoints": "Calculate Points At This Level"
   },
 
   "_comment9": "*********************************** tools ************************************************",

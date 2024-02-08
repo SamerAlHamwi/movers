@@ -97,6 +97,7 @@ export interface CreateApplicationsVersionsModalProps extends ModalProps {
 
 export interface CreateModalProps extends ModalProps {
   onCreate: (info: SourceTypeModel) => void;
+  type?: string;
 }
 export interface SearchForUserModalProps extends ModalProps {
   onCreate: (info: any, userId: number) => void;

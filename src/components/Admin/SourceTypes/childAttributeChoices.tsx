@@ -264,6 +264,7 @@ export const ChildAttributeChoices: React.FC = () => {
                 addAttributeChoice.mutateAsync(values);
               }}
               isLoading={addAttributeChoice.isLoading}
+              type="child"
             />
           )}
 

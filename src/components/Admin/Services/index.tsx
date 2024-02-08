@@ -204,7 +204,7 @@ export const Services: React.FC = () => {
     setModalState((prevModalState) => ({ ...prevModalState, edit: editService.isLoading }));
   }, [editService.isLoading]);
 
-  const activateBundle = useMutation((id: number) =>
+  const activate = useMutation((id: number) =>
     ActivateService(id)
       .then((data) => {
         message.open({
@@ -217,7 +217,7 @@ export const Services: React.FC = () => {
       }),
   );
 
-  const deActivateBundle = useMutation((id: number) =>
+  const deActivate = useMutation((id: number) =>
     DeActivateService(id)
       .then((data) => {
         message.open({
@@ -441,7 +441,7 @@ export const Services: React.FC = () => {
                   }}
                   okText={
                     <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                      {deActivateBundle.isLoading ? (
+                      {deActivate.isLoading ? (
                         <>
                           {t(`common.deactivate`)} <LoadingOutlined />
                         </>
@@ -453,7 +453,7 @@ export const Services: React.FC = () => {
                   cancelText={
                     <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
                   }
-                  onConfirm={() => deActivateBundle.mutateAsync(record.id)}
+                  onConfirm={() => deActivate.mutateAsync(record.id)}
                 >
                   <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
                     <TableText>{t('common.deactivate')}</TableText>
@@ -485,7 +485,7 @@ export const Services: React.FC = () => {
                   }}
                   okText={
                     <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                      {activateBundle.isLoading ? (
+                      {activate.isLoading ? (
                         <>
                           {t(`common.activate`)} <LoadingOutlined />
                         </>
@@ -497,7 +497,7 @@ export const Services: React.FC = () => {
                   cancelText={
                     <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
                   }
-                  onConfirm={() => activateBundle.mutateAsync(record.id)}
+                  onConfirm={() => activate.mutateAsync(record.id)}
                 >
                   <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
                     <TableText>{t('common.activate')}</TableText>

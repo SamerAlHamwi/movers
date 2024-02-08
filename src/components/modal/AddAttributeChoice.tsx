@@ -1,5 +1,5 @@
 import React from 'react';
-import { Space, Modal } from 'antd';
+import { Space, Modal, InputNumber } from 'antd';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { Input } from '../../components/GeneralStyles';
@@ -12,7 +12,7 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { SourceTypeModel } from '@app/interfaces/interfaces';
 import { LanguageType } from '@app/interfaces/interfaces';
 
-export const AddAttributeChoice: React.FC<CreateModalProps> = ({ visible, onCancel, onCreate, isLoading }) => {
+export const AddAttributeChoice: React.FC<CreateModalProps> = ({ visible, onCancel, onCreate, isLoading, type }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
@@ -86,6 +86,30 @@ export const AddAttributeChoice: React.FC<CreateModalProps> = ({ visible, onCanc
         >
           <Input />
         </BaseForm.Item>
+        {type == 'parent' && (
+          <>
+            <BaseForm.Item
+              name="pointsToGiftToCompany"
+              label={<LableText>{t('sourceTypes.pointsToGiftToCompany')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={{ marginTop: '-.5rem' }}
+            >
+              <InputNumber min={0} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+            </BaseForm.Item>
+            <BaseForm.Item
+              name="pointsToBuyRequest"
+              label={<LableText>{t('sourceTypes.pointsToBuyRequest')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={{ marginTop: '-.5rem' }}
+            >
+              <InputNumber min={0} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+            </BaseForm.Item>
+          </>
+        )}
       </BaseForm>
     </Modal>
   );

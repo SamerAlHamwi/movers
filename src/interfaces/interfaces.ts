@@ -312,6 +312,7 @@ export interface SourceTypeModel {
   attachment: any;
   name?: string;
   isActive: boolean;
+  isAttributeChoiceParent?: boolean;
 }
 
 export interface RoleModel {

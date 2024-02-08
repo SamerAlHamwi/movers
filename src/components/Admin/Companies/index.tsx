@@ -356,6 +356,7 @@ export const Companies: React.FC = () => {
       },
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.userName')}</Header>, dataIndex: ['user', 'userName'] },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.region')}</Header>,
       dataIndex: ['region', 'name'],

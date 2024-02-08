@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Modal, Space, message } from 'antd';
+import { InputNumber, Modal, Space, message } from 'antd';
 import { Button } from '../common/buttons/Button/Button';
 import { useTranslation } from 'react-i18next';
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
@@ -24,6 +24,8 @@ export const EditAttributeChoice: React.FC<EditProps> = ({ visible, onCancel, va
   const onOk = () => {
     form.submit();
   };
+
+  console.log('values', values);
 
   const onFinish = (info: SourceTypeModel) => {
     const my_data = {
@@ -90,6 +92,30 @@ export const EditAttributeChoice: React.FC<EditProps> = ({ visible, onCancel, va
         >
           <Input />
         </BaseForm.Item>
+        {values?.isAttributeChoiceParent && (
+          <>
+            <BaseForm.Item
+              name="pointsToGiftToCompany"
+              label={<LableText>{t('sourceTypes.pointsToGiftToCompany')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={{ marginTop: '-.5rem' }}
+            >
+              <InputNumber min={0} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+            </BaseForm.Item>
+            <BaseForm.Item
+              name="pointsToBuyRequest"
+              label={<LableText>{t('sourceTypes.pointsToBuyRequest')}</LableText>}
+              rules={[
+                { required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> },
+              ]}
+              style={{ marginTop: '-.5rem' }}
+            >
+              <InputNumber min={0} formatter={(value) => `${value}`} style={{ width: '100%' }} />
+            </BaseForm.Item>
+          </>
+        )}
       </BaseForm>
     </Modal>
   );
