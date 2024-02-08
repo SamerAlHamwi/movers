@@ -739,12 +739,15 @@ const RequestDetails: React.FC = () => {
                 </Col>
               ))}
 
-              <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
-                <h4 style={{ margin: '2% 1rem' }}>{t('requests.additionalAttachments')} :</h4>
-                {requestData?.attachments.map((attachment: any) => (
-                  <Image key={attachment?.id} src={attachment?.url} style={{ width: '150px' }} />
-                ))}
-              </Card>
+              {requestData?.attachments.map((attachment: any) => (
+                <Card
+                  key={attachment?.id}
+                  style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
+                >
+                  <h4 style={{ margin: '2% 1rem' }}>{t('requests.additionalAttachments')} :</h4>
+                  <Image src={attachment?.url} style={{ width: '150px' }} />
+                </Card>
+              ))}
 
               {requestData?.finishedRequestAttachmentByCompany.length > 0 && (
                 <>
@@ -753,11 +756,7 @@ const RequestDetails: React.FC = () => {
                     <Row>
                       {requestData?.finishedRequestAttachmentByCompany.map((attachmentByCompany: any) => (
                         <Col span={6} key={attachmentByCompany?.id}>
-                          <Image
-                            key={attachmentByCompany?.id}
-                            src={attachmentByCompany?.url}
-                            style={{ width: '150px' }}
-                          />
+                          <Image src={attachmentByCompany?.url} style={{ width: '150px' }} />
                         </Col>
                       ))}
                     </Row>
