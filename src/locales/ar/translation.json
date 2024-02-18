@@ -151,8 +151,7 @@
     "deactivateUserSuccessMessage": "تم إلغاء تفعيل المستخدم",
     "deleteUserModalTitle": "حذف مستخدم",
     "deleteUserModalDescription": "هل أنت متأكد من رغبتك في حذف هذا المستخدم؟",
-    "changePasswordModalTitle": "تغيير كلمة السر للمستخدم",
-    "changPasswordForUserSuccessMessage": "تم تغيير كلمة السر بنجاح"
+    "hisRequests": "طلباته"
   },
 
   "_comment2": "*********************************** managers ************************************************",

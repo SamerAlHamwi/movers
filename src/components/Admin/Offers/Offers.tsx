@@ -44,7 +44,7 @@ export const Offers: React.FC = () => {
   const Navigate = useNavigate();
   const { language } = useLanguage();
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
-  const { requestId, companyId, branchId, type } = useParams();
+  const { requestId, companyId, branchId, type, userId } = useParams();
 
   const [modalState, setModalState] = useState({
     edit: false,
@@ -356,30 +356,34 @@ export const Offers: React.FC = () => {
               </TableButton>
             </Tooltip>
 
-            <Tooltip placement="top" title={t('common.return')}>
-              <TableButton
-                disabled={record.statues !== 1}
-                severity="warning"
-                onClick={() => {
-                  setReturnmodaldata(record);
-                  handleModalOpen('return');
-                }}
-              >
-                <RetweetOutlined />
-              </TableButton>
-            </Tooltip>
+            {!userId && (
+              <>
+                <Tooltip placement="top" title={t('common.return')}>
+                  <TableButton
+                    disabled={record.statues !== 1}
+                    severity="warning"
+                    onClick={() => {
+                      setReturnmodaldata(record);
+                      handleModalOpen('return');
+                    }}
+                  >
+                    <RetweetOutlined />
+                  </TableButton>
+                </Tooltip>
 
-            <Tooltip placement="top" title={t('common.edit')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  setEditmodaldata(record);
-                  handleModalOpen('edit');
-                }}
-              >
-                <EditOutlined />
-              </TableButton>
-            </Tooltip>
+                <Tooltip placement="top" title={t('common.edit')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setEditmodaldata(record);
+                      handleModalOpen('edit');
+                    }}
+                  >
+                    <EditOutlined />
+                  </TableButton>
+                </Tooltip>
+              </>
+            )}
           </Space>
         );
       },

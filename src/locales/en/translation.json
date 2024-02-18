@@ -152,8 +152,7 @@
     "deactivateUserSuccessMessage": "Deactivate User Successfully!",
     "deleteUserModalTitle": "Delete User",
     "deleteUserModalDescription": "Are You Sure To Delete This User?",
-    "changePasswordModalTitle": "Change Password For User",
-    "changPasswordForUserSuccessMessage": "User Password Changed Successfully"
+    "hisRequests": "His Requests"
   },
 
   "_comment2": "*********************************** managers ************************************************",

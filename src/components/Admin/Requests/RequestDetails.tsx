@@ -49,7 +49,7 @@ const attributeChoiceAttachments: any[] = [];
 const RequestDetails: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { requestId, possibleClientId } = useParams();
+  const { requestId, possibleClientId, userId } = useParams();
   const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
   const Navigate = useNavigate();
 
@@ -554,33 +554,40 @@ const RequestDetails: React.FC = () => {
               )}
 
               {/* suitableCompanies&Branches */}
-              {requestData?.statues != 1 && requestData?.statues != 3 && requestData?.statues != 11 && (
-                <DetailsRow>
-                  <DetailsTitle
-                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                  >
-                    {t('requests.suitableCompanies&Branches')}
-                  </DetailsTitle>
-
-                  <DetailsValue
-                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                  >
-                    <Tooltip
-                      placement={language == 'en' ? 'right' : 'left'}
-                      title={t('requests.suitableCompanies&Branches')}
+              {requestData?.statues != 1 &&
+                requestData?.statues != 3 &&
+                requestData?.statues != 11 &&
+                !possibleClientId && (
+                  <DetailsRow>
+                    <DetailsTitle
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
                     >
-                      <TableButton
-                        severity="success"
-                        onClick={() => {
-                          Navigate(`wasSent/2`);
-                        }}
+                      {t('requests.suitableCompanies&Branches')}
+                    </DetailsTitle>
+
+                    <DetailsValue
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      <Tooltip
+                        placement={language == 'en' ? 'right' : 'left'}
+                        title={t('requests.suitableCompanies&Branches')}
                       >
-                        <BankOutlined />
-                      </TableButton>
-                    </Tooltip>
-                  </DetailsValue>
-                </DetailsRow>
-              )}
+                        <TableButton
+                          severity="success"
+                          onClick={() => {
+                            Navigate(`wasSent/2`);
+                          }}
+                        >
+                          <BankOutlined />
+                        </TableButton>
+                      </Tooltip>
+                    </DetailsValue>
+                  </DetailsRow>
+                )}
 
               {/* reasonRefuse */}
               {requestData?.statues == 3 && requestData?.reasonRefuse && (
@@ -604,7 +611,7 @@ const RequestDetails: React.FC = () => {
               )}
 
               {/* offers */}
-              {requestData?.statues == 5 && (
+              {requestData?.statues == 5 && !possibleClientId && (
                 <DetailsRow>
                   <DetailsTitle
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -634,7 +641,8 @@ const RequestDetails: React.FC = () => {
                 requestData?.statues == 8 ||
                 requestData?.statues == 9 ||
                 requestData?.statues == 10) &&
-                requestData?.selectedOfferId && (
+                requestData?.selectedOfferId &&
+                !possibleClientId && (
                   <DetailsRow>
                     <DetailsTitle
                       style={
@@ -671,30 +679,35 @@ const RequestDetails: React.FC = () => {
                 requestData?.statues == 9 ||
                 requestData?.statues == 10 ||
                 requestData?.statues == 12 ||
-                requestData?.statues == 13) && (
-                <DetailsRow>
-                  <DetailsTitle
-                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                  >
-                    {t('requests.rejectedoffers')}
-                  </DetailsTitle>
+                requestData?.statues == 13) &&
+                !possibleClientId && (
+                  <DetailsRow>
+                    <DetailsTitle
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      {t('requests.rejectedoffers')}
+                    </DetailsTitle>
 
-                  <DetailsValue
-                    style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                  >
-                    <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('requests.rejectedoffers')}>
-                      <TableButton
-                        severity="error"
-                        onClick={() => {
-                          Navigate(`offers/rejectedoffers`);
-                        }}
-                      >
-                        <StopOutlined />
-                      </TableButton>
-                    </Tooltip>
-                  </DetailsValue>
-                </DetailsRow>
-              )}
+                    <DetailsValue
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('requests.rejectedoffers')}>
+                        <TableButton
+                          severity="error"
+                          onClick={() => {
+                            Navigate(`offers/rejectedoffers`);
+                          }}
+                        >
+                          <StopOutlined />
+                        </TableButton>
+                      </Tooltip>
+                    </DetailsValue>
+                  </DetailsRow>
+                )}
 
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :

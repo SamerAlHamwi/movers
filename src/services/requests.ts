@@ -7,14 +7,25 @@ const getAllRequests = async (
   page: number,
   pageSize: number,
   search: string,
-  Statues?: number,
+  Status?: number,
+  userId?: string | undefined,
 ) => {
   const skip = (page - 1) * pageSize;
-  return await httpApi.get(
-    `${apiPrefix.requests}/GetAll?${
-      type === 'viaBroker' && `ForBroker=true&BrokerId=${brokerId}&Statues=10`
-    }&SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}&Statues=${Statues ? Statues : ''}`,
-  );
+  let url = `${apiPrefix.requests}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`;
+
+  if (type === 'viaBroker' && brokerId) {
+    url += `&ForBroker=true&BrokerId=${brokerId}`;
+  }
+
+  if (Status !== undefined) {
+    url += `&Status=${Status}`;
+  }
+
+  if (userId !== undefined) {
+    url += `&userId=${userId}`;
+  }
+
+  return await httpApi.get(url);
 };
 
 const getPossibleClients = async (CompanyId: string | undefined, page: number, pageSize: number, search: string) => {

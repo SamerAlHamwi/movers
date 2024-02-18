@@ -36,6 +36,7 @@ const PrivacyPolicy = lazy(() => import('@app/pages/OtherPages/PrivacyPolicyPage
 const PaymentPrivacy = lazy(() => import('@app/pages/OtherPages/PaymentPrivacyPage'));
 const RolePage = lazy(() => import('@app/pages/OtherPages/RolesPage'));
 const RequestPage = lazy(() => import('@app/pages/RequestsPages/RequestsPage'));
+const HisRequestPage = lazy(() => import('@app/pages/UsersPages/HisRequests'));
 const RequestDetailPage = lazy(() => import('@app/pages/RequestsPages/RequestDetailsPage'));
 const SuitableCompanyPage = lazy(() => import('@app/pages/RequestsPages/SuitableCompaniesPage'));
 const OfferPage = lazy(() => import('@app/pages/RequestsPages/OffersPage'));
@@ -96,6 +97,7 @@ const PrivacyPolicyPage = withLoading(PrivacyPolicy);
 const PaymentPrivacyPage = withLoading(PaymentPrivacy);
 const RolesPage = withLoading(RolePage);
 const RequestsPage = withLoading(RequestPage);
+const HisRequestsPage = withLoading(HisRequestPage);
 const RequestDetailsPage = withLoading(RequestDetailPage);
 const SuitableCompaniesPage = withLoading(SuitableCompanyPage);
 const OffersPage = withLoading(OfferPage);
@@ -159,6 +161,60 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1]]}>
                 <UsersPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <HisRequestsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests/:requestId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1]]}>
+                <RequestDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests/:requestId/details/wasSent/:type"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <SuitableCompaniesPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests/:requestId/details/offers/:type"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <OffersPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={'user-management/:userId/requests/:requestId/details/offers/:type/:offerId/details'}
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <OffersDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path={'user-management/:userId/requests/:requestId/details/:offerId/details'}
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <OffersDetailsPage />
               </PrivateRoute>
             }
           />

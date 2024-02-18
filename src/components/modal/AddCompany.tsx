@@ -358,6 +358,22 @@ export const AddCompany: React.FC = () => {
       });
       return;
     }
+
+    // if (companyInfo.companyOwnerIdentityIds == 0) {
+    //   message.open({
+    //     content: <Alert message={t('companies.atLeastOneOwnerAttachment')} type={`error`} showIcon />,
+    //   });
+    //   setEnableEdit(false);
+    //   return;
+    // }
+    // if (companyInfo.companyCommercialRegisterIds == 0) {
+    //   message.open({
+    //     content: <Alert message={t('companies.atLeastOneCommercialAttachment')} type={`error`} showIcon />,
+    //   });
+    //   setEnableEdit(false);
+    //   return;
+    // }
+
     addCompany.mutate(companyInfo);
   };
 
