@@ -52,9 +52,6 @@ export const EditContactUs: React.FC<EditContactProps> = ({ visible, onCancel, c
     onEdit(contactInfo);
   };
 
-  console.log('startTime', contact_values?.startTime);
-  console.log('endTime', contact_values?.endTime);
-
   return (
     <Modal
       style={{ marginTop: '0rem', height: '80vh', overflowY: 'scroll' }}

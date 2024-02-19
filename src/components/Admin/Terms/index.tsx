@@ -406,7 +406,7 @@ export const Term: React.FC = () => {
               isLoading={addTerm.isLoading}
             />
           )}
-          {console.log(editmodaldata)}
+
           {/*    EDIT    */}
           {isOpenEditModalForm && (
             <EditTerm

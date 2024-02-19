@@ -25,8 +25,6 @@ export const EditAttributeChoice: React.FC<EditProps> = ({ visible, onCancel, va
     form.submit();
   };
 
-  console.log('values', values);
-
   const onFinish = (info: SourceTypeModel) => {
     const my_data = {
       translations: info.translations?.map((_, i) => ({

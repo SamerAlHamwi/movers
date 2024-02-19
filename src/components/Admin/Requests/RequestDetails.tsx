@@ -533,8 +533,6 @@ const RequestDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
-              {console.log('brokerId', brokerId)}
-
               {/* suitableCompanies&Branches */}
               {requestData?.statues != 1 &&
                 requestData?.statues != 3 &&
