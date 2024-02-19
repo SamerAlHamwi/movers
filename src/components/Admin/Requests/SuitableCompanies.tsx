@@ -490,7 +490,10 @@ export const SuitableCompanies: React.FC = () => {
 
       {type == '1' && (
         <Button
-          disabled={dataCompany?.length == 0 && dataBranch?.length == 0}
+          disabled={
+            (dataCompany?.length == 0 && dataBranch?.length == 0) ||
+            (selectedCompanies?.length == 0 && selectedBranches?.length == 0)
+          }
           type="primary"
           style={{
             marginBottom: '.5rem',
