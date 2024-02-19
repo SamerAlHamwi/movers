@@ -22,7 +22,7 @@ const getAllRequests = async (
   }
 
   if (userId !== undefined) {
-    url += `&userId=${userId}`;
+    url += `&UserId=${userId}`;
   }
 
   return await httpApi.get(url);
