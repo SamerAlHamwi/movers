@@ -455,7 +455,7 @@ const CompanyDetails: React.FC = () => {
                   percent={companyData?.generalRating?.quality * 10}
                   format={(percent) => (
                     <p>
-                      {percent} <h6> {t('companies.quality')} </h6>
+                      {percent?.toFixed(2)} <h6> {t('companies.quality')} </h6>
                     </p>
                   )}
                   strokeColor={conicBlueColors}
@@ -465,17 +465,18 @@ const CompanyDetails: React.FC = () => {
                   percent={companyData?.generalRating?.overallRating * 10}
                   format={(percent) => (
                     <p>
-                      {percent} <h6> {t('companies.overallRating')} </h6>
+                      {percent?.toFixed(2)} <h6> {t('companies.overallRating')} </h6>
                     </p>
                   )}
                   strokeColor={conicPinkColors}
                 />
+
                 <Progress
                   type="circle"
                   percent={companyData?.generalRating?.customerService * 10}
                   format={(percent) => (
                     <p>
-                      {percent} <h6> {t('companies.customerService')} </h6>
+                      {percent?.toFixed(2)} <h6> {t('companies.customerService')} </h6>
                     </p>
                   )}
                   strokeColor={conicGreenColors}
@@ -485,7 +486,7 @@ const CompanyDetails: React.FC = () => {
                   percent={companyData?.generalRating?.valueOfServiceForMoney * 10}
                   format={(percent) => (
                     <p>
-                      {percent} <h6> {t('companies.valueOfServiceForMoney')} </h6>
+                      {percent?.toFixed(2)} <h6> {t('companies.valueOfServiceForMoney')} </h6>
                     </p>
                   )}
                   strokeColor={conicRedColors}
