@@ -29,7 +29,11 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
     en: undefined,
     ar: undefined,
   });
-  const [valueRadio, setValueRadio] = useState(false);
+
+  console.log(values);
+  console.log(values?.isMainForPoints);
+
+  const [valueRadio, setValueRadio] = useState(values?.isMainForPoints);
 
   useEffect(() => {
     if (values) {
@@ -69,6 +73,7 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
         ...info.translations[i],
         language: i === 1 ? ('en' as LanguageType) : ('ar' as LanguageType),
       })),
+      isMainForPoints: valueRadio,
     };
     info = Object.assign({}, info, my_data);
     onEdit(info);
@@ -134,8 +139,8 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
           <Input />
         </BaseForm.Item>
         <BaseForm.Item
-          name={['acceptRequests']}
-          label={<LableText>{t(`companies.acceptRequests`)}</LableText>}
+          name={['isMainForPoints']}
+          label={<LableText>{t(`companies.isMainForPoints`)}</LableText>}
           rules={[
             {
               required: true,

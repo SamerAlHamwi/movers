@@ -313,6 +313,7 @@ export interface SourceTypeModel {
   name?: string;
   isActive: boolean;
   isAttributeChoiceParent?: boolean;
+  isMainForPoints: boolean;
 }
 
 export interface RoleModel {
