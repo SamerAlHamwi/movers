@@ -45,7 +45,8 @@ const AddRequestPage = lazy(() => import('@app/pages/RequestsPages/AddRequestPag
 const EditRequestPage = lazy(() => import('@app/pages/RequestsPages/EditRequestPage'));
 const CompleteDraftPage = lazy(() => import('@app/pages/RequestsPages/CompleteDraftsPage'));
 const DraftPage = lazy(() => import('@app/pages/Drafts/DraftPage'));
-const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
+const CompaniesPage = lazy(() => import('@app/pages/CompaniesPages/CompaniesPage'));
+const CompaniesThatBoughtInfoPage = lazy(() => import('@app/pages/CompaniesPages/CompaniesThatBoughtInfoPage'));
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
 const EditCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/EditCompanyPage'));
@@ -106,7 +107,8 @@ const AddRequestsPage = withLoading(AddRequestPage);
 const EditRequestsPage = withLoading(EditRequestPage);
 const CompleteDraftsPage = withLoading(CompleteDraftPage);
 const DraftsPage = withLoading(DraftPage);
-const CompanyPage = withLoading(Companiespage);
+const CompanyPage = withLoading(CompaniesPage);
+const CompanyThatBoughtInfoPage = withLoading(CompaniesThatBoughtInfoPage);
 const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
 const EditCompanyPage = withLoading(EditCompaniesPage);
@@ -179,6 +181,33 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedRoles={[UserRole[1]]}>
                 <RequestDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests/:requestId/details/:type"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <CompanyThatBoughtInfoPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests/:requestId/details/:type/:companyId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <CompanyDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="user-management/:userId/requests/:requestId/details/:type/:companyId/details/reviewsDetails"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <ReviewsDetailsPage />
               </PrivateRoute>
             }
           />
@@ -281,7 +310,7 @@ export const AppRouter: React.FC = () => {
             path="requests/:requestId/details/:type"
             element={
               <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
-                <CompanyPage />
+                <CompanyThatBoughtInfoPage />
               </PrivateRoute>
             }
           />
