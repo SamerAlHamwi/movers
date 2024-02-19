@@ -29,10 +29,6 @@ export const EditSourceType: React.FC<EditProps> = ({ visible, onCancel, values,
     en: undefined,
     ar: undefined,
   });
-
-  console.log(values);
-  console.log(values?.isMainForPoints);
-
   const [valueRadio, setValueRadio] = useState(values?.isMainForPoints);
 
   useEffect(() => {
