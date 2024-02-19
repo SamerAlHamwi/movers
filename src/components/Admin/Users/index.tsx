@@ -340,6 +340,7 @@ export const User: React.FC = () => {
           <Space>
             <Tooltip placement="top" title={t('users.hisRequests')}>
               <TableButton
+                disabled={record.type !== 2 && record.type !== 6}
                 severity="success"
                 onClick={() => {
                   Navigate(`${record.id}/requests`, { state: record.name });
