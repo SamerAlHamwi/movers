@@ -148,20 +148,6 @@ export const User: React.FC = () => {
     setIsOpenDeleteModalForm(deleteUser.isLoading);
   }, [deleteUser.isLoading]);
 
-  // const changPasswordForUser = useMutation((data: any) =>
-  //   changePasswordForUser(data)
-  //     .then((data) => {
-  //       notificationController.success({ message: t('users.changPasswordForUserSuccessMessage') });
-  //     })
-  //     .catch((error) => {
-  //       notificationController.error({ message: error?.message || error.error?.message });
-  //     }),
-  // );
-
-  // useEffect(() => {
-  //   setModalState((prevModalState) => ({ ...prevModalState, changePassword: changPasswordForUser.isLoading }));
-  // }, [changPasswordForUser.isLoading]);
-
   const activateUser = useMutation((id: number) =>
     Activate(id)
       .then((data) => {
@@ -502,19 +488,6 @@ export const User: React.FC = () => {
             />
           )}
         </Row>
-
-        {/*    Change Password    */}
-        {/* {modalState.changePassword && (
-          <ChangePasswordForUser
-            visible={modalState.changePassword}
-            onCancel={() => handleModalClose('changePassword')}
-            onCreateCode={(info: any) => {
-              const data = { id: changePasswordData.id, ...info };
-              changPasswordForUser.mutateAsync(data);
-            }}
-            isLoading={changPasswordForUser.isLoading}
-          />
-        )} */}
 
         <Table
           pagination={{
