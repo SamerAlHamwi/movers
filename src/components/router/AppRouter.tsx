@@ -634,6 +634,15 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path="Brokers/:brokerId/details/requests/:type/:requestId/details"
+            element={
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <RequestDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="Brokers/:brokerId/details/:codeBroker/clients/:type"
             element={
               <PrivateRoute allowedRoles={[UserRole[1]]}>

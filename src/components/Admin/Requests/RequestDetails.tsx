@@ -49,7 +49,7 @@ const attributeChoiceAttachments: any[] = [];
 const RequestDetails: React.FC = () => {
   const { t } = useTranslation();
   const { language } = useLanguage();
-  const { requestId, possibleClientId, userId } = useParams();
+  const { requestId, possibleClientId, brokerId } = useParams();
   const { isDesktop, isTablet, desktopOnly, mobileOnly } = useResponsive();
   const Navigate = useNavigate();
 
@@ -224,7 +224,6 @@ const RequestDetails: React.FC = () => {
                   );
                 })}
               </DetailsRow>
-
               <DetailsRow>
                 {requestData?.requestForQuotationContacts.map((request: any) => {
                   return (
@@ -245,7 +244,6 @@ const RequestDetails: React.FC = () => {
                   );
                 })}
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle> {t('requests.country')} </DetailsTitle>
@@ -256,7 +254,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.destinationCity?.country?.name}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle> {t('requests.city')} </DetailsTitle>
@@ -267,7 +264,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.destinationCity?.name}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle> {t('requests.address')} </DetailsTitle>
@@ -278,7 +274,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.destinationAddress}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle> {t('requests.moveAtUtc')} </DetailsTitle>
@@ -289,7 +284,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.arrivalAtUtc}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               {treeData.length > 0 ? (
                 <>
                   <DetailsTitle style={{ margin: '0 2%' }}>{t('requests.services')}</DetailsTitle>
@@ -319,11 +313,9 @@ const RequestDetails: React.FC = () => {
                   </DetailsValue>
                 </DetailsRow>
               )}
-
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('companies.companyUser')} :
               </h3>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.fullName')}</DetailsTitle>
@@ -332,7 +324,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.user?.registrationFullName ?? '___'}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('common.emailAddress')}</DetailsTitle>
@@ -341,7 +332,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.user?.emailAddress}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('common.phoneNumber')}</DetailsTitle>
@@ -350,7 +340,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.user?.phoneNumber ?? '___'}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.userName')}</DetailsTitle>
@@ -359,7 +348,6 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{requestData?.user?.userName}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <DetailsRow>
                 <ColStyle>
                   <DetailsTitle>{t('companies.creationTime')}</DetailsTitle>
@@ -368,11 +356,9 @@ const RequestDetails: React.FC = () => {
                   <DetailsValue>{moment(requestData?.user?.creationTime).format(DATE_TIME)}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
-
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.additionalInfo')} :
               </h3>
-
               <DetailsRow>
                 <DetailsTitle
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -385,7 +371,6 @@ const RequestDetails: React.FC = () => {
                   {requestData?.comment ?? t('requests.nocomment')}
                 </DetailsValue>
               </DetailsRow>
-
               <DetailsRow>
                 <DetailsTitle
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -398,7 +383,6 @@ const RequestDetails: React.FC = () => {
                   {moment(requestData?.creationTime).format(DATE_TIME)}
                 </DetailsValue>
               </DetailsRow>
-
               <DetailsRow>
                 <DetailsTitle
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -411,7 +395,6 @@ const RequestDetails: React.FC = () => {
                   {requestData?.lastModificationTime == null ? '___' : requestData?.lastModificationTime}
                 </DetailsValue>
               </DetailsRow>
-
               <DetailsRow>
                 <DetailsTitle
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -424,7 +407,6 @@ const RequestDetails: React.FC = () => {
                   {requestData?.user?.fullName == ' ' ? '___' : requestData?.user?.fullName}
                 </DetailsValue>
               </DetailsRow>
-
               <DetailsRow>
                 <DetailsTitle
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -446,7 +428,6 @@ const RequestDetails: React.FC = () => {
                     : 'CompanyBranchUser'}
                 </DetailsValue>
               </DetailsRow>
-
               <DetailsRow>
                 <DetailsTitle
                   style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -523,7 +504,6 @@ const RequestDetails: React.FC = () => {
                   )}
                 </DetailsValue>
               </DetailsRow>
-
               {/* companiesThatBoughtInfo */}
               {requestData?.statues === 4 && (
                 <DetailsRow>
@@ -553,11 +533,14 @@ const RequestDetails: React.FC = () => {
                 </DetailsRow>
               )}
 
+              {console.log('brokerId', brokerId)}
+
               {/* suitableCompanies&Branches */}
               {requestData?.statues != 1 &&
                 requestData?.statues != 3 &&
                 requestData?.statues != 11 &&
-                !possibleClientId && (
+                !possibleClientId &&
+                !brokerId && (
                   <DetailsRow>
                     <DetailsTitle
                       style={
@@ -642,7 +625,8 @@ const RequestDetails: React.FC = () => {
                 requestData?.statues == 9 ||
                 requestData?.statues == 10) &&
                 requestData?.selectedOfferId &&
-                !possibleClientId && (
+                !possibleClientId &&
+                !brokerId && (
                   <DetailsRow>
                     <DetailsTitle
                       style={
@@ -672,7 +656,6 @@ const RequestDetails: React.FC = () => {
 
               {/* Rejected offers  */}
               {(requestData?.statues == 4 ||
-                // requestData?.statues === 5 ||
                 requestData?.statues == 6 ||
                 requestData?.statues == 7 ||
                 requestData?.statues == 8 ||
@@ -680,7 +663,8 @@ const RequestDetails: React.FC = () => {
                 requestData?.statues == 10 ||
                 requestData?.statues == 12 ||
                 requestData?.statues == 13) &&
-                !possibleClientId && (
+                !possibleClientId &&
+                !brokerId && (
                   <DetailsRow>
                     <DetailsTitle
                       style={
@@ -708,11 +692,9 @@ const RequestDetails: React.FC = () => {
                     </DetailsValue>
                   </DetailsRow>
                 )}
-
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :
               </h3>
-
               <Card style={{ width: '100%', margin: '1rem 0' }}>
                 <Meta
                   avatar={<Image src={requestData?.sourceType?.attachment?.url} />}
@@ -730,13 +712,11 @@ const RequestDetails: React.FC = () => {
                   ))}
                 />
               </Card>
-
               {requestData?.attributeChoiceAndAttachments.length > 0 && (
                 <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                   {t('requests.attachments')} :
                 </h3>
               )}
-
               {requestData?.attributeChoiceAndAttachments.map((attributeChoiceAndAttachmentsValue: any) => (
                 <Col key={attributeChoiceAndAttachmentsValue?.attributeChoice?.id}>
                   <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
@@ -751,7 +731,6 @@ const RequestDetails: React.FC = () => {
                   </Card>
                 </Col>
               ))}
-
               {requestData?.attachments.map((attachment: any) => (
                 <Card
                   key={attachment?.id}
@@ -761,7 +740,6 @@ const RequestDetails: React.FC = () => {
                   <Image src={attachment?.url} style={{ width: '150px' }} />
                 </Card>
               ))}
-
               {requestData?.finishedRequestAttachmentByCompany.length > 0 && (
                 <>
                   <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('requests.attachmentsFromCompany')} :</h3>
