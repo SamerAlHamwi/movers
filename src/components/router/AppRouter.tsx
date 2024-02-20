@@ -45,7 +45,7 @@ const AddRequestPage = lazy(() => import('@app/pages/RequestsPages/AddRequestPag
 const EditRequestPage = lazy(() => import('@app/pages/RequestsPages/EditRequestPage'));
 const CompleteDraftPage = lazy(() => import('@app/pages/RequestsPages/CompleteDraftsPage'));
 const DraftPage = lazy(() => import('@app/pages/Drafts/DraftPage'));
-const CompaniesPage = lazy(() => import('@app/pages/CompaniesPages/CompaniesPage'));
+const Companiespage = lazy(() => import('@app/pages/CompaniesPages/Companiespage'));
 const CompaniesThatBoughtInfoPage = lazy(() => import('@app/pages/CompaniesPages/CompaniesThatBoughtInfoPage'));
 const CompanyDetailPage = lazy(() => import('@app/pages/CompaniesPages/CompanytDetailsPage'));
 const AddCompaniesPage = lazy(() => import('@app/pages/CompaniesPages/AddCompanyPage'));
@@ -107,7 +107,7 @@ const AddRequestsPage = withLoading(AddRequestPage);
 const EditRequestsPage = withLoading(EditRequestPage);
 const CompleteDraftsPage = withLoading(CompleteDraftPage);
 const DraftsPage = withLoading(DraftPage);
-const CompanyPage = withLoading(CompaniesPage);
+const CompanyPage = withLoading(Companiespage);
 const CompanyThatBoughtInfoPage = withLoading(CompaniesThatBoughtInfoPage);
 const CompanyDetailsPage = withLoading(CompanyDetailPage);
 const AddCompanyPage = withLoading(AddCompaniesPage);
