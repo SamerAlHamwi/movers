@@ -10,7 +10,7 @@ const Map: FC<any> = ({ field, value, handleChange }) => {
   const { name = '' } = field;
 
   const customIcon = L.icon({
-    iconUrl: '/logo.png',
+    iconUrl: '/Logo.png',
     iconSize: [32, 32],
   });
 
@@ -20,7 +20,7 @@ const Map: FC<any> = ({ field, value, handleChange }) => {
 
     useEffect(() => {
       const customIcon = L.icon({
-        iconUrl: '/logo.png',
+        iconUrl: '/Logo.png',
         iconSize: [32, 32],
       });
 

@@ -150,9 +150,7 @@ export const EditCompany: React.FC = () => {
   const [visibleAdditionFile, setVisibleAdditionFile] = useState<boolean>(false);
   const [additionalFiles, setAdditionalFiles] = useState<any>();
   const [test, setTest] = useState<any[]>([]);
-
   const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
-
   const [lang, setLang] = useState<{ en: any; ar: any }>({
     en: undefined,
     ar: undefined,

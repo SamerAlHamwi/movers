@@ -804,7 +804,7 @@ const ComparisonCompany: React.FC = () => {
           }}
           onClick={() => setVisible(true)}
         >
-          <CreateButtonText>{t('common.reject')}</CreateButtonText>
+          <CreateButtonText>{t('common.return')}</CreateButtonText>
         </Button>
         {
           <SendRejectReason
