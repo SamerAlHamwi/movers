@@ -729,15 +729,20 @@ const RequestDetails: React.FC = () => {
                   </Card>
                 </Col>
               ))}
-              {requestData?.attachments.map((attachment: any) => (
-                <Card
-                  key={attachment?.id}
-                  style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}
-                >
-                  <h4 style={{ margin: '2% 1rem' }}>{t('requests.additionalAttachments')} :</h4>
-                  <Image src={attachment?.url} style={{ width: '150px' }} />
-                </Card>
-              ))}
+              {requestData?.attachments.length > 0 && (
+                <>
+                  <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('requests.additionalAttachments')} :</h3>
+                  <Card style={{ width: '100%', margin: '1rem 0', boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)' }}>
+                    <Row>
+                      {requestData?.attachments.map((attachment: any) => (
+                        <Col span={6} key={attachment?.id}>
+                          <Image src={attachment?.url} style={{ width: '150px' }} />
+                        </Col>
+                      ))}
+                    </Row>
+                  </Card>
+                </>
+              )}
               {requestData?.finishedRequestAttachmentByCompany.length > 0 && (
                 <>
                   <h3 style={{ paddingTop: '2rem', margin: '0 2% 1rem' }}>{t('requests.attachmentsFromCompany')} :</h3>
