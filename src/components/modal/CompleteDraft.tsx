@@ -138,7 +138,6 @@ export const CompleteDraft: React.FC = () => {
   const [fileListLength, setFileListLength] = useState(0);
   const [picturesList, setPicturesList] = useState<any[]>([]);
   const [validations, setValidations] = useState<boolean>(false);
-
   const [needStorage, setNeedStorage] = useState<boolean>(false);
 
   const {
@@ -163,13 +162,19 @@ export const CompleteDraft: React.FC = () => {
             ...result,
             moveAtUtc: new Date(`${result.moveAtUtc}`),
           });
+
           const imageRequest = data.data?.result.attributeChoiceAndAttachments.map((item: any) => {
             return {
               attachmentIds: item.attachments,
-              attributeChoiceId: item.attributeChoice?.id,
+              // attributeChoiceId: item.attributeChoice?.id,
+
+              // attachmentIds: item.attachmentIds,
+              attributeChoiceId: item.attributeChoiceId,
             };
           });
-          status === 'success' && setAttributeChoiceAndAttachments(imageRequest ?? []);
+
+          // status === 'success' &&
+          setAttributeChoiceAndAttachments(imageRequest ?? []);
           setGetRequest(false);
         })
         .catch((error) => {
@@ -199,8 +204,8 @@ export const CompleteDraft: React.FC = () => {
       setSelectedRadio(
         RequestData?.attributeForSourceTypeValues.map((item: any) => {
           return {
-            attributeForSourcTypeId: item.attributeForSourcType?.id,
-            attributeChoiceId: item.attributeChoice?.id,
+            attributeForSourcTypeId: item.attributeForSourcTypeId,
+            attributeChoiceId: item.attributeChoiceId,
           };
         }),
       );
@@ -270,36 +275,42 @@ export const CompleteDraft: React.FC = () => {
   }, [language, RequestData?.sourceType?.id]);
 
   useEffect(() => {
-    setSourcePosition({
-      lat: RequestData?.sourceLatitude,
-      lng: RequestData?.sourceLongitude,
-    });
-    setDestinationPosition({
-      lat: RequestData?.destinationLatitude,
-      lng: RequestData?.destinationLongitude,
-    });
+    if (RequestData) {
+      setSourcePosition({
+        lat: RequestData?.sourceLatitude,
+        lng: RequestData?.sourceLongitude,
+      });
+      setDestinationPosition({
+        lat: RequestData?.destinationLatitude,
+        lng: RequestData?.destinationLongitude,
+      });
 
-    const requestDataAttachments = RequestData?.attachments || [];
-    const transformedAttachments = requestDataAttachments.map((attachment: any) => ({
-      status: 'done',
-      uid: attachment.id,
-      url: attachment.url || attachment.lowResolutionPhotoUrl,
-    }));
-    setFileList(transformedAttachments);
+      const requestDataAttachments = (RequestData?.attributeChoiceAndAttachments || []).filter(
+        (item) => item.attributeChoiceId == null,
+      );
 
-    const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
-    const transformedAttributeAttachments = attributeAndAttachments.map((attribute: any) => {
-      return {
-        attributeId: attribute?.attributeChoice?.id,
-        attachment: attribute.attachments.map((attachment: any) => ({
-          status: 'done',
-          uid: attachment.id,
-          url: attachment.url || attachment.lowResolutionPhotoUrl,
-          name: attachment.url ?? '',
-        })),
-      };
-    });
-    // setImagesList(transformedAttributeAttachments);
+      const transformedAttachments = requestDataAttachments[0].attachments.map((attachment: any) => ({
+        status: 'done',
+        uid: attachment.id,
+        url: attachment.url || attachment.lowResolutionPhotoUrl,
+      }));
+
+      setFileList(transformedAttachments);
+
+      const attributeAndAttachments = RequestData?.attributeChoiceAndAttachments || [];
+      const transformedAttributeAttachments = attributeAndAttachments.map((attribute: any) => {
+        return {
+          attributeId: attribute?.attributeChoice?.id,
+          attachment: attribute.attachments.map((attachment: any) => ({
+            status: 'done',
+            uid: attachment.id,
+            url: attachment.url || attachment.lowResolutionPhotoUrl,
+            name: attachment.url ?? '',
+          })),
+        };
+      });
+      // setImagesList(transformedAttributeAttachments);
+    }
   }, [RequestData]);
 
   const filterImage = (attributeId: number) => {
@@ -622,7 +633,6 @@ export const CompleteDraft: React.FC = () => {
       });
       setPicturesList([]);
       setFileListLength(0);
-
       setFileList(fileList.concat(x));
     }
   };
@@ -790,7 +800,7 @@ export const CompleteDraft: React.FC = () => {
         ))}
       </Steps>
 
-      {status === 'success' && RequestData && (
+      {status === 'success' && !isLoading && RequestData && (
         <BaseForm
           form={form}
           onFinish={onFinish}
