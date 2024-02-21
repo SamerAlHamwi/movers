@@ -24,6 +24,8 @@ import { TextArea } from '../../components/GeneralStyles';
 import { PHONE_NUMBER_CODE, PHONE_NUMBER_LENGTH } from '@app/constants/appConstants';
 import { validationInputNumber } from '../functions/ValidateInputNumber';
 import WorkTimes from '../common/WorkTimes';
+import { INDEX_ONE, INDEX_TWO } from '@app/constants/indexes';
+import { AR } from '@app/constants/appConstants';
 
 const { Step } = Steps;
 let requestServicesArray: any = [];
@@ -92,6 +94,10 @@ export const EditBranch: React.FC = () => {
   const [countryIdForAvailableCities, setCountryIdForAvailableCities] = useState<string>('0');
   const [enableEdit, setEnableEdit] = useState(false);
   const [selectedDays, setSelectedDays] = useState<Array<TimeworksProps>>([]);
+  const [lang, setLang] = useState<any>({
+    en: undefined,
+    ar: undefined,
+  });
 
   const { data, status, refetch, isRefetching, isLoading } = useQuery(
     ['GetBranchById'],
@@ -110,6 +116,23 @@ export const EditBranch: React.FC = () => {
       enabled: GetBranch,
     },
   );
+
+  useEffect(() => {
+    if (branchData) {
+      const firstElement = branchData?.translations[0];
+      if (firstElement?.language === AR) {
+        setLang({
+          ar: INDEX_ONE,
+          en: INDEX_TWO,
+        });
+      } else {
+        setLang({
+          ar: INDEX_TWO,
+          en: INDEX_ONE,
+        });
+      }
+    }
+  }, [branchData]);
 
   const GetAllServices = useQuery('getServicesForCompany', getServicesForCompany);
 
@@ -291,15 +314,15 @@ export const EditBranch: React.FC = () => {
       companyId: companyId == undefined ? 0 : companyId,
       translations: [
         {
-          name: form.getFieldValue(['translations', 0, 'name']),
-          bio: form.getFieldValue(['translations', 0, 'bio']),
-          address: form.getFieldValue(['translations', 0, 'address']),
+          name: form.getFieldValue(['translations', lang.ar, 'name']),
+          bio: form.getFieldValue(['translations', lang.ar, 'bio']),
+          address: form.getFieldValue(['translations', lang.ar, 'address']),
           language: 'ar',
         },
         {
-          name: form.getFieldValue(['translations', 1, 'name']),
-          bio: form.getFieldValue(['translations', 1, 'bio']),
-          address: form.getFieldValue(['translations', 1, 'address']),
+          name: form.getFieldValue(['translations', lang.en, 'name']),
+          bio: form.getFieldValue(['translations', lang.en, 'bio']),
+          address: form.getFieldValue(['translations', lang.en, 'address']),
           language: 'en',
         },
       ],
@@ -451,7 +474,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 0, 'name']}
+                      name={['translations', lang.ar, 'name']}
                       label={<LableText>{t('common.name_ar')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -472,7 +495,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 1, 'name']}
+                      name={['translations', lang.en, 'name']}
                       label={<LableText>{t('common.name_en')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -495,7 +518,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 0, 'bio']}
+                      name={['translations', lang.ar, 'bio']}
                       label={<LableText>{t('common.bio_ar')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -516,7 +539,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 1, 'bio']}
+                      name={['translations', lang.en, 'bio']}
                       label={<LableText>{t('common.bio_en')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -539,7 +562,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 0, 'address']}
+                      name={['translations', lang.ar, 'address']}
                       label={<LableText>{t('common.address_ar')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
@@ -560,7 +583,7 @@ export const EditBranch: React.FC = () => {
                     style={isDesktop || isTablet ? { width: '40%', margin: '0 5%' } : { width: '80%', margin: '0 10%' }}
                   >
                     <BaseForm.Item
-                      name={['translations', 1, 'address']}
+                      name={['translations', lang.en, 'address']}
                       label={<LableText>{t('common.address_en')}</LableText>}
                       style={{ marginTop: '-1rem' }}
                       rules={[
