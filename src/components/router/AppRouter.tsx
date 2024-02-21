@@ -2,10 +2,6 @@ import React, { lazy } from 'react';
 import { BrowserRouter, Routes, Route, HashRouter } from 'react-router-dom';
 import MainLayout from '@app/components/layouts/main/MainLayout/MainLayout';
 import LoginPage from '@app/pages/AuthPages/LoginPage';
-import SecurityCodePage from '@app/pages/AuthPages/SecurityCodePage';
-import NewPasswordPage from '@app/pages/AuthPages/NewPasswordPage';
-import ForgotPasswordPage from '@app/pages/AuthPages/ForgotPassowordPage';
-import SignUpPage from '@app/pages/AuthPages/SignUpPage';
 import RequireAuth from '@app/components/router/RequireAuth';
 import { withLoading } from '@app/hocs/withLoading.hoc';
 import { PrivateRoute } from '@app/hocs/withAuthorization';
@@ -150,18 +146,18 @@ export const AppRouter: React.FC = () => {
           <Route
             index
             element={
-              userRole === 'admin' && (
-                <PrivateRoute allowedRoles={[UserRole[1]]}>
-                  <StatisticsAdminPage />
-                </PrivateRoute>
-              )
+              // userRole === 'admin' && (
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
+                <StatisticsAdminPage />
+              </PrivateRoute>
+              // )
             }
           />
 
           <Route
             path="user-management"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <UsersPage />
               </PrivateRoute>
             }
@@ -170,7 +166,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="user-management/:userId/requests"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <HisRequestsPage />
               </PrivateRoute>
             }
@@ -179,7 +175,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="user-management/:userId/requests/:requestId/details"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <RequestDetailsPage />
               </PrivateRoute>
             }
@@ -251,7 +247,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="manager-management"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ManagersPage />
               </PrivateRoute>
             }
@@ -391,7 +387,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="companies"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <CompanyPage />
               </PrivateRoute>
             }
@@ -491,7 +487,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <BranchWithoutCompanyPage />
               </PrivateRoute>
             }
@@ -500,7 +496,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/details"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <BranchDetailsPage />
               </PrivateRoute>
             }
@@ -509,7 +505,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/details/reviewsDetails"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ReviewsDetailsPage />
               </PrivateRoute>
             }
@@ -518,7 +514,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/EditBranch"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <EditBranchesPage />
               </PrivateRoute>
             }
@@ -527,7 +523,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/offers"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <OffersPage />
               </PrivateRoute>
             }
@@ -546,7 +542,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="commissionGroups"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <CommissionGroupsPage />
               </PrivateRoute>
             }
@@ -556,7 +552,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="FeaturedBundles"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <FeaturedBundlesPage />
               </PrivateRoute>
             }
@@ -566,7 +562,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="companies/:companyId/branches"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <BranchPage />
               </PrivateRoute>
             }
@@ -674,7 +670,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Brokers/:brokerId/details/:codeBroker/clients/:type"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <UsersPage />
               </PrivateRoute>
             }
@@ -711,7 +707,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="services"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ServicesPage />
               </PrivateRoute>
             }
@@ -720,7 +716,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="services/:serviceId/subService"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <SubServicesPage />
               </PrivateRoute>
             }
@@ -729,7 +725,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="services/:serviceId/tools"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ToolsPage />
               </PrivateRoute>
             }
@@ -738,7 +734,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="/services/:serviceId/subService/:subServiceId/tools"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ToolsPage />
               </PrivateRoute>
             }
@@ -748,7 +744,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <SourceTypesPage />
               </PrivateRoute>
             }
@@ -757,7 +753,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType/:sourceTypeId/attributeForSource"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <TypesForSourcePage />
               </PrivateRoute>
             }
@@ -766,7 +762,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType/:sourceTypeId/attributeForSource/:attributeForSourceId/attributes"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ParentAttributeChoicesPage />
               </PrivateRoute>
             }
@@ -775,7 +771,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType/:sourceTypeId/attributeForSource/:attributeForSourceId/attributes/:attributeId/attributesChild"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <ChildAttributeChoicesPage />
               </PrivateRoute>
             }
@@ -785,7 +781,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="locations/countries"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <CountriesPage />
               </PrivateRoute>
             }
@@ -794,7 +790,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="locations/countries/:countryId/cities"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <CitiesPage />
               </PrivateRoute>
             }
@@ -803,7 +799,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="locations/countries/:countryId/cities/:cityId/regions"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <RegionsPage />
               </PrivateRoute>
             }
@@ -821,7 +817,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="roles"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <RolesPage />
               </PrivateRoute>
             }
@@ -839,7 +835,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="PrivacyPolicy"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <PrivacyPolicyPage />
               </PrivateRoute>
             }
@@ -848,7 +844,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="PaymentPrivacy"
             element={
-              <PrivateRoute allowedRoles={[UserRole[1]]}>
+              <PrivateRoute allowedRoles={[UserRole[1], UserRole[4]]}>
                 <PaymentPrivacyPage />
               </PrivateRoute>
             }
@@ -913,10 +909,6 @@ export const AppRouter: React.FC = () => {
         </Route>
         <Route path="/auth" element={<AuthLayoutFallback />}>
           <Route path="login" element={<LoginPage />} />
-          <Route path="sign-up" element={<SignUpPage />} />
-          <Route path="forgot-password" element={<ForgotPasswordPage />} />
-          <Route path="security-code" element={<SecurityCodePage />} />
-          <Route path="new-password" element={<NewPasswordPage />} />
         </Route>
         <Route path="/logout" element={<LogoutFallback />} />
       </Routes>

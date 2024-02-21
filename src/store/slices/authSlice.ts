@@ -1,16 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import {
-  ResetPasswordRequest,
-  login,
-  LoginRequest,
-  signUp,
-  SignUpRequest,
-  resetPassword,
-  verifySecurityCode,
-  SecurityCodePayload,
-  NewPasswordData,
-  setNewPassword,
-} from '@app/services/auth';
+import { login, LoginRequest } from '@app/services/auth';
 import { deleteToken, deleteUser, persistToken, persistUser, readToken } from '@app/services/localStorage';
 import { setUser } from './userSlice';
 
@@ -29,24 +18,6 @@ export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: Log
     persistUser(response.result);
     return response.result.accessToken;
   }),
-);
-
-export const doSignUp = createAsyncThunk('auth/doSignUp', async (signUpPayload: SignUpRequest) =>
-  signUp(signUpPayload),
-);
-
-export const doResetPassword = createAsyncThunk(
-  'auth/doResetPassword',
-  async (resetPassPayload: ResetPasswordRequest) => resetPassword(resetPassPayload),
-);
-
-export const doVerifySecurityCode = createAsyncThunk(
-  'auth/doVerifySecurityCode',
-  async (securityCodePayload: SecurityCodePayload) => verifySecurityCode(securityCodePayload),
-);
-
-export const doSetNewPassword = createAsyncThunk('auth/doSetNewPassword', async (newPasswordData: NewPasswordData) =>
-  setNewPassword(newPasswordData),
 );
 
 export const doLogout = createAsyncThunk('auth/doLogout', (payload, { dispatch }) => {

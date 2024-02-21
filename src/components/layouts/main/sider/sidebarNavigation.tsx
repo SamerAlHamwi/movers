@@ -225,5 +225,5 @@ const ManagerSidebarNavigation: SidebarNavigationItem[] = [
 
 export const sidebarData: SidebarData = {
   admin: AdminSidebarNavigation,
-  manager: ManagerSidebarNavigation,
+  manager: AdminSidebarNavigation,
 };

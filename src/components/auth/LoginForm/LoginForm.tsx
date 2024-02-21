@@ -9,7 +9,6 @@ import * as Auth from '@app/components/layouts/AuthLayout/AuthLayout.styles';
 import { doLogin } from '@app/store/slices/authSlice';
 import { LoginRequest } from '@app/services/auth';
 import { Link } from 'react-router-dom';
-import { useAccessTokenCookie } from '@app/services/cookies';
 import CustomPasswordInput from '@app/components/common/inputs/InputPassword/CustomPasswordInput';
 
 const initValues: LoginRequest = {
@@ -75,10 +74,6 @@ export const LoginForm: React.FC = () => {
               <S.RememberMeText>{t('auth.rememberMe')}</S.RememberMeText>
             </Auth.FormCheckbox>
           </BaseForm.Item>
-
-          <Link to="/auth/forgot-password">
-            <S.ForgotPasswordText>{t('auth.forgotPassword')}</S.ForgotPasswordText>
-          </Link>
         </Auth.ActionsWrapper>
 
         <BaseForm.Item noStyle>
