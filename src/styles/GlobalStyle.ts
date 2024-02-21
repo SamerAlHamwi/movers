@@ -468,4 +468,8 @@ export default createGlobalStyle`
     width: 70px !important;
     height: 70px !important;
   }
+
+  .ant-card-meta-avatar {
+    width: 20%;
+  }
 `;
