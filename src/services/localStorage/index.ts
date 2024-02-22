@@ -32,3 +32,16 @@ export const deleteToken = (): void => localStorage.removeItem('accessToken');
 export const deleteUser = (): void => {
   localStorage.removeItem('user');
 };
+
+export const persistPermissions = (permissions: string[]): void => {
+  localStorage.setItem('permissions', JSON.stringify(permissions));
+};
+
+export const readPermissions = (): string[] => {
+  const permissionsStr = localStorage.getItem('permissions');
+  return permissionsStr ? JSON.parse(permissionsStr) : [];
+};
+
+export const deletePermissions = (): void => {
+  localStorage.removeItem('permissions');
+};
