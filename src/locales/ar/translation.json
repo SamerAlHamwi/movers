@@ -549,7 +549,8 @@
     "addRoleModalTitle": "إضافة دور",
     "editRoleModalTitle": "تعديل معلومات الدور",
     "deleteRoleModalTitle": "حذف دور",
-    "deleteRoleModalDescription": "هل أنت متأكد من حذف هذه الدور"
+    "deleteRoleModalDescription": "هل أنت متأكد من حذف هذه الدور",
+    "roleName": "إسم الدور"
   },
 
   "_comment16": "*********************************** requests ************************************************",

@@ -551,7 +551,8 @@
     "addRoleModalTitle": "Add Role",
     "editRoleModalTitle": "Edit Role",
     "deleteRoleModalTitle": "Delete Role",
-    "deleteRoleModalDescription": "Are You Sure To Delete This Role?"
+    "deleteRoleModalDescription": "Are You Sure To Delete This Role?",
+    "roleName": "Role Name"
   },
 
   "_comment16": "*********************************** requests ************************************************",

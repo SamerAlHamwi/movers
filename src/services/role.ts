@@ -7,6 +7,10 @@ const getAllRoles = async (page: number, pageSize: number, search: string) => {
   return await httpApi.get(`${apiPrefix.roles}/GetAll?SkipCount=${skip}&MaxResultCount=${pageSize}&KeyWord=${search}`);
 };
 
+const getRoles = async () => {
+  return await httpApi.get(`${apiPrefix.roles}/GetAll`);
+};
+
 const createRole = async (data: RoleModel) => {
   return await httpApi.post(`${apiPrefix.roles}/Create`, data);
 };
@@ -23,4 +27,4 @@ const UpdateRole = async (data: any) => {
   return await httpApi.put(`${apiPrefix.roles}/Update`, data);
 };
 
-export { getAllRoles, createRole, GetAllPermissions, DeleteRole, UpdateRole };
+export { getAllRoles, getRoles, createRole, GetAllPermissions, DeleteRole, UpdateRole };
