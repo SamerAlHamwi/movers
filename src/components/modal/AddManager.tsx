@@ -13,19 +13,24 @@ import { FONT_SIZE } from '@app/styles/themes/constants';
 import { UserModel } from '@app/interfaces/interfaces';
 import { Select, Option } from '../common/selects/Select/Select';
 import { Text } from '../GeneralStyles';
+import { useQuery } from 'react-query';
+import { getRoles } from '@app/services/role';
 
 export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, onCreateManager, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
   const [managerType, setManagerType] = useState<number>();
+  const [roleName, setRoleName] = useState<string>('');
+
+  const getAllRoles = useQuery('getAllRoles', getRoles);
 
   const onOk = () => {
     form.submit();
   };
 
   const onFinish = (managerInfo: UserModel) => {
-    managerInfo = Object.assign({}, managerInfo, { isActive: true, type: managerType });
+    managerInfo = Object.assign({}, managerInfo, { isActive: true, type: managerType, roleNames: [roleName] });
     onCreateManager(managerInfo);
   };
 
@@ -94,6 +99,19 @@ export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, 
           style={{ margin: '-.5rem 0 -.5rem 0' }}
         >
           <InputPassword />
+        </BaseForm.Item>
+        <BaseForm.Item
+          label={<LableText>{t('roles.roleName')}</LableText>}
+          style={{ margin: '1rem 0 -0.5rem 0px' }}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+        >
+          <Select onChange={(e: any) => setRoleName(e)}>
+            {getAllRoles?.data?.data?.result?.items.map((role: any) => (
+              <Option key={role.id} value={role.name}>
+                {role?.name}
+              </Option>
+            ))}
+          </Select>
         </BaseForm.Item>
         <BaseForm.Item
           name="type"

@@ -12,19 +12,24 @@ import { UserModel } from '@app/interfaces/interfaces';
 import { LableText } from '../GeneralStyles';
 import { Select, Option } from '../common/selects/Select/Select';
 import { Text } from '../GeneralStyles';
+import { useQuery } from 'react-query';
+import { getRoles } from '@app/services/role';
 
 export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, manager_values, onEdit, isLoading }) => {
   const [form] = BaseForm.useForm();
   const { t } = useTranslation();
   const { isDesktop, isTablet } = useResponsive();
-  const [managerType, setManagerType] = useState<number>();
+  const [managerType, setManagerType] = useState<any>(manager_values?.type);
+  const [roleName, setRoleName] = useState<string>('');
+
+  const getAllRoles = useQuery('getAllRoles', getRoles);
 
   const onOk = () => {
     form.submit();
   };
 
   const onFinish = (value: UserModel) => {
-    value = Object.assign({}, value, { isActive: true, type: managerType });
+    value = Object.assign({}, value, { isActive: true, type: managerType, roleNames: [roleName] });
     onEdit(value);
   };
 
@@ -81,12 +86,27 @@ export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, man
         </BaseForm.Item>
 
         <BaseForm.Item
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           name="emailAddress"
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           label={<LableText>{t('auth.email')}</LableText>}
           style={{ margin: '-.5rem 0' }}
         >
           <Input />
+        </BaseForm.Item>
+
+        <BaseForm.Item
+          name={['roleNames', 0]}
+          label={<LableText>{t('roles.roleName')}</LableText>}
+          style={{ margin: '1rem 0 -0.5rem 0px' }}
+          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
+        >
+          <Select onChange={(e: any) => setRoleName(e)}>
+            {getAllRoles?.data?.data?.result?.items.map((role: any) => (
+              <Option key={role.id} value={role.name}>
+                {role?.name}
+              </Option>
+            ))}
+          </Select>
         </BaseForm.Item>
 
         <BaseForm.Item

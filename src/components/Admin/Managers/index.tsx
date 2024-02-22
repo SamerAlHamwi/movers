@@ -213,7 +213,7 @@ export const Manager: React.FC = () => {
   };
 
   useEffect(() => {
-    setModalState((prevModalState) => ({ ...prevModalState, delete: editManager.isLoading }));
+    setModalState((prevModalState) => ({ ...prevModalState, edit: editManager.isLoading }));
   }, [editManager.isLoading]);
 
   const TableText = styled.div`
@@ -225,6 +225,7 @@ export const Manager: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('managers.managerFullName')}</Header>, dataIndex: 'fullName' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userName')}</Header>, dataIndex: 'userName' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.roleName')}</Header>, dataIndex: ['roleNames', 0] },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.creationTime')}</Header>,
