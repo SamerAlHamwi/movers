@@ -730,7 +730,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="/services/:serviceId/subService/:subServiceId/tools"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Tool.FullControl']}>
                 <ToolsPage />
               </PrivateRoute>
             }
