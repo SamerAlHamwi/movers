@@ -675,7 +675,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="RejectReason"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['RejectReason.FullControl']}>
                 <RejectReasonPage />
               </PrivateRoute>
             }
@@ -684,7 +684,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Partners"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Partner.FullControl']}>
                 <PartnerPage />
               </PrivateRoute>
             }
@@ -693,7 +693,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Partners/:partnerId/details"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Partner.FullControl']}>
                 <REMDetailsPage />
               </PrivateRoute>
             }
