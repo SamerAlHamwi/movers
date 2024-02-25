@@ -894,7 +894,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Payments"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={[]}>
                 <PaymentsPage />
               </PrivateRoute>
             }
