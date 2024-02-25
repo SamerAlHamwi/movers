@@ -777,7 +777,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="locations/countries"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Country.FullControl']}>
                 <CountriesPage />
               </PrivateRoute>
             }
@@ -786,7 +786,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="locations/countries/:countryId/cities"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['City.FullControl']}>
                 <CitiesPage />
               </PrivateRoute>
             }
@@ -795,7 +795,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="locations/countries/:countryId/cities/:cityId/regions"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Region.FullControl']}>
                 <RegionsPage />
               </PrivateRoute>
             }
