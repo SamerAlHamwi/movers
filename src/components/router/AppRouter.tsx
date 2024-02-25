@@ -804,7 +804,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Notifications"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={[]}>
                 <NotificationsPage />
               </PrivateRoute>
             }
@@ -822,7 +822,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="contactUs"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['ContactUs.FullControl']}>
                 <ContactUsPage />
               </PrivateRoute>
             }
@@ -831,7 +831,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="PrivacyPolicy"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['PrivacyPolicy.FullControl']}>
                 <PrivacyPolicyPage />
               </PrivateRoute>
             }
@@ -840,7 +840,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="PaymentPrivacy"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['PrivacyPolicy.FullControl']}>
                 <PaymentPrivacyPage />
               </PrivateRoute>
             }
