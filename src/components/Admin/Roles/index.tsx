@@ -158,12 +158,10 @@ export const Role: React.FC = () => {
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.Name')}</Header>, dataIndex: 'name' },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.DisplayName')}</Header>, dataIndex: 'displayName' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('roles.NormalizedName')}</Header>,
       dataIndex: 'normalizedName',
     },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.Description')}</Header>, dataIndex: 'description' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',

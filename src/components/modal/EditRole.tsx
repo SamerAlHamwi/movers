@@ -26,13 +26,12 @@ export const EditRole: React.FC<EditRoleProps> = ({ visible, onCancel, values, o
   };
 
   const onFinish = (info: RoleModel) => {
-    info = Object.assign({}, info);
+    info = Object.assign({}, info, { displayName: info.name, normalizedName: info.name.toUpperCase() });
     onEdit(info);
   };
 
   return (
     <Modal
-      style={{ marginTop: '0rem' }}
       width={isDesktop ? '500px' : isTablet ? '450px' : '415px'}
       open={visible}
       title={
@@ -61,22 +60,6 @@ export const EditRole: React.FC<EditRoleProps> = ({ visible, onCancel, values, o
           label={<LableText>{t('roles.Name')}</LableText>}
           style={{ marginTop: '-1rem' }}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-        >
-          <Input />
-        </BaseForm.Item>
-        <BaseForm.Item
-          name="normalizedName"
-          label={<LableText>{t('roles.NormalizedName')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          style={{ marginTop: '-.5rem' }}
-        >
-          <Input />
-        </BaseForm.Item>
-        <BaseForm.Item
-          name="description"
-          label={<LableText>{t('roles.Description')}</LableText>}
-          rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          style={{ marginTop: '-.5rem' }}
         >
           <Input />
         </BaseForm.Item>
