@@ -26,8 +26,6 @@ export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: Log
   login(loginPayload).then((response) => {
     dispatch(setUser(response.result));
     persistToken(response.result.accessToken);
-    console.log('response.result.permissions', response.result.permissions);
-
     persistPermissions(response.result.permissions);
     persistUser(response.result);
     return response.result.accessToken;
@@ -35,6 +33,7 @@ export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: Log
 );
 
 export const doLogout = createAsyncThunk('auth/doLogout', (payload, { dispatch }) => {
+  deletePermissions();
   deleteToken();
   deleteUser();
   dispatch(setUser(null));
