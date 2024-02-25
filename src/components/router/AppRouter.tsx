@@ -544,11 +544,20 @@ export const AppRouter: React.FC = () => {
             }
           />
 
-          {/* Featured Bundles */}
+          {/* Bundles */}
+          <Route
+            path="Points"
+            element={
+              <PrivateRoute allowedPermissions={['Points.FullControl']}>
+                <PointsPage />
+              </PrivateRoute>
+            }
+          />
+
           <Route
             path="FeaturedBundles"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Points.FullControl']}>
                 <FeaturedBundlesPage />
               </PrivateRoute>
             }
@@ -614,15 +623,6 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedPermissions={['CompanyBranch.Update']}>
                 <EditBranchesPage />
-              </PrivateRoute>
-            }
-          />
-
-          <Route
-            path="Points"
-            element={
-              <PrivateRoute allowedPermissions={['view_users']}>
-                <PointsPage />
               </PrivateRoute>
             }
           />
@@ -703,7 +703,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="services"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Service.FullControl']}>
                 <ServicesPage />
               </PrivateRoute>
             }
@@ -712,7 +712,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="services/:serviceId/subService"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['SubService.FullControl']}>
                 <SubServicesPage />
               </PrivateRoute>
             }
@@ -721,7 +721,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="services/:serviceId/tools"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Tool.FullControl']}>
                 <ToolsPage />
               </PrivateRoute>
             }
