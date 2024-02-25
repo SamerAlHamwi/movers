@@ -198,7 +198,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="user-management/:userId/requests/:requestId/details/:type/:companyId/details/reviewsDetails"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={[]}>
                 <ReviewsDetailsPage />
               </PrivateRoute>
             }

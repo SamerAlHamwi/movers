@@ -26,6 +26,7 @@ import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const Manager: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -58,6 +59,46 @@ export const Manager: React.FC = () => {
   const [managerStatus, setManagerStatus] = useState<boolean | undefined>(undefined);
   const [managerType, setManagerType] = useState<number | string>('');
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    delete: false,
+    activate: false,
+    edit: false,
+    add: false,
+  });
+
+  console.log('hasPermissions', hasPermissions);
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Pages.Users.Delete')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        delete: true,
+      }));
+    }
+
+    if (userPermissions.includes('Pages.Users.Activation')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        activate: true,
+      }));
+    }
+
+    if (userPermissions.includes('Pages.Users.Update')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        edit: true,
+      }));
+    }
+
+    if (userPermissions.includes('Pages.Users.Create')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        add: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -348,119 +389,128 @@ export const Manager: React.FC = () => {
       render: (index: number, record: UserModel) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('common.edit')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  setEditmodaldata(record);
-                  handleModalOpen('edit');
-                }}
-              >
-                <EditOutlined />
-              </TableButton>
-            </Tooltip>
-
-            <Tooltip placement="top" title={t('common.delete')}>
-              <TableButton
-                severity="error"
-                onClick={() => {
-                  setDeletemodaldata(record);
-                  handleModalOpen('delete');
-                }}
-              >
-                <DeleteOutlined />
-              </TableButton>
-            </Tooltip>
-
-            {record.isActive === true ? (
-              <Tooltip placement="top" title={t('common.deactivate')}>
-                <Popconfirm
-                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                  title={<LableText>{t('managers.deactivateManagerConfirm')}</LableText>}
-                  okButtonProps={{
-                    onMouseOver: () => {
-                      setIsHover(true);
-                    },
-                    onMouseLeave: () => {
-                      setIsHover(false);
-                    },
-                    loading: false,
-                    style: {
-                      color: `${defineColorBySeverity('info')}`,
-                      background: isHover
-                        ? 'var(--background-color)'
-                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                      borderColor: isHover
-                        ? `${defineColorBySeverity('info')}`
-                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                    },
+            {hasPermissions.edit && (
+              <Tooltip placement="top" title={t('common.edit')}>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    setEditmodaldata(record);
+                    handleModalOpen('edit');
                   }}
-                  okText={
-                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                      {deActivateManager.isLoading ? (
-                        <>
-                          {t(`common.deactivate`)} <LoadingOutlined />
-                        </>
-                      ) : (
-                        t(`common.deactivate`)
-                      )}
-                    </div>
-                  }
-                  cancelText={
-                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                  }
-                  onConfirm={() => deActivateManager.mutateAsync(record.id)}
                 >
-                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                    <TableText>{t('common.deactivate')}</TableText>
-                  </Button>
-                </Popconfirm>
-              </Tooltip>
-            ) : (
-              <Tooltip placement="top" title={t('common.activate')}>
-                <Popconfirm
-                  placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
-                  title={<LableText>{t('managers.activateManagerConfirm')}</LableText>}
-                  okButtonProps={{
-                    onMouseOver: () => {
-                      setIsHover(true);
-                    },
-                    onMouseLeave: () => {
-                      setIsHover(false);
-                    },
-                    loading: false,
-                    style: {
-                      color: `${defineColorBySeverity('info')}`,
-                      background: isHover
-                        ? 'var(--background-color)'
-                        : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
-                      borderColor: isHover
-                        ? `${defineColorBySeverity('info')}`
-                        : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
-                    },
-                  }}
-                  okText={
-                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
-                      {activateManager.isLoading ? (
-                        <>
-                          {t(`common.activate`)} <LoadingOutlined />
-                        </>
-                      ) : (
-                        t(`common.activate`)
-                      )}
-                    </div>
-                  }
-                  cancelText={
-                    <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>{t(`common.cancel`)}</div>
-                  }
-                  onConfirm={() => activateManager.mutateAsync(record.id)}
-                >
-                  <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
-                    <TableText>{t('common.activate')}</TableText>
-                  </Button>
-                </Popconfirm>
+                  <EditOutlined />
+                </TableButton>
               </Tooltip>
             )}
+
+            {hasPermissions.delete && (
+              <Tooltip placement="top" title={t('common.delete')}>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setDeletemodaldata(record);
+                    handleModalOpen('delete');
+                  }}
+                >
+                  <DeleteOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
+
+            {hasPermissions.activate &&
+              (record.isActive === true ? (
+                <Tooltip placement="top" title={t('common.deactivate')}>
+                  <Popconfirm
+                    placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                    title={<LableText>{t('managers.deactivateManagerConfirm')}</LableText>}
+                    okButtonProps={{
+                      onMouseOver: () => {
+                        setIsHover(true);
+                      },
+                      onMouseLeave: () => {
+                        setIsHover(false);
+                      },
+                      loading: false,
+                      style: {
+                        color: `${defineColorBySeverity('info')}`,
+                        background: isHover
+                          ? 'var(--background-color)'
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                        borderColor: isHover
+                          ? `${defineColorBySeverity('info')}`
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                      },
+                    }}
+                    okText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {deActivateManager.isLoading ? (
+                          <>
+                            {t(`common.deactivate`)} <LoadingOutlined />
+                          </>
+                        ) : (
+                          t(`common.deactivate`)
+                        )}
+                      </div>
+                    }
+                    cancelText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {t(`common.cancel`)}
+                      </div>
+                    }
+                    onConfirm={() => deActivateManager.mutateAsync(record.id)}
+                  >
+                    <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                      <TableText>{t('common.deactivate')}</TableText>
+                    </Button>
+                  </Popconfirm>
+                </Tooltip>
+              ) : (
+                <Tooltip placement="top" title={t('common.activate')}>
+                  <Popconfirm
+                    placement={desktopOnly ? 'top' : isTablet || isMobile ? 'topLeft' : 'top'}
+                    title={<LableText>{t('managers.activateManagerConfirm')}</LableText>}
+                    okButtonProps={{
+                      onMouseOver: () => {
+                        setIsHover(true);
+                      },
+                      onMouseLeave: () => {
+                        setIsHover(false);
+                      },
+                      loading: false,
+                      style: {
+                        color: `${defineColorBySeverity('info')}`,
+                        background: isHover
+                          ? 'var(--background-color)'
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.04)`,
+                        borderColor: isHover
+                          ? `${defineColorBySeverity('info')}`
+                          : `rgba(${defineColorBySeverity('info', true)}, 0.9)`,
+                      },
+                    }}
+                    okText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {activateManager.isLoading ? (
+                          <>
+                            {t(`common.activate`)} <LoadingOutlined />
+                          </>
+                        ) : (
+                          t(`common.activate`)
+                        )}
+                      </div>
+                    }
+                    cancelText={
+                      <div style={{ fontSize: FONT_SIZE.xs, fontWeight: FONT_WEIGHT.regular }}>
+                        {t(`common.cancel`)}
+                      </div>
+                    }
+                    onConfirm={() => activateManager.mutateAsync(record.id)}
+                  >
+                    <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                      <TableText>{t('common.activate')}</TableText>
+                    </Button>
+                  </Popconfirm>
+                </Tooltip>
+              ))}
           </Space>
         );
       },
@@ -478,17 +528,19 @@ export const Manager: React.FC = () => {
         }
       >
         <Row gutter={[10, 10]} justify={'end'}>
-          <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => handleModalOpen('add')}
-          >
-            <CreateButtonText>{t('managers.addManager')}</CreateButtonText>
-          </Button>
+          {hasPermissions.add && (
+            <Button
+              type="primary"
+              style={{
+                marginBottom: '.5rem',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => handleModalOpen('add')}
+            >
+              <CreateButtonText>{t('managers.addManager')}</CreateButtonText>
+            </Button>
+          )}
           <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}
