@@ -740,7 +740,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['SourceType.FullControl']}>
                 <SourceTypesPage />
               </PrivateRoute>
             }
@@ -749,7 +749,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType/:sourceTypeId/attributeForSource"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['AttributeForSourceType.FullControl']}>
                 <TypesForSourcePage />
               </PrivateRoute>
             }
@@ -758,7 +758,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType/:sourceTypeId/attributeForSource/:attributeForSourceId/attributes"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['AttributeChoice.FullControl']}>
                 <ParentAttributeChoicesPage />
               </PrivateRoute>
             }
@@ -767,7 +767,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="sourceType/:sourceTypeId/attributeForSource/:attributeForSourceId/attributes/:attributeId/attributesChild"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['AttributeChoice.FullControl']}>
                 <ChildAttributeChoicesPage />
               </PrivateRoute>
             }
