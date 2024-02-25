@@ -37,6 +37,7 @@ import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 import { COMPANY_STATUS_NAMES } from '@app/constants/appConstants';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 interface CompanyRecord {
   id: number;
@@ -49,7 +50,6 @@ export const BranchesWithoutCompany: React.FC = () => {
   const { isTablet, isMobile, isDesktop, desktopOnly } = useResponsive();
   const { language } = useLanguage();
   const Navigate = useNavigate();
-  const { companyId } = useParams();
 
   const [modalState, setModalState] = useState({
     add: false,
@@ -79,6 +79,52 @@ export const BranchesWithoutCompany: React.FC = () => {
   const [returnmodaldata, setReturnmodaldata] = useState<BranchModel | undefined>(undefined);
   const [temp, setTemp] = useState<any>();
   const [companyStatus, setCompanyStatus] = useState<any>();
+  const [hasPermissions, setHasPermissions] = useState({
+    delete: false,
+    ChangeStatues: false,
+    edit: false,
+    details: false,
+    offer: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('CompanyBranch.Delete')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        delete: true,
+      }));
+    }
+
+    if (userPermissions.includes('CompanyBranch.ChangeStatues')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        ChangeStatues: true,
+      }));
+    }
+
+    if (userPermissions.includes('CompanyBranch.Update')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        edit: true,
+      }));
+    }
+
+    if (userPermissions.includes('CompanyBranch.Get')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        details: true,
+      }));
+    }
+
+    if (userPermissions.includes('Offer.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        offer: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -310,7 +356,7 @@ export const BranchesWithoutCompany: React.FC = () => {
         );
       },
     },
-    {
+    hasPermissions.offer && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
       dataIndex: 'offers',
       render: (index: number, record: any) => {
@@ -454,64 +500,64 @@ export const BranchesWithoutCompany: React.FC = () => {
       render: (index: number, record: any) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('common.details')}>
-              <TableButton
-                severity="success"
-                onClick={() => {
-                  Navigate(`${record.id}/details`, { state: record.name });
-                }}
-              >
-                <TagOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.details && (
+              <Tooltip placement="top" title={t('common.details')}>
+                <TableButton
+                  severity="success"
+                  onClick={() => {
+                    Navigate(`${record.id}/details`, { state: record.name });
+                  }}
+                >
+                  <TagOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
-            <Tooltip placement="top" title={t('branch.ChangeAcceptRequestOrPotentialClient')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  setAcceptRequestOrPotentialClientmodaldata(record);
-                  handleModalOpen('acceptRequestOrPotentialClient');
-                }}
-              >
-                <SnippetsOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.ChangeStatues && (
+              <Tooltip placement="top" title={t('branch.ChangeAcceptRequestOrPotentialClient')}>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    setAcceptRequestOrPotentialClientmodaldata(record);
+                    handleModalOpen('acceptRequestOrPotentialClient');
+                  }}
+                >
+                  <SnippetsOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
-            <Tooltip placement="top" title={t('common.edit')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  Navigate(`/branchesWithoutCompany/${record.id}/EditBranch`);
-                }}
-              >
-                <EditOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.edit && (
+              <Tooltip placement="top" title={t('common.edit')}>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    Navigate(`/branchesWithoutCompany/${record.id}/EditBranch`);
+                  }}
+                >
+                  <EditOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
-            <Tooltip placement="top" title={t('common.delete')}>
-              <TableButton
-                severity="error"
-                onClick={() => {
-                  setDeletemodaldata(record);
-                  handleModalOpen('delete');
-                }}
-              >
-                <DeleteOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.delete && (
+              <Tooltip placement="top" title={t('common.delete')}>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setDeletemodaldata(record);
+                    handleModalOpen('delete');
+                  }}
+                >
+                  <DeleteOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
           </Space>
         );
       },
     },
   ];
-
-  // const onChange = (key: any) => {
-  //   key === 'undefined'
-  //     ? (setCompanyStatus(undefined), setNeedToUpdate(false))
-  //     : key === NEED_TO_UPDATE
-  //     ? (setCompanyStatus(undefined), setNeedToUpdate(true))
-  //     : (setCompanyStatus(key), setNeedToUpdate(false));
-  // };
 
   return (
     <>

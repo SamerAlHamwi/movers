@@ -97,6 +97,7 @@ export const Companies: React.FC = () => {
     details: false,
     branches: false,
     potential: false,
+    offer: false,
   });
 
   const userPermissions = useAppSelector((state) => state.auth.permissions);
@@ -148,6 +149,13 @@ export const Companies: React.FC = () => {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
         potential: true,
+      }));
+    }
+
+    if (userPermissions.includes('Offer.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        offer: true,
       }));
     }
   }, [userPermissions]);
@@ -452,7 +460,8 @@ export const Companies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    type === undefined &&
+    hasPermissions.offer &&
+      type === undefined &&
       requestId === undefined && {
         title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
         dataIndex: 'offers',

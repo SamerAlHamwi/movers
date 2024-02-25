@@ -483,7 +483,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['CompanyBranch.List']}>
                 <BranchWithoutCompanyPage />
               </PrivateRoute>
             }
@@ -492,7 +492,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/details"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['CompanyBranch.Get']}>
                 <BranchDetailsPage />
               </PrivateRoute>
             }
@@ -501,7 +501,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/details/reviewsDetails"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={[]}>
                 <ReviewsDetailsPage />
               </PrivateRoute>
             }
@@ -510,7 +510,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/EditBranch"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['CompanyBranch.Update']}>
                 <EditBranchesPage />
               </PrivateRoute>
             }
@@ -519,7 +519,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="branchesWithoutCompany/:branchId/offers"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Offer.List']}>
                 <OffersPage />
               </PrivateRoute>
             }
@@ -528,7 +528,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path={'branchesWithoutCompany/:branchId/offers/:offerId/details'}
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Offer.List']}>
                 <OffersDetailsPage />
               </PrivateRoute>
             }
