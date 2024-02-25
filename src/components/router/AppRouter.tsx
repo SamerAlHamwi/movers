@@ -849,7 +849,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="terms"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Terms.FullControl']}>
                 <TermsPage />
               </PrivateRoute>
             }
@@ -867,7 +867,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="frequentlyQuestions"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['FrequencyQuestion.FullControl']}>
                 <FrequentlyQuestionsPage />
               </PrivateRoute>
             }
@@ -876,7 +876,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="ApplicationsVersions"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['ApkBuild.FullControl']}>
                 <ApplicationsVersionsPage />
               </PrivateRoute>
             }
