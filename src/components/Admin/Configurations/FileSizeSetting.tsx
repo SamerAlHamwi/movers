@@ -11,6 +11,7 @@ import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '..
 import { useLanguage } from '@app/hooks/useLanguage';
 import { GetFileSizeSetting, UpdateFileSizeSetting } from '@app/services/configurations';
 import { EditFileSizeSetting } from '@app/components/modal/EditFileSizeSetting';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const FileSizeSetting: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +24,20 @@ export const FileSizeSetting: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<FileSizeConfig | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [hasPermissions, setHasPermissions] = useState({
+    SetFileSizeSetting: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('SetFileSizeSetting')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        SetFileSizeSetting: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -101,18 +116,20 @@ export const FileSizeSetting: React.FC = () => {
         title={t('config.FileSizeSetting')}
         bordered={false}
         extra={
-          <Tooltip placement="top" title={t('common.edit')}>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setModalState;
-                setEditmodaldata(fileSizeData);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
-          </Tooltip>
+          hasPermissions.SetFileSizeSetting && (
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setModalState;
+                  setEditmodaldata(fileSizeData);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+          )
         }
         loading={loading}
       >

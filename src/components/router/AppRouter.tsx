@@ -885,7 +885,16 @@ export const AppRouter: React.FC = () => {
           <Route
             path="configurations"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute
+                allowedPermissions={[
+                  'GetCommissionForBranchesWithoutCompany',
+                  'GetDiscountPercentage',
+                  'GetEmailSetting',
+                  'GetFileSizeSetting',
+                  'GetHoursInSystem',
+                  'GetSmsSetting',
+                ]}
+              >
                 <ConfigurationPage />
               </PrivateRoute>
             }

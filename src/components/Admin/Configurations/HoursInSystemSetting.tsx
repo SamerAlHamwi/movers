@@ -11,6 +11,7 @@ import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '..
 import { useLanguage } from '@app/hooks/useLanguage';
 import { GetHoursInSystemSetting, UpdateHoursInSystemSetting } from '@app/services/configurations';
 import { EditHoursInSystemSetting } from '@app/components/modal/EditHoursInSystemSetting';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const HoursInSystemSetting: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +24,20 @@ export const HoursInSystemSetting: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<HoursInSystemConfig | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [hasPermissions, setHasPermissions] = useState({
+    SetHoursInSystem: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('SetHoursInSystem')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        SetHoursInSystem: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -100,18 +115,20 @@ export const HoursInSystemSetting: React.FC = () => {
         title={t('config.HoursInSystemSetting')}
         bordered={false}
         extra={
-          <Tooltip placement="top" title={t('common.edit')}>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setModalState;
-                setEditmodaldata(hoursInSystemData);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
-          </Tooltip>
+          hasPermissions.SetHoursInSystem && (
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setModalState;
+                  setEditmodaldata(hoursInSystemData);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+          )
         }
         loading={loading}
       >

@@ -11,6 +11,7 @@ import { Details, DetailsRow, DetailsTitle, DetailsValue, TableButton } from '..
 import { useLanguage } from '@app/hooks/useLanguage';
 import { GetEmailSetting, UpdateEmailSetting } from '@app/services/configurations';
 import { EditEmailSetting } from '@app/components/modal/EditEmailSetting';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const EmailSetting: React.FC = () => {
   const { t } = useTranslation();
@@ -23,6 +24,20 @@ export const EmailSetting: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<EmailConfig | undefined>(undefined);
   const [loading, setLoading] = useState(true);
+  const [hasPermissions, setHasPermissions] = useState({
+    SetEmailSetting: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('SetEmailSetting')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        SetEmailSetting: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -100,18 +115,20 @@ export const EmailSetting: React.FC = () => {
         title={t('config.EmailSetting')}
         bordered={false}
         extra={
-          <Tooltip placement="top" title={t('common.edit')}>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setModalState;
-                setEditmodaldata(emailData);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
-          </Tooltip>
+          hasPermissions.SetEmailSetting && (
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setModalState;
+                  setEditmodaldata(emailData);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+          )
         }
         loading={loading}
       >

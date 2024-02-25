@@ -14,6 +14,7 @@ import {
 import { Alert, Row, Tooltip, message } from 'antd';
 import { Card } from '@app/components/common/Card/Card';
 import { useTranslation } from 'react-i18next';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 const CommissionSetting = () => {
   const [loading, setLoading] = useState(true);
@@ -22,6 +23,20 @@ const CommissionSetting = () => {
   });
   const [editmodaldata, setEditmodaldata] = useState<any>(undefined);
   const [isEdit, setIsEdit] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    SetCommissionForBranchesWithoutCompany: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('SetCommissionForBranchesWithoutCompany')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        SetCommissionForBranchesWithoutCompany: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const [commissionForBranchesWithOutCompany, setCommissionForBranchesWithOutCompany] = useState<
     CommiossionSettingConfig | undefined
@@ -101,18 +116,20 @@ const CommissionSetting = () => {
         title={t('config.commissionSettings')}
         bordered={false}
         extra={
-          <Tooltip placement="top" title={t('common.edit')}>
-            <TableButton
-              severity="info"
-              onClick={() => {
-                setModalState;
-                setEditmodaldata(commissionForBranchesWithOutCompany);
-                handleModalOpen('edit');
-              }}
-            >
-              <EditOutlined />
-            </TableButton>
-          </Tooltip>
+          hasPermissions.SetCommissionForBranchesWithoutCompany && (
+            <Tooltip placement="top" title={t('common.edit')}>
+              <TableButton
+                severity="info"
+                onClick={() => {
+                  setModalState;
+                  setEditmodaldata(commissionForBranchesWithOutCompany);
+                  handleModalOpen('edit');
+                }}
+              >
+                <EditOutlined />
+              </TableButton>
+            </Tooltip>
+          )
         }
         loading={loading}
       >

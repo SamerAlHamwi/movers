@@ -8,7 +8,7 @@ interface PrivateRouteProps {
 }
 
 export const hasPermissions = (userPermissions: string[], requiredPermissions: string[]): boolean => {
-  return requiredPermissions.every((permission) => userPermissions.includes(permission));
+  return requiredPermissions.some((permission) => userPermissions.includes(permission));
 };
 
 export const PrivateRoute: React.FC<PrivateRouteProps> = ({ children, allowedPermissions }) => {
