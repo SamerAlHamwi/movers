@@ -538,7 +538,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="commissionGroups"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['CommissionGroup.FullControl']}>
                 <CommissionGroupsPage />
               </PrivateRoute>
             }
