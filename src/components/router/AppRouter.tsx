@@ -630,7 +630,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Brokers"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Broker.FullControl']}>
                 <BrokerPage />
               </PrivateRoute>
             }
@@ -639,7 +639,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Brokers/:brokerId/details"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Broker.FullControl']}>
                 <BrokerDetailsPage />
               </PrivateRoute>
             }
@@ -648,7 +648,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Brokers/:brokerId/details/requests/:type"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.List']}>
                 <RequestsPage />
               </PrivateRoute>
             }
@@ -657,7 +657,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Brokers/:brokerId/details/requests/:type/:requestId/details"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.Get']}>
                 <RequestDetailsPage />
               </PrivateRoute>
             }
@@ -666,7 +666,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="Brokers/:brokerId/details/:codeBroker/clients/:type"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Pages.Users.List']}>
                 <UsersPage />
               </PrivateRoute>
             }
