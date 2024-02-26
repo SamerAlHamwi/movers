@@ -15,6 +15,7 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
 import { LeftOutlined, TagOutlined } from '@ant-design/icons';
 import { TableButton, TextBack } from '@app/components/GeneralStyles';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 const { Meta } = Card;
 
@@ -37,6 +38,28 @@ const BrokerDetails: React.FC = () => {
 
   const [loading, setLoading] = useState(true);
   const [brokerData, setBrokerData] = useState<any>();
+  const [hasPermissions, setHasPermissions] = useState({
+    client: false,
+    request: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Pages.Users.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        client: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        request: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(['getBrokerById'], () =>
     getBrokerById(brokerId)
@@ -251,71 +274,92 @@ const BrokerDetails: React.FC = () => {
                 </ColStyle>
               </DetailsRow>
 
-              <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
-                {t('brokers.achievement')} :
-              </h3>
+              {(hasPermissions.client || hasPermissions.request) && (
+                <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
+                  {t('brokers.achievement')} :
+                </h3>
+              )}
 
-              <DetailsRow>
-                <ColStyle>
-                  <DetailsTitle>{t('brokers.countRegisteredUsers')}</DetailsTitle>
-                </ColStyle>
-                <ColStyle>
-                  <DetailsValue>{brokerData?.countRegisteredUsers}</DetailsValue>
-                </ColStyle>
-              </DetailsRow>
+              {hasPermissions.client && (
+                <>
+                  <DetailsRow>
+                    <ColStyle>
+                      <DetailsTitle>{t('brokers.countRegisteredUsers')}</DetailsTitle>
+                    </ColStyle>
+                    <ColStyle>
+                      <DetailsValue>{brokerData?.countRegisteredUsers}</DetailsValue>
+                    </ColStyle>
+                  </DetailsRow>
 
-              <DetailsRow>
-                <DetailsTitle
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  {t('brokers.user')}
-                </DetailsTitle>
-                <DetailsValue
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('brokers.viewUser')}>
-                    <TableButton
-                      severity="success"
-                      onClick={() => {
-                        Navigate(`${brokerData?.mediatorCode}/clients/viaBroker`);
-                      }}
+                  <DetailsRow>
+                    <DetailsTitle
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
                     >
-                      <TagOutlined />
-                    </TableButton>
-                  </Tooltip>
-                </DetailsValue>
-              </DetailsRow>
-
-              <DetailsRow>
-                <ColStyle>
-                  <DetailsTitle>{t('brokers.numberServiceUsers')}</DetailsTitle>
-                </ColStyle>
-                <ColStyle>
-                  <DetailsValue>{brokerData?.numberServiceUsers}</DetailsValue>
-                </ColStyle>
-              </DetailsRow>
-
-              <DetailsRow>
-                <DetailsTitle
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  {t('brokers.requestsViaBroker')}
-                </DetailsTitle>
-                <DetailsValue
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
-                >
-                  <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('brokers.viewRequestsViaBroker')}>
-                    <TableButton
-                      severity="success"
-                      onClick={() => {
-                        Navigate(`requests/viaBroker`);
-                      }}
+                      {t('brokers.user')}
+                    </DetailsTitle>
+                    <DetailsValue
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
                     >
-                      <TagOutlined />
-                    </TableButton>
-                  </Tooltip>
-                </DetailsValue>
-              </DetailsRow>
+                      <Tooltip placement={language == 'en' ? 'right' : 'left'} title={t('brokers.viewUser')}>
+                        <TableButton
+                          severity="success"
+                          onClick={() => {
+                            Navigate(`${brokerData?.mediatorCode}/clients/viaBroker`);
+                          }}
+                        >
+                          <TagOutlined />
+                        </TableButton>
+                      </Tooltip>
+                    </DetailsValue>
+                  </DetailsRow>
+                </>
+              )}
+
+              {hasPermissions.request && (
+                <>
+                  <DetailsRow>
+                    <ColStyle>
+                      <DetailsTitle>{t('brokers.numberServiceUsers')}</DetailsTitle>
+                    </ColStyle>
+                    <ColStyle>
+                      <DetailsValue>{brokerData?.numberServiceUsers}</DetailsValue>
+                    </ColStyle>
+                  </DetailsRow>
+
+                  <DetailsRow>
+                    <DetailsTitle
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      {t('brokers.requestsViaBroker')}
+                    </DetailsTitle>
+                    <DetailsValue
+                      style={
+                        isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }
+                      }
+                    >
+                      <Tooltip
+                        placement={language == 'en' ? 'right' : 'left'}
+                        title={t('brokers.viewRequestsViaBroker')}
+                      >
+                        <TableButton
+                          severity="success"
+                          onClick={() => {
+                            Navigate(`requests/viaBroker`);
+                          }}
+                        >
+                          <TagOutlined />
+                        </TableButton>
+                      </Tooltip>
+                    </DetailsValue>
+                  </DetailsRow>
+                </>
+              )}
             </Details>
           </Spinner>
         </Cardd>
