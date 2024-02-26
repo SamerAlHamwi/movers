@@ -21,6 +21,9 @@ const SiderMenu: React.FC<SiderContentProps> = ({ setCollapsed }) => {
   const userPermissions = useAppSelector((state) => state.auth.permissions);
 
   const sidebarNavigation = sidebarData[UserRole[user.userType]].filter((item) => {
+    if (item?.permissions.length === 0) {
+      return item;
+    }
     return item?.permissions?.some((permission) => userPermissions.includes(permission));
   });
 

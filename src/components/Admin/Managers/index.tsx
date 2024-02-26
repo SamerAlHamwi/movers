@@ -66,8 +66,6 @@ export const Manager: React.FC = () => {
     add: false,
   });
 
-  console.log('hasPermissions', hasPermissions);
-
   const userPermissions = useAppSelector((state) => state.auth.permissions);
 
   useEffect(() => {

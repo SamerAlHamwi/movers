@@ -8,6 +8,9 @@ interface PrivateRouteProps {
 }
 
 export const hasPermissions = (userPermissions: string[], requiredPermissions: string[]): boolean => {
+  if (requiredPermissions.length === 0) {
+    return true;
+  }
   return requiredPermissions.some((permission) => userPermissions.includes(permission));
 };
 
