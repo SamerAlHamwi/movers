@@ -263,7 +263,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path=":userId/addRequest"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.Create']}>
                 <AddRequestsPage />
               </PrivateRoute>
             }
@@ -273,7 +273,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path=":userId/drafts/:draftId/completeDraft"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.Create']}>
                 <CompleteDraftsPage />
               </PrivateRoute>
             }
@@ -283,7 +283,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path=":userId/drafts"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.List']}>
                 <DraftsPage />
               </PrivateRoute>
             }
