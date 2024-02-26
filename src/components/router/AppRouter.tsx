@@ -858,7 +858,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="askForHelp"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.List']}>
                 <AskForHelpsPage />
               </PrivateRoute>
             }

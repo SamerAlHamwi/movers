@@ -19,6 +19,7 @@ import { useNavigate } from 'react-router-dom';
 import { checkPIN } from '@app/services/drafts';
 import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 type User = {
   id: number;
@@ -58,6 +59,28 @@ export const AskForHelp: React.FC = () => {
   const [userId, setUserId] = useState<number>(0);
   const [userName, setUserName] = useState<string>('0');
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    add: false,
+    confirm: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Request.Create')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        add: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.ChangeStatus')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        confirm: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -300,30 +323,34 @@ export const AskForHelp: React.FC = () => {
           <>
             {record?.statues == 1 && (
               <Space>
-                <Tooltip placement="top" title={t('asks.confirmHelpRequest')}>
-                  <TableButton
-                    severity="info"
-                    onClick={() => {
-                      setConfirmAskId(record?.id);
-                      setModalStatus(true);
-                    }}
-                  >
-                    <CheckOutlined />
-                  </TableButton>
-                </Tooltip>
+                {hasPermissions.confirm && (
+                  <Tooltip placement="top" title={t('asks.confirmHelpRequest')}>
+                    <TableButton
+                      severity="info"
+                      onClick={() => {
+                        setConfirmAskId(record?.id);
+                        setModalStatus(true);
+                      }}
+                    >
+                      <CheckOutlined />
+                    </TableButton>
+                  </Tooltip>
+                )}
 
-                <Tooltip placement="top" title={t('requests.addRequest')}>
-                  <TableButton
-                    severity="success"
-                    onClick={() => {
-                      setUserName(record?.user?.phoneNumber);
-                      setUserId(record?.user?.id);
-                      handleModalOpen('checkPINForUser');
-                    }}
-                  >
-                    <AuditOutlined />
-                  </TableButton>
-                </Tooltip>
+                {hasPermissions.add && (
+                  <Tooltip placement="top" title={t('requests.addRequest')}>
+                    <TableButton
+                      severity="success"
+                      onClick={() => {
+                        setUserName(record?.user?.phoneNumber);
+                        setUserId(record?.user?.id);
+                        handleModalOpen('checkPINForUser');
+                      }}
+                    >
+                      <AuditOutlined />
+                    </TableButton>
+                  </Tooltip>
+                )}
               </Space>
             )}
           </>
