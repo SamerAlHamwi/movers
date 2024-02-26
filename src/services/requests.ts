@@ -18,7 +18,7 @@ const getAllRequests = async (
   }
 
   if (Status !== undefined) {
-    url += `&Status=${Status}`;
+    url += `&Statues=${Status}`;
   }
 
   if (userId !== undefined) {
