@@ -24,6 +24,7 @@ import { LeftOutlined, ReloadOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 interface ForRequest {
   id: string | undefined;
@@ -62,6 +63,28 @@ export const SuitableCompanies: React.FC = () => {
   const [selectedCompanies, setSelectedCompanies] = useState<number[]>([]);
   const [selectedBranches, setSelectedBranches] = useState<number[]>([]);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    company: false,
+    branch: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Company.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        company: true,
+      }));
+    }
+
+    if (userPermissions.includes('CompanyBranch.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        branch: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const companies = useQuery(['AllSuitableCompanies'], () =>
     getAllSuitableCompanies(type, requestId)
@@ -382,111 +405,115 @@ export const SuitableCompanies: React.FC = () => {
 
   return (
     <>
-      <Card
-        title={t('requests.suitableCompanies')}
-        padding={
-          dataCompany === undefined ||
-          dataCompany?.length === 0 ||
-          (pageCompany === 1 && totalCountCompany <= pageSizeCompany)
-            ? '1.25rem 1.25rem 1.25rem'
-            : '1.25rem 1.25rem 0'
-        }
-        style={{ height: 'auto', marginBottom: '70px' }}
-      >
-        <Row justify={'end'} align={'middle'}>
-          <Btn
-            style={{
-              margin: '0 .5rem .5rem 0',
-              width: 'auto',
-            }}
-            type="ghost"
-            onClick={() => Navigate(-1)}
-            icon={<LeftOutlined />}
-          >
-            <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
-          </Btn>
-          <ReloadBtn setRefetchData={setRefetchData} />
-
-          {/*    Image    */}
-          {isOpenSliderImage ? (
-            <Modal
-              size={isDesktop || isTablet ? 'medium' : 'small'}
-              open={isOpenSliderImage}
-              onCancel={() => setIsOpenSliderImage(false)}
-              footer={null}
-              closable={false}
-              destroyOnClose
+      {hasPermissions.company && (
+        <Card
+          title={t('requests.suitableCompanies')}
+          padding={
+            dataCompany === undefined ||
+            dataCompany?.length === 0 ||
+            (pageCompany === 1 && totalCountCompany <= pageSizeCompany)
+              ? '1.25rem 1.25rem 1.25rem'
+              : '1.25rem 1.25rem 0'
+          }
+          style={{ height: 'auto', marginBottom: '70px' }}
+        >
+          <Row justify={'end'} align={'middle'}>
+            <Btn
+              style={{
+                margin: '0 .5rem .5rem 0',
+                width: 'auto',
+              }}
+              type="ghost"
+              onClick={() => Navigate(-1)}
+              icon={<LeftOutlined />}
             >
-              <AntdImage
-                preview={false}
-                style={{ borderRadius: '.3rem' }}
-                src={attachmentData !== undefined ? attachmentData?.url : ''}
-                size={isDesktop || isTablet ? 'small' : isMobile ? 'x_small' : mobileOnly ? 'xx_small' : 'x_small'}
-              />
-            </Modal>
-          ) : null}
-        </Row>
+              <TextBack style={{ fontWeight: desktopOnly ? FONT_WEIGHT.medium : '' }}>{t('common.back')}</TextBack>
+            </Btn>
+            <ReloadBtn setRefetchData={setRefetchData} />
 
-        <Table
-          pagination={{
-            showSizeChanger: true,
-            onChange: (pageCompany: number, pageSizeCompany: number) => {
-              setPageCompany(pageCompany);
-              setPageSizeCompany(pageSizeCompany);
-            },
-            current: pageCompany,
-            pageSize: pageSizeCompany,
-            showQuickJumper: true,
-            responsive: true,
-            showTitle: false,
-            showLessItems: true,
-            total: totalCountCompany || 0,
-            hideOnSinglePage: false,
-          }}
-          columns={columnsCompany.map((col) => ({ ...col, width: 'auto' }))}
-          loading={loadingCompany}
-          dataSource={dataCompany}
-          scroll={{ x: isTablet || isMobile ? 950 : 800 }}
-          rowKey={(record: CompanyRecord) => record.id.toString()}
-          rowClassName={(record: CompanyRecord) => (record.compatibilityRate == 100 ? 'feature-row' : '')}
-        />
-      </Card>
+            {/*    Image    */}
+            {isOpenSliderImage ? (
+              <Modal
+                size={isDesktop || isTablet ? 'medium' : 'small'}
+                open={isOpenSliderImage}
+                onCancel={() => setIsOpenSliderImage(false)}
+                footer={null}
+                closable={false}
+                destroyOnClose
+              >
+                <AntdImage
+                  preview={false}
+                  style={{ borderRadius: '.3rem' }}
+                  src={attachmentData !== undefined ? attachmentData?.url : ''}
+                  size={isDesktop || isTablet ? 'small' : isMobile ? 'x_small' : mobileOnly ? 'xx_small' : 'x_small'}
+                />
+              </Modal>
+            ) : null}
+          </Row>
 
-      <Card
-        title={t('requests.suitableBranches')}
-        padding={
-          dataBranch === undefined ||
-          dataBranch?.length === 0 ||
-          (pageBranch === 1 && totalCountBranch <= pageSizeBranch)
-            ? '1.25rem 1.25rem 1.25rem'
-            : '1.25rem 1.25rem 0'
-        }
-        style={{ height: 'auto', marginBottom: '70px' }}
-      >
-        <Table
-          pagination={{
-            showSizeChanger: true,
-            onChange: (pageBranch: number, pageSizeBranch: number) => {
-              setPageBranch(pageBranch);
-              setPageSizeBranch(pageSizeBranch);
-            },
-            current: pageBranch,
-            pageSize: pageSizeBranch,
-            showQuickJumper: true,
-            responsive: true,
-            showTitle: false,
-            showLessItems: true,
-            total: totalCountBranch || 0,
-            hideOnSinglePage: false,
-          }}
-          columns={columnsBranch.map((col) => ({ ...col, width: 'auto' }))}
-          loading={loadingBranch}
-          dataSource={dataBranch}
-          scroll={{ x: isTablet || isMobile ? 950 : 800 }}
-          rowKey={(record: CompanyRecord) => record.id.toString()}
-          rowClassName={(record: CompanyRecord) => (record.compatibilityRate == 100 ? 'feature-row' : '')}
-        />
-      </Card>
+          <Table
+            pagination={{
+              showSizeChanger: true,
+              onChange: (pageCompany: number, pageSizeCompany: number) => {
+                setPageCompany(pageCompany);
+                setPageSizeCompany(pageSizeCompany);
+              },
+              current: pageCompany,
+              pageSize: pageSizeCompany,
+              showQuickJumper: true,
+              responsive: true,
+              showTitle: false,
+              showLessItems: true,
+              total: totalCountCompany || 0,
+              hideOnSinglePage: false,
+            }}
+            columns={columnsCompany.map((col) => ({ ...col, width: 'auto' }))}
+            loading={loadingCompany}
+            dataSource={dataCompany}
+            scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+            rowKey={(record: CompanyRecord) => record.id.toString()}
+            rowClassName={(record: CompanyRecord) => (record.compatibilityRate == 100 ? 'feature-row' : '')}
+          />
+        </Card>
+      )}
+
+      {hasPermissions.branch && (
+        <Card
+          title={t('requests.suitableBranches')}
+          padding={
+            dataBranch === undefined ||
+            dataBranch?.length === 0 ||
+            (pageBranch === 1 && totalCountBranch <= pageSizeBranch)
+              ? '1.25rem 1.25rem 1.25rem'
+              : '1.25rem 1.25rem 0'
+          }
+          style={{ height: 'auto', marginBottom: '70px' }}
+        >
+          <Table
+            pagination={{
+              showSizeChanger: true,
+              onChange: (pageBranch: number, pageSizeBranch: number) => {
+                setPageBranch(pageBranch);
+                setPageSizeBranch(pageSizeBranch);
+              },
+              current: pageBranch,
+              pageSize: pageSizeBranch,
+              showQuickJumper: true,
+              responsive: true,
+              showTitle: false,
+              showLessItems: true,
+              total: totalCountBranch || 0,
+              hideOnSinglePage: false,
+            }}
+            columns={columnsBranch.map((col) => ({ ...col, width: 'auto' }))}
+            loading={loadingBranch}
+            dataSource={dataBranch}
+            scroll={{ x: isTablet || isMobile ? 950 : 800 }}
+            rowKey={(record: CompanyRecord) => record.id.toString()}
+            rowClassName={(record: CompanyRecord) => (record.compatibilityRate == 100 ? 'feature-row' : '')}
+          />
+        </Card>
+      )}
 
       {type == '1' && (
         <Button
@@ -504,8 +531,8 @@ export const SuitableCompanies: React.FC = () => {
             suitableForRequestMutation.mutateAsync({
               id: requestId,
               request: {
-                companyIds: selectedCompanies,
-                companyBranchIds: selectedBranches,
+                companyIds: hasPermissions.company ? selectedCompanies : [],
+                companyBranchIds: hasPermissions.branch ? selectedBranches : [],
               },
             })
           }

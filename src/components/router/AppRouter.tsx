@@ -301,7 +301,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="requests/:requestId/details/:type"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Company.List']}>
                 <CompanyThatBoughtInfoPage />
               </PrivateRoute>
             }
@@ -310,7 +310,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="requests/:requestId/EditRequest"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Request.Update']}>
                 <EditRequestsPage />
               </PrivateRoute>
             }
@@ -328,7 +328,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="requests/:requestId/details/wasSent/:type"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Company.List']}>
                 <SuitableCompaniesPage />
               </PrivateRoute>
             }
@@ -346,7 +346,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="requests/:requestId/details/offers/:type"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Offer.List']}>
                 <OffersPage />
               </PrivateRoute>
             }
@@ -355,7 +355,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path={'requests/:requestId/details/offers/:type/:offerId/details'}
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Offer.List']}>
                 <OffersDetailsPage />
               </PrivateRoute>
             }
@@ -364,7 +364,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path={'requests/:requestId/offers/:offerId/details'}
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Offer.List']}>
                 <OffersDetailsPage />
               </PrivateRoute>
             }
@@ -373,7 +373,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path={'requests/:requestId/details/:offerId/details'}
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Offer.List']}>
                 <OffersDetailsPage />
               </PrivateRoute>
             }
@@ -382,7 +382,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="requests/:requestId/details/:type/:companyId/details"
             element={
-              <PrivateRoute allowedPermissions={['view_users']}>
+              <PrivateRoute allowedPermissions={['Company.Get']}>
                 <CompanyDetailsPage />
               </PrivateRoute>
             }

@@ -20,6 +20,7 @@ import { LeftOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import moment from 'moment';
 import { DATE_TIME } from '@app/constants/appConstants';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 const { Meta } = Card;
 
@@ -57,6 +58,36 @@ const RequestDetails: React.FC = () => {
   const [requestData, setRequestData] = useState<any>();
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
+  const [hasPermissions, setHasPermissions] = useState({
+    offers: false,
+    suitable: false,
+    company: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Offer.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        offers: true,
+      }));
+    }
+
+    if (userPermissions.includes('Company.List') || userPermissions.includes('CompanyBranch.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        suitable: true,
+      }));
+    }
+
+    if (userPermissions.includes('Company.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        company: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(['getRequestById'], () =>
     getRequestById(requestId ? requestId : possibleClientId)
@@ -504,8 +535,9 @@ const RequestDetails: React.FC = () => {
                   )}
                 </DetailsValue>
               </DetailsRow>
+
               {/* companiesThatBoughtInfo */}
-              {requestData?.statues === 4 && (
+              {hasPermissions.company && requestData?.statues === 4 && (
                 <DetailsRow>
                   <DetailsTitle
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -534,7 +566,8 @@ const RequestDetails: React.FC = () => {
               )}
 
               {/* suitableCompanies&Branches */}
-              {requestData?.statues != 1 &&
+              {hasPermissions.suitable &&
+                requestData?.statues != 1 &&
                 requestData?.statues != 3 &&
                 requestData?.statues != 11 &&
                 !possibleClientId &&
@@ -592,7 +625,7 @@ const RequestDetails: React.FC = () => {
               )}
 
               {/* offers */}
-              {requestData?.statues == 5 && !possibleClientId && (
+              {hasPermissions.offers && requestData?.statues == 5 && !possibleClientId && (
                 <DetailsRow>
                   <DetailsTitle
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
@@ -624,7 +657,8 @@ const RequestDetails: React.FC = () => {
                 requestData?.statues == 10) &&
                 requestData?.selectedOfferId &&
                 !possibleClientId &&
-                !brokerId && (
+                !brokerId &&
+                hasPermissions.offers && (
                   <DetailsRow>
                     <DetailsTitle
                       style={
@@ -662,7 +696,8 @@ const RequestDetails: React.FC = () => {
                 requestData?.statues == 12 ||
                 requestData?.statues == 13) &&
                 !possibleClientId &&
-                !brokerId && (
+                !brokerId &&
+                hasPermissions.offers && (
                   <DetailsRow>
                     <DetailsTitle
                       style={
@@ -690,6 +725,7 @@ const RequestDetails: React.FC = () => {
                     </DetailsValue>
                   </DetailsRow>
                 )}
+
               <h3 style={{ borderTop: '1px solid', paddingTop: '2rem', margin: '0 2% 1rem' }}>
                 {t('requests.sourceType')} :
               </h3>

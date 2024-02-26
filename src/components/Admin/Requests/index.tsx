@@ -36,6 +36,7 @@ import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { CheckPINForUser } from '@app/components/modal/CheckPINForUser';
 import { RequestStatus } from '@app/constants/enums/requestStatus';
 import { REQUEST_STATUS } from '@app/constants/appConstants';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const Requests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -74,6 +75,68 @@ export const Requests: React.FC = () => {
   const [requestStatus, setRequestStatus] = useState<any>();
   const [temp, setTemp] = useState<any>();
   const [recordRequest, setRecordRequest] = useState<RequestModel>();
+  const [hasPermissions, setHasPermissions] = useState({
+    details: false,
+    add: false,
+    edit: false,
+    delete: false,
+    ChangeStatues: false,
+    offers: false,
+    suitable: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Request.Get')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        details: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.Create')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        add: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.Update')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        edit: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.Delete')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        delete: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.ChangeStatus')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        ChangeStatues: true,
+      }));
+    }
+
+    if (userPermissions.includes('Offer.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        offers: true,
+      }));
+    }
+
+    if (userPermissions.includes('Company.List') || userPermissions.includes('CompanyBranch.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        suitable: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -305,44 +368,18 @@ export const Requests: React.FC = () => {
         return <>{record?.name}</>;
       },
     },
-    type !== 'viaBroker' && {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.suitableCompanies&Branches')}</Header>,
-      dataIndex: 'suitableCompanies&Branches',
-      render: (index: number, record: any) => (
-        <Space>
-          <Button
-            disabled={record.statues !== 1}
-            style={{ height: '2.4rem' }}
-            severity="info"
-            onClick={() => {
-              Navigate(`${record.id}/suitableCompanies&Branches/1`, { state: record.name });
-            }}
-          >
-            <div
-              style={{
-                fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
-                fontWeight: FONT_WEIGHT.regular,
-                width: 'auto',
-              }}
-            >
-              {t('requests.suitableCompanies&Branches')}
-            </div>
-          </Button>
-        </Space>
-      ),
-    },
-    type !== 'viaBroker' && {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
-      dataIndex: 'offers',
-      render: (index: number, record: any) => {
-        return (
+    hasPermissions.suitable &&
+      type !== 'viaBroker' && {
+        title: <Header style={{ wordBreak: 'normal' }}>{t('requests.suitableCompanies&Branches')}</Header>,
+        dataIndex: 'suitableCompanies&Branches',
+        render: (index: number, record: any) => (
           <Space>
             <Button
-              disabled={record.statues !== 2}
-              style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+              disabled={record.statues !== 1}
+              style={{ height: '2.4rem' }}
               severity="info"
               onClick={() => {
-                Navigate(`${record.id}/offers`, { state: record.name });
+                Navigate(`${record.id}/suitableCompanies&Branches/1`, { state: record.name });
               }}
             >
               <div
@@ -352,13 +389,41 @@ export const Requests: React.FC = () => {
                   width: 'auto',
                 }}
               >
-                {t('requests.offers')}
+                {t('requests.suitableCompanies&Branches')}
               </div>
             </Button>
           </Space>
-        );
+        ),
       },
-    },
+    hasPermissions.offers &&
+      type !== 'viaBroker' && {
+        title: <Header style={{ wordBreak: 'normal' }}>{t('requests.offers')}</Header>,
+        dataIndex: 'offers',
+        render: (index: number, record: any) => {
+          return (
+            <Space>
+              <Button
+                disabled={record.statues !== 2}
+                style={{ height: '2.4rem', width: language === 'ar' ? '7.85rem' : '' }}
+                severity="info"
+                onClick={() => {
+                  Navigate(`${record.id}/offers`, { state: record.name });
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs,
+                    fontWeight: FONT_WEIGHT.regular,
+                    width: 'auto',
+                  }}
+                >
+                  {t('requests.offers')}
+                </div>
+              </Button>
+            </Space>
+          );
+        },
+      },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('requests.status')}</Header>,
       dataIndex: 'status',
@@ -496,18 +561,20 @@ export const Requests: React.FC = () => {
       render: (index: number, record: RequestModel) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('common.details')}>
-              <TableButton
-                severity="success"
-                onClick={() => {
-                  Navigate(`${record.id}/details`, { state: record.name });
-                }}
-              >
-                <TagOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.details && (
+              <Tooltip placement="top" title={t('common.details')}>
+                <TableButton
+                  severity="success"
+                  onClick={() => {
+                    Navigate(`${record.id}/details`, { state: record.name });
+                  }}
+                >
+                  <TagOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
-            {type !== 'viaBroker' && (
+            {hasPermissions.ChangeStatues && type !== 'viaBroker' && (
               <Tooltip placement="top" title={t('common.reject')}>
                 <TableButton
                   disabled={record.statues !== 1}
@@ -522,7 +589,7 @@ export const Requests: React.FC = () => {
               </Tooltip>
             )}
 
-            {type !== 'viaBroker' && (
+            {hasPermissions.ChangeStatues && type !== 'viaBroker' && (
               <Tooltip placement="top" title={t('common.return')}>
                 <TableButton
                   disabled={record.statues !== 1}
@@ -537,7 +604,7 @@ export const Requests: React.FC = () => {
               </Tooltip>
             )}
 
-            {type !== 'viaBroker' && (
+            {hasPermissions.edit && type !== 'viaBroker' && (
               <Tooltip placement="top" title={t('common.edit')}>
                 <TableButton
                   disabled={record.statues !== 1}
@@ -553,7 +620,7 @@ export const Requests: React.FC = () => {
               </Tooltip>
             )}
 
-            {type !== 'viaBroker' && (
+            {hasPermissions.delete && type !== 'viaBroker' && (
               <Tooltip placement="top" title={t('common.delete')}>
                 <TableButton
                   severity="error"
