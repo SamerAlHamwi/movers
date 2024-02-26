@@ -20,6 +20,7 @@ import { TableButton } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const Role: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -43,6 +44,36 @@ export const Role: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    delete: false,
+    edit: false,
+    add: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Pages.Roles.Delete')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        delete: true,
+      }));
+    }
+
+    if (userPermissions.includes('Pages.Roles.Update')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        edit: true,
+      }));
+    }
+
+    if (userPermissions.includes('Pages.Roles.Create')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        add: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -168,29 +199,33 @@ export const Role: React.FC = () => {
       render: (index: number, record: RoleModel) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('common.edit')}>
-              <TableButton
-                severity="info"
-                onClick={() => {
-                  setEditmodaldata(record);
-                  handleModalOpen('edit');
-                }}
-              >
-                <EditOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.edit && (
+              <Tooltip placement="top" title={t('common.edit')}>
+                <TableButton
+                  severity="info"
+                  onClick={() => {
+                    setEditmodaldata(record);
+                    handleModalOpen('edit');
+                  }}
+                >
+                  <EditOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
-            <Tooltip placement="top" title={t('common.delete')}>
-              <TableButton
-                severity="error"
-                onClick={() => {
-                  setDeletemodaldata(record);
-                  handleModalOpen('delete');
-                }}
-              >
-                <DeleteOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.delete && (
+              <Tooltip placement="top" title={t('common.delete')}>
+                <TableButton
+                  severity="error"
+                  onClick={() => {
+                    setDeletemodaldata(record);
+                    handleModalOpen('delete');
+                  }}
+                >
+                  <DeleteOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
           </Space>
         );
       },
@@ -208,17 +243,19 @@ export const Role: React.FC = () => {
         }
       >
         <Row justify={'end'}>
-          <Button
-            type="primary"
-            style={{
-              marginBottom: '.5rem',
-              width: 'auto',
-              height: 'auto',
-            }}
-            onClick={() => handleModalOpen('add')}
-          >
-            <CreateButtonText>{t('roles.addRole')}</CreateButtonText>
-          </Button>
+          {hasPermissions.add && (
+            <Button
+              type="primary"
+              style={{
+                marginBottom: '.5rem',
+                width: 'auto',
+                height: 'auto',
+              }}
+              onClick={() => handleModalOpen('add')}
+            >
+              <CreateButtonText>{t('roles.addRole')}</CreateButtonText>
+            </Button>
+          )}
           <ReloadBtn setRefetchData={setRefetchData} />
 
           {/*    ADD    */}

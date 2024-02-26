@@ -813,7 +813,7 @@ export const AppRouter: React.FC = () => {
           <Route
             path="roles"
             element={
-              <PrivateRoute allowedPermissions={['Pages.Roles']}>
+              <PrivateRoute allowedPermissions={['Pages.Roles.List']}>
                 <RolesPage />
               </PrivateRoute>
             }
