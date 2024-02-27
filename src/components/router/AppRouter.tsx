@@ -308,6 +308,15 @@ export const AppRouter: React.FC = () => {
           />
 
           <Route
+            path="requests/:requestId/details/:type/:companyId/details/reviewsDetails"
+            element={
+              <PrivateRoute allowedPermissions={['Company.Get']}>
+                <ReviewsDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
             path="requests/:requestId/EditRequest"
             element={
               <PrivateRoute allowedPermissions={['Request.Update']}>

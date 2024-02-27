@@ -1,49 +1,24 @@
 import React, { useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Col, message, Radio, RadioChangeEvent, Rate, Row, Space, Tabs, Tag, Tooltip } from 'antd';
+import { Rate, Row, Space, Tooltip } from 'antd';
 import { useResponsive } from '@app/hooks/useResponsive';
 import { Card } from '@app/components/common/Card/Card';
-import { Button } from '@app/components/common/buttons/Button/Button';
-import { useQuery, useMutation } from 'react-query';
-import {
-  EditOutlined,
-  DeleteOutlined,
-  ApartmentOutlined,
-  CheckOutlined,
-  CloseOutlined,
-  TagOutlined,
-  TeamOutlined,
-  SnippetsOutlined,
-  LeftOutlined,
-  RetweetOutlined,
-  MergeCellsOutlined,
-} from '@ant-design/icons';
-import { ActionModal } from '@app/components/modal/ActionModal';
+import { useQuery } from 'react-query';
+import { TagOutlined, LeftOutlined } from '@ant-design/icons';
 import { Table } from '@app/components/common/Table/Table';
 import { DEFAULT_PAGE_SIZE } from '@app/constants/pagination';
-import { Alert } from '@app/components/common/Alert/Alert';
 import { notificationController } from '@app/controllers/notificationController';
 import { CompanyModal, CompanyProfile } from '@app/interfaces/interfaces';
 import { useNavigate, useParams } from 'react-router-dom';
-import {
-  DeleteCompany,
-  updateCompany,
-  getAllCompanies,
-  confirmCompany,
-  ChangeAcceptRequestOrPossibleRequestForCompany,
-} from '@app/services/companies';
-import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
+import { getAllCompanies } from '@app/services/companies';
+import { FONT_WEIGHT } from '@app/styles/themes/constants';
 import { Image as AntdImage } from '@app/components/common/Image/Image';
-import { TableButton, Header, Modal, Image, CreateButtonText, TextBack } from '../../GeneralStyles';
+import { TableButton, Header, Modal, Image, TextBack } from '../../GeneralStyles';
 import { useLanguage } from '@app/hooks/useLanguage';
 import { useSelector } from 'react-redux';
-import { ChangeAcceptRequestOrPotentialClient } from '@app/components/modal/ChangeAcceptRequestOrPotentialClient';
 import { Button as Btn } from '@app/components/common/buttons/Button/Button';
-import { RadioGroup } from '@app/components/common/Radio/Radio';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
-import { COMPANY_STATUS_NAMES, NEED_TO_UPDATE } from '@app/constants/appConstants';
-import { CompanyStatus } from '@app/constants/enums/companyStatues';
-import { SendRejectReason } from '@app/components/modal/SendRejectReason';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 interface CompanyRecord {
   id: number;
@@ -65,37 +40,26 @@ export const CompaniesThatBoughtInfo: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [attachmentData, setAttachmentData] = useState<CompanyProfile>();
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
-  const [companyStatus, setCompanyStatus] = useState<any>();
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    details: false,
+  });
 
-  //   const { refetch, isRefetching } = useQuery(
-  //     [
-  //       'AllCompanies',
-  //       page,
-  //       pageSize,
-  //       companyStatus,
-  //     ],
-  //     () =>
-  //       getAllCompanies(page, pageSize, searchString, undefined, undefined, companyStatus)
-  //         .then((data) => {
-  //           const result = data.data?.result?.items;
-  //           setDataSource(result);
-  //           setTotalCount(data.data.result?.totalCount);
-  //           setLoading(!data.data?.success);
-  //         })
-  //         .catch((err) => {
-  //           setLoading(false);
-  //           notificationController.error({ message: err?.message || err.error?.message });
-  //         }),
-  //     {
-  //       enabled: type !== 'companiesThatBoughtInfo' && requestId === undefined,
-  //     },
-  //   );
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Company.List') || userPermissions.includes('CompanyBranch.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        details: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch: refetchCompaniesThatBoughtInfo, isRefetching: isRefetchingCompaniesThatBoughtInfo } = useQuery(
     ['AllCompaniesThatBoughtInfo', page, pageSize],
     () =>
-      getAllCompanies(page, pageSize, searchString, type, requestId, companyStatus)
+      getAllCompanies(page, pageSize, searchString, type, requestId)
         .then((data) => {
           const result = data.data?.result?.items;
           setDataSource(result);
@@ -126,7 +90,7 @@ export const CompaniesThatBoughtInfo: React.FC = () => {
     setLoading(true);
     type !== 'companiesThatBoughtInfo' && requestId === undefined && refetchCompaniesThatBoughtInfo();
     type !== undefined && requestId !== undefined && refetchCompaniesThatBoughtInfo();
-  }, [page, pageSize, language, searchString, companyStatus, refetchData]);
+  }, [page, pageSize, language, searchString, refetchData]);
 
   useEffect(() => {
     if (page > 1 && dataSource?.length === 0) {
@@ -196,7 +160,7 @@ export const CompaniesThatBoughtInfo: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('companies.numberOfTransfers')}</Header>,
       dataIndex: 'numberOfTransfers',
     },
-    {
+    hasPermissions.details && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: any) => {
