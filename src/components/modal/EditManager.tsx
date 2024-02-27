@@ -29,7 +29,11 @@ export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, man
   };
 
   const onFinish = (value: UserModel) => {
-    value = Object.assign({}, value, { isActive: true, type: managerType, roleNames: [roleName] });
+    value = Object.assign({}, value, {
+      isActive: true,
+      type: managerType,
+      // roleNames: [roleName]
+    });
     onEdit(value);
   };
 
@@ -94,7 +98,7 @@ export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, man
           <Input />
         </BaseForm.Item>
 
-        <BaseForm.Item
+        {/* <BaseForm.Item
           name={['roleNames', 0]}
           label={<LableText>{t('roles.roleName')}</LableText>}
           style={{ margin: '1rem 0 -0.5rem 0px' }}
@@ -107,7 +111,7 @@ export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, man
               </Option>
             ))}
           </Select>
-        </BaseForm.Item>
+        </BaseForm.Item> */}
 
         <BaseForm.Item
           name="type"
@@ -123,9 +127,9 @@ export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, man
             <Option value={1}>
               <Text>{t('managers.admin')}</Text>
             </Option>
-            <Option value={4}>
+            {/* <Option value={4}>
               <Text>{t('managers.employee')}</Text>
-            </Option>
+            </Option> */}
           </Select>
         </BaseForm.Item>
       </BaseForm>
