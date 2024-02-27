@@ -31,6 +31,7 @@ import { Radio, RadioChangeEvent, RadioGroup } from '@app/components/common/Radi
 import { defineColorBySeverity } from '@app/utils/utils';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export type cities = {
   id: number;
@@ -67,6 +68,20 @@ export const City: React.FC = () => {
   const [editmodaldata, setEditmodaldata] = useState<CityModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CityModel | undefined>(undefined);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    region: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Region.FullControl')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        region: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(
     ['CitiesById', page, pageSize],
@@ -237,7 +252,7 @@ export const City: React.FC = () => {
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
-    {
+    hasPermissions.region && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('locations.regions')}</Header>,
       dataIndex: 'regions',
       render: (index: number, record: cities) => {

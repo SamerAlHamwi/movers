@@ -28,7 +28,7 @@ export const Drafts: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   const { refetch, isRefetching } = useQuery(
-    ['Offers'],
+    ['Drafts'],
     () =>
       getAllDrafts(userId)
         .then((data) => {

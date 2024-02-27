@@ -34,6 +34,7 @@ import { defineColorBySeverity } from '@app/utils/utils';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { LocationServicesType, LocationServicesValues } from '@app/constants/enums/locationServicesType';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export type countries = {
   id: number;
@@ -69,6 +70,20 @@ export const Country: React.FC = () => {
   const [editmodaldata, setEditmodaldata] = useState<CountryModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<CountryModel | undefined>(undefined);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    city: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('City.FullControl')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        city: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(
     ['Countries', countryPage, countryPageSize],
@@ -309,8 +324,7 @@ export const Country: React.FC = () => {
         return <Space>{getServiceTypeName(record)}</Space>;
       },
     },
-
-    {
+    hasPermissions.city && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('locations.cities')}</Header>,
       dataIndex: 'cities',
       render: (index: number, record: countries) => {
