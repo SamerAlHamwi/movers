@@ -18,6 +18,7 @@ import { LeftOutlined, TagOutlined } from '@ant-design/icons';
 import { TextBack } from '@app/components/GeneralStyles';
 import { getPossibleClients } from '@app/services/requests';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const PotentialClients: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -33,6 +34,20 @@ export const PotentialClients: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [totalCount, setTotalCount] = useState<number>(0);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    details: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Request.Get')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        details: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(
     ['getPossibleClients', page, pageSize],
@@ -121,7 +136,7 @@ export const PotentialClients: React.FC = () => {
         return <>{record?.name}</>;
       },
     },
-    {
+    hasPermissions.details && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: RequestModel) => {

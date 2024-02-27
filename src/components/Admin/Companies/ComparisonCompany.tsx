@@ -53,7 +53,7 @@ const ComparisonCompany: React.FC = () => {
   const userPermissions = useAppSelector((state) => state.auth.permissions);
 
   useEffect(() => {
-    if (userPermissions.includes('Company.List')) {
+    if (userPermissions.includes('Company.Get')) {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
         changeStatus: true,
