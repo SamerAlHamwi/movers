@@ -37,6 +37,7 @@ import { TextBack } from '@app/components/GeneralStyles';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 import { EditOffer } from '@app/components/modal/EditOffer';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const Offers: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -61,6 +62,36 @@ export const Offers: React.FC = () => {
   const [returnmodaldata, setReturnmodaldata] = useState<RequestModel | undefined>(undefined);
   const [isEdited, setIsEdited] = useState(false);
   const [editmodaldata, setEditmodaldata] = useState<offerModel | undefined>(undefined);
+  const [hasPermissions, setHasPermissions] = useState({
+    details: false,
+    ChangeStatus: false,
+    edit: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Offer.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        details: true,
+      }));
+    }
+
+    if (userPermissions.includes('Offer.ChangeStatus')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        ChangeStatus: true,
+      }));
+    }
+
+    if (userPermissions.includes('Offer.Update')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        edit: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -345,43 +376,49 @@ export const Offers: React.FC = () => {
       render: (index: number, record: any) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('common.details')}>
-              <TableButton
-                severity="success"
-                onClick={() => {
-                  Navigate(`${record.id}/details`, { state: record.name });
-                }}
-              >
-                <TagOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.details && (
+              <Tooltip placement="top" title={t('common.details')}>
+                <TableButton
+                  severity="success"
+                  onClick={() => {
+                    Navigate(`${record.id}/details`, { state: record.name });
+                  }}
+                >
+                  <TagOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
             {!userId && (
               <>
-                <Tooltip placement="top" title={t('common.return')}>
-                  <TableButton
-                    disabled={record.statues !== 1}
-                    severity="warning"
-                    onClick={() => {
-                      setReturnmodaldata(record);
-                      handleModalOpen('return');
-                    }}
-                  >
-                    <RetweetOutlined />
-                  </TableButton>
-                </Tooltip>
+                {hasPermissions.ChangeStatus && (
+                  <Tooltip placement="top" title={t('common.return')}>
+                    <TableButton
+                      disabled={record.statues !== 1}
+                      severity="warning"
+                      onClick={() => {
+                        setReturnmodaldata(record);
+                        handleModalOpen('return');
+                      }}
+                    >
+                      <RetweetOutlined />
+                    </TableButton>
+                  </Tooltip>
+                )}
 
-                <Tooltip placement="top" title={t('common.edit')}>
-                  <TableButton
-                    severity="info"
-                    onClick={() => {
-                      setEditmodaldata(record);
-                      handleModalOpen('edit');
-                    }}
-                  >
-                    <EditOutlined />
-                  </TableButton>
-                </Tooltip>
+                {hasPermissions.edit && (
+                  <Tooltip placement="top" title={t('common.edit')}>
+                    <TableButton
+                      severity="info"
+                      onClick={() => {
+                        setEditmodaldata(record);
+                        handleModalOpen('edit');
+                      }}
+                    >
+                      <EditOutlined />
+                    </TableButton>
+                  </Tooltip>
+                )}
               </>
             )}
           </Space>
@@ -466,7 +503,7 @@ export const Offers: React.FC = () => {
         />
       </Card>
 
-      {requestId !== undefined && type === undefined && (
+      {hasPermissions.ChangeStatus && requestId !== undefined && type === undefined && (
         <Button
           disabled={dataSource?.length == 0}
           type="primary"
