@@ -18,6 +18,7 @@ import { CreateButtonText, LableText, TextBack } from '@app/components/GeneralSt
 import { BaseForm } from '@app/components/common/forms/BaseForm/BaseForm';
 import { SendRejectReason } from '@app/components/modal/SendRejectReason';
 import { getDayName } from '@app/components/functions/GetDayName';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 const treeStyle = {
   width: '96%',
@@ -45,6 +46,20 @@ const ComparisonCompany: React.FC = () => {
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [autoExpandParent, setAutoExpandParent] = useState<boolean>(true);
   const [visible, setVisible] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    changeStatus: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Company.List')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        changeStatus: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(['GetCompaniesToCompare'], () =>
     GetCompaniesToCompare(companyId)
@@ -782,31 +797,32 @@ const ComparisonCompany: React.FC = () => {
         </Col>
       </Row>
 
-      <Row style={{ margin: '1rem', justifyContent: 'space-evenly' }}>
-        <Button
-          type="primary"
-          style={{
-            marginBottom: '.5rem',
-            width: 'auto',
-            height: 'auto',
-          }}
-          onClick={() => confirmUpdateCompany.mutateAsync(newCompanyData)}
-        >
-          <CreateButtonText>{t('common.approve')}</CreateButtonText>
-        </Button>
+      {hasPermissions.changeStatus && (
+        <Row style={{ margin: '1rem', justifyContent: 'space-evenly' }}>
+          <Button
+            type="primary"
+            style={{
+              marginBottom: '.5rem',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => confirmUpdateCompany.mutateAsync(newCompanyData)}
+          >
+            <CreateButtonText>{t('common.approve')}</CreateButtonText>
+          </Button>
 
-        <Button
-          type="default"
-          style={{
-            marginBottom: '.5rem',
-            width: 'auto',
-            height: 'auto',
-          }}
-          onClick={() => setVisible(true)}
-        >
-          <CreateButtonText>{t('common.return')}</CreateButtonText>
-        </Button>
-        {
+          <Button
+            type="default"
+            style={{
+              marginBottom: '.5rem',
+              width: 'auto',
+              height: 'auto',
+            }}
+            onClick={() => setVisible(true)}
+          >
+            <CreateButtonText>{t('common.return')}</CreateButtonText>
+          </Button>
+
           <SendRejectReason
             visible={visible}
             onCancel={() => setVisible(false)}
@@ -820,8 +836,8 @@ const ComparisonCompany: React.FC = () => {
             isLoading={rejectCompany.isLoading}
             type="returnCompany"
           />
-        }
-      </Row>
+        </Row>
+      )}
     </>
   );
 };
