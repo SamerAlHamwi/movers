@@ -631,6 +631,7 @@ export const Companies: React.FC = () => {
                   <Tooltip placement="top" title={t('companies.ChangeAcceptRequestOrPotentialClient')}>
                     <TableButton
                       severity="info"
+                      disabled={record.statues === 3 && !needToUpdate}
                       onClick={() => {
                         setAcceptRequestOrPotentialClientmodaldata(record);
                         handleModalOpen('acceptRequestOrPotentialClient');
@@ -645,6 +646,7 @@ export const Companies: React.FC = () => {
                   <Tooltip placement="top" title={t('companies.branches')}>
                     <TableButton
                       severity="warning"
+                      disabled={(record.statues === 3 || record.statues === 1 || record.statues === 4) && !needToUpdate}
                       onClick={() => {
                         Navigate(`${record.id}/branches`, { replace: false });
                       }}
@@ -658,6 +660,7 @@ export const Companies: React.FC = () => {
                   <Tooltip placement="top" title={t('companies.potentialClients')}>
                     <TableButton
                       severity="success"
+                      disabled={(record.statues === 3 || record.statues === 1 || record.statues === 4) && !needToUpdate}
                       onClick={() => {
                         Navigate(`${record.id}/potentialClients`, { replace: false });
                       }}
@@ -671,6 +674,7 @@ export const Companies: React.FC = () => {
                   <Tooltip placement="top" title={t('companies.compare')}>
                     <TableButton
                       severity="warning"
+                      disabled={record.statues === 3}
                       onClick={() => {
                         Navigate(`${record.id}/comparison`, { replace: false });
                       }}
@@ -684,6 +688,7 @@ export const Companies: React.FC = () => {
                   <Tooltip placement="top" title={t('common.edit')}>
                     <TableButton
                       severity="info"
+                      disabled={(record.statues === 3 || record.statues === 4) && !needToUpdate}
                       onClick={() => {
                         Navigate(`${record.id}/EditCompany`, { replace: false });
                       }}
@@ -697,6 +702,7 @@ export const Companies: React.FC = () => {
                   <Tooltip placement="top" title={t('common.delete')}>
                     <TableButton
                       severity="error"
+                      disabled={record.statues === 1 && !needToUpdate}
                       onClick={() => {
                         setDeletemodaldata(record);
                         handleModalOpen('delete');
