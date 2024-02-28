@@ -32,6 +32,7 @@ import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { defineColorBySeverity } from '@app/utils/utils';
 import styled from 'styled-components';
 import { RadioGroup } from '@app/components/common/Radio/Radio';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export type services = {
   id: number;
@@ -73,6 +74,20 @@ export const Services: React.FC = () => {
   const [isHover, setIsHover] = useState(false);
   const [temp, setTemp] = useState<any>();
   const [serviceStatus, setRejectReasonStatus] = useState<boolean | undefined>(undefined);
+  const [hasPermissions, setHasPermissions] = useState({
+    SubService: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('SubService.FullControl')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        SubService: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const handleModalOpen = (modalType: any) => {
     setModalState((prevModalState) => ({ ...prevModalState, [modalType]: true }));
@@ -259,7 +274,7 @@ export const Services: React.FC = () => {
         );
       },
     },
-    {
+    hasPermissions.SubService && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('services.subServices')}</Header>,
       dataIndex: 'subService',
       render: (index: number, record: services) => {

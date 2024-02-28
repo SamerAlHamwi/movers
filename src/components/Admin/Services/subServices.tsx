@@ -23,6 +23,7 @@ import { EditSubService } from '@app/components/modal/EditSubService';
 import { TextBack, Header, TableButton } from '../../GeneralStyles';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export type services = {
   id: number;
@@ -53,11 +54,24 @@ export const SubServices: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refetchOnAddService, setRefetchOnAddService] = useState(false);
-  const [dataSource, setDataSource] = useState<ServiceModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<ServiceModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<ServiceModel | undefined>(undefined);
   const [isOpenSliderImage, setIsOpenSliderImage] = useState(false);
   const [refetchData, setRefetchData] = useState<boolean>(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    Tool: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Tool.FullControl')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        Tool: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const navigateBack = () => {
     navigate(-1);
@@ -105,10 +119,10 @@ export const SubServices: React.FC = () => {
   }, [isDelete, isEdit, refetchOnAddService, page, pageSize, searchString, refetch, refetchData]);
 
   useEffect(() => {
-    if (page > 1 && dataSource?.length === 0) {
+    if (page > 1 && Data?.length === 0) {
       setPage(1);
     }
-  }, [page, dataSource]);
+  }, [page, Data]);
 
   const addService = useMutation((data: ServiceModel) =>
     createSubService(data)
@@ -142,7 +156,7 @@ export const SubServices: React.FC = () => {
   );
 
   const handleDelete = (id: any) => {
-    if (page > 1 && dataSource?.length === 1) {
+    if (page > 1 && Data?.length === 1) {
       deleteService.mutateAsync(id);
       setPage(page - 1);
     } else {
@@ -203,7 +217,7 @@ export const SubServices: React.FC = () => {
         );
       },
     },
-    {
+    hasPermissions.Tool && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('subServices.tools')}</Header>,
       dataIndex: 'tools',
       render: (index: number, record: services) => {
