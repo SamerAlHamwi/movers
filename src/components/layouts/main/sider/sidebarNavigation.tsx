@@ -65,6 +65,13 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     permissions: ['Pages.Users'],
   },
   {
+    title: 'sidebarNavigation.Roles',
+    key: 'roles',
+    url: `/roles`,
+    icon: <UnlockOutlined />,
+    permissions: ['Pages.Roles'],
+  },
+  {
     title: 'sidebarNavigation.Requests',
     key: 'Requests',
     url: '/requests',
@@ -140,13 +147,6 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     url: `/locations/countries`,
     icon: <EnvironmentOutlined />,
     permissions: ['Country.FullControl'],
-  },
-  {
-    title: 'sidebarNavigation.Roles',
-    key: 'roles',
-    url: `/roles`,
-    icon: <UnlockOutlined />,
-    permissions: ['Pages.Roles'],
   },
   {
     title: 'sidebarNavigation.Partners',
