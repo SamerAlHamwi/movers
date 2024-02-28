@@ -55,6 +55,7 @@ export const User: React.FC = () => {
   const [hasPermissions, setHasPermissions] = useState({
     delete: false,
     activate: false,
+    hisRequests: false,
   });
 
   const userPermissions = useAppSelector((state) => state.auth.permissions);
@@ -71,6 +72,13 @@ export const User: React.FC = () => {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
         activate: true,
+      }));
+    }
+
+    if (userPermissions.includes('Pages.Users.Activation')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        hisRequests: true,
       }));
     }
   }, [userPermissions]);
@@ -335,17 +343,19 @@ export const User: React.FC = () => {
       render: (index: number, record: UserModel) => {
         return (
           <Space>
-            <Tooltip placement="top" title={t('users.hisRequests')}>
-              <TableButton
-                disabled={record.type !== 2 && record.type !== 6}
-                severity="success"
-                onClick={() => {
-                  Navigate(`${record.id}/requests`, { state: record.name });
-                }}
-              >
-                <AuditOutlined />
-              </TableButton>
-            </Tooltip>
+            {hasPermissions.hisRequests && (
+              <Tooltip placement="top" title={t('users.hisRequests')}>
+                <TableButton
+                  disabled={record.type !== 2 && record.type !== 6}
+                  severity="success"
+                  onClick={() => {
+                    Navigate(`${record.id}/requests`, { state: record.name });
+                  }}
+                >
+                  <AuditOutlined />
+                </TableButton>
+              </Tooltip>
+            )}
 
             {hasPermissions.delete && (
               <Tooltip placement="top" title={t('common.delete')}>
