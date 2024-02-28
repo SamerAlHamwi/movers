@@ -19,17 +19,18 @@ import { useResponsive } from '@app/hooks/useResponsive';
 import { notificationController } from '@app/controllers/notificationController';
 import { Attachment, SourceTypeModel } from '@app/interfaces/interfaces';
 import { useLanguage } from '@app/hooks/useLanguage';
-import { EditOutlined, DeleteOutlined, LeftOutlined, ReloadOutlined, LoadingOutlined } from '@ant-design/icons';
+import { EditOutlined, DeleteOutlined, LeftOutlined, LoadingOutlined } from '@ant-design/icons';
 import { ActionModal } from '@app/components/modal/ActionModal';
 import { AddAttributeForSourceType } from '@app/components/modal/AddAttributeForSourceType';
 import { EditAttributeForSourceType } from '@app/components/modal/EditAttributeForSourceType';
-import { TableButton, Header, Modal, Image, TextBack, CreateButtonText, LableText } from '../../GeneralStyles';
+import { TableButton, Header, TextBack, CreateButtonText, LableText } from '../../GeneralStyles';
 import { useNavigate, useParams } from 'react-router-dom';
 import { FONT_SIZE, FONT_WEIGHT } from '@app/styles/themes/constants';
 import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import styled from 'styled-components';
 import { defineColorBySeverity } from '@app/utils/utils';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export type sourceTypes = {
   id: number;
@@ -44,14 +45,13 @@ export const TypesForSource: React.FC = () => {
   const navigate = useNavigate();
   const { language } = useLanguage();
   const { sourceTypeId } = useParams();
-  const { desktopOnly, mobileOnly, isTablet, isMobile, isDesktop } = useResponsive();
+  const { desktopOnly, isTablet, isMobile, isDesktop } = useResponsive();
 
   const [modalState, setModalState] = useState({
     add: false,
     edit: false,
     delete: false,
   });
-  const [attachmentData, setAttachmentData] = useState<sourceTypes>();
   const [page, setPage] = useAtom(currentGamesPageAtom);
   const [pageSize, setPageSize] = useAtom(gamesPageSizeAtom);
   const [Data, setData] = useState<sourceTypes[] | undefined>();
@@ -60,13 +60,26 @@ export const TypesForSource: React.FC = () => {
   const [isEdit, setIsEdit] = useState(false);
   const [loading, setLoading] = useState(true);
   const [refetchOnAdd, setRefetchOnAdd] = useState(false);
-  const [dataSource, setDataSource] = useState<SourceTypeModel[] | undefined>(undefined);
   const [editmodaldata, setEditmodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [deletemodaldata, setDeletemodaldata] = useState<SourceTypeModel | undefined>(undefined);
   const [refetchData, setRefetchData] = useState<boolean>(false);
   const [isActivate, setIsActivate] = useState(false);
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isHover, setIsHover] = useState(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    AttributeChoice: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('AttributeChoice.FullControl')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        AttributeChoice: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const TableText = styled.div`
     font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
@@ -114,12 +127,6 @@ export const TypesForSource: React.FC = () => {
     setRefetchOnAdd(false);
   }, [isDelete, isEdit, isActivate, isDeActivate, refetchOnAdd, page, pageSize, searchString, refetch, refetchData]);
 
-  useEffect(() => {
-    if (page > 1 && dataSource?.length === 0) {
-      setPage(1);
-    }
-  }, [page, dataSource]);
-
   const addAttributeForSourceType = useMutation((data: SourceTypeModel) =>
     createAttributeForSourceType(data)
       .then((data) => {
@@ -160,13 +167,17 @@ export const TypesForSource: React.FC = () => {
   );
 
   const handleDelete = (id: any) => {
-    if (page > 1 && dataSource?.length === 1) {
+    if (page > 1 && Data?.length === 1) {
       deleteAttributeForSourceType.mutateAsync(id);
       setPage(page - 1);
     } else {
       deleteAttributeForSourceType.mutateAsync(id);
     }
   };
+
+  useEffect(() => {
+    if (page > 1 && Data?.length === 0) setPage(1);
+  }, [page, Data]);
 
   useEffect(() => {
     setModalState((prevModalState) => ({ ...prevModalState, delete: deleteAttributeForSourceType.isLoading }));
@@ -238,14 +249,10 @@ export const TypesForSource: React.FC = () => {
     refetch();
   }, [page, pageSize, language, refetch, refetchData]);
 
-  useEffect(() => {
-    if (page > 1 && Data?.length === 0) setPage(1);
-  }, [page, Data]);
-
   const columns = [
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.id')}</Header>, dataIndex: 'id' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('common.name')}</Header>, dataIndex: 'name' },
-    {
+    hasPermissions.AttributeChoice && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('attributeForSourceTypes.attributeChoice')}</Header>,
       dataIndex: 'attributeChoice',
       render: (index: number, record: sourceTypes) => {

@@ -38,6 +38,7 @@ import { useSelector } from 'react-redux';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
 import { defineColorBySeverity } from '@app/utils/utils';
 import styled from 'styled-components';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export type sourceTypes = {
   id: number;
@@ -75,6 +76,20 @@ export const SourceType: React.FC = () => {
   const [isActivate, setIsActivate] = useState(false);
   const [isDeActivate, setIsDeActivate] = useState(false);
   const [isHover, setIsHover] = useState(false);
+  const [hasPermissions, setHasPermissions] = useState({
+    AttributeForSourceType: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('AttributeForSourceType.FullControl')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        AttributeForSourceType: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const TableText = styled.div`
     font-size: ${isDesktop || isTablet ? FONT_SIZE.md : FONT_SIZE.xs};
@@ -260,7 +275,7 @@ export const SourceType: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.pointsToBuyRequest')}</Header>,
       dataIndex: 'pointsToBuyRequest',
     },
-    {
+    hasPermissions.AttributeForSourceType && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('sourceTypes.attributeForSource')}</Header>,
       dataIndex: 'attributeForSource',
       render: (index: number, record: sourceTypes) => {
