@@ -125,7 +125,7 @@ const AdminSidebarNavigation: SidebarNavigationItem[] = [
     key: 'AskForHelp',
     url: `/AskForHelp`,
     icon: <FileUnknownOutlined />,
-    permissions: [],
+    permissions: ['Request.List'],
   },
   {
     title: 'sidebarNavigation.Services',
