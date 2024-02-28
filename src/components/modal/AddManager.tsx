@@ -30,11 +30,7 @@ export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, 
   };
 
   const onFinish = (managerInfo: UserModel) => {
-    managerInfo = Object.assign({}, managerInfo, {
-      isActive: true,
-      type: managerType,
-      // roleNames: [roleName]
-    });
+    managerInfo = Object.assign({}, managerInfo, { isActive: true, type: managerType, roleNames: [roleName] });
     onCreateManager(managerInfo);
   };
 
@@ -104,7 +100,7 @@ export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, 
         >
           <InputPassword />
         </BaseForm.Item>
-        {/* <BaseForm.Item
+        <BaseForm.Item
           label={<LableText>{t('roles.roleName')}</LableText>}
           style={{ margin: '1rem 0 -0.5rem 0px' }}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
@@ -116,7 +112,7 @@ export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, 
               </Option>
             ))}
           </Select>
-        </BaseForm.Item> */}
+        </BaseForm.Item>
         <BaseForm.Item
           name="type"
           label={<LableText>{t('managers.type')}</LableText>}
@@ -131,9 +127,9 @@ export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, 
             <Option value={1}>
               <Text>{t('managers.admin')}</Text>
             </Option>
-            {/* <Option value={4}>
+            <Option value={4}>
               <Text>{t('managers.employee')}</Text>
-            </Option> */}
+            </Option>
           </Select>
         </BaseForm.Item>
       </BaseForm>
