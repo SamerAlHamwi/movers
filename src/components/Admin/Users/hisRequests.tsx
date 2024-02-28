@@ -22,6 +22,7 @@ import { RadioGroup } from '@app/components/common/Radio/Radio';
 import { REQUEST_STATUS } from '@app/constants/appConstants';
 import Tag from 'antd/es/tag';
 import ReloadBtn from '../ReusableComponents/ReloadBtn';
+import { useAppSelector } from '@app/hooks/reduxHooks';
 
 export const HisRequests: React.FC = () => {
   const searchString = useSelector((state: any) => state.search);
@@ -39,6 +40,20 @@ export const HisRequests: React.FC = () => {
   const [totalCount, setTotalCount] = useState<number>(0);
   const [requestStatus, setRequestStatus] = useState<any>();
   const [temp, setTemp] = useState<any>();
+  const [hasPermissions, setHasPermissions] = useState({
+    details: false,
+  });
+
+  const userPermissions = useAppSelector((state) => state.auth.permissions);
+
+  useEffect(() => {
+    if (userPermissions.includes('Request.Get')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        details: true,
+      }));
+    }
+  }, [userPermissions]);
 
   const { refetch, isRefetching } = useQuery(
     ['HisRequests', type, brokerId, page, pageSize],
@@ -258,7 +273,7 @@ export const HisRequests: React.FC = () => {
         );
       },
     },
-    {
+    hasPermissions.details && {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.actions')}</Header>,
       dataIndex: 'actions',
       render: (index: number, record: RequestModel) => {

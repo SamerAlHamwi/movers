@@ -75,7 +75,7 @@ export const User: React.FC = () => {
       }));
     }
 
-    if (userPermissions.includes('Pages.Users.Activation')) {
+    if (userPermissions.includes('Request.List')) {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
         hisRequests: true,
