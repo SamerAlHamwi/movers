@@ -112,7 +112,6 @@ export const FileSizeSetting: React.FC = () => {
       </Row>
 
       <Card
-        style={{ height: '35%' }}
         title={t('config.FileSizeSetting')}
         bordered={false}
         extra={
@@ -135,7 +134,7 @@ export const FileSizeSetting: React.FC = () => {
       >
         <Details>
           <DetailsRow key={1}>
-            <DetailsTitle style={{ width: '100%' }}>{t('config.fileSize')}</DetailsTitle>
+            <DetailsTitle style={{ width: '95%', marginRight: '0' }}>{t('config.fileSize')}</DetailsTitle>
             <DetailsValue>{fileSizeData?.fileSize}</DetailsValue>
           </DetailsRow>
         </Details>

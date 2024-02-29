@@ -112,7 +112,6 @@ export const SmsSetting: React.FC = () => {
       </Row>
 
       <Card
-        style={{ height: '55%', marginBottom: '10%' }}
         title={t('config.SmsSetting')}
         bordered={false}
         extra={

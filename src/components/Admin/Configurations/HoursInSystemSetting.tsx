@@ -139,7 +139,9 @@ export const HoursInSystemSetting: React.FC = () => {
           </DetailsRow>
 
           <DetailsRow key={1}>
-            <DetailsTitle style={{ width: '95%' }}>{t('config.hoursToConvertRequestToOutOfPossible')}</DetailsTitle>
+            <DetailsTitle style={{ width: '95%', marginRight: '0' }}>
+              {t('config.hoursToConvertRequestToOutOfPossible')}
+            </DetailsTitle>
             <DetailsValue>{hoursInSystemData?.hoursToConvertRequestToOutOfPossible}</DetailsValue>
           </DetailsRow>
         </Details>

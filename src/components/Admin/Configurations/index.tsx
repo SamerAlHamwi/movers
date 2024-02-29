@@ -71,16 +71,21 @@ export const Configurations: React.FC = () => {
     <>
       <Row gutter={20}>
         {hasPermissions.GetEmailSetting && (
-          <Col span={isDesktop || isTablet ? 12 : 24} style={{ marginBottom: '2rem' }}>
+          <Col span={24} style={{ marginBottom: '2rem' }}>
             <EmailSetting />
           </Col>
         )}
-        {(hasPermissions.GetSmsSetting || hasPermissions.GetFileSizeSetting) && (
-          <Col span={isDesktop || isTablet ? 12 : 24} style={{ marginBottom: '2rem' }}>
-            {hasPermissions.GetSmsSetting && <SmsSetting />}
-            {hasPermissions.GetFileSizeSetting && <FileSizeSetting />}
+        {hasPermissions.GetSmsSetting && (
+          <Col span={24} style={{ marginBottom: '2rem' }}>
+            <SmsSetting />
           </Col>
         )}
+        {hasPermissions.GetFileSizeSetting && (
+          <Col span={24} style={{ marginBottom: '2rem' }}>
+            <FileSizeSetting />
+          </Col>
+        )}
+
         {hasPermissions.GetHoursInSystem && (
           <Col span={24} style={{ marginBottom: '2rem' }}>
             <HoursInSystemSetting />
