@@ -310,7 +310,16 @@ export const AppRouter: React.FC = () => {
           <Route
             path="requests/:requestId/details/:type/:companyId/details/reviewsDetails"
             element={
-              <PrivateRoute allowedPermissions={['Company.Get']}>
+              <PrivateRoute allowedPermissions={[]}>
+                <ReviewsDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="requests/:requestId/details/:type/:companyId/branches/:branchId/details/reviewsDetails"
+            element={
+              <PrivateRoute allowedPermissions={[]}>
                 <ReviewsDetailsPage />
               </PrivateRoute>
             }
@@ -393,6 +402,15 @@ export const AppRouter: React.FC = () => {
             element={
               <PrivateRoute allowedPermissions={['Company.Get']}>
                 <CompanyDetailsPage />
+              </PrivateRoute>
+            }
+          />
+
+          <Route
+            path="requests/:requestId/details/:type/:companyId/branches/:branchId/details"
+            element={
+              <PrivateRoute allowedPermissions={['CompanyBranch.Get']}>
+                <BranchDetailsPage />
               </PrivateRoute>
             }
           />

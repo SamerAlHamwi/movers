@@ -336,7 +336,7 @@ export const BranchesWithoutCompany: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
       dataIndex: ['commissionForBranchWithOutCompany'],
       render: (record: BranchModel) => {
-        return <> {record ? record + '%' : ''}</>;
+        return <> {record || record == 0 ? record + '%' : ''}</>;
       },
     },
     {

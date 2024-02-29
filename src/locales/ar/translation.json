@@ -650,7 +650,7 @@
     "isThisBranchProvideOffer": "الفرع قدمت عرض سعر",
     "true": "نعم",
     "false": "لا",
-    "companiesWitchBoughtInfo": "الشركات التي قامت بشراء معلومات العميل المحتمل",
+    "companiesWitchBoughtInfo": "الشركات والأفرع اللذين قاموا بشراء معلومات العميل المحتمل",
     "attachmentsFromCompany": "صور إنهاء الطلب من الشركة",
     "rejectedoffers": "العروض المرفوضة",
     "editRequest": "تعديل طلب النقل",

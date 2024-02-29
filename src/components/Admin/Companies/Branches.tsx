@@ -232,7 +232,7 @@ export const Branches: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
       dataIndex: ['company', 'commissionGroup'],
       render: (record: BranchModel) => {
-        return <> {record ? record + '%' : ''}</>;
+        return <> {record || record == 0 ? record + '%' : ''}</>;
       },
     },
     {

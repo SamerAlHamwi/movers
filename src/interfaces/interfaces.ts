@@ -336,7 +336,7 @@ export interface BranchModel {
   userDto?: UserDto;
   serviceType: number;
   availableCities: any[];
-  commissionGroup: number;
+  commissionForBranchWithOutCompany: number;
   statues?: number;
 }
 export interface RequestModel {

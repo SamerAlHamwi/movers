@@ -436,7 +436,7 @@ export const Companies: React.FC = () => {
       title: <Header style={{ wordBreak: 'normal' }}>{t('brokers.commission')}</Header>,
       dataIndex: 'commissionGroup',
       render: (record: CompanyModal) => {
-        return <> {record ? record + '%' : ''}</>;
+        return <> {record || record == 0 ? record + '%' : ''}</>;
       },
     },
     {
@@ -616,6 +616,7 @@ export const Companies: React.FC = () => {
               <Tooltip placement="top" title={t('common.details')}>
                 <TableButton
                   severity="success"
+                  disabled={record.statues === 3 && !needToUpdate}
                   onClick={() => {
                     Navigate(`${record.id}/details`, { state: record.name });
                   }}
