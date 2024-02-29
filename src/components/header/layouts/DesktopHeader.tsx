@@ -1,6 +1,5 @@
 import React from 'react';
 import { Col, Row } from 'antd';
-import { NotificationsDropdown } from '../components/notificationsDropdown/NotificationsDropdown';
 import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
 import { HeaderSearch } from '../components/HeaderSearch/HeaderSearch';
 import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
@@ -45,11 +44,6 @@ export const DesktopHeader: React.FC<DesktopHeaderProps> = ({ isTwoColumnsLayout
               <Col>
                 <HeaderFullscreen />
               </Col>
-              {userRole === 'manager' ? (
-                <Col>
-                  <NotificationsDropdown />
-                </Col>
-              ) : null}
               <Col>
                 <SettingsDropdown />
               </Col>

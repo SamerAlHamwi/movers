@@ -1,6 +1,5 @@
 import React from 'react';
 import { Col, Row } from 'antd';
-import { NotificationsDropdown } from '../components/notificationsDropdown/NotificationsDropdown';
 import { ProfileDropdown } from '../components/profileDropdown/ProfileDropdown/ProfileDropdown';
 import { SettingsDropdown } from '../components/settingsDropdown/SettingsDropdown';
 import * as S from '../Header.styles';
@@ -23,11 +22,6 @@ export const MobileHeader: React.FC<MobileHeaderProps> = ({ toggleSider, isSider
       </Col>
       <Col>
         <Row align="middle">
-          {userRole === 'manager' ? (
-            <Col>
-              <NotificationsDropdown />
-            </Col>
-          ) : null}
           <Col>
             <SettingsDropdown />
           </Col>
