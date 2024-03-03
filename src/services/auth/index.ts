@@ -7,9 +7,7 @@ export interface LoginRequest {
   rememberClient: boolean;
 }
 
-// eslint-disable-next-line
 export const login = (loginPayload: LoginRequest): Promise<any> =>
   httpApi.post<any>(`${apiPrefix.auth}/Authenticate`, { ...loginPayload }).then(({ data }) => data);
-// eslint-disable-next-line
-export const getUserInformationWhenLogIn = (): Promise<any> =>
-  httpApi.get<any>('/api/services/app/User/GetInformationFromLoginUser');
+
+export const GetProfileInfo = (): Promise<any> => httpApi.get<any>(`${apiPrefix.account}/GetProfileInfo`);

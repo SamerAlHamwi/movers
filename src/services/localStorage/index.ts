@@ -16,14 +16,23 @@ export const persistUser = (user: userModel) => {
   localStorage.setItem(
     'user',
     JSON.stringify({
-      userId: user.userId,
-      userType: user.userType,
+      userId: user?.userId,
+      userType: user?.userType,
     }),
   );
 };
 
+export const persistUserInfo = (userInfo: any) => {
+  localStorage.setItem('userInfo', JSON.stringify(userInfo));
+};
+
 export const readUser = (): any => {
   const userStr = localStorage.getItem('user');
+  return userStr ? JSON.parse(userStr) : '';
+};
+
+export const readUserInfo = (): any => {
+  const userStr = localStorage.getItem('userInfo');
   return userStr ? JSON.parse(userStr) : '';
 };
 

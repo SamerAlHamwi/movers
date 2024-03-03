@@ -1,6 +1,7 @@
 import { PushNotification } from '@app/components/modal/PushNotification';
 export default {
   auth: '/api/TokenAuth',
+  account: '/api/services/app/Account',
   users: '/api/services/app/User',
   services: '/api/services/app/Service',
   subServices: '/api/services/app/SubService',

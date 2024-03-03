@@ -1,5 +1,5 @@
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import { login, LoginRequest } from '@app/services/auth';
+import { GetProfileInfo, login, LoginRequest } from '@app/services/auth';
 import {
   deletePermissions,
   deleteToken,
@@ -10,7 +10,7 @@ import {
   readPermissions,
   readToken,
 } from '@app/services/localStorage';
-import { setUser } from './userSlice';
+import { fetchUserInfo, setUser } from './userSlice';
 
 export interface AuthSlice {
   token: string | null;
@@ -28,6 +28,7 @@ export const doLogin = createAsyncThunk('auth/doLogin', async (loginPayload: Log
     persistToken(response.result.accessToken);
     persistPermissions(response.result.permissions);
     persistUser(response.result);
+    dispatch(fetchUserInfo());
     return response.result.accessToken;
   }),
 );
