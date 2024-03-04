@@ -397,7 +397,11 @@ const RequestDetails: React.FC = () => {
                   {t('requests.comment')}
                 </DetailsTitle>
                 <DetailsValue
-                  style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}
+                  style={
+                    isDesktop || isTablet
+                      ? { width: '46%', margin: '0 2%', wordBreak: 'break-word' }
+                      : { width: '80%', margin: '0 10%', wordBreak: 'break-word' }
+                  }
                 >
                   {requestData?.comment ?? t('requests.nocomment')}
                 </DetailsValue>

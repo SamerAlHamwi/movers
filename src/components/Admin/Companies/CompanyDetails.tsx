@@ -620,7 +620,9 @@ const CompanyDetails: React.FC = () => {
                   <DetailsTitle>{t('requests.comment')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{companyData?.comment ?? t('requests.nocomment')}</DetailsValue>
+                  <DetailsValue style={{ wordBreak: 'break-word' }}>
+                    {companyData?.comment ?? t('requests.nocomment')}
+                  </DetailsValue>
                 </ColStyle>
               </DetailsRow>
 

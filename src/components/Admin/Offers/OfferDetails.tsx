@@ -296,7 +296,7 @@ const OfferDetails: React.FC = () => {
                   <DetailsTitle>{t('requests.comment')}</DetailsTitle>
                 </ColStyle>
                 <ColStyle>
-                  <DetailsValue>{offerData?.note}</DetailsValue>
+                  <DetailsValue style={{ wordBreak: 'break-word' }}>{offerData?.note}</DetailsValue>
                 </ColStyle>
               </DetailsRow>
 

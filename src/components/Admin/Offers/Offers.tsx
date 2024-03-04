@@ -367,7 +367,7 @@ export const Offers: React.FC = () => {
       },
     },
     {
-      title: <Header style={{ wordBreak: 'normal' }}>{t('requests.comment')}</Header>,
+      title: <Header style={{ wordBreak: 'break-word' }}>{t('requests.comment')}</Header>,
       dataIndex: 'note',
     },
     {
