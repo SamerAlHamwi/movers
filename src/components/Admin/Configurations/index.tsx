@@ -59,7 +59,7 @@ export const Configurations: React.FC = () => {
       }));
     }
 
-    if (userPermissions.includes('GetCommissionForGetCommissionForBranchesWithoutCompanyWithoutCompany')) {
+    if (userPermissions.includes('GetCommissionForBranchesWithoutCompany')) {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
         branches: true,

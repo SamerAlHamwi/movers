@@ -659,7 +659,7 @@ export const Requests: React.FC = () => {
         }
       >
         <Row justify={'end'} align={'middle'}>
-          {type !== 'viaBroker' && (
+          {type !== 'viaBroker' && hasPermissions.add && (
             <>
               <Button
                 type="primary"
