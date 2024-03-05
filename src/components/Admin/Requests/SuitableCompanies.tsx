@@ -66,6 +66,7 @@ export const SuitableCompanies: React.FC = () => {
   const [hasPermissions, setHasPermissions] = useState({
     company: false,
     branch: false,
+    changeStauts: false,
   });
 
   const userPermissions = useAppSelector((state) => state.auth.permissions);
@@ -82,6 +83,13 @@ export const SuitableCompanies: React.FC = () => {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
         branch: true,
+      }));
+    }
+
+    if (userPermissions.includes('Request.ChangeStatus')) {
+      setHasPermissions((prevPermissions) => ({
+        ...prevPermissions,
+        changeStauts: true,
       }));
     }
   }, [userPermissions]);
@@ -515,7 +523,7 @@ export const SuitableCompanies: React.FC = () => {
         </Card>
       )}
 
-      {type == '1' && (
+      {type == '1' && hasPermissions.changeStauts && (
         <Button
           disabled={
             (dataCompany?.length == 0 && dataBranch?.length == 0) ||
