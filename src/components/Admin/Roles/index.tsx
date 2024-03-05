@@ -199,33 +199,41 @@ export const Role: React.FC = () => {
       render: (index: number, record: RoleModel) => {
         return (
           <Space>
-            {hasPermissions.edit && (
-              <Tooltip placement="top" title={t('common.edit')}>
-                <TableButton
-                  severity="info"
-                  onClick={() => {
-                    setEditmodaldata(record);
-                    handleModalOpen('edit');
-                  }}
-                >
-                  <EditOutlined />
-                </TableButton>
-              </Tooltip>
-            )}
+            {hasPermissions.edit &&
+              record.name != 'Admin' &&
+              record.name != 'BasicUser' &&
+              record.name != 'CompanyBranchUser' &&
+              record.name != 'CompanyUser' && (
+                <Tooltip placement="top" title={t('common.edit')}>
+                  <TableButton
+                    severity="info"
+                    onClick={() => {
+                      setEditmodaldata(record);
+                      handleModalOpen('edit');
+                    }}
+                  >
+                    <EditOutlined />
+                  </TableButton>
+                </Tooltip>
+              )}
 
-            {hasPermissions.delete && (
-              <Tooltip placement="top" title={t('common.delete')}>
-                <TableButton
-                  severity="error"
-                  onClick={() => {
-                    setDeletemodaldata(record);
-                    handleModalOpen('delete');
-                  }}
-                >
-                  <DeleteOutlined />
-                </TableButton>
-              </Tooltip>
-            )}
+            {hasPermissions.delete &&
+              record.name != 'Admin' &&
+              record.name != 'BasicUser' &&
+              record.name != 'CompanyBranchUser' &&
+              record.name != 'CompanyUser' && (
+                <Tooltip placement="top" title={t('common.delete')}>
+                  <TableButton
+                    severity="error"
+                    onClick={() => {
+                      setDeletemodaldata(record);
+                      handleModalOpen('delete');
+                    }}
+                  >
+                    <DeleteOutlined />
+                  </TableButton>
+                </Tooltip>
+              )}
           </Space>
         );
       },
