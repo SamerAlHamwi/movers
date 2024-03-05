@@ -50,7 +50,7 @@ export const LoginForm: React.FC = () => {
 
         <Auth.FormItem
           name="userNameOrEmailAddress"
-          label={t('auth.email')}
+          label={t('auth.userName')}
           rules={[{ required: true, message: t('common.requiredField') }]}
         >
           <Auth.FormInput placeholder={t('auth.userNameorEmail')} />
