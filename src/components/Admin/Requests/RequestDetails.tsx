@@ -541,7 +541,7 @@ const RequestDetails: React.FC = () => {
               </DetailsRow>
 
               {/* companiesThatBoughtInfo */}
-              {hasPermissions.company && requestData?.statues === 4 && (
+              {hasPermissions.company && (requestData?.statues === 4 || requestData?.statues === 13) && (
                 <DetailsRow>
                   <DetailsTitle
                     style={isDesktop || isTablet ? { width: '46%', margin: '0 2%' } : { width: '80%', margin: '0 10%' }}

@@ -90,14 +90,6 @@ export const EditRequest: React.FC = () => {
     lng: sourceLng,
   });
   const [destinationPosition, setDestinationPosition] = useState({ lat: destinationLat, lng: destinationLng });
-  const [centerSource, setCenterSource] = useState({
-    lat: 25.15658048160557,
-    lng: 55.34100848084654,
-  });
-  const [centerDestination, setCenterDestination] = useState({
-    lat: 25.15658048160557,
-    lng: 55.34100848084654,
-  });
   // tree state (services)
   const [expandedKeys, setExpandedKeys] = useState<React.Key[]>(['0-0-0', '0-0-1']);
   const [selectedKeys, setSelectedKeys] = useState<React.Key[]>([]);
@@ -773,13 +765,14 @@ export const EditRequest: React.FC = () => {
           {current === 0 && (
             <>
               <h4 style={{ margin: '2rem 0', fontWeight: '700' }}>{t('addRequest.whatMoving')}</h4>
+              <h3 style={{ margin: '2rem 1.5rem 0' }}>{RequestData?.sourceType?.name}</h3>
               <BaseForm.Item name={['attributeForSourceTypeValues']}>
                 {attributeForSourceTypesData?.data?.result?.items.length == 0 ? (
                   <p>{t('addRequest.sourceTypeDoesntHaveAttribute')}</p>
                 ) : attributeForSourceTypesData?.data?.result?.items.length > 0 ? (
                   <div>
                     {attributeForSourceTypesData?.data?.result?.items.map((sourceTypeItem: any) => (
-                      <Card key={sourceTypeItem.id} style={{ margin: '3rem 0' }}>
+                      <Card key={sourceTypeItem.id} style={{ margin: '1rem 0' }}>
                         <div>
                           <h3 style={{ margin: '1rem' }}>{sourceTypeItem.name}</h3>
                           <Radio.Group
@@ -1051,7 +1044,7 @@ export const EditRequest: React.FC = () => {
                 <div style={{ width: '100%', height: '350px' }}>
                   <Map
                     field="source"
-                    value={destinationPosition}
+                    value={sourcePosition}
                     handleChange={(name: any, position: any) =>
                       handleMapClick({ latLng: { lat: position[0], lng: position[1] } }, 'source')
                     }
