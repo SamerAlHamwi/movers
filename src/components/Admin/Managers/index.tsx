@@ -265,7 +265,7 @@ export const Manager: React.FC = () => {
     { title: <Header style={{ wordBreak: 'normal' }}>{t('managers.managerFullName')}</Header>, dataIndex: 'fullName' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userName')}</Header>, dataIndex: 'userName' },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('roles.roleName')}</Header>, dataIndex: ['roleNames', 0] },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.emailAddress')}</Header>, dataIndex: 'emailAddress' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.creationTime')}</Header>,
       dataIndex: 'creationTime',
@@ -390,6 +390,7 @@ export const Manager: React.FC = () => {
             {hasPermissions.edit && (
               <Tooltip placement="top" title={t('common.edit')}>
                 <TableButton
+                  disabled={record.roleNames[0] == 'ADMIN'}
                   severity="info"
                   onClick={() => {
                     setEditmodaldata(record);
@@ -404,6 +405,7 @@ export const Manager: React.FC = () => {
             {hasPermissions.delete && (
               <Tooltip placement="top" title={t('common.delete')}>
                 <TableButton
+                  disabled={record.roleNames[0] == 'ADMIN'}
                   severity="error"
                   onClick={() => {
                     setDeletemodaldata(record);
@@ -457,7 +459,11 @@ export const Manager: React.FC = () => {
                     }
                     onConfirm={() => deActivateManager.mutateAsync(record.id)}
                   >
-                    <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <Button
+                      severity="info"
+                      style={{ height: '2.4rem', width: '6.5rem' }}
+                      disabled={record.roleNames[0] == 'ADMIN'}
+                    >
                       <TableText>{t('common.deactivate')}</TableText>
                     </Button>
                   </Popconfirm>
@@ -503,7 +509,11 @@ export const Manager: React.FC = () => {
                     }
                     onConfirm={() => activateManager.mutateAsync(record.id)}
                   >
-                    <Button severity="info" style={{ height: '2.4rem', width: '6.5rem' }}>
+                    <Button
+                      severity="info"
+                      style={{ height: '2.4rem', width: '6.5rem' }}
+                      disabled={record.roleNames[0] == 'ADMIN'}
+                    >
                       <TableText>{t('common.activate')}</TableText>
                     </Button>
                   </Popconfirm>

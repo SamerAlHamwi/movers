@@ -205,7 +205,7 @@ export const User: React.FC = () => {
       dataIndex: 'registrationFullName',
     },
     { title: <Header style={{ wordBreak: 'normal' }}>{t('users.userName')}</Header>, dataIndex: 'userName' },
-    { title: <Header style={{ wordBreak: 'normal' }}>{t('auth.email')}</Header>, dataIndex: 'emailAddress' },
+    { title: <Header style={{ wordBreak: 'normal' }}>{t('common.emailAddress')}</Header>, dataIndex: 'emailAddress' },
     {
       title: <Header style={{ wordBreak: 'normal' }}>{t('common.creationTime')}</Header>,
       dataIndex: 'creationTime',

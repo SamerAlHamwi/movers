@@ -88,7 +88,7 @@ export const EditManager: React.FC<EditManagerProps> = ({ visible, onCancel, man
         <BaseForm.Item
           name="emailAddress"
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
-          label={<LableText>{t('auth.email')}</LableText>}
+          label={<LableText>{t('common.emailAddress')}</LableText>}
           style={{ margin: '-.5rem 0' }}
         >
           <Input />

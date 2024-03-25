@@ -86,7 +86,7 @@ export const AddManager: React.FC<CreateUserModalProps> = ({ visible, onCancel, 
         </BaseForm.Item>
         <BaseForm.Item
           name="emailAddress"
-          label={<LableText>{t('auth.email')}</LableText>}
+          label={<LableText>{t('common.emailAddress')}</LableText>}
           rules={[{ required: true, message: <p style={{ fontSize: FONT_SIZE.xs }}>{t('common.requiredField')}</p> }]}
           style={{ marginTop: '-.5rem' }}
         >

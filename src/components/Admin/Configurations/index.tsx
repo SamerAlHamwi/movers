@@ -62,7 +62,7 @@ export const Configurations: React.FC = () => {
     if (userPermissions.includes('GetCommissionForBranchesWithoutCompany')) {
       setHasPermissions((prevPermissions) => ({
         ...prevPermissions,
-        branches: true,
+        GetCommissionForBranchesWithoutCompany: true,
       }));
     }
   }, [userPermissions]);

@@ -230,6 +230,7 @@ export interface UserModel {
   type: number;
   creationTime: string;
   isActive: boolean | string;
+  roleNames: string[];
 }
 
 export interface Services {
