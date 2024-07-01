@@ -1034,8 +1034,8 @@
     "editApplicationVersionFormModalTitle": "Edit Application Version",
     "appType": "Application Type",
     "systemType": "Store Type",
-    "Basic": "Go Movaro",
-    "Partner": "Go Movaro Partner",
+    "Basic": "Movers",
+    "Partner": "Movers Partner",
     "Android": "Google Play",
     "IOS": "Apple Store",
     "versionCode": "Version Code",
@@ -1087,7 +1087,7 @@
 
   "_comment100": "*********************************** SidebarNavigation ************************************************",
   "sidebarNavigation": {
-    "Brand": "Go Movaro",
+    "Brand": "Movers",
     "Statistics": "Statistics",
     "Terms": "Terms & Conditions",
     "Users": "Users",
@@ -1158,7 +1158,7 @@
     "notFound": "Sorry, page not found!"
   },
 
-  "footer": "2023 Go Movaro, All Rights Reserved",
+  "footer": "",
   "networkError": "Network Error",
   "timeoutExceeded": "Timeout Exceeded",
   "noNotifications": "No notifications yet!"

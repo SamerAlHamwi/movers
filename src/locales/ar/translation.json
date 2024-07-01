@@ -1155,7 +1155,7 @@
     "notFound": "عذراً، الصفحة غير موجودة!"
   },
 
-  "footer": "Go Movaro 2023، جميع الحقوق محفوظة",
+  "footer": "",
   "networkError": "خطأ في الشبكة",
   "timeoutExceeded": "تجاوزت المهلة للاتصال",
   "noNotifications": "لا يوجد إشعارات بعد!"
